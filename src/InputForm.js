@@ -6,6 +6,7 @@ import { uniq, flatMap } from 'lodash';
 import Card from 'material-ui/lib/card/card';
 import CardTitle from 'material-ui/lib/card/card-title';
 import CardText from 'material-ui/lib/card/card-text';
+import TextField from 'material-ui/lib/text-field';
 
 const debug = debugFactory('vbi:inputform');
 
@@ -73,8 +74,8 @@ export default class InputForm extends Component {
         <tbody>
           <tr>
             <th />
-            <th colSpan={periods.length}>Quantity</th>
-            <th colSpan={2}>Price</th>
+            <th className="main" colSpan={periods.length}>Quantity</th>
+            <th className="main" colSpan={2}>Price</th>
           </tr>
           <tr>
             <th />
@@ -84,20 +85,18 @@ export default class InputForm extends Component {
           </tr>
           {
             items.map(item => <tr key={category + ':' + item.name}>
-              <td>{item.name}</td>
+              <td className="name">{item.name}</td>
               {
                 periods.map(period => (<td key={period} className="quantity">
-                  {InputForm.findQuantity(item, period)}
+                  <input value={InputForm.findQuantity(item, period)} onFocus={(event) => event.target.select()} />
                 </td>))
               }
-              <td className="price">{
-                // TODO: make item prices more flexible and robust
-                item.prices[0].price.split(' ')[0]
-              }</td>
-              <td className="price">{
-                // TODO: make item prices more flexible and robust
-                item.prices[0].change
-              }</td>
+              <td className="price">
+                <input value={item.prices[0].price.split(' ')[0]} onFocus={(event) => event.target.select()} />
+              </td>
+              <td className="price">
+                <input value={item.prices[0].change} onFocus={(event) => event.target.select()} />
+              </td>
             </tr>)
           }
         </tbody>

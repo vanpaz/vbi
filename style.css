@@ -1,5 +1,6 @@
 html, body {
   font-family: roboto, sans-serif;
+  font-size: 14px;
   line-height: 1.3em;
 
   color: #4d4d4d;
@@ -34,7 +35,7 @@ div.container:first-child div.card  {
   margin-top: 20px;
 }
 
-@media screen and (min-width: 1000px) {
+@media screen and (min-width: 1200px) {
   div.container {
     width: 50%;
   }
@@ -59,10 +60,33 @@ th {
 }
 
 th, td {
-  padding: 5px;
   text-align: right;
   vertical-align: top;
 }
+
+th.main {
+  text-align: center;
+}
+
+td.name {
+  padding: 5px;
+}
+
+td input {
+  border: none;
+  font-family: roboto, sans-serif;
+  font-size: 14px;
+  text-align: right;
+
+  width: 42px;
+  padding: 5px;
+}
+
+td input:focus {
+  box-shadow: 0 0 5px 2px dodgerblue;
+  outline: none;
+}
+
 
 td.quantity {
   /*color: dodgerblue;*/
