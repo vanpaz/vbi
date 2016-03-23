@@ -52,11 +52,6 @@ This boilerplate project includes React-friendly ESLint configuration.
 npm run lint
 ```
 
-## Resources
-
-- favicon: http://www.iconarchive.com/show/soft-scraps-icons-by-hopstarter/Document-Flow-Chart-icon.html
-
-
 ## License
 
 MIT

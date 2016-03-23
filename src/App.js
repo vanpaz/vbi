@@ -62,12 +62,12 @@ export default class App extends Component {
           </div>
 
           <div className="container profit-and-loss">
-            <ProfitAndLoss />
+            <ProfitAndLoss data={data} />
           </div>
         </div>
 
         <div className="footer">
-          Copyright &copy; <a href="http://vanpaz.com">VanPaz</a> 2016
+          Copyright &copy; 2016 <a href="http://vanpaz.com">VanPaz</a>
         </div>
       </div>
     );

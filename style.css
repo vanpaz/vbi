@@ -35,6 +35,11 @@ div.container:first-child div.card  {
   margin-top: 20px;
 }
 
+div.container.profit-and-loss div.card {
+  /* TODO: fix the need to specify width for the right panel */
+  width: 100%;
+}
+
 @media screen and (min-width: 1200px) {
   div.container {
     width: 50%;
@@ -50,7 +55,7 @@ div.container:first-child div.card  {
 h1 {
   font-size: 14pt;
   font-weight: normal;
-  color: darkorange;
+  color: dodgerblue;
   margin-top: 30px;
 }
 
@@ -68,7 +73,7 @@ th.main {
   text-align: center;
 }
 
-td.name {
+td.read-only {
   padding: 5px;
 }
 

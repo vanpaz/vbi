@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import debugFactory from 'debug/browser';
 
-import { uniq, flatMap } from 'lodash';
+import { getCategories, getPeriods, findQuantity } from './utils';
 
 import Card from 'material-ui/lib/card/card';
 import CardTitle from 'material-ui/lib/card/card-title';
 import CardText from 'material-ui/lib/card/card-text';
-import TextField from 'material-ui/lib/text-field';
 
 const debug = debugFactory('vbi:inputform');
 
@@ -29,8 +28,8 @@ export default class InputForm extends Component {
   }
 
   static renderCosts (items) {
-    let categories = InputForm.getCategories(items);
-    let periods = InputForm.getPeriods(items);
+    let categories = getCategories(items);
+    let periods = getPeriods(items);
 
     debug('costs categories', categories);
     debug('costs periods', periods);
@@ -46,8 +45,8 @@ export default class InputForm extends Component {
   }
 
   static renderRevenues (items) {
-    let categories = InputForm.getCategories(items);
-    let periods = InputForm.getPeriods(items);
+    let categories = getCategories(items);
+    let periods = getPeriods(items);
 
     debug('revenues categories', categories);
     debug('revenues periods', periods);
@@ -85,47 +84,25 @@ export default class InputForm extends Component {
           </tr>
           {
             items.map(item => <tr key={category + ':' + item.name}>
-              <td className="name">{item.name}</td>
+              <td className="read-only">{item.name}</td>
               {
                 periods.map(period => (<td key={period} className="quantity">
-                  <input value={InputForm.findQuantity(item, period)} onFocus={(event) => event.target.select()} />
+                  <input value={findQuantity(item, period).quantity}
+                         onFocus={(event) => event.target.select()} />
                 </td>))
               }
               <td className="price">
-                <input value={item.prices[0].price.split(' ')[0]} onFocus={(event) => event.target.select()} />
+                <input value={item.prices[0].price.split(' ')[0]} 
+                       onFocus={(event) => event.target.select()} />
               </td>
               <td className="price">
-                <input value={item.prices[0].change} onFocus={(event) => event.target.select()} />
+                <input value={item.prices[0].change} 
+                       onFocus={(event) => event.target.select()} />
               </td>
             </tr>)
           }
         </tbody>
       </table>
     </div>
-  }
-
-  static getCategories (items) {
-    let categories = items
-        .map(item => item.category)
-        .filter(category => category != undefined);  // not undefined or null
-
-    return uniq(categories).sort(); // dedupe and sort
-  }
-
-  static getPeriods(items) {
-    let periods = flatMap(items, item => {
-      let pricePeriods = item.prices.map(price => price.period);
-      let quantityPeriods = item.quantities.map(quantity => quantity.period);
-
-      return pricePeriods.concat(quantityPeriods).filter(period => period != undefined)
-    });
-
-    return uniq(periods).sort();
-  }
-
-  static findQuantity (item, period) {
-    let entry = item.quantities && item.quantities.find(quantity => quantity.period == period);
-
-    return entry ? entry.quantity : null;
   }
 }
