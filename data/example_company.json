@@ -1,0 +1,240 @@
+{
+  "id": "7ac37460-f0d8-11e5-a837-0800200c9a66",
+  "name": "Example Company",
+
+  "costs": [
+
+    {
+      "name": "GM",
+      "category": "personnel",
+      "prices": [
+        {"price": "37k euro/year", "change": "+3%"}
+      ],
+      "quantities": [
+        {"period": "2015", "quantity": 0},
+        {"period": "2016", "quantity": 1},
+        {"period": "2017", "quantity": 1},
+        {"period": "2018", "quantity": 1}
+      ]
+    },
+    {
+      "name": "OM",
+      "category": "personnel",
+      "prices": [
+        {"price": "35k euro/year", "change": "+3%"}
+      ],
+      "quantities": [
+        {"period": "2015", "quantity": 0},
+        {"period": "2016", "quantity": 0},
+        {"period": "2017", "quantity": 0},
+        {"period": "2018", "quantity": 1}
+      ]
+    },
+    {
+      "name": "DEV",
+      "category": "personnel",
+      "prices": [
+        {"price": "28k euro/year", "change": "+3%"}
+      ],
+      "quantities": [
+        {"period": "2015", "quantity": 0},
+        {"period": "2016", "quantity": 5},
+        {"period": "2017", "quantity": 6},
+        {"period": "2018", "quantity": 8}
+      ]
+    },
+    {
+      "name": "BD & Sales",
+      "category": "personnel",
+      "prices": [
+        {"price": "30k euro/year", "change": "+3%"}
+      ],
+      "quantities": [
+        {"period": "2015", "quantity": 0},
+        {"period": "2016", "quantity": 2},
+        {"period": "2017", "quantity": 3},
+        {"period": "2018", "quantity": 5}
+      ]
+    },
+    {
+      "name": "Support",
+      "category": "personnel",
+      "prices": [
+        {"price": "26k euro/year", "change": "+3%"}
+      ],
+      "quantities": [
+        {"period": "2015", "quantity": 0},
+        {"period": "2016", "quantity": 1},
+        {"period": "2017", "quantity": 2},
+        {"period": "2018", "quantity": 4}
+      ]
+    },
+    {
+      "name": "HR/FIN",
+      "category": "personnel",
+      "prices": [
+        {"price": "30k euro/year", "change": "+3%"}
+      ],
+      "quantities": [
+        {"period": "2015", "quantity": 0},
+        {"period": "2016", "quantity": 1},
+        {"period": "2017", "quantity": 1},
+        {"period": "2018", "quantity": 1}
+      ]
+    },
+    {
+      "name": "Office Manager",
+      "category": "personnel",
+      "prices": [
+        {"price": "26k euro/year", "change": "+3%"}
+      ],
+      "quantities": [
+        {"period": "2015", "quantity": 0},
+        {"period": "2016", "quantity": 0},
+        {"period": "2017", "quantity": 1},
+        {"period": "2018", "quantity": 1}
+      ]
+    },
+    {
+      "name": "Marketing & communication",
+      "category": "personnel",
+      "prices": [
+        {"price": "26k euro/year", "change": "+3%"}
+      ],
+      "quantities": [
+        {"period": "2015", "quantity": 0},
+        {"period": "2016", "quantity": 0},
+        {"period": "2017", "quantity": 1},
+        {"period": "2018", "quantity": 1}
+      ]
+    },
+    {
+      "name": "IT support",
+      "category": "personnel",
+      "prices": [
+        {"price": "26k euro/year", "change": "+3%"}
+      ],
+      "quantities": [
+        {"period": "2015", "quantity": 0},
+        {"period": "2016", "quantity": 0},
+        {"period": "2017", "quantity": 0},
+        {"period": "2018", "quantity": 1}
+      ]
+    },
+
+    {
+      "name": "Direct costs",
+      "category": null,
+      "prices": [
+        {"price": "5% * revenue"}
+      ],
+      "quantities": [
+        {"period": "2015", "quantity": 1},
+        {"period": "2016", "quantity": 1},
+        {"period": "2017", "quantity": 1},
+        {"period": "2018", "quantity": 1}
+      ]
+    }
+  ],
+
+  "revenues": [
+    {
+      "name": "media",
+      "category": "licenses",
+      "prices": [
+        {"price": "8 euro/year", "change": "+3%"}
+      ],
+      "quantities": [
+        {"period": "2016", "quantity": 3},
+        {"period": "2017", "quantity": 6},
+        {"period": "2018", "quantity": 11}
+      ]
+    },
+    {
+      "name": "security",
+      "category": "licenses",
+      "prices": [
+        {"price": "10 euro/year", "change": "+3%"}
+      ],
+      "quantities": [
+        {"period": "2016", "quantity": 0},
+        {"period": "2017", "quantity": 2},
+        {"period": "2018", "quantity": 5}
+      ]
+    },
+    {
+      "name": "legal",
+      "category": "licenses",
+      "prices": [
+        {"price": "9 euro/year", "change": "+3%"}
+      ],
+      "quantities": [
+        {"period": "2016", "quantity": 0},
+        {"period": "2017", "quantity": 2},
+        {"period": "2018", "quantity": 6}
+      ]
+    },
+    {
+      "name": "health",
+      "category": "licenses",
+      "prices": [
+        {"price": "6 euro/year", "change": "+3%"}
+      ],
+      "quantities": [
+        {"period": "2016", "quantity": 0},
+        {"period": "2017", "quantity": 5},
+        {"period": "2018", "quantity": 10}
+      ]
+    },
+
+    {
+      "name": "media",
+      "category": "projects",
+      "prices": [
+        {"price": "60 euro/year", "change": "+5%"}
+      ],
+      "quantities": [
+        {"period": "2016", "quantity": 1},
+        {"period": "2017", "quantity": 2},
+        {"period": "2018", "quantity": 4}
+      ]
+    },
+    {
+      "name": "security",
+      "category": "projects",
+      "prices": [
+        {"price": "60 euro/year", "change": "+5%"}
+      ],
+      "quantities": [
+        {"period": "2016", "quantity": 1},
+        {"period": "2017", "quantity": 2},
+        {"period": "2018", "quantity": 2}
+      ]
+    },
+    {
+      "name": "legal",
+      "category": "projects",
+      "prices": [
+        {"price": "60 euro/year", "change": "+5%"}
+      ],
+      "quantities": [
+        {"period": "2016", "quantity": 1},
+        {"period": "2017", "quantity": 2},
+        {"period": "2018", "quantity": 2}
+      ]
+    },
+    {
+      "name": "health",
+      "category": "projects",
+      "prices": [
+        {"price": "60 euro/year", "change": "+5%"}
+      ],
+      "quantities": [
+        {"period": "2016", "quantity": 0},
+        {"period": "2017", "quantity": 1},
+        {"period": "2018", "quantity": 2}
+      ]
+    }
+
+  ]
+}
