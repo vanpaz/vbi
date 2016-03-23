@@ -13,7 +13,6 @@ html, body {
 #root {
   box-sizing: border-box;
   padding-top: 70px;
-  min-height: 100%;
 }
 
 div.container {
@@ -27,8 +26,12 @@ div.card {
   overflow: auto;
 }
 
-div.container.profit-and-loss div.card {
+
+div.container div.card  {
   margin-top: 0;
+}
+div.container:first-child div.card  {
+  margin-top: 20px;
 }
 
 @media screen and (min-width: 1000px) {
@@ -36,7 +39,8 @@ div.container.profit-and-loss div.card {
     width: 50%;
   }
 
-  div.container.profit-and-loss div.card  {
+  div.container:first-child div.card,
+  div.container div.card  {
     margin-top: 20px;
   }
 }
@@ -73,7 +77,7 @@ div.footer {
   background: #6d6d6d;
   color: white;
   margin: 20px 0 0 0;
-  padding: 80px 20px 20px 20px;
+  padding: 60px 20px 20px 20px;
   font-size: 80%;
   text-align: center;
 }

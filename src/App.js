@@ -56,12 +56,14 @@ export default class App extends Component {
           <MenuItem>Menu Item 2</MenuItem>
         </LeftNav>
 
-        <div className="container input-form">
-          <InputForm data={data} onChange={data => this.updateData(data)} />
-        </div>
+        <div>
+          <div className="container input-form">
+            <InputForm data={data} onChange={data => this.updateData(data)} />
+          </div>
 
-        <div className="container profit-and-loss">
-          <ProfitAndLoss />
+          <div className="container profit-and-loss">
+            <ProfitAndLoss />
+          </div>
         </div>
 
         <div className="footer">
