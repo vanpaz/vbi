@@ -47,6 +47,10 @@ export default class ProfitAndLoss extends Component {
           }
         </tr>)
       }
+      <tr>
+        <td className="read-only total">total</td>
+        {periods.map(period => <td key={period} className="read-only total">...</td>)}
+      </tr>
       </tbody>
     </table>
   }

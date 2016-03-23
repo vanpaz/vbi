@@ -64,6 +64,10 @@ th {
   font-weight: normal;
 }
 
+table {
+  border-collapse: collapse;
+}
+
 th, td {
   text-align: right;
   vertical-align: top;
@@ -75,6 +79,11 @@ th.main {
 
 td.read-only {
   padding: 5px;
+}
+
+td.total {
+  font-weight: bold;
+  border-top: 3px double #d4d4d4;
 }
 
 td input {
