@@ -1,0 +1,39 @@
+{
+  "name": "vbi",
+  "version": "0.0.1",
+  "description": "An interactive business intelligence tool",
+  "scripts": {
+    "start": "node server.js",
+    "lint": "eslint src"
+  },
+  "keywords": [
+    "process",
+    "model",
+    "flow chart",
+    "simulator"
+  ],
+  "author": "Jos de Jong <wjosdejong@gmail.com> (http://github.com/josdejong)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vanpaz/vbi.git"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "babel-core": "^6.0.20",
+    "babel-eslint": "^4.1.3",
+    "babel-loader": "^6.0.1",
+    "babel-preset-es2015": "^6.0.15",
+    "babel-preset-react": "^6.0.15",
+    "babel-preset-stage-0": "^6.0.15",
+    "eslint": "^1.10.3",
+    "eslint-plugin-react": "^3.6.2",
+    "react-hot-loader": "^1.3.0",
+    "webpack": "^1.12.2",
+    "webpack-dev-server": "^1.12.1"
+  },
+  "dependencies": {
+    "lodash": "^4.6.1",
+    "react": "^0.14.6",
+    "react-dom": "^0.14.6"
+  }
+}
