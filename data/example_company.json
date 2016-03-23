@@ -124,7 +124,7 @@
 
     {
       "name": "Direct costs",
-      "category": null,
+      "category": "direct",
       "prices": [
         {"price": "5% * revenue"}
       ],

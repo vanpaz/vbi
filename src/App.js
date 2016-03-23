@@ -56,11 +56,11 @@ export default class App extends Component {
           <MenuItem>Menu Item 2</MenuItem>
         </LeftNav>
 
-        <div className="container">
-          <InputForm />
+        <div className="container input-form">
+          <InputForm data={data} onChange={data => this.updateData(data)} />
         </div>
 
-        <div className="container">
+        <div className="container profit-and-loss">
           <ProfitAndLoss />
         </div>
 
@@ -69,5 +69,10 @@ export default class App extends Component {
         </div>
       </div>
     );
+  }
+
+  updateData (data) {
+    // TODO: save
+    console.log('data changed', data);
   }
 }

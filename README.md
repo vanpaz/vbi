@@ -24,11 +24,6 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 
 
-## Documentation
-
-- [Project proposal VanPaz - Almende](https://docs.google.com/document/d/1OWbAK-HDqPnxJKWY0XlOCVOWULQK7W49x1jcOR7NptE/edit#heading=h.i1dd2f21kn7i)
-
-
 ## Linting
 
 This boilerplate project includes React-friendly ESLint configuration.

@@ -10,7 +10,7 @@ const debug = debugFactory('vbi:profit-loss');
 export default class ProfitAndLoss extends Component {
   render () {
     return <Card className="card">
-      <CardTitle title="Profit and loss" subtitle="Show profit and loss based on provided costs and revenues" />
+      <CardTitle title="Profit and Loss" subtitle="Calculate profit and loss based on provided costs and revenues" />
       <CardText>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi.
