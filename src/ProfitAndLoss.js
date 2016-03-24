@@ -5,7 +5,7 @@ import Card from 'material-ui/lib/card/card';
 import CardTitle from 'material-ui/lib/card/card-title';
 import CardText from 'material-ui/lib/card/card-text';
 
-import { getPeriods, calculateCategoryTotals, calculateTotals } from './utils';
+import { getPeriods, calculateCategoryTotals, calculateTotals, clearIfZero } from './utils';
 
 const debug = debugFactory('vbi:profit-loss');
 
@@ -44,7 +44,9 @@ export default class ProfitAndLoss extends Component {
           <td className="read-only">{entry.category}</td>
           {
             Object.keys(entry.totals).map(period => {
-              return <td key={period} className="read-only">{entry.totals[period].toFixed()}</td>
+              return <td key={period} className="read-only">{
+                clearIfZero(entry.totals[period].toFixed())
+              }</td>
             })
           }
         </tr>)
@@ -52,7 +54,9 @@ export default class ProfitAndLoss extends Component {
       <tr>
         <td className="read-only total">total</td>
         {
-          Object.keys(totals).map(period => <td key={period} className="read-only total">{totals[period].toFixed()}</td>)
+          Object.keys(totals).map(period => <td key={period} className="read-only total">{
+            clearIfZero(totals[period].toFixed())
+          }</td>)
         }
       </tr>
       </tbody>

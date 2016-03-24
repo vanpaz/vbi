@@ -38,7 +38,7 @@ export function getPeriods(items) {
  * @return {{period: string, quantity: number}} Returns an object with quantity 0 if not found
  */
 export function findQuantity (item, period) {
-  return item.quantities[period]
+  return item.quantities[period] !== undefined
       ? item.quantities[period]
       : '0';
 }
@@ -109,4 +109,14 @@ export function addTotals (a, b) {
   Object.keys(a).forEach(period => c[period] = a[period] + b[period]);
 
   return c;
+}
+
+
+/**
+ * Return an empty string when the input value is '0', else return the value as is.
+ * @param {string} value
+ * @return {string}
+ */
+export function clearIfZero (value) {
+  return value === '0' ? '' : value;
 }

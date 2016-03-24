@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import debugFactory from 'debug/browser';
 
 import { cloneDeep } from 'lodash';
-import { getCategories, getPeriods, findQuantity } from './utils';
+import { getCategories, getPeriods, findQuantity, clearIfZero } from './utils';
 
 import Card from 'material-ui/lib/card/card';
 import CardTitle from 'material-ui/lib/card/card-title';
@@ -89,7 +89,7 @@ export default class InputForm extends Component {
               <td className="read-only">{item.name}</td>
               {
                 periods.map(period => (<td key={period} className="quantity">
-                  <input value={findQuantity(item, period)}
+                  <input value={clearIfZero(findQuantity(item, period))}
                          onChange={(event) => {
                            let quantity = event.target.value;
                            this.updateQuantity(section, category, item.name, period, quantity);
@@ -173,4 +173,3 @@ export default class InputForm extends Component {
   }
 
 }
-
