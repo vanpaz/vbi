@@ -77,6 +77,10 @@ th.main {
   text-align: center;
 }
 
+th {
+  padding: 5px;
+}
+
 td.read-only {
   padding: 5px;
 }
@@ -96,7 +100,11 @@ td input {
   padding: 5px;
 }
 
-td input:hover,
+td input:hover {
+  box-shadow: 0 0 3px 1px #d4d4d4;
+  outline: none;
+}
+
 td input:focus {
   box-shadow: 0 0 3px 1px dodgerblue;
   outline: none;

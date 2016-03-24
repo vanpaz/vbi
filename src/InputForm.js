@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import debugFactory from 'debug/browser';
 
+import { cloneDeep } from 'lodash';
 import { getCategories, getPeriods, findQuantity } from './utils';
 
 import Card from 'material-ui/lib/card/card';
@@ -13,21 +14,22 @@ export default class InputForm extends Component {
   render () {
     return <div style={{width: '100%'}}>
       <Card className="card costs">
-        <CardTitle title="Costs" subtitle="Specify prices and quantities of your costs" />
+        <CardTitle title="Costs" subtitle="Enter prices and quantities of your costs" />
         <CardText>
-          {InputForm.renderCosts(this.props.data.costs)}
+          {this.renderCosts()}
         </CardText>
       </Card>
       <Card className="card revenues">
-        <CardTitle title="Revenues" subtitle="Specify prices and quantities of your revenues" />
+        <CardTitle title="Revenues" subtitle="Enter prices and quantities of your revenues" />
         <CardText>
-          {InputForm.renderRevenues(this.props.data.revenues)}
+          {this.renderRevenues()}
         </CardText>
       </Card>
     </div>
   }
 
-  static renderCosts (items) {
+  renderCosts () {
+    let items = this.props.data.costs;
     let categories = getCategories(items);
     let periods = getPeriods(items);
 
@@ -38,13 +40,14 @@ export default class InputForm extends Component {
       {
         categories.map(category => {
           let filteredItems = items.filter(item => item.category === category);
-          return InputForm.renderCategory(category, periods, filteredItems);
+          return this.renderCategory('costs', category, periods, filteredItems);
         })
       }
     </div>
   }
 
-  static renderRevenues (items) {
+  renderRevenues () {
+    let items = this.props.data.revenues;
     let categories = getCategories(items);
     let periods = getPeriods(items);
 
@@ -55,14 +58,13 @@ export default class InputForm extends Component {
       {
         categories.map(category => {
           let filteredItems = items.filter(item => item.category === category);
-          return InputForm.renderCategory(category, periods, filteredItems);
+          return this.renderCategory('revenues', category, periods, filteredItems);
         })
       }
     </div>
   }
 
-  static renderCategory (category, periods, items) {
-
+  renderCategory (section, category, periods, items) {
     return <div key={category}>
       <h1>{category}</h1>
 
@@ -88,15 +90,33 @@ export default class InputForm extends Component {
               {
                 periods.map(period => (<td key={period} className="quantity">
                   <input value={findQuantity(item, period).quantity}
+                         onChange={(event) => {
+                           this.updateQuantity(section, category, item.name, {
+                             period,
+                             quantity: event.target.value
+                           });
+                         }}
                          onFocus={(event) => event.target.select()} />
                 </td>))
               }
               <td className="price">
-                <input value={item.prices[0].price.split(' ')[0]} 
+                <input value={item.prices[0].price.split(' ')[0]}
+                       onChange={(event) => {
+                         this.updatePrice(section, category, item.name, {
+                           price: event.target.value,
+                           change: item.prices[0].change
+                         });
+                       }}
                        onFocus={(event) => event.target.select()} />
               </td>
               <td className="price">
-                <input value={item.prices[0].change} 
+                <input value={item.prices[0].change}
+                       onChange={(event) => {
+                         this.updatePrice(section, category, item.name, {
+                           price: item.prices[0].price,
+                           change: event.target.value
+                         });
+                       }}
                        onFocus={(event) => event.target.select()} />
               </td>
             </tr>)
@@ -105,4 +125,53 @@ export default class InputForm extends Component {
       </table>
     </div>
   }
+
+  /**
+   * Update the price of one entry
+   * @param {'costs' | 'revenues'} section
+   * @param {string} category
+   * @param {string} name
+   * @param {{price: string, change: string}} entry
+   */
+  updatePrice (section, category, name, entry) {
+    debug('updatePrice', section, category, name, entry);
+
+    let data = cloneDeep(this.props.data);
+    let item = data[section].find(item => item.category === category && item.name === name);
+    if (item) {
+      item.prices[0] = entry;
+    }
+    else {
+      // TODO: handle adding a new item
+    }
+
+    // emit a change event
+    this.props.onChange(data);
+  }
+
+  /**
+   * Update a quantity in one entry
+   * @param {string} section
+   * @param {string} name
+   * @param {string} category
+   * @param {{period: string, quantity: string}} entry
+   */
+  updateQuantity (section, category, name, entry) {
+    debug('updateQuantity', section, category, name, entry);
+
+    let data = cloneDeep(this.props.data);
+    let item = data[section].find(item => item.category === category && item.name === name);
+    if (item) {
+      // replace the quantity with the right period
+      item.quantities = item.quantities.map(e => (e.period === entry.period) ? entry : e);
+    }
+    else {
+      // TODO: handle adding a new item
+    }
+
+    // emit a change event
+    this.props.onChange(data);
+  }
+
 }
+

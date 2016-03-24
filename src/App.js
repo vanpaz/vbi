@@ -25,7 +25,7 @@ if (typeof window !== 'undefined') {
   window.debug = debugFactory;
 }
 
-
+// TODO: read data from localStorage and in the end from a database
 var data = require('../data/example_company.json');
 
 debug('data', data);
@@ -36,7 +36,8 @@ export default class App extends Component {
     super(props);
 
     this.state = {
-      showLeftNav: false
+      showLeftNav: false,
+      data
     };
   }
 
@@ -57,11 +58,11 @@ export default class App extends Component {
 
         <div>
           <div className="container input-form">
-            <InputForm data={data} onChange={data => this.updateData(data)} />
+            <InputForm data={this.state.data} onChange={data => this.handleChange(data)} />
           </div>
 
           <div className="container profit-and-loss">
-            <ProfitAndLoss data={data} />
+            <ProfitAndLoss data={this.state.data} />
           </div>
         </div>
 
@@ -72,8 +73,10 @@ export default class App extends Component {
     );
   }
 
-  updateData (data) {
-    // TODO: save
-    console.log('data changed', data);
+  handleChange (data) {
+    debug('handleChange', data);
+    this.setState({data});
+    // TODO: save changes to database
   }
+
 }
