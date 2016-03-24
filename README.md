@@ -2,25 +2,41 @@
 
 An interactive business intelligence tool (edited by GP)
 
+
 ## Usage
 
 ```bash
-npm install
+$ npm install
 ```
 
 Start the development server with hot reloading:
 
 ```bash
-npm start
+$ npm start
 ```
 
 Or start the server at a custom port:
 
 ```bash
-PORT=5000 npm start
+$ PORT=5000 npm start
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+
+## Test
+
+To run the tests, first install dependencies once:
+
+```bash
+$ npm install
+```
+
+Then run the tests:
+
+```bash
+$ npm test
+```
 
 
 ## Deploy

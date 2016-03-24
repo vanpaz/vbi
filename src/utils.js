@@ -23,7 +23,7 @@ export function getCategories (items) {
 export function getPeriods(items) {
   let periods = flatMap(items, item => {
     let pricePeriods = item.prices.map(price => price.period);
-    let quantityPeriods = item.quantities.map(quantity => quantity.period);
+    let quantityPeriods = Object.keys(item.quantities);
 
     return pricePeriods.concat(quantityPeriods).filter(period => period != undefined)
   });
@@ -38,35 +38,41 @@ export function getPeriods(items) {
  * @return {{period: string, quantity: number}} Returns an object with quantity 0 if not found
  */
 export function findQuantity (item, period) {
-  let entry = item.quantities && item.quantities.find(quantity => quantity.period == period);
-
-  return entry || {period, quantity: 0};
+  return item.quantities[period]
+      ? item.quantities[period]
+      : '0';
 }
 
 /**
  * Calculate actual prices for all periods configured for a single item.
  * @param item
  * @param {Array.<string>} periods
- * @return {Array.<{period: string, price: number}>}
+ * @return {Object.<string, number>} Returns an object with periods as key
+ *                                   and prices as value
  */
 export function calculatePrices (item, periods) {
   let initialPrice = parseFloat(item.prices[0].price);
   let change = 1 + parseFloat(item.prices[0].change) / 100;
 
-  return periods.map((period, periodIndex) => {
+  return periods.reduce((prices, period, periodIndex) => {
     let quantity = findQuantity(item, period);
 
-    return {
-      period,
-      price: initialPrice * quantity.quantity * Math.pow(change, periodIndex)
-    };
-  });
+    // TODO: handle the different structures for pricing
+    if (item.prices[0].price && item.prices[0].change) {
+      prices[period] = initialPrice * quantity * Math.pow(change, periodIndex);
+    }
+    else {
+      prices[period] = 0;
+    }
+
+    return prices;
+  }, {});
 }
 
 /**
  * Calculate totals per category
  * @param items
- * @return {Array.<{category: string, totals: Array.<number>}>}
+ * @return {Array.<{category: string, totals: Object.<string, number>}>}
  */
 export function calculateCategoryTotals (items) {
   let categories = getCategories(items);
@@ -76,7 +82,7 @@ export function calculateCategoryTotals (items) {
     let totals = items
         .filter(item => item.category === category)
         .map(item => calculatePrices(item, periods))
-        .reduce((a, b) => unzipWith([a, b], addTotals));
+        .reduce(addTotals);
 
     return {category, totals};
   });
@@ -84,22 +90,23 @@ export function calculateCategoryTotals (items) {
 
 /**
  * Calculate totals
- * @param {Array.<{category: string, totals: Array.<number>}>} categories
- * @return {Array.<{period: string, price: number}>}
+ * @param {Array.<{category: string, totals: totals: Object.<string, number>}>} categories
+ * @return {Object.<string, number>}
  */
 export function calculateTotals (categories) {
-  return categories.reduce((a, b) => unzipWith([a.totals, b.totals], addTotals));
+  return categories.reduce((a, b) => addTotals(a.totals, b.totals));
 }
 
 /**
  *
- * @param {{period: string, price: number}} a
- * @param {{period: string, price: number}} b
- * @return {{period: string, price: number}}
+ * @param {Object.<string, number>} a  Object with periods as key and prices as value
+ * @param {Object.<string, number>} b  Object with periods as key and prices as value
+ * @return {Object.<string, number>} Returns an object with periods as key and prices as value
  */
 export function addTotals (a, b) {
-  return {
-    period: a.period,
-    price: a.price + b.price
-  };
+  let c = {};
+
+  Object.keys(a).forEach(period => c[period] = a[period] + b[period]);
+
+  return c;
 }

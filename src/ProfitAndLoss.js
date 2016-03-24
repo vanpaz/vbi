@@ -43,8 +43,8 @@ export default class ProfitAndLoss extends Component {
         categoryTotals.map(entry => <tr key={entry.category}>
           <td className="read-only">{entry.category}</td>
           {
-            entry.totals.map(t => {
-              return <td key={t.period} className="read-only">{t.price.toFixed()}</td>
+            Object.keys(entry.totals).map(period => {
+              return <td key={period} className="read-only">{entry.totals[period].toFixed()}</td>
             })
           }
         </tr>)
@@ -52,7 +52,7 @@ export default class ProfitAndLoss extends Component {
       <tr>
         <td className="read-only total">total</td>
         {
-          totals.map(entry => <td key={entry.period} className="read-only total">{entry.price.toFixed()}</td>)
+          Object.keys(totals).map(period => <td key={period} className="read-only total">{totals[period].toFixed()}</td>)
         }
       </tr>
       </tbody>

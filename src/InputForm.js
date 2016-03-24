@@ -89,12 +89,10 @@ export default class InputForm extends Component {
               <td className="read-only">{item.name}</td>
               {
                 periods.map(period => (<td key={period} className="quantity">
-                  <input value={findQuantity(item, period).quantity}
+                  <input value={findQuantity(item, period)}
                          onChange={(event) => {
-                           this.updateQuantity(section, category, item.name, {
-                             period,
-                             quantity: event.target.value
-                           });
+                           let quantity = event.target.value;
+                           this.updateQuantity(section, category, item.name, period, quantity);
                          }}
                          onFocus={(event) => event.target.select()} />
                 </td>))
@@ -154,16 +152,17 @@ export default class InputForm extends Component {
    * @param {string} section
    * @param {string} name
    * @param {string} category
-   * @param {{period: string, quantity: string}} entry
+   * @param {string} period
+   * @param {string} quantity
    */
-  updateQuantity (section, category, name, entry) {
-    debug('updateQuantity', section, category, name, entry);
+  updateQuantity (section, category, name, period, quantity) {
+    debug('updateQuantity', section, category, name, period, quantity);
 
     let data = cloneDeep(this.props.data);
     let item = data[section].find(item => item.category === category && item.name === name);
     if (item) {
-      // replace the quantity with the right period
-      item.quantities = item.quantities.map(e => (e.period === entry.period) ? entry : e);
+      // replace the quantity with the new value
+      item.quantities[period] = quantity;
     }
     else {
       // TODO: handle adding a new item

@@ -10,12 +10,12 @@
       "prices": [
         {"price": "37k euro/year", "change": "+3%"}
       ],
-      "quantities": [
-        {"period": "2015", "quantity": "0"},
-        {"period": "2016", "quantity": "1"},
-        {"period": "2017", "quantity": "1"},
-        {"period": "2018", "quantity": "1"}
-      ]
+      "quantities": {
+        "2015": "0",
+        "2016": "1",
+        "2017": "1",
+        "2018": "1"
+      }
     },
     {
       "name": "OM",
@@ -23,12 +23,12 @@
       "prices": [
         {"price": "35k euro/year", "change": "+3%"}
       ],
-      "quantities": [
-        {"period": "2015", "quantity": "0"},
-        {"period": "2016", "quantity": "0"},
-        {"period": "2017", "quantity": "0"},
-        {"period": "2018", "quantity": "1"}
-      ]
+      "quantities": {
+        "2015": "0",
+        "2016": "0",
+        "2017": "0",
+        "2018": "1"
+      }
     },
     {
       "name": "DEV",
@@ -36,12 +36,12 @@
       "prices": [
         {"price": "28k euro/year", "change": "+3%"}
       ],
-      "quantities": [
-        {"period": "2015", "quantity": "0"},
-        {"period": "2016", "quantity": "5"},
-        {"period": "2017", "quantity": "6"},
-        {"period": "2018", "quantity": "8"}
-      ]
+      "quantities": {
+        "2015": "0",
+        "2016": "5",
+        "2017": "6",
+        "2018": "8"
+      }
     },
     {
       "name": "BD & Sales",
@@ -49,12 +49,12 @@
       "prices": [
         {"price": "30k euro/year", "change": "+3%"}
       ],
-      "quantities": [
-        {"period": "2015", "quantity": "0"},
-        {"period": "2016", "quantity": "2"},
-        {"period": "2017", "quantity": "3"},
-        {"period": "2018", "quantity": "5"}
-      ]
+      "quantities": {
+        "2015": "0",
+        "2016": "2",
+        "2017": "3",
+        "2018": "5"
+      }
     },
     {
       "name": "Support",
@@ -62,12 +62,12 @@
       "prices": [
         {"price": "26k euro/year", "change": "+3%"}
       ],
-      "quantities": [
-        {"period": "2015", "quantity": "0"},
-        {"period": "2016", "quantity": "1"},
-        {"period": "2017", "quantity": "2"},
-        {"period": "2018", "quantity": "4"}
-      ]
+      "quantities": {
+        "2015": "0",
+        "2016": "1",
+        "2017": "2",
+        "2018": "4"
+      }
     },
     {
       "name": "HR/FIN",
@@ -75,12 +75,12 @@
       "prices": [
         {"price": "30k euro/year", "change": "+3%"}
       ],
-      "quantities": [
-        {"period": "2015", "quantity": "0"},
-        {"period": "2016", "quantity": "1"},
-        {"period": "2017", "quantity": "1"},
-        {"period": "2018", "quantity": "1"}
-      ]
+      "quantities": {
+        "2015": "0",
+        "2016": "1",
+        "2017": "1",
+        "2018": "1"
+      }
     },
     {
       "name": "Office Manager",
@@ -88,12 +88,12 @@
       "prices": [
         {"price": "26k euro/year", "change": "+3%"}
       ],
-      "quantities": [
-        {"period": "2015", "quantity": "0"},
-        {"period": "2016", "quantity": "0"},
-        {"period": "2017", "quantity": "1"},
-        {"period": "2018", "quantity": "1"}
-      ]
+      "quantities": {
+        "2015": "0",
+        "2016": "0",
+        "2017": "1",
+        "2018": "1"
+      }
     },
     {
       "name": "Marketing & communication",
@@ -101,12 +101,12 @@
       "prices": [
         {"price": "26k euro/year", "change": "+3%"}
       ],
-      "quantities": [
-        {"period": "2015", "quantity": "0"},
-        {"period": "2016", "quantity": "0"},
-        {"period": "2017", "quantity": "1"},
-        {"period": "2018", "quantity": "1"}
-      ]
+      "quantities": {
+        "2015": "0",
+        "2016": "0",
+        "2017": "1",
+        "2018": "1"
+      }
     },
     {
       "name": "IT support",
@@ -114,12 +114,12 @@
       "prices": [
         {"price": "26k euro/year", "change": "+3%"}
       ],
-      "quantities": [
-        {"period": "2015", "quantity": "0"},
-        {"period": "2016", "quantity": "0"},
-        {"period": "2017", "quantity": "0"},
-        {"period": "2018", "quantity": "1"}
-      ]
+      "quantities": {
+        "2015": "0",
+        "2016": "0",
+        "2017": "0",
+        "2018": "1"
+      }
     },
 
     {
@@ -128,12 +128,12 @@
       "prices": [
         {"price": "5% * revenue"}
       ],
-      "quantities": [
-        {"period": "2015", "quantity": "1"},
-        {"period": "2016", "quantity": "1"},
-        {"period": "2017", "quantity": "1"},
-        {"period": "2018", "quantity": "1"}
-      ]
+      "quantities": {
+        "2015": "1",
+        "2016": "1",
+        "2017": "1",
+        "2018": "1"
+      }
     }
   ],
 
@@ -144,11 +144,11 @@
       "prices": [
         {"price": "8 euro/year", "change": "+3%"}
       ],
-      "quantities": [
-        {"period": "2016", "quantity": "3"},
-        {"period": "2017", "quantity": "6"},
-        {"period": "2018", "quantity": "11"}
-      ]
+      "quantities": {
+        "2016": "3",
+        "2017": "6",
+        "2018": "11"
+      }
     },
     {
       "name": "security",
@@ -156,11 +156,11 @@
       "prices": [
         {"price": "10 euro/year", "change": "+3%"}
       ],
-      "quantities": [
-        {"period": "2016", "quantity": "0"},
-        {"period": "2017", "quantity": "2"},
-        {"period": "2018", "quantity": "5"}
-      ]
+      "quantities": {
+        "2016": "0",
+        "2017": "2",
+        "2018": "5"
+      }
     },
     {
       "name": "legal",
@@ -168,11 +168,11 @@
       "prices": [
         {"price": "9 euro/year", "change": "+3%"}
       ],
-      "quantities": [
-        {"period": "2016", "quantity": "0"},
-        {"period": "2017", "quantity": "2"},
-        {"period": "2018", "quantity": "6"}
-      ]
+      "quantities": {
+        "2016": "0",
+        "2017": "2",
+        "2018": "6"
+      }
     },
     {
       "name": "health",
@@ -180,11 +180,11 @@
       "prices": [
         {"price": "6 euro/year", "change": "+3%"}
       ],
-      "quantities": [
-        {"period": "2016", "quantity": "0"},
-        {"period": "2017", "quantity": "5"},
-        {"period": "2018", "quantity": "10"}
-      ]
+      "quantities": {
+        "2016": "0",
+        "2017": "5",
+        "2018": "10"
+      }
     },
 
     {
@@ -193,11 +193,11 @@
       "prices": [
         {"price": "60 euro/year", "change": "+5%"}
       ],
-      "quantities": [
-        {"period": "2016", "quantity": "1"},
-        {"period": "2017", "quantity": "2"},
-        {"period": "2018", "quantity": "4"}
-      ]
+      "quantities": {
+        "2016": "1",
+        "2017": "2",
+        "2018": "4"
+      }
     },
     {
       "name": "security",
@@ -205,11 +205,11 @@
       "prices": [
         {"price": "60 euro/year", "change": "+5%"}
       ],
-      "quantities": [
-        {"period": "2016", "quantity": "1"},
-        {"period": "2017", "quantity": "2"},
-        {"period": "2018", "quantity": "2"}
-      ]
+      "quantities": {
+        "2016": "1",
+        "2017": "2",
+        "2018": "2"
+      }
     },
     {
       "name": "legal",
@@ -217,11 +217,11 @@
       "prices": [
         {"price": "60 euro/year", "change": "+5%"}
       ],
-      "quantities": [
-        {"period": "2016", "quantity": "1"},
-        {"period": "2017", "quantity": "2"},
-        {"period": "2018", "quantity": "2"}
-      ]
+      "quantities": {
+        "2016": "1",
+        "2017": "2",
+        "2018": "2"
+      }
     },
     {
       "name": "health",
@@ -229,11 +229,11 @@
       "prices": [
         {"price": "60 euro/year", "change": "+5%"}
       ],
-      "quantities": [
-        {"period": "2016", "quantity": "0"},
-        {"period": "2017", "quantity": "1"},
-        {"period": "2018", "quantity": "2"}
-      ]
+      "quantities": {
+        "2016": "0",
+        "2017": "1",
+        "2018": "2"
+      }
     }
 
   ]
