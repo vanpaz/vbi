@@ -1,6 +1,6 @@
 # VBI
 
-An interactive business intelligence tool (edited by GP)
+An interactive business intelligence tool
 
 
 ## Usage
