@@ -15,11 +15,11 @@ export default class ProfitAndLoss extends Component {
       <CardTitle title="Profit and Loss" subtitle="Calculate profit and loss based on provided costs and revenues" />
       <CardText>
 
-        <h1>revenues</h1>
-        {ProfitAndLoss.renderTotals(this.props.data.revenues)}
-
         <h1>costs</h1>
         {ProfitAndLoss.renderTotals(this.props.data.costs)}
+
+        <h1>revenues</h1>
+        {ProfitAndLoss.renderTotals(this.props.data.revenues)}
 
       </CardText>
     </Card>;

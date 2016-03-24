@@ -47,7 +47,7 @@ export function findQuantity (item, period) {
  * Calculate actual prices for all periods configured for a single item.
  * @param item
  * @param {Array.<string>} periods
- * @return {{period: string, price: number}}
+ * @return {Array.<{period: string, price: number}>}
  */
 export function calculatePrices (item, periods) {
   let initialPrice = parseFloat(item.prices[0].price);
@@ -66,7 +66,7 @@ export function calculatePrices (item, periods) {
 /**
  * Calculate totals per category
  * @param items
- * @return {{category: string, totals: Array.<number>}}
+ * @return {Array.<{category: string, totals: Array.<number>}>}
  */
 export function calculateCategoryTotals (items) {
   let categories = getCategories(items);

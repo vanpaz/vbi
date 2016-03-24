@@ -96,8 +96,9 @@ td input {
   padding: 5px;
 }
 
+td input:hover,
 td input:focus {
-  box-shadow: 0 0 5px 2px dodgerblue;
+  box-shadow: 0 0 3px 1px dodgerblue;
   outline: none;
 }
 

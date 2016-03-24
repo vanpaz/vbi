@@ -7,7 +7,7 @@ import Card from 'material-ui/lib/card/card';
 import CardTitle from 'material-ui/lib/card/card-title';
 import CardText from 'material-ui/lib/card/card-text';
 
-const debug = debugFactory('vbi:inputform');
+const debug = debugFactory('vbi:input-form');
 
 export default class InputForm extends Component {
   render () {
