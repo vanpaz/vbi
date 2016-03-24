@@ -5,7 +5,7 @@ import Card from 'material-ui/lib/card/card';
 import CardTitle from 'material-ui/lib/card/card-title';
 import CardText from 'material-ui/lib/card/card-text';
 
-import { getPeriods, calculateCategoryTotals } from './utils';
+import { getPeriods, calculateCategoryTotals, calculateTotals } from './utils';
 
 const debug = debugFactory('vbi:profit-loss');
 
@@ -27,8 +27,10 @@ export default class ProfitAndLoss extends Component {
 
   static renderTotals (items) {
     let periods = getPeriods(items);
-    let totals = calculateCategoryTotals(items);
+    let categoryTotals = calculateCategoryTotals(items);
+    let totals = calculateTotals(categoryTotals);
 
+    debug ('categoryTotals', categoryTotals);
     debug ('totals', totals);
 
     return <table>
@@ -38,7 +40,7 @@ export default class ProfitAndLoss extends Component {
         {periods.map(period => <th key={period}>{period}</th>)}
       </tr>
       {
-        totals.map(entry => <tr key={entry.category}>
+        categoryTotals.map(entry => <tr key={entry.category}>
           <td className="read-only">{entry.category}</td>
           {
             entry.totals.map(t => {
@@ -49,7 +51,9 @@ export default class ProfitAndLoss extends Component {
       }
       <tr>
         <td className="read-only total">total</td>
-        {periods.map(period => <td key={period} className="read-only total">...</td>)}
+        {
+          totals.map(entry => <td key={entry.period} className="read-only total">{entry.price.toFixed()}</td>)
+        }
       </tr>
       </tbody>
     </table>

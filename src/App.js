@@ -44,9 +44,8 @@ export default class App extends Component {
     return (
       <div>
         <AppBar
-            style={{position: 'fixed', top: 0, left: 0, zIndex: 999, background: 'darkorange'}}
-            title="VanPaz Business Intelligence"
-        />
+            style={{position: 'fixed', top: 0, left: 0, zIndex: 999, background: '#f3742c'}}
+            title="VanPaz Business Intelligence" />
 
         <LeftNav docked={false}
                  width={200}
