@@ -7,7 +7,8 @@
     "dev-server": "node dev-server.js",
     "test": "ava --verbose",
     "lint": "eslint src",
-    "build": "webpack"
+    "build": "webpack",
+    "deploy": "npm run build; git add dist; git commit -m 'Deploy to heroku'; git push heroku master"
   },
   "keywords": [
     "process",
