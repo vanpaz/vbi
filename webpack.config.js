@@ -1,26 +1,33 @@
 var path = require('path');
 var webpack = require('webpack');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-  devtool: 'eval',
   entry: [
-    'webpack-dev-server/client?http://localhost:3000',
-    'webpack/hot/only-dev-server',
-    './src/index'
+    './src/client/index'
   ],
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: 'bundle.js',
-    publicPath: '/static/'
+    filename: 'app.js',
+    publicPath: '/dist/'
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false
+      }
+    }),
+    new CopyWebpackPlugin([
+      { from: 'src/client/app.css' },
+      { from: 'src/client/favicon.ico' },
+      { from: 'src/client/index.html' }
+    ])
   ],
   module: {
     loaders: [
       {
         test: /\.js$/,
-        loaders: ['react-hot', 'babel'],
+        loaders: ['babel'],
         include: path.join(__dirname, 'src')
       },
       {

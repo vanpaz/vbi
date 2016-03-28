@@ -1,6 +1,6 @@
 import test from 'ava';
 
-import * as utils from '../src/utils';
+import * as utils from '../src/client/components/utils';
 
 import { readFileSync } from 'fs';
 

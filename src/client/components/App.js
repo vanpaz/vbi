@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import debugFactory from 'debug/browser';
+import debugFactory from '../../../node_modules/debug/browser';
 
-import AppBar from 'material-ui/lib/app-bar';
-import LeftNav from 'material-ui/lib/left-nav';
-import MenuItem from 'material-ui/lib/menus/menu-item';
+import AppBar from '../../../node_modules/material-ui/lib/app-bar';
+import LeftNav from '../../../node_modules/material-ui/lib/left-nav';
+import MenuItem from '../../../node_modules/material-ui/lib/menus/menu-item';
 
 import InputForm from './InputForm';
 import ProfitAndLoss from './ProfitAndLoss';
@@ -26,7 +26,7 @@ if (typeof window !== 'undefined') {
 }
 
 // TODO: read data from localStorage and in the end from a database
-var data = require('../data/example_company.json');
+var data = require('../../../data/example_company.json');
 
 debug('data', data);
 

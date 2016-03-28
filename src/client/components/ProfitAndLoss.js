@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import debugFactory from 'debug/browser';
+import debugFactory from '../../../node_modules/debug/browser';
 
-import Card from 'material-ui/lib/card/card';
-import CardTitle from 'material-ui/lib/card/card-title';
-import CardText from 'material-ui/lib/card/card-text';
+import Card from '../../../node_modules/material-ui/lib/card/card';
+import CardTitle from '../../../node_modules/material-ui/lib/card/card-title';
+import CardText from '../../../node_modules/material-ui/lib/card/card-text';
 
 import { getPeriods, calculateCategoryTotals, calculateTotals, clearIfZero } from './utils';
 

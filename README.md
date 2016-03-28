@@ -3,7 +3,9 @@
 An interactive business intelligence tool
 
 
-## Usage
+## Develop
+
+First install the projects dependencies once:
 
 ```bash
 $ npm install
@@ -12,16 +14,11 @@ $ npm install
 Start the development server with hot reloading:
 
 ```bash
-$ npm start
-```
-
-Or start the server at a custom port:
-
-```bash
-$ PORT=5000 npm start
+$ npm run dev-server
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
+
 
 
 ## Test
@@ -38,8 +35,19 @@ Then run the tests:
 $ npm test
 ```
 
+To run a sanity check of the code:
+
+```
+npm run lint
+```
+
+
 
 ## Deploy
+
+### Create a heroku application
+
+First install the [heroku toolbelt](https://toolbelt.heroku.com/).
 
 To deploy to heroku, first set a git remote to your heroku application:
 
@@ -47,11 +55,37 @@ To deploy to heroku, first set a git remote to your heroku application:
 $ heroku git:remote -a vanpaz-business-intelligence
 ```
 
-Then force Heroku to install all devDependencies, as it has to built the server application on startup:
 
+### Build
+
+To generate a bundle with the client side code:
+
+```bash
+$ npm run build
 ```
-$ heroku config:set NPM_CONFIG_PRODUCTION=false
+
+This generates files in the folder `./dist`.
+
+
+### Run server
+
+To start the production server locally:
+
+```bash
+$ npm start
 ```
+
+Then open [http://localhost:3000](http://localhost:3000) in your browser.
+
+The production server can be started with a custom port number:
+
+```bash
+$ PORT=3001 npm start
+```
+
+
+
+### Deploy to Heroku
 
 To deploy:
 
@@ -59,14 +93,12 @@ To deploy:
 $ git push heroku master
 ```
 
+To see the logs of heroku, run:
 
-## Linting
-
-This boilerplate project includes React-friendly ESLint configuration.
-
+```bash
+$ heroku logs --tail
 ```
-npm run lint
-```
+
 
 ## License
 
