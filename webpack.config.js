@@ -2,6 +2,8 @@ var path = require('path');
 var webpack = require('webpack');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
+var version = require('./package.json').version;
+
 module.exports = {
   entry: [
     './src/client/index'
@@ -21,7 +23,16 @@ module.exports = {
       { from: 'src/client/app.css' },
       { from: 'src/client/favicon.ico' },
       { from: 'src/client/index.html' }
-    ])
+    ]),
+    new webpack.BannerPlugin(
+        '/**\n' +
+        ' * VanPaz business intelligence\n' +
+        ' * version: ' + version  + '\n' +
+        ' * Date: ' + new Date().toISOString() + '\n' +
+        ' */', {
+      entryOnly: true,
+      raw: true
+    })
   ],
   module: {
     loaders: [

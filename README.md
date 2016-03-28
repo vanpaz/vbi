@@ -87,11 +87,13 @@ $ PORT=3001 npm start
 
 ### Deploy to Heroku
 
-To deploy:
+To deploy, run the following script:
 
 ```bash
-$ git push heroku master
+$ npm run deploy
 ```
+
+This will run the build script to generate the files under `./dist`, commit the changes to git, and push the project to Heroku.
 
 To see the logs of heroku, run:
 
