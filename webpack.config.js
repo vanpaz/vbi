@@ -27,7 +27,7 @@ module.exports = {
     new webpack.BannerPlugin(
         '/**\n' +
         ' * VanPaz business intelligence\n' +
-        ' * version: ' + version  + '\n' +
+        ' * Version: ' + version  + '\n' +
         ' * Date: ' + new Date().toISOString() + '\n' +
         ' */', {
       entryOnly: true,
