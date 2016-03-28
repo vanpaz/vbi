@@ -22,7 +22,8 @@ module.exports = {
     new CopyWebpackPlugin([
       { from: 'src/client/app.css' },
       { from: 'src/client/favicon.ico' },
-      { from: 'src/client/index.html' }
+      { from: 'src/client/index.html' },
+      { from: 'src/client/images', to: 'images' }
     ]),
     new webpack.BannerPlugin(
         '/**\n' +
