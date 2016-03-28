@@ -8,7 +8,7 @@
     "test": "ava --verbose",
     "lint": "eslint src",
     "build": "webpack",
-    "deploy": "npm run build; git add dist; git commit -m 'Deploy to heroku'; git push heroku master"
+    "deploy": "npm run build; git add dist; git commit -m 'Build and deploy'; git push heroku master"
   },
   "keywords": [
     "process",
