@@ -2,7 +2,8 @@ var path = require('path');
 var webpack = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
 
-var PORT = process.env.PORT || 3000;
+var PORT = process.env.PORT || 8081;
+var BACKEND_SERVER_URL = process.env.BACKEND_SERVER  || 'http://localhost:8080';
 
 var CONFIG = {
   devtool: 'eval',
@@ -34,13 +35,19 @@ var CONFIG = {
 };
 
 
-
 new WebpackDevServer(webpack(CONFIG), {
   contentBase: './src/client',
   publicPath: '',
 
   hot: true,
   historyApiFallback: true,
+
+  proxy: {
+    '/api/*': {
+      target: BACKEND_SERVER_URL,
+      secure: false
+    }
+  },
 
   stats: { colors: true }
 }).listen(PORT, function (err, result) {

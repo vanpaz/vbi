@@ -11,15 +11,25 @@ First install the projects dependencies once:
 $ npm install
 ```
 
-Start the development server with hot reloading:
+Start the backend server and pass configuration:
 
-```bash
-$ npm run dev-server
+```
+$ PORT=8080 SERVER_URL=http://localhost:8081 COUCH_DB=### GOOGLE_CLIENT_ID=### GOOGLE_CLIENT_SECRET=### FACEBOOK_APP_ID=### FACEBOOK_APP_SECRET=### DEBUG=vbi* node server
 ```
 
-Open [http://localhost:8080](http://localhost:8080) in your browser.
+The backend server will listen on port 8080 by default. The front-end development server has a proxy to the REST API of the backend server.
 
+> IMPORTANT: For development, the `SERVER_URL` should point to the url of the front-end development server to allow redirects to the front-end server after logging in. In production (deployed on Heroku), it should point to the public url of the server.
 
+Start the (front-end) development server with hot reloading:
+
+```bash
+$ PORT=8081 BACKEND_SERVER_URL=http://localhost:8080 node dev-server
+```
+
+Open [http://localhost:8081](http://localhost:8081) in your browser.
+
+> TIP: put all configuration to start the servers in two bash scripts, in order not to have to repeat entering all values every time again. Be careful though, don't commit this script to the public (!) github project, as it contains sensitive information.
 
 ## Test
 
@@ -122,19 +132,13 @@ This generates files in the folder `./dist`.
 
 ### Run server
 
-To start the production server locally:
+To start the production server locally, specify config variables on the command line and run `node server`:
 
 ```bash
-$ npm start
+$ PORT=8080 SERVER_URL=http://localhost:8080 COUCH_DB=### GOOGLE_CLIENT_ID=### GOOGLE_CLIENT_SECRET=### FACEBOOK_APP_ID=### FACEBOOK_APP_SECRET=### DEBUG=vbi* node server
 ```
 
 Then open [http://localhost:8080](http://localhost:8080) in your browser.
-
-The production server can be started with a custom port number:
-
-```bash
-$ PORT=3001 npm start
-```
 
 
 
