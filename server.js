@@ -171,6 +171,7 @@ app.get('/api/v1/auth/google/callback',
       req.session.userId = 'google:' + email; // create user id as a compound key 'provider:id'
       req.session.user = {
         provider: 'google',
+        id: req.session.userId,
         displayName: req.user.displayName,
         email: email,
         photo: req.user.photos[0].value
@@ -196,6 +197,7 @@ app.get('/api/v1/auth/facebook/callback',
       req.session.userId = 'facebook:' + req.user.id; // create user id as a compound key 'provider:id'
       req.session.user = {
         provider: 'facebook',
+        id: req.session.userId,
         displayName: req.user.displayName,
         email: null,
         photo: `https://graph.facebook.com/v2.1/${req.user.id}/picture`

@@ -90,16 +90,13 @@ export default class App extends Component {
     if (this.state.user && this.state.user.provider) {
       let source = this.state.user.email || this.state.user.provider;
       let title = `Logged in as ${this.state.user.displayName} (${source})`;
+      let buttonContents = <div title={title} >
+        <span style={{color: '#FFFFFF', marginRight: 10}}>Sign out</span>
+        <Avatar src={this.state.user.photo} style={{verticalAlign: 'bottom'}} />
+      </div>;
 
       return <span>
-          <FlatButton 
-              children={[
-                <div title={title} >
-                  <span style={{color: '#FFFFFF', marginRight: 10}}>Sign out</span>
-                  <Avatar src={this.state.user.photo} style={{verticalAlign: 'bottom'}} />
-                </div>
-              ]}
-              onClick={() => this.signOut()} />
+        <FlatButton children={ buttonContents } onClick={() => this.signOut()} />
       </span>;
     }
     else {
