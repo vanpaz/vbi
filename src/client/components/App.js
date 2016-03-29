@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
-import debugFactory from '../../../node_modules/debug/browser';
+import debugFactory from 'debug/browser';
 
-import AppBar from '../../../node_modules/material-ui/lib/app-bar';
-import LeftNav from '../../../node_modules/material-ui/lib/left-nav';
-import MenuItem from '../../../node_modules/material-ui/lib/menus/menu-item';
+import Avatar from 'material-ui/lib/avatar';
+import AppBar from 'material-ui/lib/app-bar';
+import Dialog from 'material-ui/lib/dialog';
+import FlatButton from 'material-ui/lib/flat-button';
+import RaisedButton from 'material-ui/lib/raised-button';
+import LeftNav from 'material-ui/lib/left-nav';
+import MenuItem from 'material-ui/lib/menus/menu-item';
+
 
 import InputForm from './InputForm';
 import ProfitAndLoss from './ProfitAndLoss';
@@ -36,7 +41,9 @@ export default class App extends Component {
     super(props);
 
     this.state = {
+      user: {},
       showLeftNav: false,
+      showSignInDialog: false,
       data
     };
   }
@@ -46,15 +53,20 @@ export default class App extends Component {
       <div>
         <AppBar
             style={{position: 'fixed', top: 0, left: 0, zIndex: 999, background: '#f3742c'}}
-            title="VanPaz Business Intelligence" />
+            title="VanPaz Business Intelligence"
+            iconElementRight={ this.renderUser() } />
 
         <LeftNav docked={false}
                  width={200}
                  open={this.state.showLeftNav}
-                 onRequestChange={showLeftNav => this.setState({showLeftNav})} >
+                 onRequestChange={event => this.setState({showLeftNav: true})} >
           <MenuItem>Menu Item</MenuItem>
           <MenuItem>Menu Item 2</MenuItem>
+
+
         </LeftNav>
+
+        {this.renderSignInDialog() }
 
         <div>
           <div className="container input-form">
@@ -73,10 +85,101 @@ export default class App extends Component {
     );
   }
 
+  // render "login" or "logged in as"
+  renderUser () {
+    if (this.state.user && this.state.user.provider) {
+      let source = this.state.user.email || this.state.user.provider;
+      let title = `Logged in as ${this.state.user.displayName} (${source})`;
+
+      return <span>
+          <FlatButton 
+              children={[
+                <div title={title} >
+                  <span style={{color: '#FFFFFF', marginRight: 10}}>Sign out</span>
+                  <Avatar src={this.state.user.photo} style={{verticalAlign: 'bottom'}} />
+                </div>
+              ]}
+              onClick={() => this.signOut()} />
+      </span>;
+    }
+    else {
+      return <FlatButton label="Sign in" onClick={(event) => this.setState({showSignInDialog: true})} />
+    }
+  }
+
+  renderSignInDialog () {
+    const signInActions = [
+      <FlatButton
+          label="Cancel"
+          onTouchTap={ (event) => this.setState({showSignInDialog: false}) }
+      />
+    ];
+
+    return <Dialog
+        title="Sign in"
+        actions={signInActions}
+        modal={false}
+        open={this.state.showSignInDialog}
+        onRequestClose={ (event) => this.setState({showSignInDialog: false}) } >
+      <p>
+        Sign in with your Google or Facebook account:
+      </p>
+
+      <div>
+        <RaisedButton
+            label="Google"
+            linkButton={true}
+            href="/api/v1/auth/google/signin"
+            backgroundColor='#E9573F'
+            labelColor="#FFFFFF"
+            style={{width: 200, margin: 10}} />
+      </div>
+      <div>
+        <RaisedButton
+            label="Facebook"
+            linkButton={true}
+            href="/api/v1/auth/facebook/signin"
+            backgroundColor="#3c80d9"
+            labelColor="#FFFFFF"
+            style={{width: 200, margin: 10}} />
+      </div>
+    </Dialog>
+  }
+
+  componentDidMount () {
+    this.getUser();
+  }
+
   handleChange (data) {
     debug('handleChange', data);
     this.setState({data});
     // TODO: save changes to database
+  }
+
+  signOut () {
+    window.open('/api/v1/auth/signout', '_self');
+  }
+
+  /**
+   * Get the users profile
+   * @return {Promise.<Object, Error>} Resolves with the retrieved user profile
+   */
+  getUser () {
+    debug('Fetching user profile...');
+    return fetch('/api/v1/auth/user', { credentials: 'include' }).then((response) => {
+      if (response.status < 200 || response.status >= 300) {
+        debug('Error fetching user profile', response.status, response);
+        return;
+      }
+
+      // Examine the text in the response
+      return response.json().then((user) => {
+        debug('Retrieved user profile:', user);
+        this.setState({user});
+
+        return user;
+      });
+    });
   }
 
 }
