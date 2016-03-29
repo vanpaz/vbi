@@ -184,7 +184,8 @@ export default class App extends Component {
         actions={signInActions}
         modal={false}
         open={this.state.showSignInDialog}
-        onRequestClose={ (event) => this.setState({showSignInDialog: false}) } >
+        onRequestClose={ (event) => this.setState({showSignInDialog: false}) }
+        contentStyle={{maxWidth: 500}} >
       <p>
         Sign in with your Google or Facebook account:
       </p>
