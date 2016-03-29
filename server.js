@@ -427,7 +427,7 @@ function init_db () {
     // create a view listing all documents of current user
     var view = {
       "_id": "_design/users",
-      "_rev": "4-fd201cea723f5384c460aeeedf6c35b4",
+      // "_rev": "4-fd201cea723f5384c460aeeedf6c35b4",
       "views": {
         "docs": {
           "map": "function (doc) {\n  if (doc.auth) {\n    for (var userId in doc.auth) {\n      if (doc.auth[userId] != undefined) {\n        emit(userId, {_id: doc._id, _rev: doc._rev, title: doc.title, updated: doc.updated});\n      }\n    }\n  }\n}"

@@ -1,20 +1,16 @@
 import React, { Component } from 'react';
+import { cloneDeep } from 'lodash';
 import debugFactory from 'debug/browser';
 
 import Avatar from 'material-ui/lib/avatar';
 import AppBar from 'material-ui/lib/app-bar';
 import Dialog from 'material-ui/lib/dialog';
 import FlatButton from 'material-ui/lib/flat-button';
-import RaisedButton from 'material-ui/lib/raised-button';
 import IconButton from 'material-ui/lib/icon-button';
 import LeftNav from 'material-ui/lib/left-nav';
-import MenuItem from 'material-ui/lib/menus/menu-item';
 import NavigationMenuIcon from 'material-ui/lib/svg-icons/navigation/menu';
 import List from 'material-ui/lib/lists/list';
 import ListItem from 'material-ui/lib/lists/list-item';
-import ActionGrade from 'material-ui/lib/svg-icons/action/grade';
-import ContentInbox from 'material-ui/lib/svg-icons/content/inbox';
-import ContentDrafts from 'material-ui/lib/svg-icons/content/drafts';
 import ContentOpen from 'material-ui/lib/svg-icons/file/folder-open';
 import ContentSave from 'material-ui/lib/svg-icons/content/save';
 import ContentCreate from 'material-ui/lib/svg-icons/content/add';
@@ -22,6 +18,7 @@ import ContentClear from 'material-ui/lib/svg-icons/content/clear';
 
 import InputForm from './InputForm';
 import ProfitAndLoss from './ProfitAndLoss';
+import { getUser, listDocs, getDoc, createDoc, updateDoc, deleteDoc } from './RESTClient';
 
 const debug = debugFactory('vbi:app');
 
@@ -49,9 +46,9 @@ if (typeof window !== 'undefined') {
 }
 
 // TODO: read data from localStorage and in the end from a database
-var data = require('../../../data/example_company.json');
+var exampleDoc = require('../../../data/example_company.json');
 
-debug('data', data);
+debug('exampleDoc', exampleDoc);
 
 
 export default class App extends Component {
@@ -62,7 +59,8 @@ export default class App extends Component {
       user: {},
       showLeftNav: false,
       showSignInDialog: false,
-      data
+      doc: exampleDoc,   // The current doc
+      docs: []           // list with all docs of the user
     };
   }
 
@@ -75,11 +73,11 @@ export default class App extends Component {
 
         <div>
           <div className="container input-form">
-            <InputForm data={this.state.data} onChange={data => this.handleChangeData(data)} />
+            <InputForm data={this.state.doc.data} onChange={data => this.handleChangeData(data)} />
           </div>
 
           <div className="container profit-and-loss">
-            <ProfitAndLoss data={this.state.data} />
+            <ProfitAndLoss data={this.state.doc.data} />
           </div>
         </div>
 
@@ -91,9 +89,13 @@ export default class App extends Component {
   }
 
   renderAppBar () {
+    let title = this.state.doc && this.state.doc.title
+        ? `VanPaz Business Intelligence [${this.state.doc.title}]`
+        : `VanPaz Business Intelligence`;
+
     return <AppBar
         style={APP_BAR_STYLE}
-        title="VanPaz Business Intelligence"
+        title={title}
         iconElementLeft={
               <IconButton onTouchTap={(event) => this.handleToggleLeftNav() }>
                 <NavigationMenuIcon />
@@ -102,6 +104,21 @@ export default class App extends Component {
   }
 
   renderLefNav () {
+    let docsList = this.state.docs.map(doc => {
+      return <ListItem
+          key={doc._id}
+          primaryText={doc.title || doc._id}
+          rightIcon={
+                  <ContentClear onTouchTap={(event) => {
+                    event.stopPropagation();
+                    deleteDoc(doc._id, doc._rev)
+                      .then(() => this.listDocs());
+                  }} />
+                }
+          onTouchTap={(event) => this.openDoc(doc._id) }
+      />;
+    });
+
     return <LeftNav docked={false}
              open={this.state.showLeftNav}
              onRequestChange={(show) => this.setState({showLeftNav: show}) } >
@@ -114,39 +131,26 @@ export default class App extends Component {
                   } />
 
       <List subheader="Manage scenarios">
-        <ListItem primaryText="Create" leftIcon={<ContentCreate />} />
+        <ListItem
+            primaryText="Create"
+            leftIcon={<ContentCreate />}
+            onTouchTap={(event) => alert('Sorry, not yet implemented...') } />
         <ListItem
             primaryText="Open"
             leftIcon={<ContentOpen />}
             initiallyOpen={true}
             primaryTogglesNestedList={true}
-            nestedItems={[
-              <ListItem
-                key={1}
-                primaryText="Scenario A"
-                rightIcon={
-                  <ContentClear onTouchTap={(event) => {
-                    event.stopPropagation();
-                    debug('Delete Scenario A')
-                  }} />
-                }
-                onTouchTap={(event) => debug('Open Scenario A') } // TODO: open files
-              />,
-              <ListItem
-                key={2}
-                primaryText="Scenario B"
-                rightIcon={
-                  <ContentClear onTouchTap={(event) => {
-                    event.stopPropagation();
-                    debug('Delete Scenario B')
-                  }} />
-                }
-                onTouchTap={(event) => debug('Open Scenario B') } // TODO: open files
-              />
-            ]}
-        />
-        <ListItem primaryText="Save" leftIcon={<ContentSave />} />
-        <ListItem primaryText="Save as..." leftIcon={<ContentSave />} />
+            nestedItems={docsList} />
+        <ListItem
+            primaryText="Save"
+            leftIcon={<ContentSave />}
+            onTouchTap={(event) => {
+              this.saveDoc().then(() => this.listDocs())
+            }} />
+        <ListItem
+            primaryText="Save as..."
+            leftIcon={<ContentSave />}
+            onTouchTap={(event) => alert('Sorry, not yet implemented...') } />
       </List>
 
     </LeftNav>
@@ -204,7 +208,48 @@ export default class App extends Component {
   }
 
   componentDidMount () {
-    this.getUser();
+    getUser().then(user => this.setState({user}));
+
+    this.listDocs();
+  }
+
+  listDocs () {
+    listDocs().then(response => {
+      this.setState({
+        docs: response.rows.map(row => row.value)
+      });
+    });
+  }
+  
+  openDoc (id) {
+    getDoc(id).then(doc => {
+      this.setState({
+        doc,
+        showLeftNav: false
+      });
+    })
+  }
+
+  saveDoc () {
+    debug ('saving document...');
+    let promise = this.state.doc._id
+      ? updateDoc(this.state.doc)
+      : createDoc(this.state.doc);
+
+    return promise.then(response => {
+      let updatedDoc = cloneDeep(this.state.doc);
+      updatedDoc._id = response.id;
+      updatedDoc._rev = response.rev;
+
+      debug ('document saved', updatedDoc);
+
+      this.setState({
+        doc: updatedDoc,
+        showLeftNav: false
+      });
+
+      return updatedDoc;
+    });
   }
 
   handleToggleLeftNav () {
@@ -215,34 +260,16 @@ export default class App extends Component {
 
   handleChangeData (data) {
     debug('handleChangeData', data);
-    this.setState({data});
+
+    let updatedDoc = cloneDeep(this.state.doc);
+    updatedDoc.data = data;
+
+    this.setState({ doc: updatedDoc });
     // TODO: save changes to database
   }
 
   handleSignOut () {
     window.open('/api/v1/auth/signout', '_self');
-  }
-
-  /**
-   * Get the users profile
-   * @return {Promise.<Object, Error>} Resolves with the retrieved user profile
-   */
-  getUser () {
-    debug('Fetching user profile...');
-    return fetch('/api/v1/auth/user', { credentials: 'include' }).then((response) => {
-      if (response.status < 200 || response.status >= 300) {
-        debug('Error fetching user profile', response.status, response);
-        return;
-      }
-
-      // Examine the text in the response
-      return response.json().then((user) => {
-        debug('Retrieved user profile:', user);
-        this.setState({user});
-
-        return user;
-      });
-    });
   }
 
 }
