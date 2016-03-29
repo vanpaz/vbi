@@ -5,31 +5,35 @@ An interactive business intelligence tool
 
 ## Develop
 
-First install the projects dependencies once:
+For development, we will start two servers: the backend server serving a REST API to authentication and load/save documents in a database, and a front-end server which does do hot reloading of the front-end whilst working on the front-end code.
 
-```bash
-$ npm install
-```
+- First install the projects dependencies once:
 
-Start the backend server and pass configuration:
+  ```bash
+  $ npm install
+  ```
 
-```
-$ PORT=8080 SERVER_URL=http://localhost:8081 COUCH_DB=### GOOGLE_CLIENT_ID=### GOOGLE_CLIENT_SECRET=### FACEBOOK_APP_ID=### FACEBOOK_APP_SECRET=### DEBUG=vbi* node server
-```
+- Start the backend server and pass configuration:
 
-The backend server will listen on port 8080 by default. The front-end development server has a proxy to the REST API of the backend server.
+  ```
+  $ PORT=8080 SERVER_URL=http://localhost:8081 COUCH_DB=### GOOGLE_CLIENT_ID=### GOOGLE_CLIENT_SECRET=### FACEBOOK_APP_ID=### FACEBOOK_APP_SECRET=### DEBUG=vbi* node server
+  ```
 
-> IMPORTANT: For development, the `SERVER_URL` should point to the url of the front-end development server to allow redirects to the front-end server after logging in. In production (deployed on Heroku), it should point to the public url of the server.
+  The backend server will listen on port 8080 by default. The front-end development server has a proxy to the REST API of the backend server.
 
-Start the (front-end) development server with hot reloading:
+  > IMPORTANT: For development, the `SERVER_URL` should point to the url of the front-end development server to allow redirects to the front-end server after logging in. In production (deployed on Heroku), it should point to the public url of the server.
 
-```bash
-$ PORT=8081 BACKEND_SERVER_URL=http://localhost:8080 node dev-server
-```
+  > TIP: put all configuration in a bash script, in order not to have to enter all values every time again. Be careful though, don't commit this script to the public (!) github project, as it contains sensitive information.
 
-Open [http://localhost:8081](http://localhost:8081) in your browser.
+- Start the front-end server with hot reloading. This server is purely for development.
 
-> TIP: put all configuration to start the servers in two bash scripts, in order not to have to repeat entering all values every time again. Be careful though, don't commit this script to the public (!) github project, as it contains sensitive information.
+  ```bash
+  $ PORT=8081 BACKEND_SERVER_URL=http://localhost:8080 node dev-server
+  ```
+
+- Open [http://localhost:8081](http://localhost:8081) in your browser.
+
+
 
 ## Test
 
@@ -132,7 +136,7 @@ This generates files in the folder `./dist`.
 
 ### Run server
 
-To start the production server locally, specify config variables on the command line and run `node server`:
+To start the backend server locally, specify config variables on the command line and run `node server`:
 
 ```bash
 $ PORT=8080 SERVER_URL=http://localhost:8080 COUCH_DB=### GOOGLE_CLIENT_ID=### GOOGLE_CLIENT_SECRET=### FACEBOOK_APP_ID=### FACEBOOK_APP_SECRET=### DEBUG=vbi* node server

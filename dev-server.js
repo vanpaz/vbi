@@ -55,5 +55,6 @@ new WebpackDevServer(webpack(CONFIG), {
     return console.log(err);
   }
 
-  console.log('Listening at http://localhost:' + PORT + '/');
+  console.log('Front-end development server listening at http://localhost:' + PORT + '/');
+  console.log('Proxy to backend server: ' + BACKEND_SERVER_URL + '/api/*');
 });
