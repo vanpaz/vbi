@@ -119,18 +119,19 @@ td.price {
   /*color: dodgerblue;*/
 }
 
-a.signin-google,
-a.signin-facebook {
+a.sign-in {
   display: inline-block;
   margin: 10px;
-  padding: 10px;
+  opacity: 0.9;
 }
 
-a.signin-google {
-  color: white;
-  background-color: #E9573F;
+a.sign-in img {
+  height: 64px;
 }
 
+a.sign-in:hover {
+  opacity: 1;
+}
 
 div.footer {
   background: #6d6d6d;

@@ -6,14 +6,32 @@ import AppBar from 'material-ui/lib/app-bar';
 import Dialog from 'material-ui/lib/dialog';
 import FlatButton from 'material-ui/lib/flat-button';
 import RaisedButton from 'material-ui/lib/raised-button';
+import IconButton from 'material-ui/lib/icon-button';
 import LeftNav from 'material-ui/lib/left-nav';
 import MenuItem from 'material-ui/lib/menus/menu-item';
-
+import NavigationMenuIcon from 'material-ui/lib/svg-icons/navigation/menu';
+import List from 'material-ui/lib/lists/list';
+import ListItem from 'material-ui/lib/lists/list-item';
+import ActionGrade from 'material-ui/lib/svg-icons/action/grade';
+import ContentInbox from 'material-ui/lib/svg-icons/content/inbox';
+import ContentDrafts from 'material-ui/lib/svg-icons/content/drafts';
+import ContentOpen from 'material-ui/lib/svg-icons/file/folder-open';
+import ContentSave from 'material-ui/lib/svg-icons/content/save';
+import ContentCreate from 'material-ui/lib/svg-icons/content/add';
+import ContentClear from 'material-ui/lib/svg-icons/content/clear';
 
 import InputForm from './InputForm';
 import ProfitAndLoss from './ProfitAndLoss';
 
 const debug = debugFactory('vbi:app');
+
+const APP_BAR_STYLE = {
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  zIndex: 999,
+  background: '#f3742c'
+};
 
 // Road map:
 // - create two panels: left panel for input, right panel for profit & loss
@@ -51,26 +69,13 @@ export default class App extends Component {
   render() {
     return (
       <div>
-        <AppBar
-            style={{position: 'fixed', top: 0, left: 0, zIndex: 999, background: '#f3742c'}}
-            title="VanPaz Business Intelligence"
-            iconElementRight={ this.renderUser() } />
-
-        <LeftNav docked={false}
-                 width={200}
-                 open={this.state.showLeftNav}
-                 onRequestChange={event => this.setState({showLeftNav: true})} >
-          <MenuItem>Menu Item</MenuItem>
-          <MenuItem>Menu Item 2</MenuItem>
-
-
-        </LeftNav>
-
-        {this.renderSignInDialog() }
+        { this.renderAppBar() }
+        { this.renderLefNav() }
+        { this.renderSignInDialog() }
 
         <div>
           <div className="container input-form">
-            <InputForm data={this.state.data} onChange={data => this.handleChange(data)} />
+            <InputForm data={this.state.data} onChange={data => this.handleChangeData(data)} />
           </div>
 
           <div className="container profit-and-loss">
@@ -85,6 +90,68 @@ export default class App extends Component {
     );
   }
 
+  renderAppBar () {
+    return <AppBar
+        style={APP_BAR_STYLE}
+        title="VanPaz Business Intelligence"
+        iconElementLeft={
+              <IconButton onTouchTap={(event) => this.handleToggleLeftNav() }>
+                <NavigationMenuIcon />
+              </IconButton> }
+        iconElementRight={ this.renderUser() } />
+  }
+
+  renderLefNav () {
+    return <LeftNav docked={false}
+             open={this.state.showLeftNav}
+             onRequestChange={(show) => this.setState({showLeftNav: show}) } >
+      <AppBar title="Menu"
+              style={{background: APP_BAR_STYLE.background}}
+              iconElementLeft={
+                    <IconButton onTouchTap={(event) => this.handleToggleLeftNav() }>
+                      <NavigationMenuIcon />
+                    </IconButton>
+                  } />
+
+      <List subheader="Manage scenarios">
+        <ListItem primaryText="Create" leftIcon={<ContentCreate />} />
+        <ListItem
+            primaryText="Open"
+            leftIcon={<ContentOpen />}
+            initiallyOpen={true}
+            primaryTogglesNestedList={true}
+            nestedItems={[
+              <ListItem
+                key={1}
+                primaryText="Scenario A"
+                rightIcon={
+                  <ContentClear onTouchTap={(event) => {
+                    event.stopPropagation();
+                    debug('Delete Scenario A')
+                  }} />
+                }
+                onTouchTap={(event) => debug('Open Scenario A') } // TODO: open files
+              />,
+              <ListItem
+                key={2}
+                primaryText="Scenario B"
+                rightIcon={
+                  <ContentClear onTouchTap={(event) => {
+                    event.stopPropagation();
+                    debug('Delete Scenario B')
+                  }} />
+                }
+                onTouchTap={(event) => debug('Open Scenario B') } // TODO: open files
+              />
+            ]}
+        />
+        <ListItem primaryText="Save" leftIcon={<ContentSave />} />
+        <ListItem primaryText="Save as..." leftIcon={<ContentSave />} />
+      </List>
+
+    </LeftNav>
+  }
+
   // render "login" or "logged in as"
   renderUser () {
     if (this.state.user && this.state.user.provider) {
@@ -96,11 +163,11 @@ export default class App extends Component {
       </div>;
 
       return <span>
-        <FlatButton children={ buttonContents } onClick={() => this.signOut()} />
+        <FlatButton children={ buttonContents } onTouchTap={() => this.handleSignOut()} />
       </span>;
     }
     else {
-      return <FlatButton label="Sign in" onClick={(event) => this.setState({showSignInDialog: true})} />
+      return <FlatButton label="Sign in" onTouchTap={(event) => this.setState({showSignInDialog: true})} />
     }
   }
 
@@ -108,7 +175,7 @@ export default class App extends Component {
     const signInActions = [
       <FlatButton
           label="Cancel"
-          onTouchTap={ (event) => this.setState({showSignInDialog: false}) }
+          onTouchTap={ (event) => this.setState({ showSignInDialog: false}) }
       />
     ];
 
@@ -123,22 +190,14 @@ export default class App extends Component {
       </p>
 
       <div>
-        <RaisedButton
-            label="Google"
-            linkButton={true}
-            href="/api/v1/auth/google/signin"
-            backgroundColor='#E9573F'
-            labelColor="#FFFFFF"
-            style={{width: 200, margin: 10}} />
+        <a href="/api/v1/auth/google/signin" className="sign-in" >
+          <img src="images/sign_in_google.png" />
+        </a>
       </div>
       <div>
-        <RaisedButton
-            label="Facebook"
-            linkButton={true}
-            href="/api/v1/auth/facebook/signin"
-            backgroundColor="#3c80d9"
-            labelColor="#FFFFFF"
-            style={{width: 200, margin: 10}} />
+        <a href="/api/v1/auth/facebook/signin" className="sign-in" >
+          <img src="images/sign_in_facebook.png" />
+        </a>
       </div>
     </Dialog>
   }
@@ -147,13 +206,19 @@ export default class App extends Component {
     this.getUser();
   }
 
-  handleChange (data) {
-    debug('handleChange', data);
+  handleToggleLeftNav () {
+    this.setState({
+      showLeftNav: !this.state.showLeftNav
+    })
+  }
+
+  handleChangeData (data) {
+    debug('handleChangeData', data);
     this.setState({data});
     // TODO: save changes to database
   }
 
-  signOut () {
+  handleSignOut () {
     window.open('/api/v1/auth/signout', '_self');
   }
 
