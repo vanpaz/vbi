@@ -7,15 +7,13 @@ const debug = debugFactory('vbi:scenario');
 
 const EXAMPLE_DOC = require('../../../data/example_company.json');
 
-// TODO: allow empty doc
-// const EMPTY_DOC = {
-//   title: 'New Scenario',
-//   data: {
-//     costs: [],
-//     revenues: []
-//   }
-// };
-const EMPTY_DOC = EXAMPLE_DOC;
+const EMPTY_DOC = {
+  title: 'New Scenario',
+  data: {
+    costs: [],
+    revenues: []
+  }
+};
 
 /**
  * Manage a scenario.
@@ -29,7 +27,7 @@ export default class Scenario {
     Emitter(this);
 
     this.dirty = false;
-    this.doc = EMPTY_DOC;
+    this.doc = EXAMPLE_DOC;
 
     let id = hash.get('id');
     if (id) {
@@ -62,6 +60,8 @@ export default class Scenario {
     if (this.dirty) {
       return Promise.reject(new Error('Cannot create new document, current document has unsaved changes'));
     }
+
+    debug('create new document');
 
     this._set(EMPTY_DOC);
   }

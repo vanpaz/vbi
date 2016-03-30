@@ -109,12 +109,8 @@ export default class App extends Component {
       docs: [],                   // list with all docs of the user
 
       notification: null,
-      notificationDuration: null,
-      msgOpening: null,
-      msgOpened: null,
-      msgSaving: null,
-      msgSaved: null,
-      msgError: null
+      notificationClosable: false,
+      notificationDuration: null
     };
   }
 
@@ -190,9 +186,15 @@ export default class App extends Component {
 
       <List subheader="Manage scenarios">
         <ListItem
-            primaryText="Create"
+            primaryText="New"
             leftIcon={<ContentCreate />}
-            onTouchTap={(event) => alert('Sorry, not yet implemented...') } />
+            onTouchTap={(event) => {
+              this.scenario.createNew();
+              this.setState({
+                doc: this.scenario.get(),
+                showLeftNav: false
+              });
+            }} />
         <ListItem
             primaryText="Open"
             leftIcon={<ContentOpen />}
@@ -276,7 +278,7 @@ export default class App extends Component {
     return <div>
       <Snackbar
           open={this.state.notification != null}
-          message={this.state.notification}
+          message={this.state.notification || ''}
           autoHideDuration={this.state.notificationDuration}
           onRequestClose={onRequestClose}
           bodyStyle={isError ? {background: '#E9573F'} : null}

@@ -1,4 +1,4 @@
-import { uniq, flatMap, unzipWith } from 'lodash';
+import { uniq, flatMap, unzipWith, clone } from 'lodash';
 
 /**
  * Extract all unique categories defined in the items. The returned categories
@@ -94,6 +94,14 @@ export function calculateCategoryTotals (items) {
  * @return {Object.<string, number>}
  */
 export function calculateTotals (categories) {
+  if (categories.length == 0) {
+    return {};
+  }
+
+  if (categories.length == 1) {
+    return clone(categories[0].totals);
+  }
+
   return categories.reduce((a, b) => addTotals(a.totals, b.totals));
 }
 
