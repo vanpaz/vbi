@@ -1,5 +1,8 @@
 import debugFactory from 'debug/browser';
 
+// load HTML5 fetch polyfill
+require('isomorphic-fetch');
+
 const debug = debugFactory('vbi:rest');
 
 export const BASE_URL = '/api/v1';
