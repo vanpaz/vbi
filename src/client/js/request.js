@@ -4,44 +4,18 @@ const debug = debugFactory('vbi:rest');
 
 export const BASE_URL = '/api/v1';
 
-export function listDocs () {
-  return fetchIt('GET', BASE_URL + '/docs');
-}
-
-export function getDoc (id) {
-  return fetchIt('GET', BASE_URL + '/docs/' + id);
-}
-
-export function createDoc (doc) {
-  return fetchIt('POST', BASE_URL + '/docs', doc);
-}
-
-export function updateDoc (doc) {
-  return fetchIt('PUT', BASE_URL + '/docs/' + doc._id, doc);
-}
-
-export function deleteDoc (id, rev) {
-  return fetchIt('DELETE', BASE_URL + '/docs/' + id + '/' + rev);
-}
-
 /**
- * Get the users profile
- * @return {Promise.<Object, Error>} Resolves with the retrieved user profile, or with an empty object when not logged in
- */
-export function getUser () {
-  return fetchIt('GET', BASE_URL + '/auth/user');
-}
-
-/**
- * Fetch a url
+ * Fetch a url, where request and response bodies are always JSON.
+ * All url's are prepended by the configured BASE_URL
  * @param {string} method    A string 'GET', 'POST', etc
  * @param {string} url
- * @param {Object} [body]   JSON object
+ * @param {Object} [body=undefined]   JSON object
  * @return {Promise.<Object, Error>}
  */
-export function fetchIt (method, url, body) {
+export function request (method, url, body) {
   debug('fetch', method, url, body);
-  return fetch(url, {
+
+  return fetch(BASE_URL + url, {
     method: method,
     headers: body
         ? new Headers({

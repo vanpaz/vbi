@@ -246,7 +246,7 @@ app.get('/api/v1/auth/signout', function(req, res) {
 /**
  * Get currently logged in user profile (if any)
  */
-app.get('/api/v1/auth/user', function (req, res) {
+app.get('/api/v1/user', function (req, res) {
   var profile;
   if (req.session && req.session.user) {
     profile = req.session.user;
@@ -427,10 +427,10 @@ function init_db () {
     // create a view listing all documents of current user
     var view = {
       "_id": "_design/users",
-      // "_rev": "4-fd201cea723f5384c460aeeedf6c35b4",
+      "_rev": "1-80752753bca4affbaad0789d9e8963c1",
       "views": {
         "docs": {
-          "map": "function (doc) {\n  if (doc.auth) {\n    for (var userId in doc.auth) {\n      if (doc.auth[userId] != undefined) {\n        emit(userId, {_id: doc._id, _rev: doc._rev, title: doc.title, updated: doc.updated});\n      }\n    }\n  }\n}"
+          "map": "function (doc) {\n  if (doc.auth) {\n    for (var userId in doc.auth) {\n      if (doc.auth[userId] != undefined) {\n        emit(userId, {id: doc._id, rev: doc._rev, title: doc.title, updated: doc.updated});\n      }\n    }\n  }\n}"
         }
       }
     };

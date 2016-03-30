@@ -16,9 +16,10 @@ import ContentSave from 'material-ui/lib/svg-icons/content/save';
 import ContentCreate from 'material-ui/lib/svg-icons/content/add';
 import ContentClear from 'material-ui/lib/svg-icons/content/clear';
 
+import Scenario from './Scenario';
 import InputForm from './InputForm';
 import ProfitAndLoss from './ProfitAndLoss';
-import { getUser, listDocs, getDoc, createDoc, updateDoc, deleteDoc } from './RESTClient';
+import { request } from './request';
 
 const debug = debugFactory('vbi:app');
 
@@ -55,11 +56,14 @@ export default class App extends Component {
   constructor (props) {
     super(props);
 
+    this.scenario = new Scenario();
+    this.scenario.on('change', (doc) => this.setState({doc}));
+
     this.state = {
       user: {},
       showLeftNav: false,
       showSignInDialog: false,
-      doc: exampleDoc,   // The current doc
+      doc: this.scenario.get(),   // The current doc
       docs: []           // list with all docs of the user
     };
   }
@@ -73,7 +77,7 @@ export default class App extends Component {
 
         <div>
           <div className="container input-form">
-            <InputForm data={this.state.doc.data} onChange={data => this.handleChangeData(data)} />
+            <InputForm data={this.state.doc.data} onChange={data => this.handleChange(data)} />
           </div>
 
           <div className="container profit-and-loss">
@@ -106,16 +110,16 @@ export default class App extends Component {
   renderLefNav () {
     let docsList = this.state.docs.map(doc => {
       return <ListItem
-          key={doc._id}
-          primaryText={doc.title || doc._id}
+          key={doc.id}
+          primaryText={doc.title || doc.id}
           rightIcon={
                   <ContentClear onTouchTap={(event) => {
                     event.stopPropagation();
-                    deleteDoc(doc._id, doc._rev)
+                    Scenario.del(doc.id, doc.rev)
                       .then(() => this.listDocs());
                   }} />
                 }
-          onTouchTap={(event) => this.openDoc(doc._id) }
+          onTouchTap={(event) => this.handleOpen(doc.id) }
       />;
     });
 
@@ -144,9 +148,7 @@ export default class App extends Component {
         <ListItem
             primaryText="Save"
             leftIcon={<ContentSave />}
-            onTouchTap={(event) => {
-              this.saveDoc().then(() => this.listDocs())
-            }} />
+            onTouchTap={(event) => this.handleSave() } />
         <ListItem
             primaryText="Save as..."
             leftIcon={<ContentSave />}
@@ -156,7 +158,7 @@ export default class App extends Component {
     </LeftNav>
   }
 
-  // render "login" or "logged in as"
+  // render "sign in" or "signed in as"
   renderUser () {
     if (this.state.user && this.state.user.provider) {
       let source = this.state.user.email || this.state.user.provider;
@@ -208,21 +210,19 @@ export default class App extends Component {
   }
 
   componentDidMount () {
-    getUser().then(user => this.setState({user}));
+    this.fetchUser().then(user => this.setState({user}));
 
     this.listDocs();
   }
 
   listDocs () {
-    listDocs().then(response => {
-      this.setState({
-        docs: response.rows.map(row => row.value)
-      });
-    });
+    Scenario.list().then(docs => this.setState({docs}));
   }
   
-  openDoc (id) {
-    getDoc(id).then(doc => {
+  handleOpen (id) {
+    debug('handleOpen', id);
+
+    this.scenario.open(id).then(doc => {
       this.setState({
         doc,
         showLeftNav: false
@@ -230,26 +230,15 @@ export default class App extends Component {
     })
   }
 
-  saveDoc () {
-    debug ('saving document...');
-    let promise = this.state.doc._id
-      ? updateDoc(this.state.doc)
-      : createDoc(this.state.doc);
+  handleSave () {
+    debug('handleSave');
 
-    return promise.then(response => {
-      let updatedDoc = cloneDeep(this.state.doc);
-      updatedDoc._id = response.id;
-      updatedDoc._rev = response.rev;
-
-      debug ('document saved', updatedDoc);
-
+    this.scenario.save().then((doc) => {
       this.setState({
-        doc: updatedDoc,
-        showLeftNav: false
+        doc, showLeftNav: false
       });
-
-      return updatedDoc;
-    });
+      this.listDocs();
+    })
   }
 
   handleToggleLeftNav () {
@@ -258,11 +247,13 @@ export default class App extends Component {
     })
   }
 
-  handleChangeData (data) {
-    debug('handleChangeData', data);
+  handleChange (data) {
+    debug('handleChange', data);
 
     let updatedDoc = cloneDeep(this.state.doc);
     updatedDoc.data = data;
+
+    this.scenario.set(updatedDoc);
 
     this.setState({ doc: updatedDoc });
     // TODO: save changes to database
@@ -272,4 +263,8 @@ export default class App extends Component {
     window.open('/api/v1/auth/signout', '_self');
   }
 
+  fetchUser () {
+    return request('GET', '/user');
+  }
 }
+
