@@ -389,9 +389,6 @@ app.put('/api/v1/docs/:id', function (req, res) {
  * Delete a document
  */
 app.delete('/api/v1/docs/:id/:rev', function (req, res) {
-
-  // TODO: authorize for deleting this doc
-
   // first, get the current document, so we can authorize this delete
   db.get(req.params.id, function (err, doc) {
     if (err) {

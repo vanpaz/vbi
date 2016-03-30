@@ -80,7 +80,7 @@ export let hash = {
           hash._prevHash = hash;
           checkForChanges();
         }
-      }, 500);
+      }, 1000);
     }
   },
 

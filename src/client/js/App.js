@@ -5,6 +5,7 @@ import debugFactory from 'debug/browser';
 import Avatar from 'material-ui/lib/avatar';
 import AppBar from 'material-ui/lib/app-bar';
 import Dialog from 'material-ui/lib/dialog';
+import Snackbar from 'material-ui/lib/snackbar';
 import FlatButton from 'material-ui/lib/flat-button';
 import IconButton from 'material-ui/lib/icon-button';
 import LeftNav from 'material-ui/lib/left-nav';
@@ -46,11 +47,6 @@ if (typeof window !== 'undefined') {
   window.debug = debugFactory;
 }
 
-// TODO: read data from localStorage and in the end from a database
-var exampleDoc = require('../../../data/example_company.json');
-
-debug('exampleDoc', exampleDoc);
-
 
 export default class App extends Component {
   constructor (props) {
@@ -58,13 +54,67 @@ export default class App extends Component {
 
     this.scenario = new Scenario();
     this.scenario.on('change', (doc) => this.setState({doc}));
+    this.scenario.on('opening', (params) => {
+      if (params.type === 'start') {
+        this.setState({
+          notification: `Opening ${params.title || params.id}`,
+          notificationClosable: false,
+          notificationDuration: null
+        })
+      }
+      if (params.type === 'end') {
+        this.setState({
+          notification: `Opened ${params.title || params.id}`,
+          notificationClosable: true,
+          notificationDuration: 4000
+        })
+      }
+      if (params.type === 'error') {
+        this.setState({
+          notification: params.error.toString(),
+          notificationClosable: true,
+          notificationDuration: null
+        })
+      }
+    });
+    this.scenario.on('saving', (params) => {
+      if (params.type === 'start') {
+        this.setState({
+          notification: `Saving ${params.title || params.id}`,
+          notificationClosable: false,
+          notificationDuration: null
+        })
+      }
+      if (params.type === 'end') {
+        this.setState({
+          notification: `Saved ${params.title || params.id}`,
+          notificationClosable: true,
+          notificationDuration: 4000
+        })
+      }
+      if (params.type === 'error') {
+        this.setState({
+          notification: params.error.toString(),
+          notificationClosable: true,
+          notificationDuration: null
+        })
+      }
+    });
 
     this.state = {
       user: {},
       showLeftNav: false,
       showSignInDialog: false,
       doc: this.scenario.get(),   // The current doc
-      docs: []           // list with all docs of the user
+      docs: [],                   // list with all docs of the user
+
+      notification: null,
+      notificationDuration: null,
+      msgOpening: null,
+      msgOpened: null,
+      msgSaving: null,
+      msgSaved: null,
+      msgError: null
     };
   }
 
@@ -74,6 +124,7 @@ export default class App extends Component {
         { this.renderAppBar() }
         { this.renderLefNav() }
         { this.renderSignInDialog() }
+        { this.renderNotification() }
 
         <div>
           <div className="container input-form">
@@ -119,7 +170,10 @@ export default class App extends Component {
                       .then(() => this.listDocs());
                   }} />
                 }
-          onTouchTap={(event) => this.handleOpen(doc.id) }
+          onTouchTap={(event) => {
+            this.setState({showLeftNav: false});
+            this.handleOpen(doc.id)
+          }}
       />;
     });
 
@@ -148,7 +202,10 @@ export default class App extends Component {
         <ListItem
             primaryText="Save"
             leftIcon={<ContentSave />}
-            onTouchTap={(event) => this.handleSave() } />
+            onTouchTap={(event) => {
+              this.setState({showLeftNav: false});
+              this.handleSave()
+            }} />
         <ListItem
             primaryText="Save as..."
             leftIcon={<ContentSave />}
@@ -209,6 +266,24 @@ export default class App extends Component {
     </Dialog>
   }
 
+  renderNotification () {
+    let onRequestClose = this.state.notificationClosable
+        ? () => {this.setState({notification: null})}
+        : () => {};  // just ignore request to close
+
+    let isError = this.state.notification && (this.state.notification.indexOf('Error:') !== -1);
+
+    return <div>
+      <Snackbar
+          open={this.state.notification != null}
+          message={this.state.notification}
+          autoHideDuration={this.state.notificationDuration}
+          onRequestClose={onRequestClose}
+          bodyStyle={isError ? {background: '#E9573F'} : null}
+      />
+    </div>;
+  }
+
   componentDidMount () {
     this.fetchUser().then(user => this.setState({user}));
 
@@ -222,23 +297,30 @@ export default class App extends Component {
   handleOpen (id) {
     debug('handleOpen', id);
 
-    this.scenario.open(id).then(doc => {
-      this.setState({
-        doc,
-        showLeftNav: false
-      });
-    })
+    this.scenario.open(id)
+        .then(doc => {
+          this.setState({ doc });
+        })
+        .catch((err) => {
+          this.setState({
+            errors: this.state.errors.concat(err)
+          })
+        });
   }
 
   handleSave () {
     debug('handleSave');
 
-    this.scenario.save().then((doc) => {
-      this.setState({
-        doc, showLeftNav: false
-      });
-      this.listDocs();
-    })
+    this.scenario.save()
+        .then((doc) => {
+          this.setState({ doc });
+          this.listDocs();
+        })
+        .catch((err) => {
+          this.setState({
+            errors: this.state.errors.concat(err)
+          })
+        });
   }
 
   handleToggleLeftNav () {
@@ -256,7 +338,6 @@ export default class App extends Component {
     this.scenario.set(updatedDoc);
 
     this.setState({ doc: updatedDoc });
-    // TODO: save changes to database
   }
 
   handleSignOut () {

@@ -25,6 +25,9 @@ const EMPTY_DOC = EXAMPLE_DOC;
  */
 export default class Scenario {
   constructor () {
+    // turn this class into an event emitter
+    Emitter(this);
+
     this.dirty = false;
     this.doc = EMPTY_DOC;
 
@@ -35,9 +38,6 @@ export default class Scenario {
 
     // listen for changes in the hash
     hash.onChange('id', (id) => this._handleChangedId(id));
-
-    // turn this class into an event emitter
-    Emitter(this);
   }
 
   _handleChangedId (id, oldId) {
@@ -110,39 +110,87 @@ export default class Scenario {
   save () {
     debug ('saving document...');
 
+    this.emit('saving', {
+      type: 'start',
+      title: this.doc.title,
+      id: this.doc._id
+    });
+
     let promise = this.doc._id
         ? request('PUT', `/docs/${this.doc._id}`, this.doc)   // update existing
         : request('POST', '/docs', this.doc);                 // create new
 
-    return promise.then(response => {
-      debug ('document saved', this.doc);
+    return promise
+        .then(response => {
+          debug ('document saved', this.doc);
 
-      this.doc._id = response.id;
-      this.doc._rev = response.rev;
-      this._set(this.doc);
+          this.doc._id = response.id;
+          this.doc._rev = response.rev;
+          this._set(this.doc);
 
-      return this.get();
-    });
+          this.emit('saving', {
+            type: 'end',
+            title: this.doc.title,
+            id: this.doc._id
+          });
+
+          return this.get();
+        })
+        .catch ((err) => {
+          this.emit('saving', {
+            type: 'error',
+            title: this.doc.title,
+            id: this.doc._id,
+            error: err
+          });
+
+          throw err; // rethrow
+        });
   }
 
   /**
    * Open a document by it's id
    * @param {string} id
+   * @param {string} [title]
    * @return {Promise.<Object, Error>}
    */
-  open (id) {
+  open (id, title) {
     debug ('open document', id);
+
+    this.emit('opening', {
+      type: 'start',
+      title,
+      id
+    });
 
     if (this.dirty) {
       return Promise.reject(new Error('Cannot open document, current document has unsaved changes'));
     }
 
-    return request('GET', `/docs/${id}`).then(doc => {
-      debug ('document opened', doc);
+    return request('GET', `/docs/${id}`)
+        .then(doc => {
+          debug ('document opened', doc);
 
-      this._set(doc);
-      return this.get();
-    })
+          this._set(doc);
+
+          this.emit('opening', {
+            type: 'end',
+            title: title || doc.title,
+            id
+          });
+
+          return this.get();
+        })
+        .catch((err) => {
+          this.emit('opening', {
+            type: 'error',
+            id,
+            title,
+            error: err
+          });
+
+          throw err; // rethrow
+        });
   }
 
   /**
