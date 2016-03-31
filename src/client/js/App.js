@@ -21,6 +21,7 @@ import Scenario from './Scenario';
 import InputForm from './InputForm';
 import ProfitAndLoss from './ProfitAndLoss';
 import { request } from './request';
+import { hash } from './hash';
 
 const debug = debugFactory('vbi:app');
 
@@ -101,6 +102,11 @@ export default class App extends Component {
       }
     });
 
+    // update the redirectTo url when the url changes
+    window.addEventListener('hashchange', () => this.setState({
+      redirectTo: encodeURIComponent(location.href)
+    }));
+
     this.state = {
       user: {},
       showLeftNav: false,
@@ -110,7 +116,9 @@ export default class App extends Component {
 
       notification: null,
       notificationClosable: false,
-      notificationDuration: null
+      notificationDuration: null,
+
+      redirectTo: encodeURIComponent(location.href)
     };
   }
 
@@ -256,12 +264,12 @@ export default class App extends Component {
       </p>
 
       <div>
-        <a href="/api/v1/auth/google/signin" className="sign-in" >
+        <a href={`/api/v1/auth/google/signin?redirectTo=${this.state.redirectTo || ''}`} className="sign-in" >
           <img src="images/sign_in_google.png" />
         </a>
       </div>
       <div>
-        <a href="/api/v1/auth/facebook/signin" className="sign-in" >
+        <a href={`/api/v1/auth/facebook/signin?redirectTo=${this.state.redirectTo || ''}`} className="sign-in" >
           <img src="images/sign_in_facebook.png" />
         </a>
       </div>
@@ -343,7 +351,7 @@ export default class App extends Component {
   }
 
   handleSignOut () {
-    window.open('/api/v1/auth/signout', '_self');
+    window.open(`/api/v1/auth/signout?redirectTo=${this.state.redirectTo || ''}`, '_self');
   }
 
   fetchUser () {
