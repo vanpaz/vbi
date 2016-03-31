@@ -560,7 +560,9 @@ export default class App extends Component {
     });
 
     // auto save after a delay
-    this.handleAutoSave();
+    if (doc._id) {
+      this.handleAutoSave();
+    }
   }
 
   fetchUser () {
