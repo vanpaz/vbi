@@ -176,6 +176,15 @@ export default class App extends Component {
       />;
     });
 
+    // show a "none" entry when there are no documents
+    if (docsList.length === 0) {
+      let none = <ListItem
+          key={'none'}
+          primaryText={<span style={{color: 'gray'}}>(no documents)</span>}
+      />;
+      docsList.push(none);
+    }
+
     // limit the number of displayed documents
     if (this.state.docsLimit) {
       if (docsList.length > MAX_DOCS) {
