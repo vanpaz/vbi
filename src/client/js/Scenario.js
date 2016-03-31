@@ -28,6 +28,8 @@ const EMPTY_DOC = {
  * - emit('change', doc)    Emitted when the document has been changed.
  *                          Not emitted when the document is changed via
  *                          the method scenario.set(doc).
+ * - emit('error', err)     Emitted when loading of a document on a changed
+ *                          url hash failed.
  * - emit('notification', {message: string, duration: number | null})
  *                          Emitted when saving, saved, deleting, deleted.
  *
@@ -56,7 +58,9 @@ export default class Scenario {
       if (this.dirty) {
         // TODO: what to do when there are changes?
       }
-      this.open(id).then(doc => this.emit('change', doc));
+      this.open(id)
+          .then(doc => this.emit('change', doc))
+          .catch(err => this.emit('error', err));
     }
     else {
       this._set(EMPTY_DOC);

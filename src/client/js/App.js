@@ -18,7 +18,6 @@ import ContentSave from 'material-ui/lib/svg-icons/content/save';
 import ContentCreate from 'material-ui/lib/svg-icons/content/add';
 import ContentClear from 'material-ui/lib/svg-icons/content/clear';
 
-
 import Scenario from './Scenario';
 import InputForm from './InputForm';
 import ProfitAndLoss from './ProfitAndLoss';
@@ -57,6 +56,7 @@ export default class App extends Component {
       debug('notification', notification);
       this.setState({notification});
     });
+    this.scenario.on('error', (err) => this.handleError(err));
 
     // update the redirectTo url when the url changes
     window.addEventListener('hashchange', () => this.setState({
@@ -396,7 +396,7 @@ export default class App extends Component {
     ];
 
     return <Dialog
-        title="Title"
+        title="Rename"
         actions={actions}
         modal={false}
         open={this.state.showTitleDialog}

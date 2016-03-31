@@ -162,6 +162,90 @@ To see the logs of heroku, run:
 $ heroku logs --tail
 ```
 
+## API
+
+### Rest API
+
+
+```
+# authentication
+GET /api/v1/auth/google/signin?redirectTo=url
+
+    Sign in with a Google account. Will redirect to a Google sign in page.
+    Redirect url is an optional query parameter.
+
+GET /api/v1/auth/facebook/signin?redirectTo=url
+
+    Sign in with a Google account. Will redirect to a Google sign in page.
+    Redirect url is an optional query parameter.
+
+GET /api/v1/auth/signout
+
+    Sign out from either Google or Facebook.
+
+# user
+GET /api/v1/user
+
+    Get the current user profile.
+    Returns an empty object when not logged in.
+
+# documents
+GET     /api/v1/docs           List all documents
+GET     /api/v1/docs/:id       Load a saved sheet
+POST    /api/v1/docs/:id       Save a new sheet
+PUT     /api/v1/docs/:id       Update an existing sheet
+DELETE  /api/v1/docs/:id/:rev  Delete a document
+```
+
+
+### Document formats
+
+A saved scenario has the following structure:
+
+```js
+{
+  "title": "",
+  "data": {
+    costs: {},
+    revenues: {}
+  },
+  "auth": {
+    "userId": "role",
+    "*": "role",   // anybody
+    // ...
+  },
+  "updated": "ISODate"
+}
+```
+
+The following roles are available:
+
+- `owner` Can read, write, delete, and manage authorized users.
+- `write` Can read and write.
+- `read` Can read only.
+
+A user profile is structured like follows:
+
+```js
+// Google account
+{
+  "provider": "google",
+  "id": "google:johndoe@gmail.com",
+  "displayName": "John Doe",
+  "email": "johndoe@gmail.com",
+  "photo": "http://some_url.png"
+}
+
+// Facebook account
+{
+  "provider": "facebook",
+  "id": "facebook:01234567890",
+  "displayName": "John Doe",
+  "email": null,
+  "photo": "http://some_url.png"
+}
+```
+
 
 ## License
 
