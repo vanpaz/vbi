@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, debounce } from 'lodash';
 import debugFactory from 'debug/browser';
 
 import Avatar from 'material-ui/lib/avatar';
@@ -27,6 +27,8 @@ const debug = debugFactory('vbi:app');
 
 const MAX_DOCS = 10;  // maximum number of visible docs in the left navigation menu
 
+const AUTO_SAVE_DELAY = 5000; // milliseconds
+
 const APP_BAR_STYLE = {
   position: 'fixed',
   top: 0,
@@ -51,12 +53,16 @@ export default class App extends Component {
     this.scenario = new Scenario();
     this.scenario.on('change', (doc) => {
       this.setState({doc, changed: false});
+      this.handleAutoSave.cancel();
     });
     this.scenario.on('notification', (notification) => {
       debug('notification', notification);
       this.setState({notification});
     });
     this.scenario.on('error', (err) => this.handleError(err));
+
+    this.handleSave = this.handleSave.bind(this);
+    this.handleAutoSave = debounce(this.handleSave, AUTO_SAVE_DELAY);
 
     // update the redirectTo url when the url changes
     window.addEventListener('hashchange', () => this.setState({
@@ -479,6 +485,8 @@ export default class App extends Component {
     debug('handleSave');
 
     if (this.isSignedIn()) {
+      this.handleAutoSave.cancel();
+
       this.scenario.save()
           .then((doc) => {
             this.setState({doc, changed: false});
@@ -542,6 +550,8 @@ export default class App extends Component {
       changed: true
     });
 
+    // auto save after a delay
+    this.handleAutoSave();
   }
 
   fetchUser () {
