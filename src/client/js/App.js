@@ -7,7 +7,6 @@ import AppBar from 'material-ui/lib/app-bar';
 import Dialog from 'material-ui/lib/dialog';
 import Snackbar from 'material-ui/lib/snackbar';
 import FlatButton from 'material-ui/lib/flat-button';
-import RaisedButton from 'material-ui/lib/raised-button';
 import IconButton from 'material-ui/lib/icon-button';
 import LeftNav from 'material-ui/lib/left-nav';
 import NavigationMenuIcon from 'material-ui/lib/svg-icons/navigation/menu';
@@ -25,6 +24,8 @@ import ProfitAndLoss from './ProfitAndLoss';
 import { request } from './request';
 
 const debug = debugFactory('vbi:app');
+
+const MAX_DOCS = 10;  // maximum number of visible docs in the left navigation menu
 
 const APP_BAR_STYLE = {
   position: 'fixed',
@@ -65,6 +66,7 @@ export default class App extends Component {
       user: {},
       doc: this.scenario.get(),   // The current doc
       docs: [],                   // list with all docs of the user
+      docsLimit: true,            // limit the number of visible docs
 
       showLeftNav: false,
       showSignInDialog: false,
@@ -142,6 +144,22 @@ export default class App extends Component {
           }}
       />;
     });
+
+    // limit the number of displayed documents
+    if (this.state.docsLimit) {
+      if (docsList.length > MAX_DOCS) {
+        let more = <ListItem
+            key={'more'}
+            primaryText={'more...'}
+            onTouchTap={(event) => {
+              this.setState({docsLimit: false});
+            }}
+        />;
+
+        docsList.splice(MAX_DOCS);
+        docsList.push(more);
+      }
+    }
 
     return <LeftNav docked={false}
              open={this.state.showLeftNav}
@@ -287,7 +305,7 @@ export default class App extends Component {
     const ok = (event) => {
       this.setState({ deleteDocDialog: null });
 
-      this.handleDelete(this.state.deleteDocDialog.id, this.state.deleteDocDialog.rev);
+      this.handleDelete(this.state.deleteDocDialog);
     };
 
     const actions = [
@@ -350,12 +368,6 @@ export default class App extends Component {
     this.fetchDocs();
   }
 
-  fetchDocs () {
-    Scenario.list()
-        .then(docs => this.setState({ docs }))
-        .catch(err => this.handleError(err));
-  }
-  
   handleOpen (id) {
     debug('handleOpen', id);
     
@@ -384,11 +396,15 @@ export default class App extends Component {
     }
   }
 
-  handleDelete (id, rev) {
+  /**
+   * Delete a document
+   * @param {{id: string, rev: string, title: string}} what
+   */
+  handleDelete (what) {
     debug('handleDelete');
 
     if (this.isSignedIn()) {
-      Scenario.del(id, rev)
+      this.scenario.del(what.id, what.rev, what.title)
           .then(() => this.fetchDocs())
           .catch(err => this.handleError(err));
     } else {
@@ -428,6 +444,28 @@ export default class App extends Component {
 
   fetchUser () {
     return request('GET', '/user');
+  }
+
+  fetchDocs () {
+    this.scenario.list()
+        .then(docs => {
+          // sort by updated
+          docs.sort( this.compareUpdated  );
+          this.setState({ docs })
+        })
+        .catch(err => this.handleError(err));
+  }
+
+  /**
+   * Compare two documents by their updated value and order them with
+   * newest document first.
+   * @param {{updated: string}} a
+   * @param {{updated: string}} b
+   * @return {number} returns -1 when a is newer then b, 1 when a is older than b,
+   *                  and 0 when both have the same age.
+   */
+  compareUpdated (a, b) {
+    return a.updated > b.updated ? -1 : a.updated < b.updated ? 1 : 0;
   }
 }
 

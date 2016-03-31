@@ -197,19 +197,29 @@ export default class Scenario {
    * Delete a document
    * @param {string} id
    * @param {string} rev
+   * @param {string} [title]
    * @return {*}
    */
-  static del (id, rev) {
+  del (id, rev, title) {
     debug('delete document', id, rev);
 
-    return request('DELETE', `/docs/${id}/${rev}`);
+    this.emit('notification', {
+      message: `Deleting ${title || id}`
+    });
+
+    return request('DELETE', `/docs/${id}/${rev}`)
+        .then(() => {
+          this.emit('notification', {
+            message: `Deleted ${title || id}`
+          });
+        });
   }
 
   /**
    * Get a list with all documents of the current user
    * @return {Array.<{id: string, rev: string, title: string, updated: string}>}
    */
-  static list () {
+  list () {
     debug('list documents');
 
     return request('GET', '/docs').then(response => {
