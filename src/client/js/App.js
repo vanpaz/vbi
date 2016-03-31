@@ -34,13 +34,6 @@ const APP_BAR_STYLE = {
   background: '#f3742c'
 };
 
-// Road map:
-// - create two panels: left panel for input, right panel for profit & loss
-// - left panel shows excel-like tables
-// - the right panel shows a profit&loss table
-// - later on we could create a business model canvas input format in the left panel
-// - create an option to show the numbers as a cumulative bar chart
-
 
 // expose the debug library to window, so we can enable and disable it
 if (typeof window !== 'undefined') {
@@ -55,52 +48,12 @@ export default class App extends Component {
     super(props);
 
     this.scenario = new Scenario();
-    this.scenario.on('change', (doc) => this.setState({doc}));
-    this.scenario.on('opening', (params) => {
-      if (params.type === 'start') {
-        this.setState({
-          notification: `Opening ${params.title || params.id}`,
-          notificationClosable: false,
-          notificationDuration: null
-        })
-      }
-      if (params.type === 'end') {
-        this.setState({
-          notification: `Opened ${params.title || params.id}`,
-          notificationClosable: true,
-          notificationDuration: 4000
-        })
-      }
-      if (params.type === 'error') {
-        this.setState({
-          notification: params.error.toString(),
-          notificationClosable: true,
-          notificationDuration: null
-        })
-      }
+    this.scenario.on('change', (doc) => {
+      this.setState({doc});
     });
-    this.scenario.on('saving', (params) => {
-      if (params.type === 'start') {
-        this.setState({
-          notification: `Saving ${params.title || params.id}`,
-          notificationClosable: false,
-          notificationDuration: null
-        })
-      }
-      if (params.type === 'end') {
-        this.setState({
-          notification: `Saved ${params.title || params.id}`,
-          notificationClosable: true,
-          notificationDuration: 4000
-        })
-      }
-      if (params.type === 'error') {
-        this.setState({
-          notification: params.error.toString(),
-          notificationClosable: true,
-          notificationDuration: null
-        })
-      }
+    this.scenario.on('notification', (notification) => {
+      debug('notification', notification);
+      this.setState({notification});
     });
 
     // update the redirectTo url when the url changes
@@ -118,9 +71,7 @@ export default class App extends Component {
       showAskToSignIn: false,
       deleteDocDialog: null, // null or { title: string, id: string, rev: string }
 
-      notification: null,
-      notificationClosable: false,
-      notificationDuration: null,
+      notification: null, // null or { message: string, closeable: boolean, duration: number | null}
 
       redirectTo: encodeURIComponent(location.href)
     };
@@ -247,7 +198,7 @@ export default class App extends Component {
       </div>;
 
       return <span>
-        <FlatButton children={ buttonContents } onTouchTap={() => this.handleSignOut()} />
+        <FlatButton children={ buttonContents } onTouchTap={(event) => this.handleSignOut()} />
       </span>;
     }
     else {
@@ -292,10 +243,10 @@ export default class App extends Component {
   }
 
   renderAskToSignInDialog () {
-    let cancel = () => this.setState({
+    let cancel = (event) => this.setState({
       showAskToSignIn: false
     });
-    let ok = () => this.setState({
+    let ok = (event) => this.setState({
       showAskToSignIn: false,
       showSignInDialog: true
     });
@@ -330,10 +281,10 @@ export default class App extends Component {
   }
 
   renderDeleteDocDialog () {
-    const cancel = () => {
+    const cancel = (event) => {
       this.setState({ deleteDocDialog: null });
     };
-    const ok = () => {
+    const ok = (event) => {
       this.setState({ deleteDocDialog: null });
 
       this.handleDelete(this.state.deleteDocDialog.id, this.state.deleteDocDialog.rev);
@@ -360,7 +311,7 @@ export default class App extends Component {
         title="Delete scenario"
         actions={actions}
         modal={false}
-        open={this.state.deleteDocDialog}
+        open={this.state.deleteDocDialog ? true : false}
         onRequestClose={cancel} >
       <p>
         Are you sure you want to delete <b>{title}</b>?
@@ -369,31 +320,40 @@ export default class App extends Component {
   }
 
   renderNotification () {
-    let onRequestClose = this.state.notificationClosable
-        ? () => {this.setState({notification: null})}
-        : () => {};  // just ignore request to close
-
-    let isError = this.state.notification && (this.state.notification.indexOf('Error:') !== -1);
+    let notification = this.state.notification || {};
+    let isError = notification.type === 'error';
+    let closeable = this.state.closeable !== undefined
+      ? notification.closeable
+      : !isError;
+    let close = () => this.setState({notification: null});
+    let ignore = () => null;  // just ignore request to close
+    let onRequestClose = closeable ? close : ignore;
 
     return <div>
       <Snackbar
-          open={this.state.notification != null}
-          message={this.state.notification || ''}
-          autoHideDuration={this.state.notificationDuration}
+          className={`snackbar${isError ? ' error' : ''}`}
+          open={notification.message ? true : false}
+          message={notification.message || ''}
+          autoHideDuration={notification.duration}
           onRequestClose={onRequestClose}
-          bodyStyle={isError ? {background: '#E9573F'} : null}
+          action={isError ? 'Close' : null}
+          onActionTouchTap={close}
       />
     </div>;
   }
 
   componentDidMount () {
-    this.fetchUser().then(user => this.setState({user}));
+    this.fetchUser()
+        .then(user => this.setState({ user }))
+        .catch(err => this.handleError(err));
 
-    this.listDocs();
+    this.fetchDocs();
   }
 
-  listDocs () {
-    Scenario.list().then(docs => this.setState({docs}));
+  fetchDocs () {
+    Scenario.list()
+        .then(docs => this.setState({ docs }))
+        .catch(err => this.handleError(err));
   }
   
   handleOpen (id) {
@@ -401,14 +361,8 @@ export default class App extends Component {
     
     if (this.isSignedIn()) {
       this.scenario.open(id)
-          .then(doc => {
-            this.setState({ doc });
-          })
-          .catch((err) => {
-            this.setState({
-              errors: this.state.errors.concat(err)
-            })
-          });
+          .then(doc => this.setState({ doc }))
+          .catch((err) => this.handleError(err));
     }
     else {
       this.setState({showAskToSignIn: true});
@@ -422,13 +376,9 @@ export default class App extends Component {
       this.scenario.save()
           .then((doc) => {
             this.setState({doc});
-            this.listDocs();
+            this.fetchDocs();
           })
-          .catch((err) => {
-            this.setState({
-              errors: this.state.errors.concat(err)
-            })
-          });
+          .catch((err) => this.handleError(err));
     } else {
       this.setState({showAskToSignIn: true});
     }
@@ -438,10 +388,21 @@ export default class App extends Component {
     debug('handleDelete');
 
     if (this.isSignedIn()) {
-      Scenario.del(id, rev).then(() => this.listDocs());
+      Scenario.del(id, rev)
+          .then(() => this.fetchDocs())
+          .catch(err => this.handleError(err));
     } else {
       this.setState({showAskToSignIn: true});
     }
+  }
+
+  handleError (err) {
+    this.setState({
+      notification: {
+        type: 'error',
+        message: err.toString()
+      }
+    });
   }
 
   handleToggleLeftNav () {

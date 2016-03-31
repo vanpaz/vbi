@@ -7,6 +7,8 @@ const debug = debugFactory('vbi:scenario');
 
 const EXAMPLE_DOC = require('../../../data/example_scenario.json');
 
+const NOTIFICATION_AUTO_HIDE_DURATION = 4000;
+
 const EMPTY_DOC = {
   title: 'New Scenario',
   data: {
@@ -20,6 +22,15 @@ const EMPTY_DOC = {
  * The scenario can be get/set, and can be saved/opened from the server.
  * The Scenario listens for changes in the hash of the browser location and
  * reflects the id of the current document there.
+ *
+ * The following events are emitted:
+ *
+ * - emit('change', doc)    Emitted when the document has been changed.
+ *                          Not emitted when the document is changed via
+ *                          the method scenario.set(doc).
+ * - emit('notification', {message: string, duration: number | null})
+ *                          Emitted when saving, saved, deleting, deleted.
+ *
  */
 export default class Scenario {
   constructor () {
@@ -110,10 +121,9 @@ export default class Scenario {
   save () {
     debug ('saving document...');
 
-    this.emit('saving', {
-      type: 'start',
-      title: this.doc.title,
-      id: this.doc._id
+    this.emit('notification', {
+      closeable: false,
+      message: `Saving ${this.doc.title || this.doc._id}`
     });
 
     let promise = this.doc._id
@@ -128,23 +138,12 @@ export default class Scenario {
           this.doc._rev = response.rev;
           this._set(this.doc);
 
-          this.emit('saving', {
-            type: 'end',
-            title: this.doc.title,
-            id: this.doc._id
+          this.emit('notification', {
+            message: `Saved ${this.doc.title || this.doc._id}`,
+            duration: NOTIFICATION_AUTO_HIDE_DURATION
           });
 
           return this.get();
-        })
-        .catch ((err) => {
-          this.emit('saving', {
-            type: 'error',
-            title: this.doc.title,
-            id: this.doc._id,
-            error: err
-          });
-
-          throw err; // rethrow
         });
   }
 
@@ -157,10 +156,9 @@ export default class Scenario {
   open (id, title) {
     debug ('open document', id);
 
-    this.emit('opening', {
-      type: 'start',
-      title,
-      id
+    this.emit('notification', {
+      closeable: false,
+      message: `Opening ${title || id}`
     });
 
     if (this.dirty) {
@@ -173,23 +171,12 @@ export default class Scenario {
 
           this._set(doc);
 
-          this.emit('opening', {
-            type: 'end',
-            title: title || doc.title,
-            id
+          this.emit('notification', {
+            message: `Opened ${title || doc.title || id}`,
+            duration: 4000
           });
 
           return this.get();
-        })
-        .catch((err) => {
-          this.emit('opening', {
-            type: 'error',
-            id,
-            title,
-            error: err
-          });
-
-          throw err; // rethrow
         });
   }
 

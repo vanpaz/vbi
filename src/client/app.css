@@ -151,3 +151,11 @@ div.footer a {
 div.footer a:hover {
   color: #f5f5f5;
 }
+
+div.snackbar.error div {
+  background: #E9573F !important;
+}
+
+div.snackbar.error button {
+  color: white !important;
+}
