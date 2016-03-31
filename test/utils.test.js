@@ -5,7 +5,7 @@ import * as utils from '../src/client/js/utils';
 import { readFileSync } from 'fs';
 
 
-let data = JSON.parse(readFileSync('../data/example_company.json', 'utf8'));
+let data = JSON.parse(readFileSync('../data/example_scenario.json', 'utf8')).data;
 
 test('getCategories', t => {
   t.same(utils.getCategories(data.costs), ['direct', 'personnel']);

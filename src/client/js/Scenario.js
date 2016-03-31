@@ -5,7 +5,7 @@ import { request } from './request';
 import { hash } from './hash'
 const debug = debugFactory('vbi:scenario');
 
-const EXAMPLE_DOC = require('../../../data/example_company.json');
+const EXAMPLE_DOC = require('../../../data/example_scenario.json');
 
 const EMPTY_DOC = {
   title: 'New Scenario',
