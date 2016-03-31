@@ -12,6 +12,7 @@ import LeftNav from 'material-ui/lib/left-nav';
 import NavigationMenuIcon from 'material-ui/lib/svg-icons/navigation/menu';
 import List from 'material-ui/lib/lists/list';
 import ListItem from 'material-ui/lib/lists/list-item';
+import ContentEdit from 'material-ui/lib/svg-icons/image/edit';
 import ContentOpen from 'material-ui/lib/svg-icons/file/folder-open';
 import ContentSave from 'material-ui/lib/svg-icons/content/save';
 import ContentCreate from 'material-ui/lib/svg-icons/content/add';
@@ -50,7 +51,7 @@ export default class App extends Component {
 
     this.scenario = new Scenario();
     this.scenario.on('change', (doc) => {
-      this.setState({doc});
+      this.setState({doc, changed: false});
     });
     this.scenario.on('notification', (notification) => {
       debug('notification', notification);
@@ -64,11 +65,16 @@ export default class App extends Component {
 
     this.state = {
       user: {},
+
+      changed: false,
       doc: this.scenario.get(),   // The current doc
       docs: [],                   // list with all docs of the user
       docsLimit: true,            // limit the number of visible docs
 
       showLeftNav: false,
+      showTitleDialog: false,
+      newTitle: null,
+
       showSignInDialog: false,
       showAskToSignIn: false,
       deleteDocDialog: null, // null or { title: string, id: string, rev: string }
@@ -84,6 +90,7 @@ export default class App extends Component {
       <div>
         { this.renderAppBar() }
         { this.renderLefNav() }
+        { this.renderTitleDialog() }
         { this.renderSignInDialog() }
         { this.renderAskToSignInDialog() }
         { this.renderDeleteDocDialog() }
@@ -107,9 +114,27 @@ export default class App extends Component {
   }
 
   renderAppBar () {
-    let title = this.state.doc && this.state.doc.title
-        ? `VanPaz Business Intelligence [${this.state.doc.title}]`
-        : `VanPaz Business Intelligence`;
+    let docTitle = this.state.doc
+        ? <span className="title" onTouchTap={(event) => {
+            event.stopPropagation();
+            event.preventDefault();
+
+            this.setState({showLeftNav: false});
+            this.handleRename()
+          }}>[{this.state.doc.title}]</span>
+        : '';
+    let handleSave = (event) => {
+      event.preventDefault();
+      this.handleSave();
+    };
+    let changed = this.state.doc && this.state.doc._id && this.state.changed
+        ? <span>
+            <span className="changed">changed (</span>
+            <a className="changed" href="#" onClick={handleSave}>save now</a>
+            <span className="changed">)</span>
+          </span>
+        : null;
+    let title = <div>VanPaz Business Intelligence {docTitle} {changed}</div>;
 
     return <AppBar
         style={APP_BAR_STYLE}
@@ -177,11 +202,15 @@ export default class App extends Component {
             primaryText="New"
             leftIcon={<ContentCreate />}
             onTouchTap={(event) => {
-              this.scenario.createNew();
-              this.setState({
-                doc: this.scenario.get(),
-                showLeftNav: false
-              });
+              this.setState({showLeftNav: false});
+              this.handleNew()
+            }} />
+        <ListItem
+            primaryText="Rename"
+            leftIcon={<ContentEdit />}
+            onTouchTap={(event) => {
+              this.setState({showLeftNav: false});
+              this.handleRename()
             }} />
         <ListItem
             primaryText="Open"
@@ -337,6 +366,54 @@ export default class App extends Component {
     </Dialog>
   }
 
+  renderTitleDialog () {
+    const cancel = (event) => {
+      this.setState({ showTitleDialog: false });
+    };
+    const ok = (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      this.setState({ showTitleDialog: false });
+
+      let doc = cloneDeep(this.state.doc);
+      doc.title = this.state.newTitle;
+      this.changeDoc(doc);
+    };
+
+    const actions = [
+      <FlatButton
+          label="Cancel"
+          secondary={true}
+          onTouchTap={cancel}
+      />,
+      <FlatButton
+          label="Ok"
+          primary={true}
+          keyboardFocused={true}
+          onTouchTap={ok}
+      />
+    ];
+
+    return <Dialog
+        title="Title"
+        actions={actions}
+        modal={false}
+        open={this.state.showTitleDialog}
+        onRequestClose={cancel} >
+      <p>
+        Enter a title for the scenario:
+      </p>
+      <form onSubmit={ok}>
+        <input
+            className="title"
+            ref="title"
+            value={this.state.newTitle}
+            onChange={(event) => this.setState({newTitle: event.target.value}) } />
+      </form>
+    </Dialog>
+  }
+
   renderNotification () {
     let notification = this.state.notification || {};
     let isError = notification.type === 'error';
@@ -368,6 +445,23 @@ export default class App extends Component {
     this.fetchDocs();
   }
 
+  handleNew () {
+    this.scenario.createNew();
+    this.setState({
+      doc: this.scenario.get()
+    });
+  }
+
+  handleRename () {
+    this.setState({
+      showTitleDialog: true,
+      newTitle: this.state.doc.title
+    });
+
+    // select the contents of the input field on opening the dialog
+    setTimeout( () => this.refs.title.select(), 0);
+  }
+
   handleOpen (id) {
     debug('handleOpen', id);
     
@@ -387,7 +481,7 @@ export default class App extends Component {
     if (this.isSignedIn()) {
       this.scenario.save()
           .then((doc) => {
-            this.setState({doc});
+            this.setState({doc, changed: false});
             this.fetchDocs();
           })
           .catch((err) => this.handleError(err));
@@ -433,24 +527,36 @@ export default class App extends Component {
     let updatedDoc = cloneDeep(this.state.doc);
     updatedDoc.data = data;
 
-    this.scenario.set(updatedDoc);
-
-    this.setState({ doc: updatedDoc });
+    this.changeDoc(updatedDoc);
   }
 
   handleSignOut () {
     window.open(`/api/v1/auth/signout?redirectTo=${this.state.redirectTo || ''}`, '_self');
   }
 
+  changeDoc (doc) {
+    this.scenario.set(doc);
+
+    this.setState({
+      doc,
+      changed: true
+    });
+
+  }
+
   fetchUser () {
+    debug('fetching user...');
     return request('GET', '/user');
   }
 
   fetchDocs () {
+    debug('fetching docs...');
     this.scenario.list()
         .then(docs => {
-          // sort by updated
+          // sort by updated field, from newest to oldest document
           docs.sort( this.compareUpdated  );
+          debug('docs', docs);
+
           this.setState({ docs })
         })
         .catch(err => this.handleError(err));
