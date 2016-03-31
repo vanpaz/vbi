@@ -7,6 +7,7 @@ import AppBar from 'material-ui/lib/app-bar';
 import Dialog from 'material-ui/lib/dialog';
 import Snackbar from 'material-ui/lib/snackbar';
 import FlatButton from 'material-ui/lib/flat-button';
+import RaisedButton from 'material-ui/lib/raised-button';
 import IconButton from 'material-ui/lib/icon-button';
 import LeftNav from 'material-ui/lib/left-nav';
 import NavigationMenuIcon from 'material-ui/lib/svg-icons/navigation/menu';
@@ -17,11 +18,11 @@ import ContentSave from 'material-ui/lib/svg-icons/content/save';
 import ContentCreate from 'material-ui/lib/svg-icons/content/add';
 import ContentClear from 'material-ui/lib/svg-icons/content/clear';
 
+
 import Scenario from './Scenario';
 import InputForm from './InputForm';
 import ProfitAndLoss from './ProfitAndLoss';
 import { request } from './request';
-import { hash } from './hash';
 
 const debug = debugFactory('vbi:app');
 
@@ -109,10 +110,13 @@ export default class App extends Component {
 
     this.state = {
       user: {},
-      showLeftNav: false,
-      showSignInDialog: false,
       doc: this.scenario.get(),   // The current doc
       docs: [],                   // list with all docs of the user
+
+      showLeftNav: false,
+      showSignInDialog: false,
+      showAskToSignIn: false,
+      deleteDocDialog: null, // null or { title: string, id: string, rev: string }
 
       notification: null,
       notificationClosable: false,
@@ -128,6 +132,8 @@ export default class App extends Component {
         { this.renderAppBar() }
         { this.renderLefNav() }
         { this.renderSignInDialog() }
+        { this.renderAskToSignInDialog() }
+        { this.renderDeleteDocDialog() }
         { this.renderNotification() }
 
         <div>
@@ -163,17 +169,22 @@ export default class App extends Component {
   }
 
   renderLefNav () {
-    let docsList = this.state.docs.map(doc => {
+    const docsList = this.state.docs.map(doc => {
+      const rightIcon = <ContentClear onTouchTap={ (event) => {
+        event.stopPropagation();
+        this.setState({
+          deleteDocDialog: {
+            id: doc.id,
+            rev: doc.rev,
+            title: doc.title
+          }
+        });
+      }} />;
+
       return <ListItem
           key={doc.id}
           primaryText={doc.title || doc.id}
-          rightIcon={
-                  <ContentClear onTouchTap={(event) => {
-                    event.stopPropagation();
-                    Scenario.del(doc.id, doc.rev)
-                      .then(() => this.listDocs());
-                  }} />
-                }
+          rightIcon={rightIcon}
           onTouchTap={(event) => {
             this.setState({showLeftNav: false});
             this.handleOpen(doc.id)
@@ -227,7 +238,7 @@ export default class App extends Component {
 
   // render "sign in" or "signed in as"
   renderUser () {
-    if (this.state.user && this.state.user.provider) {
+    if (this.isSignedIn()) {
       let source = this.state.user.email || this.state.user.provider;
       let title = `Logged in as ${this.state.user.displayName} (${source})`;
       let buttonContents = <div title={title} >
@@ -242,6 +253,10 @@ export default class App extends Component {
     else {
       return <FlatButton label="Sign in" onTouchTap={(event) => this.setState({showSignInDialog: true})} />
     }
+  }
+
+  isSignedIn () {
+    return this.state.user && this.state.user.id;
   }
 
   renderSignInDialog () {
@@ -276,6 +291,83 @@ export default class App extends Component {
     </Dialog>
   }
 
+  renderAskToSignInDialog () {
+    let cancel = () => this.setState({
+      showAskToSignIn: false
+    });
+    let ok = () => this.setState({
+      showAskToSignIn: false,
+      showSignInDialog: true
+    });
+    
+    const actions = [
+      <FlatButton
+          label="No"
+          secondary={true}
+          onTouchTap={cancel}
+      />,
+      <FlatButton
+          label="Yes"
+          primary={true}
+          keyboardFocused={true}
+          onTouchTap={ok}
+      />
+    ];
+    
+    return <Dialog
+        title="Not signed in"
+        actions={actions}
+        modal={false}
+        open={this.state.showAskToSignIn}
+        onRequestClose={cancel} >
+      <p>
+        To open, save, or delete scenarios you have to sign in first.
+      </p>
+      <p>
+        Do you want to sign in now?
+      </p>
+    </Dialog>
+  }
+
+  renderDeleteDocDialog () {
+    const cancel = () => {
+      this.setState({ deleteDocDialog: null });
+    };
+    const ok = () => {
+      this.setState({ deleteDocDialog: null });
+
+      this.handleDelete(this.state.deleteDocDialog.id, this.state.deleteDocDialog.rev);
+    };
+
+    const actions = [
+      <FlatButton
+          label="Cancel"
+          secondary={true}
+          onTouchTap={cancel}
+      />,
+      <FlatButton
+          label="Delete"
+          primary={true}
+          keyboardFocused={true}
+          onTouchTap={ok}
+      />
+    ];
+
+    const title = this.state.deleteDocDialog &&
+        (this.state.deleteDocDialog.title || this.state.deleteDocDialog.id);
+
+    return <Dialog
+        title="Delete scenario"
+        actions={actions}
+        modal={false}
+        open={this.state.deleteDocDialog}
+        onRequestClose={cancel} >
+      <p>
+        Are you sure you want to delete <b>{title}</b>?
+      </p>
+    </Dialog>
+  }
+
   renderNotification () {
     let onRequestClose = this.state.notificationClosable
         ? () => {this.setState({notification: null})}
@@ -306,31 +398,50 @@ export default class App extends Component {
   
   handleOpen (id) {
     debug('handleOpen', id);
-
-    this.scenario.open(id)
-        .then(doc => {
-          this.setState({ doc });
-        })
-        .catch((err) => {
-          this.setState({
-            errors: this.state.errors.concat(err)
+    
+    if (this.isSignedIn()) {
+      this.scenario.open(id)
+          .then(doc => {
+            this.setState({ doc });
           })
-        });
+          .catch((err) => {
+            this.setState({
+              errors: this.state.errors.concat(err)
+            })
+          });
+    }
+    else {
+      this.setState({showAskToSignIn: true});
+    }
   }
 
   handleSave () {
     debug('handleSave');
 
-    this.scenario.save()
-        .then((doc) => {
-          this.setState({ doc });
-          this.listDocs();
-        })
-        .catch((err) => {
-          this.setState({
-            errors: this.state.errors.concat(err)
+    if (this.isSignedIn()) {
+      this.scenario.save()
+          .then((doc) => {
+            this.setState({doc});
+            this.listDocs();
           })
-        });
+          .catch((err) => {
+            this.setState({
+              errors: this.state.errors.concat(err)
+            })
+          });
+    } else {
+      this.setState({showAskToSignIn: true});
+    }
+  }
+
+  handleDelete (id, rev) {
+    debug('handleDelete');
+
+    if (this.isSignedIn()) {
+      Scenario.del(id, rev).then(() => this.listDocs());
+    } else {
+      this.setState({showAskToSignIn: true});
+    }
   }
 
   handleToggleLeftNav () {
