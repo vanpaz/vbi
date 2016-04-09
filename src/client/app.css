@@ -90,13 +90,17 @@ td.total {
   border-top: 3px double #d4d4d4;
 }
 
-td input {
+
+td input,
+td button {
   border: none;
   font-family: roboto, sans-serif;
   font-size: 14px;
   text-align: right;
   background: #f5f5f5;
+}
 
+td input {
   width: 42px;
   padding: 5px;
 }
@@ -108,8 +112,18 @@ td input:hover {
 
 td input:focus {
   background: white;
-  box-shadow: 0 0 3px 1px dodgerblue;
+  box-shadow: 0 0 3px 1px #008fd5;
   outline: none;
+}
+
+td button {
+  padding: 5px;
+  min-width: 100px;
+}
+
+td button.expanded {
+  background: #f3742c;
+  color: white;
 }
 
 

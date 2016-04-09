@@ -3,6 +3,7 @@ import debugFactory from 'debug/browser';
 
 import { cloneDeep } from 'lodash';
 import { getCategories, getPeriods, findQuantity, clearIfZero } from './utils';
+import Price from './Price';
 
 import Card from 'material-ui/lib/card/card';
 import CardTitle from 'material-ui/lib/card/card-title';
@@ -76,13 +77,12 @@ export default class InputForm extends Component {
           <tr>
             <th />
             <th className="main" colSpan={periods.length}>Quantity</th>
-            <th className="main" colSpan={2}>Price</th>
+            <th className="main" colSpan={1}>Price</th>
           </tr>
           <tr>
             <th />
             {periods.map(period => <th key={period}>{period}</th>)}
-            <th>Price</th>
-            <th>Change</th>
+            <th></th>
           </tr>
           {
             items.map(item => <tr key={category + ':' + item.name}>
@@ -97,25 +97,11 @@ export default class InputForm extends Component {
                          onFocus={(event) => event.target.select()} />
                 </td>))
               }
-              <td className="price">
-                <input value={item.prices[0].price.split(' ')[0]}
-                       onChange={(event) => {
-                         this.updatePrice(section, category, item.name, {
-                           price: event.target.value,
-                           change: item.prices[0].change
-                         });
-                       }}
-                       onFocus={(event) => event.target.select()} />
-              </td>
-              <td className="price">
-                <input value={item.prices[0].change}
-                       onChange={(event) => {
-                         this.updatePrice(section, category, item.name, {
-                           price: item.prices[0].price,
-                           change: event.target.value
-                         });
-                       }}
-                       onFocus={(event) => event.target.select()} />
+              <td>
+                <Price entry={item.prices[0]}
+                       onChange={(entry) => {
+                         this.updatePrice(section, category, item.name, entry);
+                       }} />
               </td>
             </tr>)
           }

@@ -246,6 +246,64 @@ A user profile is structured like follows:
 }
 ```
 
+### Price formats
+
+The application supports multiple types of prices:
+
+- initial price, constant change per period
+
+  ```js
+  {
+    "type": "constant",
+    "initialPrice": "28k euro/year",
+    "change": "+3%"    // change per period
+  }
+  ```
+
+- manually entered price per period (2015, 2016, 2017)
+
+  ```js
+  {
+    "type": "manual",
+    "prices": {
+      "2015": "28k euro/year",
+      "2016": "29k euro/year",
+      "2017": "33k euro/year",
+      "2018": "34k euro/year"
+    }
+  }
+  ```
+
+- a percentage of one or multiple revenue categories (i.e. 5% of all licencing
+  revenue)
+
+  ```js
+  {
+    "type": "percentage",
+    "percentages": [
+      {
+        "category": "licenses",
+        "percentage": "+3%"
+      },
+      {
+        "category": "projects",
+        "percentage": "+6%"
+      }
+    ]
+  }
+  ```
+
+- a percentage of the total revenue, where the percentage is automatically
+  calculated based on an initial price.
+
+  ```js
+  {
+    "type": "ratio",
+    "initialPrice": "28k euro/year"
+    // ratio is calculated based on initialPrice divided by the initial revenue
+  }
+  ```
+
 
 ## License
 
