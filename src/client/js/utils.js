@@ -22,10 +22,9 @@ export function getCategories (items) {
  */
 export function getPeriods(items) {
   let periods = flatMap(items, item => {
-    let pricePeriods = item.prices.map(price => price.period);
-    let quantityPeriods = Object.keys(item.quantities);
-
-    return pricePeriods.concat(quantityPeriods).filter(period => period != undefined)
+    return Object.keys(item.quantities)
+        .concat(Object.keys(item.price.values || {}))
+        .filter(period => period != undefined);
   });
 
   return uniq(periods).sort();
@@ -51,14 +50,15 @@ export function findQuantity (item, period) {
  *                                   and prices as value
  */
 export function calculatePrices (item, periods) {
-  let initialPrice = parseFloat(item.prices[0].price);
-  let change = 1 + parseFloat(item.prices[0].change) / 100;
+  // TODO: reckon with the different types of price entries
+  let initialPrice = parseFloat(item.price.value);
+  let change = 1 + parseFloat(item.price.change) / 100;
 
   return periods.reduce((prices, period, periodIndex) => {
     let quantity = findQuantity(item, period);
 
     // TODO: handle the different structures for pricing
-    if (item.prices[0].price && item.prices[0].change) {
+    if (item.price.value != undefined && item.price.change != undefined) {
       prices[period] = initialPrice * quantity * Math.pow(change, periodIndex);
     }
     else {

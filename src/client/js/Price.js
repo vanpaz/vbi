@@ -3,7 +3,6 @@ import debugFactory from 'debug/browser';
 
 import { assign } from 'lodash';
 
-import FlatButton from 'material-ui/lib/flat-button';
 import Popover from 'material-ui/lib/popover/popover';
 import TextField from 'material-ui/lib/text-field';
 
@@ -23,17 +22,17 @@ const styles = {
  *
  * Usage:
  *
- *     var entry = {
+ *     var price = {
  *       type: 'constant',
- *       initialPrice: '28',
+ *       value: '28',
  *       change: '+3%'
  *     }
  *
- *     function onChange (entry) {
- *       console.log('changed', entry);
+ *     function onChange (price) {
+ *       console.log('changed', price);
  *     }
  *
- *     <Price entry={entry} onChange={onChange} />
+ *     <Price price={price} onChange={onChange} />
  *
  */
 export default class Price extends Component {
@@ -47,9 +46,11 @@ export default class Price extends Component {
   }
 
   render () {
-    let price = this.props.entry.price.split(' ')[0];
-    let change = this.props.entry.change || '';
-    let label = `${price} ${change} \u25BE`;
+    let value = this.props.price.value != undefined
+        ? this.props.price.value.split(' ')[0]
+        : '';
+    let change = this.props.price.change || '';
+    let label = `${value} ${change} \u25BE`;
 
     // TODO: highlight the FlatButton when Popover is visible
     return <div className="price">
@@ -70,14 +71,12 @@ export default class Price extends Component {
       >
         <div style={styles.popover} >
           <TextField
-              ref="price"
-              value={this.props.entry.price}
+              value={this.props.price.value}
               onChange={this.handleChangePrice.bind(this)}
               onFocus={this.handleFocus.bind(this)} />
           <br />
           <TextField
-              ref="change"
-              value={this.props.entry.change}
+              value={this.props.price.change}
               onChange={this.handleChangeChange.bind(this)}
               onFocus={this.handleFocus.bind(this)} />
 
@@ -100,19 +99,19 @@ export default class Price extends Component {
   }
 
   handleChangePrice (event) {
-    let entry = assign(this.props.entry, { price: event.target.value });
+    let price = assign(this.props.price, { value: event.target.value });
 
-    debug('handleChangePrice', entry);
+    debug('handleChangePrice', price);
 
-    this.props.onChange(entry);
+    this.props.onChange(price);
   }
 
   handleChangeChange (event) {
-    let entry = assign(this.props.entry, { change: event.target.value });
+    let price = assign(this.props.price, { change: event.target.value });
 
-    debug('handleChangeChange', entry);
+    debug('handleChangeChange', price);
 
-    this.props.onChange(entry);
+    this.props.onChange(price);
   }
 
   handleFocus (event) {

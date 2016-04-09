@@ -7,9 +7,11 @@
       {
         "name": "GM",
         "category": "personnel",
-        "prices": [
-          {"price": "37k euro/year", "change": "+3%"}
-        ],
+        "price": {
+          "type": "constant",
+          "value": "37k euro/year",
+          "change": "+3%"
+        },
         "quantities": {
           "2015": "0",
           "2016": "1",
@@ -20,9 +22,11 @@
       {
         "name": "OM",
         "category": "personnel",
-        "prices": [
-          {"price": "35k euro/year", "change": "+3%"}
-        ],
+        "price": {
+          "type": "constant",
+          "value": "35k euro/year",
+          "change": "+3%"
+        },
         "quantities": {
           "2015": "0",
           "2016": "0",
@@ -33,9 +37,11 @@
       {
         "name": "DEV",
         "category": "personnel",
-        "prices": [
-          {"price": "28k euro/year", "change": "+3%"}
-        ],
+        "price": {
+          "type": "constant",
+          "value": "28k euro/year",
+          "change": "+3%"
+        },
         "quantities": {
           "2015": "0",
           "2016": "5",
@@ -46,9 +52,11 @@
       {
         "name": "BD & Sales",
         "category": "personnel",
-        "prices": [
-          {"price": "30k euro/year", "change": "+3%"}
-        ],
+        "price": {
+          "type": "constant",
+          "value": "30k euro/year",
+          "change": "+3%"
+        },
         "quantities": {
           "2015": "0",
           "2016": "2",
@@ -59,9 +67,11 @@
       {
         "name": "Support",
         "category": "personnel",
-        "prices": [
-          {"price": "26k euro/year", "change": "+3%"}
-        ],
+        "price": {
+          "type": "constant",
+          "value": "26k euro/year",
+          "change": "+3%"
+        },
         "quantities": {
           "2015": "0",
           "2016": "1",
@@ -72,9 +82,11 @@
       {
         "name": "HR/FIN",
         "category": "personnel",
-        "prices": [
-          {"price": "30k euro/year", "change": "+3%"}
-        ],
+        "price": {
+          "type": "constant",
+          "value": "30k euro/year",
+          "change": "+3%"
+        },
         "quantities": {
           "2015": "0",
           "2016": "1",
@@ -85,9 +97,11 @@
       {
         "name": "Office Manager",
         "category": "personnel",
-        "prices": [
-          {"price": "26k euro/year", "change": "+3%"}
-        ],
+        "price": {
+          "type": "constant",
+          "value": "26k euro/year",
+          "change": "+3%"
+        },
         "quantities": {
           "2015": "0",
           "2016": "0",
@@ -98,9 +112,11 @@
       {
         "name": "Marketing & communication",
         "category": "personnel",
-        "prices": [
-          {"price": "26k euro/year", "change": "+3%"}
-        ],
+        "price": {
+          "type": "constant",
+          "value": "26k euro/year",
+          "change": "+3%"
+        },
         "quantities": {
           "2015": "0",
           "2016": "0",
@@ -111,9 +127,11 @@
       {
         "name": "IT support",
         "category": "personnel",
-        "prices": [
-          {"price": "26k euro/year", "change": "+3%"}
-        ],
+        "price": {
+          "type": "constant",
+          "value": "26k euro/year",
+          "change": "+3%"
+        },
         "quantities": {
           "2015": "0",
           "2016": "0",
@@ -125,9 +143,19 @@
       {
         "name": "Direct costs",
         "category": "direct",
-        "prices": [
-          {"price": "5% * revenue"}
-        ],
+        "price": {
+          "type": "percentage",
+          "percentages": [
+            {
+              "category": "licenses",
+              "percentage": "+5%"
+            },
+            {
+              "category": "projects",
+              "percentage": "+5%"
+            }
+          ]
+        },
         "quantities": {
           "2015": "1",
           "2016": "1",
@@ -141,9 +169,11 @@
       {
         "name": "media",
         "category": "licenses",
-        "prices": [
-          {"price": "8 euro/year", "change": "+3%"}
-        ],
+        "price": {
+          "type": "constant",
+          "value": "8 euro/year",
+          "change": "+3%"
+        },
         "quantities": {
           "2016": "3",
           "2017": "6",
@@ -153,9 +183,11 @@
       {
         "name": "security",
         "category": "licenses",
-        "prices": [
-          {"price": "10 euro/year", "change": "+3%"}
-        ],
+        "price": {
+          "type": "constant",
+          "value": "10 euro/year",
+          "change": "+3%"
+        },
         "quantities": {
           "2016": "0",
           "2017": "2",
@@ -165,9 +197,11 @@
       {
         "name": "legal",
         "category": "licenses",
-        "prices": [
-          {"price": "9 euro/year", "change": "+3%"}
-        ],
+        "price": {
+          "type": "constant",
+          "value": "9 euro/year",
+          "change": "+3%"
+        },
         "quantities": {
           "2016": "0",
           "2017": "2",
@@ -177,9 +211,11 @@
       {
         "name": "health",
         "category": "licenses",
-        "prices": [
-          {"price": "6 euro/year", "change": "+3%"}
-        ],
+        "price": {
+          "type": "constant",
+          "value": "6 euro/year",
+          "change": "+3%"
+        },
         "quantities": {
           "2016": "0",
           "2017": "5",
@@ -190,9 +226,11 @@
       {
         "name": "media",
         "category": "projects",
-        "prices": [
-          {"price": "60 euro/year", "change": "+5%"}
-        ],
+        "price": {
+          "type": "constant",
+          "value": "60 euro/year",
+          "change": "+5%"
+        },
         "quantities": {
           "2016": "1",
           "2017": "2",
@@ -202,9 +240,11 @@
       {
         "name": "security",
         "category": "projects",
-        "prices": [
-          {"price": "60 euro/year", "change": "+5%"}
-        ],
+        "price": {
+          "type": "constant",
+          "value": "60 euro/year",
+          "change": "+5%"
+        },
         "quantities": {
           "2016": "1",
           "2017": "2",
@@ -214,9 +254,11 @@
       {
         "name": "legal",
         "category": "projects",
-        "prices": [
-          {"price": "60 euro/year", "change": "+5%"}
-        ],
+        "price": {
+          "type": "constant",
+          "value": "60 euro/year",
+          "change": "+5%"
+        },
         "quantities": {
           "2016": "1",
           "2017": "2",
@@ -226,9 +268,11 @@
       {
         "name": "health",
         "category": "projects",
-        "prices": [
-          {"price": "60 euro/year", "change": "+5%"}
-        ],
+        "price": {
+          "type": "constant",
+          "value": "60 euro/year",
+          "change": "+5%"
+        },
         "quantities": {
           "2016": "0",
           "2017": "1",

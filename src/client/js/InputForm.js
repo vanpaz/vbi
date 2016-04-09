@@ -98,9 +98,9 @@ export default class InputForm extends Component {
                 </td>))
               }
               <td>
-                <Price entry={item.prices[0]}
-                       onChange={(entry) => {
-                         this.updatePrice(section, category, item.name, entry);
+                <Price price={item.price}
+                       onChange={(price) => {
+                         this.updatePrice(section, category, item.name, price);
                        }} />
               </td>
             </tr>)
@@ -115,15 +115,15 @@ export default class InputForm extends Component {
    * @param {'costs' | 'revenues'} section
    * @param {string} category
    * @param {string} name
-   * @param {{price: string, change: string}} entry
+   * @param {{value: string, change: string}} price
    */
-  updatePrice (section, category, name, entry) {
-    debug('updatePrice', section, category, name, entry);
+  updatePrice (section, category, name, price) {
+    debug('updatePrice', section, category, name, price);
 
     let data = cloneDeep(this.props.data);
     let item = data[section].find(item => item.category === category && item.name === name);
     if (item) {
-      item.prices[0] = entry;
+      item.price = price;
     }
     else {
       // TODO: handle adding a new item
