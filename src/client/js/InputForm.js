@@ -66,10 +66,12 @@ export default class InputForm extends Component {
   }
 
   renderCategory (section, category, periods, items) {
+    let revenueCategories = getCategories(this.props.data.revenues);
+
     return <div key={category}>
       <h1>{category}</h1>
 
-      <table>
+      <table className="category-table" >
         <colgroup>
           <col width='120px'/>
         </colgroup>
@@ -99,6 +101,8 @@ export default class InputForm extends Component {
               }
               <td>
                 <Price price={item.price}
+                       categories={revenueCategories}
+                       periods={periods}
                        onChange={(price) => {
                          this.updatePrice(section, category, item.name, price);
                        }} />

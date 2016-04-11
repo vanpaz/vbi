@@ -4,11 +4,15 @@ import debugFactory from 'debug/browser';
 import { assign } from 'lodash';
 
 import Popover from 'material-ui/lib/popover/popover';
-import TextField from 'material-ui/lib/text-field';
 import SelectField from 'material-ui/lib/select-field';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 
-const debug = debugFactory('vbi:price');
+import PriceTypeConstant from './PriceTypeConstant';
+import PriceTypeManual from './PriceTypeManual';
+import PriceTypePercentageTotal from './PriceTypePercentageTotal';
+import PriceTypePercentageRevenue from './PriceTypePercentageRevenue';
+
+const debug = debugFactory('vbi:Price');
 
 /**
  * Price
@@ -25,11 +29,15 @@ const debug = debugFactory('vbi:price');
  *       change: '+3%'
  *     }
  *
+ *     var categories = ['licenses', 'projects'];
+ *
+ *     var periods = ['2015', '2016', '2017', '2018']
+ *
  *     function onChange (price) {
  *       console.log('changed', price);
  *     }
  *
- *     <Price price={price} onChange={onChange} />
+ *     <Price price={price} categories={categories} onChange={onChange} />
  *
  */
 export default class Price extends Component {
@@ -40,41 +48,17 @@ export default class Price extends Component {
       showPopover: false,
       anchorEl: null
     };
-
-    this.types = {
-      'constant': {
-        label: 'Constant change',
-        description: 'Enter an initial price, have a constant change per period.'
-      },
-      'manual': {
-        label: 'Manual per period',
-        description: 'Manually enter a price for every period.'
-      },
-      'percentageTotal': {
-        label: 'Percentage of revenue',
-        description: 'A percentage of the total revenue, calculated from an initial price and initial total revenue.'
-      },
-      'percentageCategory': {
-        label: 'Percentage of category',
-        description: 'Enter a percentage of one or multiple revenue categories.'
-      }
-    }
   }
 
   render () {
-    let value = this.props.price.value != undefined
-        ? this.props.price.value.split(' ')[0]
-        : '';
-    let change = this.props.price.change || '';
-    let label = `${value} ${change} \u25BE`;
+    let PriceType = Price.findPriceType(this.props.price.type);
 
-    // TODO: highlight the FlatButton when Popover is visible
     return <div className="price">
       <button
           className={this.state.showPopover ? 'expanded' : ''}
-          onClick={this.showPopover.bind(this)}      // bind click too to support pressing enter when the button has focus
           onTouchTap={this.showPopover.bind(this)} >
-        {label}
+        {PriceType && PriceType.format(this.props.price)}
+        {' \u25BE'}
       </button>
 
       <Popover
@@ -83,34 +67,31 @@ export default class Price extends Component {
           anchorEl={this.state.anchorEl}
           anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
           targetOrigin={{horizontal: 'left', vertical: 'top'}}
-          onRequestClose={this.hidePopover.bind(this)}
-      >
-        <div className="price-popover" >
+          onRequestClose={this.hidePopover.bind(this)} >
+        <div className="price-popover">
           <SelectField value={this.props.price.type} onChange={this.handleChangeType.bind(this)} >
-            {Object.keys(this.types).sort().map(type => {
-              return <MenuItem key={type} value={type} primaryText={this.types[type].label} />
+            {Object.keys(Price.PRICE_TYPES).sort().map(type => {
+              return <MenuItem key={type} value={type} primaryText={Price.findPriceType(type).label} />
             })}
           </SelectField>
-          <p className="description">
-            {this.types[this.props.price.type].description}
-          </p>
 
-          <TextField
-              value={this.props.price.value}
-              onChange={this.handleChangePrice.bind(this)}
-              onFocus={this.handleFocus.bind(this)} />
-          <br />
-          <TextField
-              value={this.props.price.change}
-              onChange={this.handleChangeChange.bind(this)}
-              onFocus={this.handleFocus.bind(this)} />
-
+          {
+            PriceType
+                ? <PriceType 
+                      price={this.props.price} 
+                      categories={this.props.categories}
+                      periods={this.props.periods}
+                      onChange={this.handleChangePrice.bind(this)} />
+                : <p>(Select a price type first...)</p>
+          }
         </div>
       </Popover>
     </div>
   }
 
   showPopover (event) {
+    event.preventDefault(); // prevent from immediately closing on tap
+
     debug('showPopover');
     this.setState({
       showPopover: true,
@@ -123,19 +104,8 @@ export default class Price extends Component {
     this.setState({showPopover: false});
   }
 
-  handleChangePrice (event) {
-    let price = assign(this.props.price, { value: event.target.value });
-
+  handleChangePrice (price) {
     debug('handleChangePrice', price);
-
-    this.props.onChange(price);
-  }
-
-  handleChangeChange (event) {
-    let price = assign(this.props.price, { change: event.target.value });
-
-    debug('handleChangeChange', price);
-
     this.props.onChange(price);
   }
 
@@ -147,8 +117,22 @@ export default class Price extends Component {
     this.props.onChange(price);
   }
 
-  handleFocus (event) {
-    // event.target.select();
+  /**
+   * Return the class of a specific PriceType. Returns null if not found
+   * @param {string} type
+   * @return {class | null}
+   */
+  static findPriceType (type) {
+    return Price.PRICE_TYPES[type];
   }
 
+  /**
+   * map with all registered price types
+   */
+  static PRICE_TYPES = {
+    constant: PriceTypeConstant,
+    manual: PriceTypeManual,
+    percentageTotal: PriceTypePercentageTotal,
+    percentageCategory: PriceTypePercentageRevenue
+  };
 }

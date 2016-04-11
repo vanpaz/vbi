@@ -33,7 +33,7 @@ export default class ProfitAndLoss extends Component {
     debug ('categoryTotals', categoryTotals);
     debug ('totals', totals);
 
-    return <table>
+    return <table className="category-table" >
       <tbody>
       <tr>
         <th />
