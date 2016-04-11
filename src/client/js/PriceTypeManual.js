@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import debugFactory from 'debug/browser';
 import { assign, cloneDeep } from 'lodash';
 import TextField from 'material-ui/lib/text-field';
-import FlatButton from 'material-ui/lib/flat-button';
 
 const debug = debugFactory('vbi:PriceTypeManual');
 

@@ -8,17 +8,17 @@ import { readFileSync } from 'fs';
 let data = JSON.parse(readFileSync('../data/example_scenario.json', 'utf8')).data;
 
 test('getCategories', t => {
-  t.same(utils.getCategories(data.costs), ['direct', 'personnel']);
-  t.same(utils.getCategories(data.revenues), ['licenses', 'projects']);
+  t.deepEqual(utils.getCategories(data.costs), ['direct', 'personnel']);
+  t.deepEqual(utils.getCategories(data.revenues), ['licenses', 'projects']);
 });
 
 test('getPeriods', t => {
-  t.same(utils.getPeriods(data.costs), ['2015', '2016', '2017', '2018']);
-  t.same(utils.getPeriods(data.revenues), ['2016', '2017', '2018']);
+  t.deepEqual(utils.getPeriods(data.costs), ['2015', '2016', '2017', '2018']);
+  t.deepEqual(utils.getPeriods(data.revenues), ['2016', '2017', '2018']);
 });
 
 test('findQuantity', t => {
-  t.same(utils.findQuantity({
+  t.deepEqual(utils.findQuantity({
     name: 'foo',
     category: 'personnel',
     prices: {},
@@ -29,7 +29,7 @@ test('findQuantity', t => {
     }
   }, '2016'), '2');
 
-  t.same(utils.findQuantity({
+  t.deepEqual(utils.findQuantity({
     name: 'foo',
     category: 'personnel',
     prices: {},
@@ -45,9 +45,11 @@ test('calculatePrices', t => {
   let item = {
     "name": "media",
     "category": "licenses",
-    "prices": [
-      {"price": "10 euro/year", "change": "+10%"}
-    ],
+    "price": {
+      "type": "constant",
+      "value": "10 euro/year",
+      "change": "+10%"
+    },
     "quantities": {
       "2016": "1",
       "2017": "2",
@@ -57,7 +59,7 @@ test('calculatePrices', t => {
   let periods = ['2015', '2016', '2017', '2018'];
   // note that there is no quantity provided for 2015
 
-  t.same(utils.calculatePrices(item, periods), {
+  t.deepEqual(utils.calculatePrices(item, periods), {
     '2015': 0,
     '2016': 11,
     '2017': 24.200000000000003,
@@ -66,7 +68,7 @@ test('calculatePrices', t => {
 });
 
 test('calculateCategoryTotals', t => {
-  t.same(utils.calculateCategoryTotals(data.costs), [
+  t.deepEqual(utils.calculateCategoryTotals(data.costs), [
     {
       "category": "direct",
       "totals": {
@@ -87,7 +89,7 @@ test('calculateCategoryTotals', t => {
     }
   ]);
 
-  t.same(utils.calculateCategoryTotals(data.revenues), [
+  t.deepEqual(utils.calculateCategoryTotals(data.revenues), [
     {
       "category": "licenses",
       "totals": {
@@ -109,7 +111,7 @@ test('calculateCategoryTotals', t => {
 
 test('calculateTotals', t => {
   let costsTotals = utils.calculateCategoryTotals(data.costs);
-  t.same(utils.calculateTotals(costsTotals), {
+  t.deepEqual(utils.calculateTotals(costsTotals), {
     "2015": 0,
     "2016": 301.78999999999996,
     "2017": 455.12609999999995,
@@ -117,7 +119,7 @@ test('calculateTotals', t => {
   });
 
   let revenuesTotals = utils.calculateCategoryTotals(data.revenues);
-  t.same(utils.calculateTotals(revenuesTotals), {
+  t.deepEqual(utils.calculateTotals(revenuesTotals), {
     "2016":204,
     "2017":560.48,
     "2018":928.8468
