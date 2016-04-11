@@ -5,13 +5,10 @@ import { assign } from 'lodash';
 
 import Popover from 'material-ui/lib/popover/popover';
 import TextField from 'material-ui/lib/text-field';
+import SelectField from 'material-ui/lib/select-field';
+import MenuItem from 'material-ui/lib/menus/menu-item';
 
 const debug = debugFactory('vbi:price');
-const styles = {
-  popover: {
-    padding: 20
-  }
-};
 
 /**
  * Price
@@ -42,6 +39,25 @@ export default class Price extends Component {
     this.state = {
       showPopover: false,
       anchorEl: null
+    };
+
+    this.types = {
+      'constant': {
+        label: 'Constant change',
+        description: 'Enter an initial price, have a constant change per period.'
+      },
+      'manual': {
+        label: 'Manual per period',
+        description: 'Manually enter a price for every period.'
+      },
+      'percentageTotal': {
+        label: 'Percentage of revenue',
+        description: 'A percentage of the total revenue, calculated from an initial price and initial total revenue.'
+      },
+      'percentageCategory': {
+        label: 'Percentage of category',
+        description: 'Enter a percentage of one or multiple revenue categories.'
+      }
     }
   }
 
@@ -69,7 +85,16 @@ export default class Price extends Component {
           targetOrigin={{horizontal: 'left', vertical: 'top'}}
           onRequestClose={this.hidePopover.bind(this)}
       >
-        <div style={styles.popover} >
+        <div className="price-popover" >
+          <SelectField value={this.props.price.type} onChange={this.handleChangeType.bind(this)} >
+            {Object.keys(this.types).sort().map(type => {
+              return <MenuItem key={type} value={type} primaryText={this.types[type].label} />
+            })}
+          </SelectField>
+          <p className="description">
+            {this.types[this.props.price.type].description}
+          </p>
+
           <TextField
               value={this.props.price.value}
               onChange={this.handleChangePrice.bind(this)}
@@ -110,6 +135,14 @@ export default class Price extends Component {
     let price = assign(this.props.price, { change: event.target.value });
 
     debug('handleChangeChange', price);
+
+    this.props.onChange(price);
+  }
+
+  handleChangeType (event, index, value) {
+    let price = assign(this.props.price, { type: value });
+
+    debug('handleChangeType', price);
 
     this.props.onChange(price);
   }

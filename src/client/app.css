@@ -200,3 +200,12 @@ div.snackbar.error div {
 div.snackbar.error button {
   color: white !important;
 }
+
+
+div.price-popover {
+  margin: 20px;
+}
+
+div.price-popover p.description {
+  width: 256px;
+}

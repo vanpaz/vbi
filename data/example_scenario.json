@@ -144,7 +144,7 @@
         "name": "Direct costs",
         "category": "direct",
         "price": {
-          "type": "percentage",
+          "type": "percentageCategory",
           "percentages": [
             {
               "category": "licenses",

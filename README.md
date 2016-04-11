@@ -260,6 +260,18 @@ The application supports multiple types of prices:
   }
   ```
 
+- initial price, and next prices are calculated based as a percentage of the
+  total revenue, where the percentage is a constant determined from the
+  initial price over the initial total revenue.
+
+  ```js
+  {
+    "type": "percentageTotal",
+    "value": "28k euro/year"
+    // ratio is calculated based on initialPrice divided by the initial revenue
+  }
+  ```
+
 - manually entered price per period (2015, 2016, 2017)
 
   ```js
@@ -279,7 +291,7 @@ The application supports multiple types of prices:
 
   ```js
   {
-    "type": "percentage",
+    "type": "percentageCategory",
     "percentages": [
       {
         "category": "licenses",
@@ -290,17 +302,6 @@ The application supports multiple types of prices:
         "percentage": "+6%"
       }
     ]
-  }
-  ```
-
-- a percentage of the total revenue, where the percentage is automatically
-  calculated based on an initial price.
-
-  ```js
-  {
-    "type": "ratio",
-    "value": "28k euro/year"
-    // ratio is calculated based on initialPrice divided by the initial revenue
   }
   ```
 
