@@ -5,12 +5,15 @@ import TextField from 'material-ui/lib/text-field';
 import FlatButton from 'material-ui/lib/flat-button';
 import SelectField from 'material-ui/lib/select-field';
 import MenuItem from 'material-ui/lib/menus/menu-item';
+import RadioButton from 'material-ui/lib/radio-button';
+import RadioButtonGroup from 'material-ui/lib/radio-button-group';
 
 const debug = debugFactory('vbi:PriceTypePercentage');
 
 const styles = {
   selectCategory: {width: 128},
-  textPercentage: {width: 96}
+  textPercentage: {width: 96},
+  radioAll: {margin: '8px 0'}
 };
 
 export default class PriceTypePercentage extends Component {
@@ -19,36 +22,76 @@ export default class PriceTypePercentage extends Component {
       <p className="description">
         Enter a percentage of one, multiple, or all revenue categories.
       </p>
+
+      <RadioButtonGroup
+          name="radioAll"
+          valueSelected={this.props.price.all ? 'true' : 'false'}
+          defaultSelected="true"
+          onChange={(event, value) => this.handleChangeAll(value === 'true') }>
+        <RadioButton
+            value="true"
+            label="A percentage of revenue"
+            style={styles.radioAll}
+        />
+        <RadioButton
+            value="false"
+            label="A percentage per category"
+            style={styles.radioAll}
+        />
+      </RadioButtonGroup>
+      <div>
+        {
+          this.props.price.all
+            ? this.renderOptionAll()
+            : this.renderOptionPerCategory()
+        }
+      </div>
+    </div>
+  }
+
+  renderOptionAll () {
+    return <div>
+      Percentage: <TextField
+        value={this.props.price.percentage}
+        style={styles.textPercentage}
+        onChange={(event) => {
+              this.handleChangePercentage(event.target.value) ;
+            }} />
+    </div>;
+  }
+
+  renderOptionPerCategory () {
+    return <div>
       <table>
         <tbody>
-          <tr>
-            <th>Category</th>
-            <th>Percentage</th>
-            <th />
-          </tr>
-          {this.props.price.percentages && this.props.price.percentages.map((entry, index) => {
-            return <tr key={index}>
-              <td>
-                {this.renderSelectCategory(entry)}
-              </td>
-              <td>
-                {this.renderTextPercentage(entry)}
-              </td>
-              <td>
-                <FlatButton label="Remove" onTouchTap={this.handleRemoveEntry.bind(this, entry)} />
-              </td>
-            </tr>
-          })}
-          <tr>
-            <td/>
-            <td/>
+        <tr>
+          <th>Category</th>
+          <th>Percentage</th>
+          <th />
+        </tr>
+        {this.props.price.percentages && this.props.price.percentages.map((entry, index) => {
+          return <tr key={index}>
             <td>
-              <FlatButton label="Add" onTouchTap={this.handleAddEntry.bind(this)} />
+              {this.renderSelectCategory(entry)}
+            </td>
+            <td>
+              {this.renderTextPercentage(entry)}
+            </td>
+            <td>
+              <FlatButton label="Remove" onTouchTap={this.handleRemoveEntry.bind(this, entry)} />
             </td>
           </tr>
+        })}
+        <tr>
+          <td/>
+          <td/>
+          <td>
+            <FlatButton label="Add" onTouchTap={this.handleAddEntry.bind(this)} />
+          </td>
+        </tr>
         </tbody>
       </table>
-    </div>
+    </div>;
   }
 
   renderSelectCategory (entry) {
@@ -122,17 +165,39 @@ export default class PriceTypePercentage extends Component {
     this.props.onChange(price);
   }
 
+  handleChangePercentage (percentage) {
+    debug('handleChangePercentage', percentage);
+
+    var price = cloneDeep(this.props.price);
+    price.percentage = percentage;
+
+    this.props.onChange(price);
+  }
+
+  handleChangeAll (all) {
+    debug('handleChangeAll', all);
+
+    var price = cloneDeep(this.props.price);
+    price.all = all;
+
+    this.props.onChange(price);
+  }
+
   static format (price) {
-    if (Array.isArray(price.percentages)) {
-      return price.percentages
-          .map(entry => {
-            return `${entry.percentage} of ${entry.category}`
-          })
-          .join(', ');
+    if (price.all) {
+      return `${price.percentage} of revenue`
     }
     else {
-      return '';
+      if (Array.isArray(price.percentages)) {
+        return price.percentages
+            .map(entry => {
+              return `${entry.percentage} of ${entry.category}`
+            })
+            .join(', ');
+      }
     }
+
+    return '';
   }
 
   static label = 'Percentage of revenue';

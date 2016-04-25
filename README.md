@@ -280,6 +280,7 @@ The application supports multiple types of prices:
   ```js
   {
     "type": "percentage",
+    "all": false,
     "percentages": [
       {
         "category": "licenses",
@@ -290,6 +291,16 @@ The application supports multiple types of prices:
         "percentage": "+6%"
       }
     ]
+  }
+  ```
+
+  to specify a category of all revenue, use the reserved category `'all'`:
+
+  ```js
+  {
+    "type": "percentage",
+    "all": true,
+    "percentage": "+3%"
   }
   ```
 

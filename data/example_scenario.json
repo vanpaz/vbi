@@ -145,6 +145,7 @@
         "category": "direct",
         "price": {
           "type": "percentage",
+          "all": false,
           "percentages": [
             {
               "category": "licenses",

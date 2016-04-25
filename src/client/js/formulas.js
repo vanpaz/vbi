@@ -141,21 +141,32 @@ export let types = {
         return {};
       }
 
-      return periods.reduce((prices, period) => {
-        prices[period] = 0;
+      if (item.price.all === true) {
+        // calculate a percentage of all revenue
+        let totals = calculateTotals(revenueTotals);
+        let percentage = parseFloat(item.price.percentage) / 100;
 
-        item.price.percentages.forEach(p => {
-          let percentage = parseFloat(p.percentage) / 100;
-          let entry = revenueTotals.find(t => t.category === p.category);
-          let total = entry && entry.totals && entry.totals[period] || 0;
+        return periods.reduce((prices, period) => {
+          prices[period] = percentage * (totals[period] || 0);
 
-          debug('calculatePrices', item, period, p.category, total)
+          return prices;
+        }, {});
+      }
+      else {
+        return periods.reduce((prices, period) => {
+          prices[period] = 0;
 
-          prices[period] += percentage * total;
-        });
+          item.price.percentages.forEach(p => {
+            let percentage = parseFloat(p.percentage) / 100;
+            let entry = revenueTotals.find(t => t.category === p.category);
+            let total = entry && entry.totals && entry.totals[period] || 0;
 
-        return prices;
-      }, {});
+            prices[period] += percentage * total;
+          });
+
+          return prices;
+        }, {});
+      }
     }
   }
 };
