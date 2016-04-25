@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import debugFactory from 'debug/browser';
 
 import { cloneDeep } from 'lodash';
-import { getCategories, getPeriods, findQuantity, clearIfZero } from './formulas';
+import { getCategories, findQuantity, clearIfZero } from './formulas';
 import Price from './Price';
 
 import Card from 'material-ui/lib/card/card';
@@ -30,9 +30,9 @@ export default class InputForm extends Component {
   }
 
   renderCosts () {
+    let periods = this.props.data.parameters.periods;
     let items = this.props.data.costs;
     let categories = getCategories(items);
-    let periods = getPeriods(items);
 
     debug('costs categories', categories);
     debug('costs periods', periods);
@@ -48,9 +48,9 @@ export default class InputForm extends Component {
   }
 
   renderRevenues () {
+    let periods = this.props.data.parameters.periods;
     let items = this.props.data.revenues;
     let categories = getCategories(items);
-    let periods = getPeriods(items);
 
     debug('revenues categories', categories);
     debug('revenues periods', periods);

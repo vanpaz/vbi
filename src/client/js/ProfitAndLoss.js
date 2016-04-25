@@ -5,13 +5,13 @@ import Card from 'material-ui/lib/card/card';
 import CardTitle from 'material-ui/lib/card/card-title';
 import CardText from 'material-ui/lib/card/card-text';
 
-import { getPeriods, calculateCostsTotals, calculateRevenueTotals, calculateTotals, clearIfZero, formatPrice } from './formulas';
+import { calculateCostsTotals, calculateRevenueTotals, calculateTotals, clearIfZero, formatPrice } from './formulas';
 
 const debug = debugFactory('vbi:profit-loss');
 
 export default class ProfitAndLoss extends Component {
   render () {
-    let periods = getPeriods(this.props.data.costs); // TODO: should read from both costs and revenues
+    let periods = this.props.data.parameters.periods;
     let categoryCostsTotals = calculateCostsTotals(this.props.data);
     let categoryRevenueTotals = calculateRevenueTotals(this.props.data);
 
@@ -48,6 +48,7 @@ export default class ProfitAndLoss extends Component {
           {
             periods.map(period => {
               let total = entry.totals[period];
+              
               return <td key={period} className="read-only">{
                 clearIfZero(total && formatPrice(total))
               }</td>

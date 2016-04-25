@@ -2,6 +2,10 @@
   "title": "Example Scenario",
 
   "data": {
+    "parameters": {
+      "periods": ["2015", "2016", "2017", "2018"]
+    },
+
     "costs": [
 
       {

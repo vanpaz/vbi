@@ -12,11 +12,6 @@ test('getCategories', t => {
   t.deepEqual(utils.getCategories(data.revenues), ['licenses', 'projects']);
 });
 
-test('getPeriods', t => {
-  t.deepEqual(utils.getPeriods(data.costs), ['2015', '2016', '2017', '2018']);
-  t.deepEqual(utils.getPeriods(data.revenues), ['2016', '2017', '2018']);
-});
-
 test('findQuantity', t => {
   t.deepEqual(utils.findQuantity({
     name: 'foo',

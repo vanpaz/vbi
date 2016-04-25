@@ -20,22 +20,6 @@ export function getCategories (items) {
 }
 
 /**
- * Extract the unique periods used in the items. The returned periods
- * are sorted alphabetically.
- * @param {Array} items
- * @return {Array.<string>}
- */
-export function getPeriods(items) {
-  let periods = flatMap(items, item => {
-    return Object.keys(item.quantities)
-        .concat(Object.keys(item.price.values || {}))
-        .filter(period => period != undefined);
-  });
-
-  return uniq(periods).sort();
-}
-
-/**
  * Find the quantity for a certain period
  * @param item
  * @param {string} period
@@ -179,7 +163,7 @@ export let types = {
 export function calculateCostsTotals (data) {
   let revenueTotals = calculateRevenueTotals(data);
   let categories = getCategories(data.costs);
-  let periods = getPeriods(data.costs);
+  let periods = data.parameters.periods;
 
   return categories.map(category => {
     let totals = data.costs
@@ -198,7 +182,7 @@ export function calculateCostsTotals (data) {
  */
 export function calculateRevenueTotals (data) {
   let categories = getCategories(data.revenues);
-  let periods = getPeriods(data.revenues);
+  let periods = data.parameters.periods;
 
   return categories.map(category => {
     let totals = data.revenues
@@ -247,7 +231,7 @@ export function addTotals (a, b) {
  * @return {string}
  */
 export function clearIfZero (value) {
-  return value === '0' ? '' : value;
+  return (value === '0' || value === 0) ? '' : value;
 }
 
 /**
