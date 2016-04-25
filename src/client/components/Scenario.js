@@ -1,8 +1,9 @@
 import Emitter from 'emitter-component';
 import { cloneDeep } from 'lodash';
 import debugFactory from 'debug/browser';
-import { request } from './request';
-import { hash } from './hash'
+import { request } from '../js/request';
+import { hash } from '../js/hash'
+
 const debug = debugFactory('vbi:scenario');
 
 const EXAMPLE_DOC = require('../../../data/example_scenario.json');

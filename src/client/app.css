@@ -30,14 +30,10 @@ div.card {
 
 div.container div.card  {
   margin-top: 0;
+  width: 100%;
 }
 div.container:first-child div.card  {
   margin-top: 20px;
-}
-
-div.container.profit-and-loss div.card {
-  /* TODO: fix the need to specify width for the right panel */
-  width: 100%;
 }
 
 @media screen and (min-width: 1200px) {
@@ -55,7 +51,7 @@ div.container.profit-and-loss div.card {
 h1 {
   font-size: 14pt;
   font-weight: normal;
-  color: #008fd5;
+  color: #f3742c;
   margin-top: 30px;
 }
 

@@ -6,24 +6,28 @@ import { getCategories, findQuantity, clearIfZero } from './formulas';
 import Price from './Price';
 
 import Card from 'material-ui/lib/card/card';
-import CardTitle from 'material-ui/lib/card/card-title';
 import CardText from 'material-ui/lib/card/card-text';
+import Tabs from 'material-ui/lib/tabs/tabs';
+import Tab from 'material-ui/lib/tabs/tab';
 
-const debug = debugFactory('vbi:input-form');
+const debug = debugFactory('vbi:inputs');
 
-export default class InputForm extends Component {
+export default class Inputs extends Component {
   render () {
-    return <div style={{width: '100%'}}>
-      <Card className="card costs">
-        <CardTitle title="Costs" subtitle="Enter prices and quantities of your costs" />
+    return <div style={{width: '100%', display: 'inline-flex'}}>
+      <Card className="card">
         <CardText>
-          {this.renderCosts()}
-        </CardText>
-      </Card>
-      <Card className="card revenues">
-        <CardTitle title="Revenues" subtitle="Enter prices and quantities of your revenues" />
-        <CardText>
-          {this.renderRevenues()}
+          <Tabs inkBarStyle={{height: 4, marginTop: -4}}>
+            <Tab label="Costs">
+              {this.renderCosts()}
+            </Tab>
+            <Tab label="Investments">
+              <p>(not yet implemented...)</p>
+            </Tab>
+            <Tab label="Revenues">
+              {this.renderRevenues()}
+            </Tab>
+          </Tabs>
         </CardText>
       </Card>
     </div>

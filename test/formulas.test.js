@@ -1,6 +1,6 @@
 import test from 'ava';
 
-import * as utils from '../src/client/js/formulas';
+import * as utils from '../src/client/components/formulas';
 
 import { readFileSync } from 'fs';
 

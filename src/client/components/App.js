@@ -17,11 +17,13 @@ import ContentOpen from 'material-ui/lib/svg-icons/file/folder-open';
 import ContentSave from 'material-ui/lib/svg-icons/content/save';
 import ContentCreate from 'material-ui/lib/svg-icons/content/add';
 import ContentClear from 'material-ui/lib/svg-icons/content/clear';
+import ThemeManager from 'material-ui/lib/styles/theme-manager'
 
+import theme from '../theme'
 import Scenario from './Scenario';
-import InputForm from './InputForm';
-import ProfitAndLoss from './ProfitAndLoss';
-import { request } from './request';
+import Inputs from './Inputs';
+import Outputs from './Outputs';
+import { request } from '../js/request';
 
 const debug = debugFactory('vbi:app');
 
@@ -34,7 +36,7 @@ const APP_BAR_STYLE = {
   top: 0,
   left: 0,
   zIndex: 999,
-  background: '#f3742c'
+  // background: '#f3742c'
 };
 
 
@@ -103,12 +105,12 @@ export default class App extends Component {
         { this.renderNotification() }
 
         <div>
-          <div className="container input-form">
-            <InputForm data={this.state.doc.data} onChange={data => this.handleChange(data)} />
+          <div className="container">
+            <Inputs data={this.state.doc.data} onChange={data => this.handleChange(data)} />
           </div>
 
-          <div className="container profit-and-loss">
-            <ProfitAndLoss data={this.state.doc.data} />
+          <div className="container">
+            <Outputs data={this.state.doc.data} />
           </div>
         </div>
 
@@ -594,5 +596,17 @@ export default class App extends Component {
   compareUpdated (a, b) {
     return a.updated > b.updated ? -1 : a.updated < b.updated ? 1 : 0;
   }
+
+  // getChildContext and childContextTypes are needed to set a custom material-ui theme
+  getChildContext() {
+    return {
+      muiTheme: ThemeManager.getMuiTheme(theme)
+    }
+  }
 }
 
+// getChildContext and childContextTypes are needed to set a custom material-ui theme
+// the key passed through context must be called "muiTheme"
+App.childContextTypes = {
+  muiTheme: React.PropTypes.object
+};

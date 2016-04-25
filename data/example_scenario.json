@@ -149,17 +149,8 @@
         "category": "direct",
         "price": {
           "type": "percentage",
-          "all": false,
-          "percentages": [
-            {
-              "category": "licenses",
-              "percentage": "+5%"
-            },
-            {
-              "category": "projects",
-              "percentage": "+5%"
-            }
-          ]
+          "all": true,
+          "percentage": "5%"
         },
         "quantities": {
           "2015": "1",

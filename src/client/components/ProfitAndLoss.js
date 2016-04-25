@@ -1,19 +1,12 @@
 import React, { Component } from 'react';
 import debugFactory from 'debug/browser';
 
-import Card from 'material-ui/lib/card/card';
-import CardTitle from 'material-ui/lib/card/card-title';
-import CardText from 'material-ui/lib/card/card-text';
-
 import { calculateCostsTotals, calculateRevenueTotals, calculateTotals, clearIfZero, formatPrice } from './formulas';
 
 const debug = debugFactory('vbi:profit-loss');
 
 export default class ProfitAndLoss extends Component {
   render () {
-    let cartTitle = <CardTitle title="Profit and Loss" subtitle="Calculate profit and loss based on provided costs and revenues" />;
-    let cardText;
-
     try {
       let periods = this.props.data.parameters.periods;
       let categoryCostsTotals = calculateCostsTotals(this.props.data);
@@ -23,24 +16,17 @@ export default class ProfitAndLoss extends Component {
       debug ('categoryCostsTotals', categoryCostsTotals);
       debug ('categoryRevenueTotals', categoryRevenueTotals);
 
-      cardText = <CardText>
+      return <div>
         <h1>costs</h1>
         {ProfitAndLoss.renderTotals(categoryCostsTotals, periods)}
 
         <h1>revenues</h1>
         {ProfitAndLoss.renderTotals(categoryRevenueTotals, periods)}
-      </CardText>;
+      </div>;
     }
     catch (err) {
-      cardText = <CardText>
-        <div className="error">{err.toString()}</div>
-      </CardText>;
+      return <div className="error">{err.toString()}</div>
     }
-
-    return <Card className="card">
-      {cartTitle}
-      {cardText}
-    </Card>;
   }
 
   static renderTotals (categoryTotals, periods) {

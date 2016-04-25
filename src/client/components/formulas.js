@@ -140,13 +140,15 @@ export let types = {
         return periods.reduce((prices, period) => {
           prices[period] = 0;
 
-          item.price.percentages.forEach(p => {
-            let percentage = parsePercentage(p.percentage);
-            let entry = revenueTotals.find(t => t.category === p.category);
-            let total = entry && entry.totals && entry.totals[period] || 0;
+          if (item.price.percentages) {
+            item.price.percentages.forEach(p => {
+              let percentage = parsePercentage(p.percentage);
+              let entry = revenueTotals.find(t => t.category === p.category);
+              let total = entry && entry.totals && entry.totals[period] || 0;
 
-            prices[period] += percentage * total;
-          });
+              prices[period] += percentage * total;
+            });
+          }
 
           return prices;
         }, {});
