@@ -12,11 +12,13 @@ export default class PriceTypeConstant extends Component {
       </p>
       <TextField
           value={this.props.price.value}
+          hintText="23k"
           floatingLabelText="Initial price"
           onChange={this.handleChangePrice.bind(this)} />
       <br />
       <TextField
           value={this.props.price.change}
+          hintText="+3%"
           floatingLabelText="Percentage of change per period"
           onChange={this.handleChangeChange.bind(this)}  />
     </div>

@@ -35,8 +35,7 @@ const APP_BAR_STYLE = {
   position: 'fixed',
   top: 0,
   left: 0,
-  zIndex: 999,
-  // background: '#f3742c'
+  zIndex: 999
 };
 
 

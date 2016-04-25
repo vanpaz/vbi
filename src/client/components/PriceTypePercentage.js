@@ -18,6 +18,8 @@ const styles = {
 
 export default class PriceTypePercentage extends Component {
   render () {
+    const all = (this.props.price.all !== false);
+
     return <div className="price-type">
       <p className="description">
         Enter a percentage of one, multiple, or all revenue categories.
@@ -25,7 +27,7 @@ export default class PriceTypePercentage extends Component {
 
       <RadioButtonGroup
           name="radioAll"
-          valueSelected={this.props.price.all ? 'true' : 'false'}
+          valueSelected={all ? 'true' : 'false'}
           defaultSelected="true"
           onChange={(event, value) => this.handleChangeAll(value === 'true') }>
         <RadioButton
@@ -41,7 +43,7 @@ export default class PriceTypePercentage extends Component {
       </RadioButtonGroup>
       <div>
         {
-          this.props.price.all
+          (all)
             ? this.renderOptionAll()
             : this.renderOptionPerCategory()
         }
@@ -53,6 +55,7 @@ export default class PriceTypePercentage extends Component {
     return <div>
       Percentage: <TextField
         value={this.props.price.percentage}
+        hintText="5%"
         style={styles.textPercentage}
         onChange={(event) => {
               this.handleChangePercentage(event.target.value) ;
@@ -97,6 +100,7 @@ export default class PriceTypePercentage extends Component {
   renderSelectCategory (entry) {
     return <SelectField
         value={entry.category}
+        hintText="category"
         style={styles.selectCategory}
         onChange={(event, index, value) => {
               let newEntry = {
@@ -114,6 +118,7 @@ export default class PriceTypePercentage extends Component {
   renderTextPercentage (entry) {
     return <TextField
         value={entry.percentage}
+        hintText="5%"
         style={styles.textPercentage}
         onChange={(event) => {
               let newEntry = {
@@ -160,7 +165,7 @@ export default class PriceTypePercentage extends Component {
     if (!price.percentages) {
       price.percentages = [];
     }
-    price.percentages.push({category: '', percentage: '+3%'});
+    price.percentages.push({category: '', percentage: ''});
 
     this.props.onChange(price);
   }

@@ -41,6 +41,7 @@ export default class PriceTypeManual extends Component {
   renderValue (period, value) {
     return <TextField
         value={value}
+        hintText="23k"
         style={styles.textField}
         onChange={(event) => this.handleChangeEntry(period, event.target.value)} />
   }

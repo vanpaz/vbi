@@ -25,7 +25,7 @@ export default class ProfitAndLoss extends Component {
       </div>;
     }
     catch (err) {
-      return <div className="error">{err.toString()}</div>
+      return <div className="error"><p>{err.toString()}</p></div>
     }
   }
 
