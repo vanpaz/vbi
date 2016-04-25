@@ -194,6 +194,11 @@ a.changed:hover {
   opacity: 1;
 }
 
+div.error {
+  color: #E9573F;
+  font-weight: bold;
+}
+
 div.snackbar.error div {
   background: #E9573F !important;
 }

@@ -11,25 +11,35 @@ const debug = debugFactory('vbi:profit-loss');
 
 export default class ProfitAndLoss extends Component {
   render () {
-    let periods = this.props.data.parameters.periods;
-    let categoryCostsTotals = calculateCostsTotals(this.props.data);
-    let categoryRevenueTotals = calculateRevenueTotals(this.props.data);
+    let cartTitle = <CardTitle title="Profit and Loss" subtitle="Calculate profit and loss based on provided costs and revenues" />;
+    let cardText;
 
-    debug ('periods', periods);
-    debug ('categoryCostsTotals', categoryCostsTotals);
-    debug ('categoryRevenueTotals', categoryRevenueTotals);
+    try {
+      let periods = this.props.data.parameters.periods;
+      let categoryCostsTotals = calculateCostsTotals(this.props.data);
+      let categoryRevenueTotals = calculateRevenueTotals(this.props.data);
 
-    return <Card className="card">
-      <CardTitle title="Profit and Loss" subtitle="Calculate profit and loss based on provided costs and revenues" />
-      <CardText>
+      debug ('periods', periods);
+      debug ('categoryCostsTotals', categoryCostsTotals);
+      debug ('categoryRevenueTotals', categoryRevenueTotals);
 
+      cardText = <CardText>
         <h1>costs</h1>
         {ProfitAndLoss.renderTotals(categoryCostsTotals, periods)}
 
         <h1>revenues</h1>
         {ProfitAndLoss.renderTotals(categoryRevenueTotals, periods)}
+      </CardText>;
+    }
+    catch (err) {
+      cardText = <CardText>
+        <div className="error">{err.toString()}</div>
+      </CardText>;
+    }
 
-      </CardText>
+    return <Card className="card">
+      {cartTitle}
+      {cardText}
     </Card>;
   }
 
