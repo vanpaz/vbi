@@ -84,8 +84,8 @@ export let types = {
      *                                   and prices as value
      */
     calculatePrices: function (item, periods) {
-      let initialPrice = parseFloat(item.price.value);
-      let change = 1 + parseFloat(item.price.change) / 100;
+      let initialPrice = parsePrice(item.price.value);
+      let change = 1 + parsePercentage(item.price.change);
 
       return periods.reduce((prices, period, periodIndex) => {
         let quantity = findQuantity(item, period);
@@ -144,7 +144,7 @@ export let types = {
       if (item.price.all === true) {
         // calculate a percentage of all revenue
         let totals = calculateTotals(revenueTotals);
-        let percentage = parseFloat(item.price.percentage) / 100;
+        let percentage = parsePercentage(item.price.percentage);
 
         return periods.reduce((prices, period) => {
           prices[period] = percentage * (totals[period] || 0);
@@ -157,7 +157,7 @@ export let types = {
           prices[period] = 0;
 
           item.price.percentages.forEach(p => {
-            let percentage = parseFloat(p.percentage) / 100;
+            let percentage = parsePercentage(p.percentage);
             let entry = revenueTotals.find(t => t.category === p.category);
             let total = entry && entry.totals && entry.totals[period] || 0;
 
@@ -248,4 +248,95 @@ export function addTotals (a, b) {
  */
 export function clearIfZero (value) {
   return value === '0' ? '' : value;
+}
+
+/**
+ * Parse a percentage. Examples:
+ *
+ *     parsePercentage('10%')     // 0.1
+ *     parsePercentage('+5%')     // 0.05
+ *     parsePercentage('-2.5%')   // -0.025
+ *
+ * @param {string} percentage
+ * @return {number} Returns the numeric value of the percentage
+ */
+export function parsePercentage (percentage) {
+  let match = /^([+-]?[0-9]+[.]?[0-9]*)%$/.exec(percentage);
+
+  if (!match) {
+    throw new Error('Invalid percentage "' + percentage + '"')
+  }
+
+  return parseFloat(match[1]) / 100;
+}
+
+/**
+ * Parse a string into a number. Examples:
+ *
+ *     parsePrice('23')    // 23
+ *     parsePrice('15k')   // 15000
+ *     parsePrice('2m')    // 2000000
+ *     parsePrice('6b')    // 6000000000
+ *
+ * @param {string} price
+ * @return {number} The numeric value of the price
+ */
+export function parsePrice (price) {
+  let match = /^([+-]?[0-9]+[.]?[0-9]*)([kmb])?$/.exec(price);
+
+  if (!match) {
+    throw new Error('Invalid price "' + price + '"');
+  }
+
+  let suffixes = {
+    'undefined': 1,
+    k: 1e3,
+    m: 1e6,
+    b: 1e9
+  };
+
+  if (match[2] && (!(match[2] in suffixes))) {
+    throw new Error('Invalid price "' + price + '"');
+  }
+
+  return parseFloat(match[1]) * suffixes[match[2]];
+}
+
+/**
+ * Format a price like "12k". The value is rounded to zero digits,
+ * and when a multiple of thousands, millions, or billions,
+ * it's suffixed with "k", "m", "b". Examples:
+ *
+ *    formatPrice(12.05)      // "12"
+ *    formatPrice(12.75)      // "13"
+ *    formatPrice(15000)      // "15.0k"
+ *    formatPrice(2340000)    // "2.3m"
+ *    formatPrice(6000000000) // "6b"
+ *
+ * @param {number} price
+ * @return {string} Returns the formatted price
+ */
+export function formatPrice (price) {
+  if (Math.abs(price) > 1e10) {
+    return (price / 1e9).toFixed() + 'b';
+  }
+  if (Math.abs(price) > 1e9) {
+    return (price / 1e9).toFixed(1) + 'b';
+  }
+
+  if (Math.abs(price) > 1e7) {
+    return (price / 1e6).toFixed() + 'm';
+  }
+  if (Math.abs(price) > 1e6) {
+    return (price / 1e6).toFixed(1) + 'm';
+  }
+
+  if (Math.abs(price) > 1e4) {
+    return (price / 1e3).toFixed() + 'k';
+  }
+  if (Math.abs(price) > 1e3) {
+    return (price / 1e3).toFixed(1) + 'k';
+  }
+
+  return (price).toFixed();
 }

@@ -255,8 +255,8 @@ The application supports multiple types of prices:
   ```js
   {
     "type": "constant",
-    "value": "28k euro/year",  // initial price
-    "change": "+3%"            // change per period
+    "value": "28k",  // initial price
+    "change": "+3%"  // change per period
   }
   ```
 
@@ -266,10 +266,10 @@ The application supports multiple types of prices:
   {
     "type": "manual",
     "values": {
-      "2015": "28k euro/year",
-      "2016": "29k euro/year",
-      "2017": "33k euro/year",
-      "2018": "34k euro/year"
+      "2015": "28k",
+      "2016": "29k",
+      "2017": "33k",
+      "2018": "34k"
     }
   }
   ```

@@ -47,7 +47,7 @@ test('calculatePrices', t => {
     "category": "licenses",
     "price": {
       "type": "constant",
-      "value": "10 euro/year",
+      "value": "10",
       "change": "+10%"
     },
     "quantities": {
@@ -68,28 +68,28 @@ test('calculatePrices', t => {
 });
 
 test('calculateCategoryTotals', t => {
-  t.deepEqual(utils.calculateCategoryTotals(data.costs), [
+  t.deepEqual(utils.calculateCostsTotals(data), [
     {
       "category": "direct",
       "totals": {
         "2015": 0,
-        "2016": 0,
-        "2017": 0,
-        "2018": 0
+        "2016": 10.2,
+        "2017": 28.024,
+        "2018": 46.44234
       }
     },
     {
       "category": "personnel",
       "totals": {
         "2015": 0,
-        "2016": 301.78999999999996,
-        "2017": 455.12609999999995,
-        "2018": 719.0143659999998
+        "2016": 301790,
+        "2017": 455126.10000000003,
+        "2018": 719014.3659999999
       }
     }
   ]);
 
-  t.deepEqual(utils.calculateCategoryTotals(data.revenues), [
+  t.deepEqual(utils.calculateRevenueTotals(data), [
     {
       "category": "licenses",
       "totals": {
@@ -110,18 +110,56 @@ test('calculateCategoryTotals', t => {
 });
 
 test('calculateTotals', t => {
-  let costsTotals = utils.calculateCategoryTotals(data.costs);
+  let costsTotals = utils.calculateCostsTotals(data);
+
   t.deepEqual(utils.calculateTotals(costsTotals), {
     "2015": 0,
-    "2016": 301.78999999999996,
-    "2017": 455.12609999999995,
-    "2018": 719.0143659999998
+    "2016": 301800.2,
+    "2017": 455154.124,
+    "2018": 719060.8083399999
   });
 
-  let revenuesTotals = utils.calculateCategoryTotals(data.revenues);
+  let revenuesTotals = utils.calculateRevenueTotals(data);
   t.deepEqual(utils.calculateTotals(revenuesTotals), {
     "2016":204,
     "2017":560.48,
     "2018":928.8468
   });
+});
+
+test('parsePercentage', t => {
+  t.is(utils.parsePercentage('5%'), 0.05);
+  t.is(utils.parsePercentage('+5%'), 0.05);
+  t.is(utils.parsePercentage('2.3%'), 0.023);
+  t.is(utils.parsePercentage('-10%'), -0.1);
+  t.throws(() => utils.parsePercentage('2.3.4%'), /Invalid percentage/);
+  t.throws(() => utils.parsePercentage('hi'), /Invalid percentage/);
+  t.throws(() => utils.parsePercentage('23'), /Invalid percentage/);
+});
+
+test('parsePrice', t => {
+  t.is(utils.parsePrice('23'), 23);
+  t.is(utils.parsePrice('23.5'), 23.5);
+  t.is(utils.parsePrice('-2'), -2);
+  t.is(utils.parsePrice('23k'), 23000);
+  t.is(utils.parsePrice('+23k'), 23000);
+  t.is(utils.parsePrice('-23k'), -23000);
+  t.is(utils.parsePrice('23m'), 23e6);
+  t.is(utils.parsePrice('23b'), 23e9);
+  t.throws(() => utils.parsePrice('hi'), /Invalid price/);
+  t.throws(() => utils.parsePrice('23q'), /Invalid price/);
+  t.throws(() => utils.parsePrice('23q'), /Invalid price/);
+  t.throws(() => utils.parsePrice('2.3.4'), /Invalid price/);
+});
+
+test('formatPrice', t => {
+  t.is(utils.formatPrice(12.05), '12');
+  t.is(utils.formatPrice(12.75), '13');
+  t.is(utils.formatPrice(-12.75), '-13');
+  t.is(utils.formatPrice(2300), '2.3k');
+  t.is(utils.formatPrice(15000), '15k');
+  t.is(utils.formatPrice(150000), '150k');
+  t.is(utils.formatPrice(2300000), '2.3m');
+  t.is(utils.formatPrice(23000000), '23m');
+  t.is(utils.formatPrice(600000000000), '600b');
 });
