@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import debugFactory from 'debug/browser';
 
 import { cloneDeep } from 'lodash';
-import { getCategories, getPeriods, findQuantity, clearIfZero } from './utils';
+import { getCategories, getPeriods, findQuantity, clearIfZero } from './formulas';
 import Price from './Price';
 
 import Card from 'material-ui/lib/card/card';
@@ -84,7 +84,7 @@ export default class InputForm extends Component {
           <tr>
             <th />
             {periods.map(period => <th key={period}>{period}</th>)}
-            <th></th>
+            <th />
           </tr>
           {
             items.map(item => <tr key={category + ':' + item.name}>

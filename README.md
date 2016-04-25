@@ -9,7 +9,7 @@ For development, we will start two servers: the backend server serving a REST AP
 
 - First install the projects dependencies once:
 
-  ```bash
+  ```
   $ npm install
   ```
 
@@ -27,7 +27,7 @@ For development, we will start two servers: the backend server serving a REST AP
 
 - Start the front-end server with hot reloading. This server is purely for development.
 
-  ```bash
+  ```
   $ PORT=8081 BACKEND_SERVER_URL=http://localhost:8080 node dev-server
   ```
 
@@ -39,13 +39,13 @@ For development, we will start two servers: the backend server serving a REST AP
 
 To run the tests, first install dependencies once:
 
-```bash
+```
 $ npm install
 ```
 
 Then run the tests:
 
-```bash
+```
 $ npm test
 ```
 
@@ -67,31 +67,31 @@ npm run lint
 
 1. Create a Heroku application to host the application server in the cloud:
 
-  ```bash
+  ```
   $ heroku git:remote -a vanpaz-business-intelligence
   ```
 
   Configure the url of the server itself:
 
-  ```bash
+  ```
   $ heroku config:set SERVER_URL=https://vanpaz-business-intelligence.herokuapp.com
   ```
 
   Also turn on debugging output:
 
-  ```bash
+  ```
   $ heroku config:set DEBUG=vbi*
   ```
 
 2. Create a Couch database at [cloudant](https://cloudant.com). CouchDB is used to store the scenarios that users have created. Configure the url in the Heroku application like:
 
-  ```bash
+  ```
   $ heroku config:set COUCH_DB=https://username:password@username.cloudant.com
   ```
 
 3. Create a Redis database used to store session information of logged in users.
 
-  ```bash
+  ```
   $ heroku addons:create rediscloud
   ```
 
@@ -104,7 +104,7 @@ npm run lint
 
   Configure the heroku application with the google client id and client secret:
 
-  ```bash
+  ```
   $ heroku config:set GOOGLE_CLIENT_ID=1234567890.apps.googleusercontent.com
   $ heroku config:set GOOGLE_CLIENT_SECRET=ABCDEFG
   ```
@@ -117,7 +117,7 @@ npm run lint
   ```
   Copy the app id and app secret from the front page of the developer dashboard, and add them to the configuration of the Heroku application:
 
-  ```bash
+  ```
   $ heroku config:set FACEBOOK_APP_ID=1234567890
   $ heroku config:set FACEBOOK_APP_SECRET=ABCDEFG
   ```
@@ -127,7 +127,7 @@ npm run lint
 
 To generate a bundle with the client side code:
 
-```bash
+```
 $ npm run build
 ```
 
@@ -138,7 +138,7 @@ This generates files in the folder `./dist`.
 
 To start the backend server locally, specify config variables on the command line and run `node server`:
 
-```bash
+```
 $ PORT=8080 SERVER_URL=http://localhost:8080 COUCH_DB=### GOOGLE_CLIENT_ID=### GOOGLE_CLIENT_SECRET=### FACEBOOK_APP_ID=### FACEBOOK_APP_SECRET=### DEBUG=vbi* node server
 ```
 
@@ -150,7 +150,7 @@ Then open [http://localhost:8080](http://localhost:8080) in your browser.
 
 To deploy, run the following script:
 
-```bash
+```
 $ npm run deploy
 ```
 
@@ -158,7 +158,7 @@ This will run the build script to generate the files under `./dist`, commit the 
 
 To see the logs of heroku, run:
 
-```bash
+```
 $ heroku logs --tail
 ```
 
@@ -260,18 +260,6 @@ The application supports multiple types of prices:
   }
   ```
 
-- initial price, and next prices are calculated based as a percentage of the
-  total revenue, where the percentage is a constant determined from the
-  initial price over the initial total revenue.
-
-  ```js
-  {
-    "type": "percentageTotal",
-    "value": "28k euro/year"
-    // ratio is calculated based on initialPrice divided by the initial revenue
-  }
-  ```
-
 - manually entered price per period (2015, 2016, 2017)
 
   ```js
@@ -286,12 +274,12 @@ The application supports multiple types of prices:
   }
   ```
 
-- a percentage of one or multiple revenue categories (i.e. 5% of all licencing
+- a percentage of one, multiple, or all revenue categories (i.e. 5% of all licencing
   revenue)
 
   ```js
   {
-    "type": "percentageCategory",
+    "type": "percentage",
     "percentages": [
       {
         "category": "licenses",

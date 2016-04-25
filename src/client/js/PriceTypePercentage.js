@@ -6,18 +6,18 @@ import FlatButton from 'material-ui/lib/flat-button';
 import SelectField from 'material-ui/lib/select-field';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 
-const debug = debugFactory('vbi:PriceTypePercentageRevenue');
+const debug = debugFactory('vbi:PriceTypePercentage');
 
 const styles = {
   selectCategory: {width: 128},
   textPercentage: {width: 96}
 };
 
-export default class PriceTypePercentageRevenue extends Component {
+export default class PriceTypePercentage extends Component {
   render () {
     return <div className="price-type">
       <p className="description">
-        Enter a percentage of one or multiple revenue categories.
+        Enter a percentage of one, multiple, or all revenue categories.
       </p>
       <table>
         <tbody>
@@ -135,5 +135,5 @@ export default class PriceTypePercentageRevenue extends Component {
     }
   }
 
-  static label = 'Percentage of category';
+  static label = 'Percentage of revenue';
 }

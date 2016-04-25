@@ -5,33 +5,36 @@ import Card from 'material-ui/lib/card/card';
 import CardTitle from 'material-ui/lib/card/card-title';
 import CardText from 'material-ui/lib/card/card-text';
 
-import { getPeriods, calculateCategoryTotals, calculateTotals, clearIfZero } from './utils';
+import { getPeriods, calculateCostsTotals, calculateRevenueTotals, calculateTotals, clearIfZero } from './formulas';
 
 const debug = debugFactory('vbi:profit-loss');
 
 export default class ProfitAndLoss extends Component {
   render () {
+    let periods = getPeriods(this.props.data.costs); // TODO: should read from both costs and revenues
+    let categoryCostsTotals = calculateCostsTotals(this.props.data);
+    let categoryRevenueTotals = calculateRevenueTotals(this.props.data);
+
+    debug ('periods', periods);
+    debug ('categoryCostsTotals', categoryCostsTotals);
+    debug ('categoryRevenueTotals', categoryRevenueTotals);
+
     return <Card className="card">
       <CardTitle title="Profit and Loss" subtitle="Calculate profit and loss based on provided costs and revenues" />
       <CardText>
 
         <h1>costs</h1>
-        {ProfitAndLoss.renderTotals(this.props.data.costs)}
+        {ProfitAndLoss.renderTotals(categoryCostsTotals, periods)}
 
         <h1>revenues</h1>
-        {ProfitAndLoss.renderTotals(this.props.data.revenues)}
+        {ProfitAndLoss.renderTotals(categoryRevenueTotals, periods)}
 
       </CardText>
     </Card>;
   }
 
-  static renderTotals (items) {
-    let periods = getPeriods(items);
-    let categoryTotals = calculateCategoryTotals(items);
+  static renderTotals (categoryTotals, periods) {
     let totals = calculateTotals(categoryTotals);
-
-    debug ('categoryTotals', categoryTotals);
-    debug ('totals', totals);
 
     return <table className="category-table" >
       <tbody>
@@ -43,9 +46,10 @@ export default class ProfitAndLoss extends Component {
         categoryTotals.map(entry => <tr key={entry.category}>
           <td className="read-only">{entry.category}</td>
           {
-            Object.keys(entry.totals).map(period => {
+            periods.map(period => {
+              let total = entry.totals[period];
               return <td key={period} className="read-only">{
-                clearIfZero(entry.totals[period].toFixed())
+                clearIfZero(total && total.toFixed())
               }</td>
             })
           }
@@ -54,9 +58,13 @@ export default class ProfitAndLoss extends Component {
       <tr>
         <td className="read-only total">total</td>
         {
-          Object.keys(totals).map(period => <td key={period} className="read-only total">{
-            clearIfZero(totals[period].toFixed())
-          }</td>)
+          periods.map(period => {
+            let total = totals[period];
+
+            return  <td key={period} className="read-only total">{
+              clearIfZero(total && total.toFixed())
+            }</td>
+          })
         }
       </tr>
       </tbody>
