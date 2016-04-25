@@ -9,7 +9,7 @@
         "category": "personnel",
         "price": {
           "type": "constant",
-          "value": "37k euro/year",
+          "value": "37k",
           "change": "+3%"
         },
         "quantities": {
@@ -24,7 +24,7 @@
         "category": "personnel",
         "price": {
           "type": "constant",
-          "value": "35k euro/year",
+          "value": "35k",
           "change": "+3%"
         },
         "quantities": {
@@ -39,7 +39,7 @@
         "category": "personnel",
         "price": {
           "type": "constant",
-          "value": "28k euro/year",
+          "value": "28k",
           "change": "+3%"
         },
         "quantities": {
@@ -54,7 +54,7 @@
         "category": "personnel",
         "price": {
           "type": "constant",
-          "value": "30k euro/year",
+          "value": "30k",
           "change": "+3%"
         },
         "quantities": {
@@ -69,7 +69,7 @@
         "category": "personnel",
         "price": {
           "type": "constant",
-          "value": "26k euro/year",
+          "value": "26k",
           "change": "+3%"
         },
         "quantities": {
@@ -84,7 +84,7 @@
         "category": "personnel",
         "price": {
           "type": "constant",
-          "value": "30k euro/year",
+          "value": "30k",
           "change": "+3%"
         },
         "quantities": {
@@ -99,7 +99,7 @@
         "category": "personnel",
         "price": {
           "type": "constant",
-          "value": "26k euro/year",
+          "value": "26k",
           "change": "+3%"
         },
         "quantities": {
@@ -114,7 +114,7 @@
         "category": "personnel",
         "price": {
           "type": "constant",
-          "value": "26k euro/year",
+          "value": "26k",
           "change": "+3%"
         },
         "quantities": {
@@ -129,7 +129,7 @@
         "category": "personnel",
         "price": {
           "type": "constant",
-          "value": "26k euro/year",
+          "value": "26k",
           "change": "+3%"
         },
         "quantities": {
@@ -172,7 +172,7 @@
         "category": "licenses",
         "price": {
           "type": "constant",
-          "value": "8 euro/year",
+          "value": "8",
           "change": "+3%"
         },
         "quantities": {
@@ -186,7 +186,7 @@
         "category": "licenses",
         "price": {
           "type": "constant",
-          "value": "10 euro/year",
+          "value": "10",
           "change": "+3%"
         },
         "quantities": {
@@ -200,7 +200,7 @@
         "category": "licenses",
         "price": {
           "type": "constant",
-          "value": "9 euro/year",
+          "value": "9",
           "change": "+3%"
         },
         "quantities": {
@@ -214,7 +214,7 @@
         "category": "licenses",
         "price": {
           "type": "constant",
-          "value": "6 euro/year",
+          "value": "6",
           "change": "+3%"
         },
         "quantities": {
@@ -229,7 +229,7 @@
         "category": "projects",
         "price": {
           "type": "constant",
-          "value": "60 euro/year",
+          "value": "60",
           "change": "+5%"
         },
         "quantities": {
@@ -243,7 +243,7 @@
         "category": "projects",
         "price": {
           "type": "constant",
-          "value": "60 euro/year",
+          "value": "60",
           "change": "+5%"
         },
         "quantities": {
@@ -257,7 +257,7 @@
         "category": "projects",
         "price": {
           "type": "constant",
-          "value": "60 euro/year",
+          "value": "60",
           "change": "+5%"
         },
         "quantities": {
@@ -271,7 +271,7 @@
         "category": "projects",
         "price": {
           "type": "constant",
-          "value": "60 euro/year",
+          "value": "60",
           "change": "+5%"
         },
         "quantities": {
