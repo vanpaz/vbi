@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import debugFactory from 'debug/browser';
 
-import { calculateCostsTotals, calculateRevenueTotals, calculateTotals, clearIfZero, formatPrice } from './formulas';
+import { calculateCostsTotals, calculateRevenueTotals, calculateTotals, clearIfZero, formatPrice } from './../js/formulas';
 
 const debug = debugFactory('vbi:profit-loss');
 

@@ -3,8 +3,6 @@ import debugFactory from 'debug/browser';
 
 const debug = debugFactory('vbi:formulas');
 
-// P*Q etcetera
-
 /**
  * Extract all unique categories defined in the items. The returned categories
  * are sorted alphabetically.

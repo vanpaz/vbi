@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import debugFactory from 'debug/browser';
 
 import { cloneDeep } from 'lodash';
-import { getCategories, findQuantity, clearIfZero } from './formulas';
+import { getCategories, findQuantity, clearIfZero } from './../js/formulas';
 import Price from './Price';
 
 import Card from 'material-ui/lib/card/card';

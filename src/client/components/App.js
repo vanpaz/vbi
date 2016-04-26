@@ -20,6 +20,10 @@ import ContentClear from 'material-ui/lib/svg-icons/content/clear';
 import ThemeManager from 'material-ui/lib/styles/theme-manager'
 
 import theme from '../theme'
+import SignInDialog from './dialogs/SignInDialog';
+import AskToSignInDialog from './dialogs/AskToSignInDialog';
+import DeleteDocDialog from './dialogs/DeleteDocDialog';
+import Prompt from './dialogs/Prompt';
 import Scenario from './Scenario';
 import Inputs from './Inputs';
 import Outputs from './Outputs';
@@ -80,8 +84,6 @@ export default class App extends Component {
 
       showLeftNav: false,
       showTitleDialog: false,
-      newTitle: null,
-
       showSignInDialog: false,
       showAskToSignIn: false,
       deleteDocDialog: null, // null or { title: string, id: string, rev: string }
@@ -97,10 +99,7 @@ export default class App extends Component {
       <div>
         { this.renderAppBar() }
         { this.renderLefNav() }
-        { this.renderTitleDialog() }
-        { this.renderSignInDialog() }
-        { this.renderAskToSignInDialog() }
-        { this.renderDeleteDocDialog() }
+        { this.renderDialogs() }
         { this.renderNotification() }
 
         <div>
@@ -273,161 +272,63 @@ export default class App extends Component {
     return this.state.user && this.state.user.id;
   }
 
-  renderSignInDialog () {
-    const signInActions = [
-      <FlatButton
-          label="Cancel"
-          onTouchTap={ (event) => this.setState({ showSignInDialog: false}) }
+  renderDialogs () {
+    return <div>
+      <Prompt
+          open={this.state.showTitleDialog}
+          title="Rename"
+          description="Enter a title for the scenario:"
+          value={this.state.newTitle}
+          onCancel={() => this.setState({
+            showTitleDialog: false
+          })}
+          onChange={(value) => {
+            this.setState({ newTitle: value });
+          }}
+          onOk={(value) => {
+            this.setState({
+              showTitleDialog: false
+            });
+
+            let doc = cloneDeep(this.state.doc);
+            doc.title = value;
+            this.changeDoc(doc);
+          }}
       />
-    ];
 
-    return <Dialog
-        title="Sign in"
-        actions={signInActions}
-        modal={false}
-        open={this.state.showSignInDialog}
-        onRequestClose={ (event) => this.setState({showSignInDialog: false}) }
-        contentStyle={{maxWidth: 500}} >
-      <p>
-        Sign in with your Google or Facebook account:
-      </p>
+      <SignInDialog
+          open={this.state.showSignInDialog}
+          redirectTo={this.state.redirectTo}
+          onCancel={() => this.setState({
+              showSignInDialog: false
+            })} />
 
-      <div>
-        <a href={`/api/v1/auth/google/signin?redirectTo=${this.state.redirectTo || ''}`} className="sign-in" >
-          <img src="images/sign_in_google.png" />
-        </a>
-      </div>
-      <div>
-        <a href={`/api/v1/auth/facebook/signin?redirectTo=${this.state.redirectTo || ''}`} className="sign-in" >
-          <img src="images/sign_in_facebook.png" />
-        </a>
-      </div>
-    </Dialog>
-  }
-
-  renderAskToSignInDialog () {
-    let cancel = (event) => this.setState({
-      showAskToSignIn: false
-    });
-    let ok = (event) => this.setState({
-      showAskToSignIn: false,
-      showSignInDialog: true
-    });
-    
-    const actions = [
-      <FlatButton
-          label="No"
-          secondary={true}
-          onTouchTap={cancel}
-      />,
-      <FlatButton
-          label="Yes"
-          primary={true}
-          keyboardFocused={true}
-          onTouchTap={ok}
+      <AskToSignInDialog
+          open={this.state.showAskToSignIn}
+          onCancel={() => this.setState({
+              showAskToSignIn: false
+            })}
+          onOk={() => this.setState({
+              showAskToSignIn: false,
+              showSignInDialog: true
+            })}
       />
-    ];
-    
-    return <Dialog
-        title="Not signed in"
-        actions={actions}
-        modal={false}
-        open={this.state.showAskToSignIn}
-        onRequestClose={cancel} >
-      <p>
-        To open, save, or delete scenarios you have to sign in first.
-      </p>
-      <p>
-        Do you want to sign in now?
-      </p>
-    </Dialog>
-  }
 
-  renderDeleteDocDialog () {
-    const cancel = (event) => {
-      this.setState({ deleteDocDialog: null });
-    };
-    const ok = (event) => {
-      this.setState({ deleteDocDialog: null });
-
-      this.handleDelete(this.state.deleteDocDialog);
-    };
-
-    const actions = [
-      <FlatButton
-          label="Cancel"
-          secondary={true}
-          onTouchTap={cancel}
-      />,
-      <FlatButton
-          label="Delete"
-          primary={true}
-          keyboardFocused={true}
-          onTouchTap={ok}
+      <DeleteDocDialog
+          open={this.state.deleteDocDialog ? true : false}
+          title={
+              this.state.deleteDocDialog &&
+                (this.state.deleteDocDialog.title || this.state.deleteDocDialog.id)}
+          onCancel={() => {
+              this.setState({ deleteDocDialog: null })
+            }}
+          onDelete={() => {
+              const deleteDocDialog = this.state.deleteDocDialog;
+              this.setState({ deleteDocDialog: null });
+              this.handleDelete(deleteDocDialog);
+            }}
       />
-    ];
-
-    const title = this.state.deleteDocDialog &&
-        (this.state.deleteDocDialog.title || this.state.deleteDocDialog.id);
-
-    return <Dialog
-        title="Delete scenario"
-        actions={actions}
-        modal={false}
-        open={this.state.deleteDocDialog ? true : false}
-        onRequestClose={cancel} >
-      <p>
-        Are you sure you want to delete <b>{title}</b>?
-      </p>
-    </Dialog>
-  }
-
-  renderTitleDialog () {
-    const cancel = (event) => {
-      this.setState({ showTitleDialog: false });
-    };
-    const ok = (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-
-      this.setState({ showTitleDialog: false });
-
-      let doc = cloneDeep(this.state.doc);
-      doc.title = this.state.newTitle;
-      this.changeDoc(doc);
-    };
-
-    const actions = [
-      <FlatButton
-          label="Cancel"
-          secondary={true}
-          onTouchTap={cancel}
-      />,
-      <FlatButton
-          label="Ok"
-          primary={true}
-          keyboardFocused={true}
-          onTouchTap={ok}
-      />
-    ];
-
-    return <Dialog
-        title="Rename"
-        actions={actions}
-        modal={false}
-        open={this.state.showTitleDialog}
-        onRequestClose={cancel} >
-      <p>
-        Enter a title for the scenario:
-      </p>
-      <form onSubmit={ok}>
-        <input
-            className="title"
-            ref="title"
-            value={this.state.newTitle}
-            onChange={(event) => this.setState({newTitle: event.target.value}) } />
-      </form>
-    </Dialog>
+    </div>
   }
 
   renderNotification () {
@@ -473,9 +374,6 @@ export default class App extends Component {
       showTitleDialog: true,
       newTitle: this.state.doc.title
     });
-
-    // select the contents of the input field on opening the dialog
-    setTimeout( () => this.refs.title.select(), 0);
   }
 
   handleOpen (id) {
