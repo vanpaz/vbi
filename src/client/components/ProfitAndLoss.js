@@ -17,10 +17,10 @@ export default class ProfitAndLoss extends Component {
       debug ('categoryRevenueTotals', categoryRevenueTotals);
 
       return <div>
-        <h1>costs</h1>
+        <h1>Costs</h1>
         {ProfitAndLoss.renderTotals(categoryCostsTotals, periods)}
 
-        <h1>revenues</h1>
+        <h1>Revenues</h1>
         {ProfitAndLoss.renderTotals(categoryRevenueTotals, periods)}
       </div>;
     }

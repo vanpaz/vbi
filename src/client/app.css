@@ -15,6 +15,9 @@ html, body {
   box-sizing: border-box;
   padding-top: 70px;
   padding-bottom: 70px;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 div.container {
@@ -55,6 +58,7 @@ h1 {
   font-weight: normal;
   color: #f3742c;
   margin-top: 30px;
+  text-transform: lowercase;
 }
 
 th {
@@ -219,4 +223,34 @@ div.price-popover {
 
 div.price-type p.description {
   width: 256px;
+}
+
+div.action-menu-root {
+  position: relative;
+  display: inline-block;
+}
+
+div.action-menu-root div.action-menu {
+  position: absolute;
+  box-sizing: border-box;
+  margin-left: -5px;
+  margin-bottom: -10px;
+  padding: 5px;
+  border-radius: 3px;
+  bottom: 100%;
+  left: 100%;
+  display: none;
+  background: #4d4d4d;
+  color: white;
+  z-index: 999;
+  box-shadow: rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px;
+
+  /* FIXME: get transition working */
+  opacity: 0;
+  transition:opacity 1s ease;
+}
+
+div.action-menu-root:hover div.action-menu {
+  display: inline-block;
+  opacity: 1;
 }

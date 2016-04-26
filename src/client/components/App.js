@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { cloneDeep, debounce } from 'lodash';
+import { clone, cloneDeep, debounce } from 'lodash';
 import debugFactory from 'debug/browser';
 
 import Avatar from 'material-ui/lib/avatar';
 import AppBar from 'material-ui/lib/app-bar';
-import Dialog from 'material-ui/lib/dialog';
 import Snackbar from 'material-ui/lib/snackbar';
 import FlatButton from 'material-ui/lib/flat-button';
 import IconButton from 'material-ui/lib/icon-button';
@@ -86,7 +85,11 @@ export default class App extends Component {
       showTitleDialog: false,
       showSignInDialog: false,
       showAskToSignIn: false,
+      showPeriodsDialog: false,
       deleteDocDialog: null, // null or { title: string, id: string, rev: string }
+
+      newTitle: '',
+      newPeriods: '',
 
       notification: null, // null or { message: string, closeable: boolean, duration: number | null}
 
@@ -104,7 +107,11 @@ export default class App extends Component {
 
         <div>
           <div className="container">
-            <Inputs data={this.state.doc.data} onChange={data => this.handleChange(data)} />
+            <Inputs 
+                data={this.state.doc.data} 
+                onChange={data => this.handleChange(data)}
+                onEditPeriods={() => this.handleEditPeriods()}
+            />
           </div>
 
           <div className="container">
@@ -279,16 +286,15 @@ export default class App extends Component {
           title="Rename"
           description="Enter a title for the scenario:"
           value={this.state.newTitle}
-          onCancel={() => this.setState({
-            showTitleDialog: false
-          })}
+          hintText="My Scenario"
+          onCancel={() => {
+            this.setState({ showTitleDialog: false });
+          }}
           onChange={(value) => {
             this.setState({ newTitle: value });
           }}
           onOk={(value) => {
-            this.setState({
-              showTitleDialog: false
-            });
+            this.setState({ showTitleDialog: false });
 
             let doc = cloneDeep(this.state.doc);
             doc.title = value;
@@ -327,6 +333,24 @@ export default class App extends Component {
               this.setState({ deleteDocDialog: null });
               this.handleDelete(deleteDocDialog);
             }}
+      />
+
+      <Prompt
+          open={this.state.showPeriodsDialog}
+          title="Periods"
+          description="Enter a comma separated list with periods:"
+          value={this.state.newPeriods}
+          hintText={comingYears().join(', ')}
+          onCancel={() => {
+            this.setState({ showPeriodsDialog: false });
+          }}
+          onChange={(value) => {
+            this.setState({ newPeriods: value });
+          }}
+          onOk={(value) => {
+            this.setState({ showPeriodsDialog: false });
+            this.setPeriods(value);
+          }}
       />
     </div>
   }
@@ -422,6 +446,40 @@ export default class App extends Component {
     }
   }
 
+  handleEditPeriods () {
+    const parameters = this.state.doc &&
+        this.state.doc.data &&
+        this.state.doc.data.parameters;
+
+    this.setState({
+      showPeriodsDialog: true,
+      newPeriods: (parameters && parameters.periods)
+          ? parameters.periods.join(', ')
+          : ''
+    });
+  }
+
+  /**
+   * Apply a new series of periods
+   * @param {string | Array.<string>} periods   A comma separated string or
+   *                                            an array with strings.
+   */
+  setPeriods (periods) {
+    debug('setPeriods', periods);
+
+    if (Array.isArray(periods)) {
+      let updatedDoc = cloneDeep(this.state.doc);
+      updatedDoc.data.parameters.periods = clone(periods);
+
+      this.changeDoc(updatedDoc);
+    }
+    else {
+      // periods is a string
+      const array = periods.split(',').map(trim);
+      this.setPeriods(array);
+    }
+  }
+
   handleError (err) {
     this.setState({
       notification: {
@@ -500,6 +558,21 @@ export default class App extends Component {
       muiTheme: ThemeManager.getMuiTheme(theme)
     }
   }
+}
+
+function trim (str) {
+  return str.trim();
+}
+
+function comingYears (count = 5) {
+  const years = [];
+  let year = new Date().getFullYear();
+
+  for (let i = 0; i < count; i++) {
+    years.push(year + i);
+  }
+
+  return years;
 }
 
 // getChildContext and childContextTypes are needed to set a custom material-ui theme

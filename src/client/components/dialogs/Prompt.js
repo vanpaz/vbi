@@ -7,7 +7,7 @@ import FlatButton from 'material-ui/lib/flat-button';
 export default class Prompt extends React.Component {
 
   render () {
-    let {open, title, description, value, onChange, onCancel, onOk} = this.props;
+    let {open, title, description, value, hintText, onChange, onCancel, onOk} = this.props;
 
     function handleCancel(event) {
       onCancel();
@@ -52,6 +52,7 @@ export default class Prompt extends React.Component {
             className="title"
             ref="title"
             value={value}
+            placeholder={hintText}
             onChange={handleChange}/>
       </form>
     </Dialog>

@@ -1,14 +1,19 @@
 import React, { Component } from 'react';
 import debugFactory from 'debug/browser';
-
 import { cloneDeep } from 'lodash';
-import { getCategories, findQuantity, clearIfZero } from './../js/formulas';
-import Price from './Price';
 
 import Card from 'material-ui/lib/card/card';
 import CardText from 'material-ui/lib/card/card-text';
 import Tabs from 'material-ui/lib/tabs/tabs';
 import Tab from 'material-ui/lib/tabs/tab';
+import IconButton from 'material-ui/lib/icon-button';
+import FlatButton from 'material-ui/lib/flat-button';
+import EditIcon from 'material-ui/lib/svg-icons/image/edit';
+
+import { getCategories, findQuantity, clearIfZero } from './../js/formulas';
+import Price from './Price';
+
+import ActionMenu from './ActionMenu';
 
 const debug = debugFactory('vbi:inputs');
 
@@ -87,7 +92,13 @@ export default class Inputs extends Component {
           </tr>
           <tr>
             <th />
-            {periods.map(period => <th key={period}>{period}</th>)}
+            {
+              periods.map(period => {
+                return <th key={period}>
+                  {this.renderPeriodsActionMenu(period)}
+                </th>
+              })
+            }
             <th />
           </tr>
           {
@@ -116,6 +127,21 @@ export default class Inputs extends Component {
         </tbody>
       </table>
     </div>
+  }
+
+  renderPeriodsActionMenu (period) {
+    let periodActions = [
+      <IconButton
+          key="edit"
+          onTouchTap={event => this.props.onEditPeriods()}
+          style={{width: 24, height: 24, padding: 0}}>
+        <EditIcon color="white" hoverColor="#f3742c" />
+      </IconButton>
+    ];
+
+    return <ActionMenu actions={periodActions}>
+      {period}
+    </ActionMenu>
   }
 
   /**
