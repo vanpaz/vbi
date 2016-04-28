@@ -259,14 +259,14 @@ export function parsePercentage (percentage) {
  *
  *     parsePrice('23')    // 23
  *     parsePrice('15k')   // 15000
- *     parsePrice('2m')    // 2000000
- *     parsePrice('6b')    // 6000000000
+ *     parsePrice('2M')    // 2000000
+ *     parsePrice('6B')    // 6000000000
  *
  * @param {string} price
  * @return {number} The numeric value of the price
  */
 export function parsePrice (price) {
-  let match = /^([+-]?[0-9]+[.]?[0-9]*)([kmb])?$/.exec(price);
+  let match = /^([+-]?[0-9]+[.]?[0-9]*)([kMBT])?$/.exec(price);
 
   if (!match) {
     throw new Error('Invalid price "' + price + '"');
@@ -275,8 +275,9 @@ export function parsePrice (price) {
   let suffixes = {
     'undefined': 1,
     k: 1e3,
-    m: 1e6,
-    b: 1e9
+    M: 1e6,
+    B: 1e9,
+    T: 1e12
   };
 
   if (match[2] && (!(match[2] in suffixes))) {
@@ -294,33 +295,24 @@ export function parsePrice (price) {
  *    formatPrice(12.05)      // "12"
  *    formatPrice(12.75)      // "13"
  *    formatPrice(15000)      // "15.0k"
- *    formatPrice(2340000)    // "2.3m"
- *    formatPrice(6000000000) // "6b"
+ *    formatPrice(2340000)    // "2.3M"
+ *    formatPrice(6000000000) // "6B"
  *
  * @param {number} price
  * @return {string} Returns the formatted price
  */
 export function formatPrice (price) {
-  if (Math.abs(price) > 1e10) {
-    return (price / 1e9).toFixed() + 'b';
-  }
-  if (Math.abs(price) > 1e9) {
-    return (price / 1e9).toFixed(1) + 'b';
-  }
+  if (Math.abs(price) > 1e13) { return (price / 1e12).toFixed() + 'T'; }
+  if (Math.abs(price) > 1e12) { return (price / 1e12).toFixed(1) + 'T'; }
 
-  if (Math.abs(price) > 1e7) {
-    return (price / 1e6).toFixed() + 'm';
-  }
-  if (Math.abs(price) > 1e6) {
-    return (price / 1e6).toFixed(1) + 'm';
-  }
+  if (Math.abs(price) > 1e10) { return (price / 1e9).toFixed() + 'B'; }
+  if (Math.abs(price) > 1e9)  { return (price / 1e9).toFixed(1) + 'B'; }
 
-  if (Math.abs(price) > 1e4) {
-    return (price / 1e3).toFixed() + 'k';
-  }
-  if (Math.abs(price) > 1e3) {
-    return (price / 1e3).toFixed(1) + 'k';
-  }
+  if (Math.abs(price) > 1e7)  { return (price / 1e6).toFixed() + 'M'; }
+  if (Math.abs(price) > 1e6)  { return (price / 1e6).toFixed(1) + 'M'; }
+
+  if (Math.abs(price) > 1e4)  { return (price / 1e3).toFixed() + 'k'; }
+  if (Math.abs(price) > 1e3)  { return (price / 1e3).toFixed(1) + 'k'; }
 
   return (price).toFixed();
 }
