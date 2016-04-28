@@ -58,7 +58,7 @@ export default class Price extends Component {
 
     return <div className="price">
       <button
-          className={this.state.showPopover ? 'expanded' : ''}
+          className={this.state.showPopover ? 'price expanded' : 'price'}
           onTouchTap={this.showPopover.bind(this)} >
         {PriceType && PriceType.format(this.props.price)}
         {' \u25BE'}

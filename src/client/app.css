@@ -94,8 +94,8 @@ table.category-table td.total {
 }
 
 
-table.category-table td input,
-table.category-table td button {
+table.category-table td input.quantity,
+table.category-table td button.price {
   border: none;
   font-family: roboto, sans-serif;
   font-size: 14px;
@@ -119,12 +119,12 @@ table.category-table td input:focus {
   outline: none;
 }
 
-table.category-table td button {
+table.category-table td button.price {
   padding: 5px;
   min-width: 140px;
 }
 
-table.category-table td button.expanded {
+table.category-table td button.price.expanded {
   background: #f3742c;
   color: white;
 }
@@ -267,4 +267,46 @@ div.action-menu-root div.action-menu  table.action-menu-contents {
 
 div.action-menu-root div.action-menu  table.action-menu-contents button {
   min-width: unset;
+}
+
+button.add-group {
+  font-size: 14pt;
+  font-weight: normal;
+  text-transform: lowercase;
+  margin-top: 30px;
+  padding: 5px;
+  margin-left: -5px;
+
+  background: transparent;
+  color: #f3742c;
+  opacity: 0.5;
+  border: 1px dashed transparent;
+  border-radius: 3px;
+  outline: none;
+}
+
+button.add-group:hover,
+button.add-group:focus {
+  border: 1px dashed #f3742c;
+  opacity: 1;
+}
+
+
+button.add-category {
+  font-size: 14px;
+  font-weight: normal;
+  text-transform: lowercase;
+  padding: 5px;
+  margin-left: -5px;
+  background: transparent;
+  border: 1px dashed transparent;
+  border-radius: 3px;
+  color: #9e9e9e;
+  outline: none;
+}
+
+button.add-category:hover,
+button.add-category:focus {
+  color: rgba(0, 0, 0, 0.87);
+  border: 1px dashed rgba(0, 0, 0, 0.87);
 }

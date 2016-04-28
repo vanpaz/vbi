@@ -7,7 +7,9 @@ import CardText from 'material-ui/lib/card/card-text';
 import Tabs from 'material-ui/lib/tabs/tabs';
 import Tab from 'material-ui/lib/tabs/tab';
 import IconButton from 'material-ui/lib/icon-button';
+import FlatButton from 'material-ui/lib/flat-button';
 import EditIcon from 'material-ui/lib/svg-icons/image/edit';
+import AddIcon from 'material-ui/lib/svg-icons/content/add';
 import ClearIcon from 'material-ui/lib/svg-icons/content/clear';
 import DownIcon from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-down';
 import UpIcon from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-up';
@@ -40,13 +42,13 @@ export default class Inputs extends Component {
         <CardText>
           <Tabs inkBarStyle={{height: 4, marginTop: -4}}>
             <Tab label="Costs">
-              {this.renderCosts()}
+              {this.renderSection('costs', ['constant', 'manual', 'revenue'])}
             </Tab>
             <Tab label="Investments">
-              {this.renderInvestments()}
+              {this.renderSection('investments', ['investment'])}
             </Tab>
             <Tab label="Revenues">
-              {this.renderRevenues()}
+              {this.renderSection('revenues', ['constant', 'manual'])}
             </Tab>
           </Tabs>
         </CardText>
@@ -54,39 +56,22 @@ export default class Inputs extends Component {
     </div>
   }
 
-  renderCosts () {
+  renderSection (section, priceTypes) {
     const periods = this.props.data.parameters.periods;
-    const groups = this.props.data.costs;
-    const priceTypes = ['constant', 'manual', 'revenue'];
+    const groups = this.props.data[section];
 
     return <div>
       {
-        groups.map(group => this.renderGroup('costs', group, periods, priceTypes))
+        groups && groups.map(group => this.renderGroup('costs', group, periods, priceTypes))
       }
-    </div>
-  }
-
-  renderInvestments () {
-    const periods = this.props.data.parameters.periods;
-    const groups = this.props.data.investments;
-    const priceTypes = ['investment'];
-
-    return <div>
-      {
-        groups.map(group => this.renderGroup('investments', group, periods, priceTypes))
-      }
-    </div>
-  }
-
-  renderRevenues () {
-    const periods = this.props.data.parameters.periods;
-    const groups = this.props.data.revenues;
-    const priceTypes = ['constant', 'manual'];
-
-    return <div>
-      {
-        groups.map(group => this.renderGroup('revenues', group, periods, priceTypes))
-      }
+      <p>
+        <button className="add-group" onTouchTap={
+            // TODO: implement action
+            (event) => alert('not yet implemented')
+        }>
+          add group...
+        </button>
+      </p>
     </div>
   }
 
@@ -124,7 +109,8 @@ export default class Inputs extends Component {
               }</td>
               {
                 periods.map(period => (<td key={period} className="quantity">
-                  <input value={clearIfZero(findQuantity(item, period))}
+                  <input className="quantity"
+                         value={clearIfZero(findQuantity(item, period))}
                          onChange={(event) => {
                            let quantity = event.target.value;
                            this.updateQuantity(section, group.name, item.name, period, quantity);
@@ -143,6 +129,16 @@ export default class Inputs extends Component {
               </td>
             </tr>)
           }
+        <tr>
+          <td className="read-only">
+            <button className="add-category" onTouchTap={
+              // TODO: implement action
+              (event) => alert('not yet implemented')
+            }>
+              add category...
+            </button>
+          </td>
+        </tr>
         </tbody>
       </table>
     </div>
@@ -174,7 +170,7 @@ export default class Inputs extends Component {
           key="rename"
           title="Rename group"
           onTouchTap={
-            // TODO: implement rename category
+            // TODO: implement action
             (event) => alert('not yet implemented')
           }
           style={styles.actionButton}>
@@ -184,7 +180,7 @@ export default class Inputs extends Component {
           key="up"
           title="Move group up"
           onTouchTap={
-            // TODO: implement rename category
+            // TODO: implement action
             (event) => alert('not yet implemented')
           }
           style={styles.actionButton}>
@@ -194,7 +190,7 @@ export default class Inputs extends Component {
           key="down"
           title="Move group down"
           onTouchTap={
-            // TODO: implement rename category
+            // TODO: implement action
             (event) => alert('not yet implemented')
           }
           style={styles.actionButton}>
@@ -224,7 +220,7 @@ export default class Inputs extends Component {
           key="rename"
           title="Rename category"
           onTouchTap={
-            // TODO: implement rename category
+            // TODO: implement action
             (event) => alert('not yet implemented')
           }
           style={styles.actionButton}>
@@ -234,7 +230,7 @@ export default class Inputs extends Component {
           key="up"
           title="Move category up"
           onTouchTap={
-            // TODO: implement rename category
+            // TODO: implement action
             (event) => alert('not yet implemented')
           }
           style={styles.actionButton}>
@@ -244,7 +240,7 @@ export default class Inputs extends Component {
           key="down"
           title="Move category down"
           onTouchTap={
-            // TODO: implement rename category
+            // TODO: implement action
             (event) => alert('not yet implemented')
           }
           style={styles.actionButton}>
