@@ -8,6 +8,7 @@ import SelectField from 'material-ui/lib/select-field';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 
 import PriceTypeConstant from './PriceTypeConstant';
+import PriceTypeInvestment from './PriceTypeInvestment';
 import PriceTypeManual from './PriceTypeManual';
 import PriceTypeRevenue from './PriceTypeRevenue';
 
@@ -50,7 +51,10 @@ export default class Price extends Component {
   }
 
   render () {
-    let PriceType = Price.findPriceType(this.props.price.type);
+    const type = Price.PRICE_TYPES[this.props.price.type] && this.props.priceTypes.includes(this.props.price.type)
+        ? this.props.price.type
+        : this.props.priceTypes[0];
+    const PriceType = Price.PRICE_TYPES[type];
 
     return <div className="price">
       <button
@@ -68,12 +72,9 @@ export default class Price extends Component {
           targetOrigin={{horizontal: 'left', vertical: 'top'}}
           onRequestClose={this.hidePopover.bind(this)} >
         <div className="price-popover">
-          <SelectField value={this.props.price.type} onChange={this.handleChangeType.bind(this)} >
-            {Object.keys(Price.PRICE_TYPES).sort().map(type => {
-              return <MenuItem key={type} value={type} primaryText={Price.findPriceType(type).label} />
-            })}
-          </SelectField>
-
+          {
+            this.renderTypeSelection()
+          }
           {
             PriceType
                 ? <PriceType 
@@ -86,6 +87,28 @@ export default class Price extends Component {
         </div>
       </Popover>
     </div>
+  }
+
+  renderTypeSelection () {
+    // only render the select field when there are multiple types allowed
+    if (this.props.priceTypes.length <= 1) {
+      return null;
+    }
+
+    let priceTypes = Object.keys(Price.PRICE_TYPES)
+        .filter(type => this.props.priceTypes.includes(type))
+        .sort()
+        .map(type => {
+          return <MenuItem
+              key={type}
+              value={type}
+              primaryText={Price.PRICE_TYPES[type].label} />
+        });
+
+    return <SelectField value={this.props.price.type} onChange={this.handleChangeType.bind(this)} >
+      {priceTypes}
+    </SelectField>
+
   }
 
   showPopover (event) {
@@ -117,19 +140,11 @@ export default class Price extends Component {
   }
 
   /**
-   * Return the class of a specific PriceType. Returns null if not found
-   * @param {string} type
-   * @return {class | null}
-   */
-  static findPriceType (type) {
-    return Price.PRICE_TYPES[type];
-  }
-
-  /**
    * map with all registered price types
    */
   static PRICE_TYPES = {
     constant: PriceTypeConstant,
+    investment: PriceTypeInvestment,
     manual: PriceTypeManual,
     revenue: PriceTypeRevenue
   };

@@ -4,23 +4,23 @@ import { assign } from 'lodash';
 
 import TextField from 'material-ui/lib/text-field';
 
-export default class PriceTypeConstant extends Component {
+export default class PriceTypeInvestment extends Component {
   render () {
     return <div className="price-type">
       <p className="description">
-        Enter an initial price and a constant change per period.
+        Enter the value and deprecation of the investment.
       </p>
       <TextField
           value={this.props.price.value}
-          hintText="23k"
-          floatingLabelText="Initial price"
+          hintText="1000"
+          floatingLabelText="Value"
           onChange={this.handleChangePrice.bind(this)} />
       <br />
       <TextField
-          value={this.props.price.change}
-          hintText="+3%"
-          floatingLabelText="Percentage of change per period"
-          onChange={this.handleChangeChange.bind(this)}  />
+          value={this.props.price.deprecationPeriod}
+          hintText="5"
+          floatingLabelText="Deprecation period"
+          onChange={this.handleChangeDeprecation.bind(this)}  />
     </div>
   }
 
@@ -30,15 +30,15 @@ export default class PriceTypeConstant extends Component {
     this.props.onChange(price);
   }
 
-  handleChangeChange (event) {
-    let price = assign(this.props.price, { change: event.target.value });
+  handleChangeDeprecation (event) {
+    let price = assign(this.props.price, { deprecationPeriod: event.target.value });
 
     this.props.onChange(price);
   }
 
   static format (price) {
-    return `${price.value || ''} ${price.change || ''}`;
+    return `${price.value} over ${price.deprecationPeriod} periods`;
   }
 
-  static label = 'Constant change';
+  static label = 'Investment';
 }

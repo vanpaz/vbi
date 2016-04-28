@@ -166,10 +166,8 @@
         "name": "Laptops",
         "category": "Hardware",
         "price": {
-          "value": "1000"
-        },
-        "depreciation": {
-          "periods": 3
+          "value": "1000",
+          "deprecationPeriod": 3
         },
         "quantities": {
           "2015": "1",
@@ -182,10 +180,8 @@
         "name": "Smartphones",
         "category": "Hardware",
         "price": {
-          "value": "500"
-        },
-        "depreciation": {
-          "periods": 2
+          "value": "500",
+          "deprecationPeriod": 2
         },
         "quantities": {
           "2015": "1",

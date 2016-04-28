@@ -58,7 +58,7 @@ export default class Inputs extends Component {
     const periods = this.props.data.parameters.periods;
     const items = this.props.data.costs;
     const categories = getCategories(items);
-    const priceTypes = ['constant', 'manual', 'percentage'];
+    const priceTypes = ['constant', 'manual', 'revenue'];
 
     debug('costs categories', categories);
     debug('costs periods', periods);
@@ -77,7 +77,7 @@ export default class Inputs extends Component {
     const periods = this.props.data.parameters.periods;
     const items = this.props.data.investments;
     const categories = getCategories(items);
-    const priceTypes = [''];
+    const priceTypes = ['investment'];
 
     debug('investments categories', categories);
     debug('investments periods', periods);
@@ -96,7 +96,7 @@ export default class Inputs extends Component {
     const periods = this.props.data.parameters.periods;
     const items = this.props.data.revenues;
     const categories = getCategories(items);
-    const priceTypes = [''];
+    const priceTypes = ['constant', 'manual'];
 
     debug('revenues categories', categories);
     debug('revenues periods', periods);
@@ -159,6 +159,7 @@ export default class Inputs extends Component {
                 <Price price={item.price}
                        categories={revenueCategories}
                        periods={periods}
+                       priceTypes={priceTypes}
                        onChange={(price) => {
                          this.updatePrice(section, category, item.name, price);
                        }} />
