@@ -11,11 +11,11 @@ import LeftNav from 'material-ui/lib/left-nav';
 import NavigationMenuIcon from 'material-ui/lib/svg-icons/navigation/menu';
 import List from 'material-ui/lib/lists/list';
 import ListItem from 'material-ui/lib/lists/list-item';
-import ContentEdit from 'material-ui/lib/svg-icons/image/edit';
-import ContentOpen from 'material-ui/lib/svg-icons/file/folder-open';
-import ContentSave from 'material-ui/lib/svg-icons/content/save';
-import ContentCreate from 'material-ui/lib/svg-icons/content/add';
-import ContentClear from 'material-ui/lib/svg-icons/content/clear';
+import EditIcon from 'material-ui/lib/svg-icons/image/edit';
+import OpenIcon from 'material-ui/lib/svg-icons/file/folder-open';
+import SaveIcon from 'material-ui/lib/svg-icons/content/save';
+import CreateIcon from 'material-ui/lib/svg-icons/content/add';
+import ClearIcon from 'material-ui/lib/svg-icons/content/clear';
 import ThemeManager from 'material-ui/lib/styles/theme-manager'
 
 import theme from '../theme'
@@ -161,7 +161,7 @@ export default class App extends Component {
 
   renderLefNav () {
     const docsList = this.state.docs.map(doc => {
-      const rightIcon = <ContentClear onTouchTap={ (event) => {
+      const rightIcon = <ClearIcon onTouchTap={ (event) => {
         event.stopPropagation();
         this.setState({
           deleteDocDialog: {
@@ -222,34 +222,34 @@ export default class App extends Component {
       <List subheader="Manage scenarios">
         <ListItem
             primaryText="New"
-            leftIcon={<ContentCreate />}
+            leftIcon={<CreateIcon />}
             onTouchTap={(event) => {
               this.setState({showLeftNav: false});
               this.handleNew()
             }} />
         <ListItem
             primaryText="Rename"
-            leftIcon={<ContentEdit />}
+            leftIcon={<EditIcon />}
             onTouchTap={(event) => {
               this.setState({showLeftNav: false});
               this.handleRename()
             }} />
         <ListItem
             primaryText="Open"
-            leftIcon={<ContentOpen />}
+            leftIcon={<OpenIcon />}
             initiallyOpen={true}
             primaryTogglesNestedList={true}
             nestedItems={docsList} />
         <ListItem
             primaryText="Save"
-            leftIcon={<ContentSave />}
+            leftIcon={<SaveIcon />}
             onTouchTap={(event) => {
               this.setState({showLeftNav: false});
               this.handleSave()
             }} />
         <ListItem
             primaryText="Save as..."
-            leftIcon={<ContentSave />}
+            leftIcon={<SaveIcon />}
             onTouchTap={(event) => alert('Sorry, not yet implemented...') } />
       </List>
 

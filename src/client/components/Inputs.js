@@ -7,15 +7,29 @@ import CardText from 'material-ui/lib/card/card-text';
 import Tabs from 'material-ui/lib/tabs/tabs';
 import Tab from 'material-ui/lib/tabs/tab';
 import IconButton from 'material-ui/lib/icon-button';
-import FlatButton from 'material-ui/lib/flat-button';
 import EditIcon from 'material-ui/lib/svg-icons/image/edit';
+import ClearIcon from 'material-ui/lib/svg-icons/content/clear';
+import DownIcon from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-down';
+import UpIcon from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-up';
+
 
 import { getCategories, findQuantity, clearIfZero } from './../js/formulas';
 import Price from './Price';
+import theme from '../theme';
 
 import ActionMenu from './ActionMenu';
 
 const debug = debugFactory('vbi:inputs');
+
+
+const styles = {
+  actionButton: {
+    width: 24,
+    height: 24,
+    padding: 0,
+    display: 'inline-block'
+  }
+};
 
 export default class Inputs extends Component {
   render () {
@@ -103,7 +117,9 @@ export default class Inputs extends Component {
           </tr>
           {
             items.map(item => <tr key={category + ':' + item.name}>
-              <td className="read-only">{item.name}</td>
+              <td className="read-only">{
+                this.renderSubCategoryActionMenu(item.name)
+              }</td>
               {
                 periods.map(period => (<td key={period} className="quantity">
                   <input value={clearIfZero(findQuantity(item, period))}
@@ -133,14 +149,53 @@ export default class Inputs extends Component {
     let periodActions = [
       <IconButton
           key="edit"
+          title="Edit periods"
           onTouchTap={event => this.props.onEditPeriods()}
           style={{width: 24, height: 24, padding: 0}}>
-        <EditIcon color="white" hoverColor="#f3742c" />
+        <EditIcon color="white" hoverColor={theme.palette.accent1Color} />
       </IconButton>
     ];
 
     return <ActionMenu actions={periodActions}>
       {period}
+    </ActionMenu>
+  }
+
+  renderSubCategoryActionMenu (name) {
+    let periodActions = [
+      <IconButton
+          key="rename"
+          title="Rename category"
+          onTouchTap={null}
+          style={styles.actionButton}>
+        <EditIcon color="white" hoverColor={theme.palette.accent1Color} />
+      </IconButton>,
+      <IconButton
+          key="up"
+          title="Move up"
+          onTouchTap={null}
+          style={styles.actionButton}>
+        <UpIcon color="white" hoverColor={theme.palette.accent1Color} />
+      </IconButton>,
+      <IconButton
+          key="down"
+          title="Move down"
+          onTouchTap={null}
+          style={styles.actionButton}>
+        <DownIcon color="white" hoverColor={theme.palette.accent1Color} />
+      </IconButton>,
+      <IconButton
+          key="delete"
+          title="Delete category"
+          onTouchTap={null}
+          style={{width: 24, height: 24, padding: 0}}>
+        <ClearIcon color="white" hoverColor={theme.palette.accent1Color} />
+      </IconButton>
+        // TODO: add buttons to move up/down
+    ];
+
+    return <ActionMenu actions={periodActions}>
+      {name}
     </ActionMenu>
   }
 
