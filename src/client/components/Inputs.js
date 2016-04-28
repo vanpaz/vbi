@@ -65,11 +65,11 @@ export default class Inputs extends Component {
         groups && groups.map(group => this.renderGroup('costs', group, periods, priceTypes))
       }
       <p>
-        <button className="add-group" onTouchTap={
+        <button className="add-group" title="Add a new group" onTouchTap={
             // TODO: implement action
             (event) => alert('not yet implemented')
         }>
-          add group...
+          +
         </button>
       </p>
     </div>
@@ -131,11 +131,11 @@ export default class Inputs extends Component {
           }
         <tr>
           <td className="read-only">
-            <button className="add-category" onTouchTap={
+            <button className="add-category" title="Add a new category" onTouchTap={
               // TODO: implement action
               (event) => alert('not yet implemented')
             }>
-              add category...
+              +
             </button>
           </td>
         </tr>
