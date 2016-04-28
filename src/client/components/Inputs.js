@@ -31,7 +31,7 @@ const styles = {
   }
 };
 
-// TODO: refactor Inputs, split renderCategory into a separate component
+// TODO: refactor Inputs, split renderGroup into a separate component
 
 export default class Inputs extends Component {
   render () {
@@ -61,7 +61,7 @@ export default class Inputs extends Component {
 
     return <div>
       {
-        groups.map(group => this.renderCategory('costs', group.name, periods, group.categories, priceTypes))
+        groups.map(group => this.renderGroup('costs', group, periods, priceTypes))
       }
     </div>
   }
@@ -73,7 +73,7 @@ export default class Inputs extends Component {
 
     return <div>
       {
-        groups.map(group => this.renderCategory('investments', group.name, periods, group.categories, priceTypes))
+        groups.map(group => this.renderGroup('investments', group, periods, priceTypes))
       }
     </div>
   }
@@ -85,16 +85,16 @@ export default class Inputs extends Component {
 
     return <div>
       {
-        groups.map(group => this.renderCategory('revenues', group.name, periods, group.categories, priceTypes))
+        groups.map(group => this.renderGroup('revenues', group, periods, priceTypes))
       }
     </div>
   }
 
-  renderCategory (section, category, periods, items, priceTypes) {
-    let revenueCategories = this.props.data.revenues.map(group => group.name);
+  renderGroup (section, group, periods, priceTypes) {
+    const revenueCategories = this.props.data.revenues.map(g => g.name);
 
-    return <div key={category}>
-      <h1>{category}</h1>
+    return <div key={group.name}>
+      <h1>{this.renderGroupActionMenu(section, group.name)}</h1>
 
       <table className="category-table" >
         <colgroup>
@@ -118,16 +118,16 @@ export default class Inputs extends Component {
             <th />
           </tr>
           {
-            items.map(item => <tr key={category + ':' + item.name}>
+            group.categories && group.categories.map(item => <tr key={group.name + ':' + item.name}>
               <td className="read-only">{
-                this.renderCategoryActionMenu(section, category, item.name)
+                this.renderCategoryActionMenu(section, group.name, item.name)
               }</td>
               {
                 periods.map(period => (<td key={period} className="quantity">
                   <input value={clearIfZero(findQuantity(item, period))}
                          onChange={(event) => {
                            let quantity = event.target.value;
-                           this.updateQuantity(section, category, item.name, period, quantity);
+                           this.updateQuantity(section, group.name, item.name, period, quantity);
                          }}
                          onFocus={(event) => event.target.select()} />
                 </td>))
@@ -138,7 +138,7 @@ export default class Inputs extends Component {
                        periods={periods}
                        priceTypes={priceTypes}
                        onChange={(price) => {
-                         this.updatePrice(section, category, item.name, price);
+                         this.updatePrice(section, group.name, item.name, price);
                        }} />
               </td>
             </tr>)
@@ -166,35 +166,44 @@ export default class Inputs extends Component {
   }
 
   // TODO: move into a separate component
-  renderCategoryActionMenu (section, category, name) {
-    // TODO: implement actions for SubCategoryActionMenu
+  renderGroupActionMenu (section, group) {
+    // TODO: implement actions for GroupActionMenu
 
     let periodActions = [
       <IconButton
           key="rename"
-          title="Rename category"
-          onTouchTap={null}
+          title="Rename group"
+          onTouchTap={
+            // TODO: implement rename category
+            (event) => alert('not yet implemented')
+          }
           style={styles.actionButton}>
         <EditIcon color="white" hoverColor={theme.palette.accent1Color} />
       </IconButton>,
       <IconButton
           key="up"
-          title="Move up"
-          onTouchTap={null}
+          title="Move group up"
+          onTouchTap={
+            // TODO: implement rename category
+            (event) => alert('not yet implemented')
+          }
           style={styles.actionButton}>
         <UpIcon color="white" hoverColor={theme.palette.accent1Color} />
       </IconButton>,
       <IconButton
           key="down"
-          title="Move down"
-          onTouchTap={null}
+          title="Move group down"
+          onTouchTap={
+            // TODO: implement rename category
+            (event) => alert('not yet implemented')
+          }
           style={styles.actionButton}>
         <DownIcon color="white" hoverColor={theme.palette.accent1Color} />
       </IconButton>,
       <IconButton
           key="delete"
-          title="Delete category"
-          onTouchTap={(event) => this.removeCategory(section, category, name)}
+          title="Delete group"
+          onTouchTap={(event) => this.removeGroup(section, group)}
           style={{width: 24, height: 24, padding: 0}}>
         <ClearIcon color="white" hoverColor={theme.palette.accent1Color} />
       </IconButton>
@@ -202,7 +211,57 @@ export default class Inputs extends Component {
     ];
 
     return <ActionMenu actions={periodActions}>
-      {name}
+      {group}
+    </ActionMenu>
+  }
+
+  // TODO: move into a separate component
+  renderCategoryActionMenu (section, group, category) {
+    // TODO: implement actions for CategoryActionMenu
+
+    let periodActions = [
+      <IconButton
+          key="rename"
+          title="Rename category"
+          onTouchTap={
+            // TODO: implement rename category
+            (event) => alert('not yet implemented')
+          }
+          style={styles.actionButton}>
+        <EditIcon color="white" hoverColor={theme.palette.accent1Color} />
+      </IconButton>,
+      <IconButton
+          key="up"
+          title="Move category up"
+          onTouchTap={
+            // TODO: implement rename category
+            (event) => alert('not yet implemented')
+          }
+          style={styles.actionButton}>
+        <UpIcon color="white" hoverColor={theme.palette.accent1Color} />
+      </IconButton>,
+      <IconButton
+          key="down"
+          title="Move category down"
+          onTouchTap={
+            // TODO: implement rename category
+            (event) => alert('not yet implemented')
+          }
+          style={styles.actionButton}>
+        <DownIcon color="white" hoverColor={theme.palette.accent1Color} />
+      </IconButton>,
+      <IconButton
+          key="delete"
+          title="Delete category"
+          onTouchTap={(event) => this.removeCategory(section, group, category)}
+          style={{width: 24, height: 24, padding: 0}}>
+        <ClearIcon color="white" hoverColor={theme.palette.accent1Color} />
+      </IconButton>
+        // TODO: add buttons to move up/down
+    ];
+
+    return <ActionMenu actions={periodActions}>
+      {category}
     </ActionMenu>
   }
 
@@ -265,10 +324,28 @@ export default class Inputs extends Component {
       const index = g.categories.findIndex(item => item.name === category);
       if (index !== -1) {
         g.categories.splice(index, 1);
-      }
 
-      // emit a change event
-      this.props.onChange(data);
+        // emit a change event
+        this.props.onChange(data);
+      }
+    }
+  }
+
+  removeGroup(section, group) {
+    debug('removeGroup', section, group);
+
+    // TODO: ask confirmation before deleting the group
+
+    const data = cloneDeep(this.props.data);
+    const groups = data[section];
+    if (groups) {
+      const index = groups.findIndex(g => g.name === group);
+      if (index !== -1) {
+        groups.splice(index, 1);
+
+        // emit a change event
+        this.props.onChange(data);
+      }
     }
   }
 
