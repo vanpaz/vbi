@@ -31,6 +31,8 @@ const styles = {
   }
 };
 
+// TODO: refactor Inputs, split renderCategory into a separate component
+
 export default class Inputs extends Component {
   render () {
     return <div style={{width: '100%', display: 'inline-flex'}}>
@@ -41,7 +43,7 @@ export default class Inputs extends Component {
               {this.renderCosts()}
             </Tab>
             <Tab label="Investments">
-              <p>(not yet implemented...)</p>
+              {this.renderInvestments()}
             </Tab>
             <Tab label="Revenues">
               {this.renderRevenues()}
@@ -53,9 +55,10 @@ export default class Inputs extends Component {
   }
 
   renderCosts () {
-    let periods = this.props.data.parameters.periods;
-    let items = this.props.data.costs;
-    let categories = getCategories(items);
+    const periods = this.props.data.parameters.periods;
+    const items = this.props.data.costs;
+    const categories = getCategories(items);
+    const priceTypes = ['constant', 'manual', 'percentage'];
 
     debug('costs categories', categories);
     debug('costs periods', periods);
@@ -64,16 +67,36 @@ export default class Inputs extends Component {
       {
         categories.map(category => {
           let filteredItems = items.filter(item => item.category === category);
-          return this.renderCategory('costs', category, periods, filteredItems);
+          return this.renderCategory('costs', category, periods, filteredItems, priceTypes);
+        })
+      }
+    </div>
+  }
+
+  renderInvestments () {
+    const periods = this.props.data.parameters.periods;
+    const items = this.props.data.investments;
+    const categories = getCategories(items);
+    const priceTypes = [''];
+
+    debug('investments categories', categories);
+    debug('investments periods', periods);
+
+    return <div>
+      {
+        categories.map(category => {
+          let filteredItems = items.filter(item => item.category === category);
+          return this.renderCategory('investments', category, periods, filteredItems, priceTypes);
         })
       }
     </div>
   }
 
   renderRevenues () {
-    let periods = this.props.data.parameters.periods;
-    let items = this.props.data.revenues;
-    let categories = getCategories(items);
+    const periods = this.props.data.parameters.periods;
+    const items = this.props.data.revenues;
+    const categories = getCategories(items);
+    const priceTypes = [''];
 
     debug('revenues categories', categories);
     debug('revenues periods', periods);
@@ -82,13 +105,13 @@ export default class Inputs extends Component {
       {
         categories.map(category => {
           let filteredItems = items.filter(item => item.category === category);
-          return this.renderCategory('revenues', category, periods, filteredItems);
+          return this.renderCategory('revenues', category, periods, filteredItems, priceTypes);
         })
       }
     </div>
   }
 
-  renderCategory (section, category, periods, items) {
+  renderCategory (section, category, periods, items, priceTypes) {
     let revenueCategories = getCategories(this.props.data.revenues);
 
     return <div key={category}>
@@ -118,7 +141,9 @@ export default class Inputs extends Component {
           {
             items.map(item => <tr key={category + ':' + item.name}>
               <td className="read-only">{
-                this.renderSubCategoryActionMenu(item.name)
+                item.name
+                // TODO: implement actions for SubCategoryActionMenu
+                //this.renderSubCategoryActionMenu(item.name)
               }</td>
               {
                 periods.map(period => (<td key={period} className="quantity">
@@ -145,6 +170,7 @@ export default class Inputs extends Component {
     </div>
   }
 
+  // TODO: move into a separate component
   renderPeriodsActionMenu (period) {
     let periodActions = [
       <IconButton
@@ -161,6 +187,7 @@ export default class Inputs extends Component {
     </ActionMenu>
   }
 
+  // TODO: move into a separate component
   renderSubCategoryActionMenu (name) {
     let periodActions = [
       <IconButton

@@ -279,7 +279,7 @@ The application supports multiple types of prices:
 
   ```js
   {
-    "type": "percentage",
+    "type": "revenue",
     "all": false,
     "percentages": [
       {
@@ -298,7 +298,7 @@ The application supports multiple types of prices:
 
   ```js
   {
-    "type": "percentage",
+    "type": "revenue",
     "all": true,
     "percentage": "+3%"
   }

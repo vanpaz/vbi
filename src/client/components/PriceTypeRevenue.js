@@ -8,7 +8,7 @@ import MenuItem from 'material-ui/lib/menus/menu-item';
 import RadioButton from 'material-ui/lib/radio-button';
 import RadioButtonGroup from 'material-ui/lib/radio-button-group';
 
-const debug = debugFactory('vbi:PriceTypePercentage');
+const debug = debugFactory('vbi:PriceTypeRevenue');
 
 const styles = {
   selectCategory: {width: 128},
@@ -16,7 +16,7 @@ const styles = {
   radioAll: {margin: '8px 0'}
 };
 
-export default class PriceTypePercentage extends Component {
+export default class PriceTypeRevenue extends Component {
   render () {
     const all = (this.props.price.all !== false);
 

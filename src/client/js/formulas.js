@@ -104,7 +104,7 @@ export let types = {
     }
   },
 
-  percentage: {
+  revenue: {
     /**
      * Calculate actual prices for all periods configured for a single item.
      * @param item

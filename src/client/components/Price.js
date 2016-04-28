@@ -9,7 +9,7 @@ import MenuItem from 'material-ui/lib/menus/menu-item';
 
 import PriceTypeConstant from './PriceTypeConstant';
 import PriceTypeManual from './PriceTypeManual';
-import PriceTypePercentage from './PriceTypePercentage';
+import PriceTypeRevenue from './PriceTypeRevenue';
 
 const debug = debugFactory('vbi:Price');
 
@@ -131,6 +131,6 @@ export default class Price extends Component {
   static PRICE_TYPES = {
     constant: PriceTypeConstant,
     manual: PriceTypeManual,
-    percentage: PriceTypePercentage
+    revenue: PriceTypeRevenue
   };
 }
