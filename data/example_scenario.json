@@ -7,306 +7,308 @@
     },
 
     "costs": [
-
       {
-        "name": "GM",
-        "category": "personnel",
-        "price": {
-          "type": "constant",
-          "value": "37k",
-          "change": "+3%"
-        },
-        "quantities": {
-          "2015": "0",
-          "2016": "1",
-          "2017": "1",
-          "2018": "1"
-        }
+        "name": "Personnel",
+        "categories": [
+          {
+            "name": "GM",
+            "price": {
+              "type": "constant",
+              "value": "37k",
+              "change": "+3%"
+            },
+            "quantities": {
+              "2015": "0",
+              "2016": "1",
+              "2017": "1",
+              "2018": "1"
+            }
+          },
+          {
+            "name": "OM",
+            "price": {
+              "type": "constant",
+              "value": "35k",
+              "change": "+3%"
+            },
+            "quantities": {
+              "2015": "0",
+              "2016": "0",
+              "2017": "0",
+              "2018": "1"
+            }
+          },
+          {
+            "name": "DEV",
+            "price": {
+              "type": "constant",
+              "value": "28k",
+              "change": "+3%"
+            },
+            "quantities": {
+              "2015": "0",
+              "2016": "5",
+              "2017": "6",
+              "2018": "8"
+            }
+          },
+          {
+            "name": "BD & Sales",
+            "price": {
+              "type": "constant",
+              "value": "30k",
+              "change": "+3%"
+            },
+            "quantities": {
+              "2015": "0",
+              "2016": "2",
+              "2017": "3",
+              "2018": "5"
+            }
+          },
+          {
+            "name": "Support",
+            "price": {
+              "type": "constant",
+              "value": "26k",
+              "change": "+3%"
+            },
+            "quantities": {
+              "2015": "0",
+              "2016": "1",
+              "2017": "2",
+              "2018": "4"
+            }
+          },
+          {
+            "name": "HR/FIN",
+            "price": {
+              "type": "constant",
+              "value": "30k",
+              "change": "+3%"
+            },
+            "quantities": {
+              "2015": "0",
+              "2016": "1",
+              "2017": "1",
+              "2018": "1"
+            }
+          },
+          {
+            "name": "Office Manager",
+            "price": {
+              "type": "constant",
+              "value": "26k",
+              "change": "+3%"
+            },
+            "quantities": {
+              "2015": "0",
+              "2016": "0",
+              "2017": "1",
+              "2018": "1"
+            }
+          },
+          {
+            "name": "Marketing & communication",
+            "price": {
+              "type": "constant",
+              "value": "26k",
+              "change": "+3%"
+            },
+            "quantities": {
+              "2015": "0",
+              "2016": "0",
+              "2017": "1",
+              "2018": "1"
+            }
+          },
+          {
+            "name": "IT support",
+            "price": {
+              "type": "constant",
+              "value": "26k",
+              "change": "+3%"
+            },
+            "quantities": {
+              "2015": "0",
+              "2016": "0",
+              "2017": "0",
+              "2018": "1"
+            }
+          }
+        ]
       },
       {
-        "name": "OM",
-        "category": "personnel",
-        "price": {
-          "type": "constant",
-          "value": "35k",
-          "change": "+3%"
-        },
-        "quantities": {
-          "2015": "0",
-          "2016": "0",
-          "2017": "0",
-          "2018": "1"
-        }
-      },
-      {
-        "name": "DEV",
-        "category": "personnel",
-        "price": {
-          "type": "constant",
-          "value": "28k",
-          "change": "+3%"
-        },
-        "quantities": {
-          "2015": "0",
-          "2016": "5",
-          "2017": "6",
-          "2018": "8"
-        }
-      },
-      {
-        "name": "BD & Sales",
-        "category": "personnel",
-        "price": {
-          "type": "constant",
-          "value": "30k",
-          "change": "+3%"
-        },
-        "quantities": {
-          "2015": "0",
-          "2016": "2",
-          "2017": "3",
-          "2018": "5"
-        }
-      },
-      {
-        "name": "Support",
-        "category": "personnel",
-        "price": {
-          "type": "constant",
-          "value": "26k",
-          "change": "+3%"
-        },
-        "quantities": {
-          "2015": "0",
-          "2016": "1",
-          "2017": "2",
-          "2018": "4"
-        }
-      },
-      {
-        "name": "HR/FIN",
-        "category": "personnel",
-        "price": {
-          "type": "constant",
-          "value": "30k",
-          "change": "+3%"
-        },
-        "quantities": {
-          "2015": "0",
-          "2016": "1",
-          "2017": "1",
-          "2018": "1"
-        }
-      },
-      {
-        "name": "Office Manager",
-        "category": "personnel",
-        "price": {
-          "type": "constant",
-          "value": "26k",
-          "change": "+3%"
-        },
-        "quantities": {
-          "2015": "0",
-          "2016": "0",
-          "2017": "1",
-          "2018": "1"
-        }
-      },
-      {
-        "name": "Marketing & communication",
-        "category": "personnel",
-        "price": {
-          "type": "constant",
-          "value": "26k",
-          "change": "+3%"
-        },
-        "quantities": {
-          "2015": "0",
-          "2016": "0",
-          "2017": "1",
-          "2018": "1"
-        }
-      },
-      {
-        "name": "IT support",
-        "category": "personnel",
-        "price": {
-          "type": "constant",
-          "value": "26k",
-          "change": "+3%"
-        },
-        "quantities": {
-          "2015": "0",
-          "2016": "0",
-          "2017": "0",
-          "2018": "1"
-        }
-      },
-
-      {
-        "name": "Direct costs",
-        "category": "direct",
-        "price": {
-          "type": "revenue",
-          "all": true,
-          "percentage": "5%"
-        },
-        "quantities": {
-          "2015": "1",
-          "2016": "1",
-          "2017": "1",
-          "2018": "1"
-        }
+        "name": "Direct",
+        "categories": [
+          {
+            "name": "Direct costs",
+            "price": {
+              "type": "revenue",
+              "all": true,
+              "percentage": "5%"
+            },
+            "quantities": {
+              "2015": "1",
+              "2016": "1",
+              "2017": "1",
+              "2018": "1"
+            }
+          }
+        ]
       }
     ],
 
     "investments": [
       {
-        "name": "Laptops",
-        "category": "Hardware",
-        "price": {
-          "value": "1000",
-          "deprecationPeriod": 3
-        },
-        "quantities": {
-          "2015": "1",
-          "2016": "10",
-          "2017": "5",
-          "2018": "8"
-        }
-      },
-      {
-        "name": "Smartphones",
-        "category": "Hardware",
-        "price": {
-          "value": "500",
-          "deprecationPeriod": 2
-        },
-        "quantities": {
-          "2015": "1",
-          "2016": "10",
-          "2017": "5",
-          "2018": "8"
-        }
+        "name": "Hardware",
+        "categories": [
+          {
+            "name": "Laptops",
+            "price": {
+              "value": "1000",
+              "deprecationPeriod": 3
+            },
+            "quantities": {
+              "2015": "1",
+              "2016": "10",
+              "2017": "5",
+              "2018": "8"
+            }
+          },
+          {
+            "name": "Smartphones",
+            "price": {
+              "value": "500",
+              "deprecationPeriod": 2
+            },
+            "quantities": {
+              "2015": "1",
+              "2016": "10",
+              "2017": "5",
+              "2018": "8"
+            }
+          }
+        ]
       }
     ],
 
     "revenues": [
       {
-        "name": "media",
-        "category": "licenses",
-        "price": {
-          "type": "constant",
-          "value": "8",
-          "change": "+3%"
-        },
-        "quantities": {
-          "2016": "3",
-          "2017": "6",
-          "2018": "11"
-        }
-      },
-      {
-        "name": "security",
-        "category": "licenses",
-        "price": {
-          "type": "constant",
-          "value": "10",
-          "change": "+3%"
-        },
-        "quantities": {
-          "2016": "0",
-          "2017": "2",
-          "2018": "5"
-        }
-      },
-      {
-        "name": "legal",
-        "category": "licenses",
-        "price": {
-          "type": "constant",
-          "value": "9",
-          "change": "+3%"
-        },
-        "quantities": {
-          "2016": "0",
-          "2017": "2",
-          "2018": "6"
-        }
-      },
-      {
-        "name": "health",
-        "category": "licenses",
-        "price": {
-          "type": "constant",
-          "value": "6",
-          "change": "+3%"
-        },
-        "quantities": {
-          "2016": "0",
-          "2017": "5",
-          "2018": "10"
-        }
+        "name": "Licenses",
+        "categories": [
+          {
+            "name": "media",
+            "price": {
+              "type": "constant",
+              "value": "8",
+              "change": "+3%"
+            },
+            "quantities": {
+              "2016": "3",
+              "2017": "6",
+              "2018": "11"
+            }
+          },
+          {
+            "name": "security",
+            "price": {
+              "type": "constant",
+              "value": "10",
+              "change": "+3%"
+            },
+            "quantities": {
+              "2016": "0",
+              "2017": "2",
+              "2018": "5"
+            }
+          },
+          {
+            "name": "legal",
+            "price": {
+              "type": "constant",
+              "value": "9",
+              "change": "+3%"
+            },
+            "quantities": {
+              "2016": "0",
+              "2017": "2",
+              "2018": "6"
+            }
+          },
+          {
+            "name": "health",
+            "price": {
+              "type": "constant",
+              "value": "6",
+              "change": "+3%"
+            },
+            "quantities": {
+              "2016": "0",
+              "2017": "5",
+              "2018": "10"
+            }
+          }
+        ]
       },
 
       {
-        "name": "media",
-        "category": "projects",
-        "price": {
-          "type": "constant",
-          "value": "60",
-          "change": "+5%"
-        },
-        "quantities": {
-          "2016": "1",
-          "2017": "2",
-          "2018": "4"
-        }
-      },
-      {
-        "name": "security",
-        "category": "projects",
-        "price": {
-          "type": "constant",
-          "value": "60",
-          "change": "+5%"
-        },
-        "quantities": {
-          "2016": "1",
-          "2017": "2",
-          "2018": "2"
-        }
-      },
-      {
-        "name": "legal",
-        "category": "projects",
-        "price": {
-          "type": "constant",
-          "value": "60",
-          "change": "+5%"
-        },
-        "quantities": {
-          "2016": "1",
-          "2017": "2",
-          "2018": "2"
-        }
-      },
-      {
-        "name": "health",
-        "category": "projects",
-        "price": {
-          "type": "constant",
-          "value": "60",
-          "change": "+5%"
-        },
-        "quantities": {
-          "2016": "0",
-          "2017": "1",
-          "2018": "2"
-        }
+        "name": "Projects",
+        "categories": [
+          {
+            "name": "media",
+            "price": {
+              "type": "constant",
+              "value": "60",
+              "change": "+5%"
+            },
+            "quantities": {
+              "2016": "1",
+              "2017": "2",
+              "2018": "4"
+            }
+          },
+          {
+            "name": "security",
+            "price": {
+              "type": "constant",
+              "value": "60",
+              "change": "+5%"
+            },
+            "quantities": {
+              "2016": "1",
+              "2017": "2",
+              "2018": "2"
+            }
+          },
+          {
+            "name": "legal",
+            "price": {
+              "type": "constant",
+              "value": "60",
+              "change": "+5%"
+            },
+            "quantities": {
+              "2016": "1",
+              "2017": "2",
+              "2018": "2"
+            }
+          },
+          {
+            "name": "health",
+            "price": {
+              "type": "constant",
+              "value": "60",
+              "change": "+5%"
+            },
+            "quantities": {
+              "2016": "0",
+              "2017": "1",
+              "2018": "2"
+            }
+          }
+        ]
       }
-
     ]
   }
 }

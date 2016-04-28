@@ -13,7 +13,7 @@ import DownIcon from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-down';
 import UpIcon from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-up';
 
 
-import { getCategories, findQuantity, clearIfZero } from './../js/formulas';
+import { findGroup, findCategory, findQuantity, clearIfZero } from './../js/formulas';
 import Price from './Price';
 import theme from '../theme';
 
@@ -56,63 +56,42 @@ export default class Inputs extends Component {
 
   renderCosts () {
     const periods = this.props.data.parameters.periods;
-    const items = this.props.data.costs;
-    const categories = getCategories(items);
+    const groups = this.props.data.costs;
     const priceTypes = ['constant', 'manual', 'revenue'];
-
-    debug('costs categories', categories);
-    debug('costs periods', periods);
 
     return <div>
       {
-        categories.map(category => {
-          let filteredItems = items.filter(item => item.category === category);
-          return this.renderCategory('costs', category, periods, filteredItems, priceTypes);
-        })
+        groups.map(group => this.renderCategory('costs', group.name, periods, group.categories, priceTypes))
       }
     </div>
   }
 
   renderInvestments () {
     const periods = this.props.data.parameters.periods;
-    const items = this.props.data.investments;
-    const categories = getCategories(items);
+    const groups = this.props.data.investments;
     const priceTypes = ['investment'];
-
-    debug('investments categories', categories);
-    debug('investments periods', periods);
 
     return <div>
       {
-        categories.map(category => {
-          let filteredItems = items.filter(item => item.category === category);
-          return this.renderCategory('investments', category, periods, filteredItems, priceTypes);
-        })
+        groups.map(group => this.renderCategory('investments', group.name, periods, group.categories, priceTypes))
       }
     </div>
   }
 
   renderRevenues () {
     const periods = this.props.data.parameters.periods;
-    const items = this.props.data.revenues;
-    const categories = getCategories(items);
+    const groups = this.props.data.revenues;
     const priceTypes = ['constant', 'manual'];
-
-    debug('revenues categories', categories);
-    debug('revenues periods', periods);
 
     return <div>
       {
-        categories.map(category => {
-          let filteredItems = items.filter(item => item.category === category);
-          return this.renderCategory('revenues', category, periods, filteredItems, priceTypes);
-        })
+        groups.map(group => this.renderCategory('revenues', group.name, periods, group.categories, priceTypes))
       }
     </div>
   }
 
   renderCategory (section, category, periods, items, priceTypes) {
-    let revenueCategories = getCategories(this.props.data.revenues);
+    let revenueCategories = this.props.data.revenues.map(group => group.name);
 
     return <div key={category}>
       <h1>{category}</h1>
@@ -141,9 +120,7 @@ export default class Inputs extends Component {
           {
             items.map(item => <tr key={category + ':' + item.name}>
               <td className="read-only">{
-                item.name
-                // TODO: implement actions for SubCategoryActionMenu
-                //this.renderSubCategoryActionMenu(item.name)
+                this.renderCategoryActionMenu(section, category, item.name)
               }</td>
               {
                 periods.map(period => (<td key={period} className="quantity">
@@ -189,7 +166,9 @@ export default class Inputs extends Component {
   }
 
   // TODO: move into a separate component
-  renderSubCategoryActionMenu (name) {
+  renderCategoryActionMenu (section, category, name) {
+    // TODO: implement actions for SubCategoryActionMenu
+
     let periodActions = [
       <IconButton
           key="rename"
@@ -215,7 +194,7 @@ export default class Inputs extends Component {
       <IconButton
           key="delete"
           title="Delete category"
-          onTouchTap={null}
+          onTouchTap={(event) => this.removeCategory(section, category, name)}
           style={{width: 24, height: 24, padding: 0}}>
         <ClearIcon color="white" hoverColor={theme.palette.accent1Color} />
       </IconButton>
@@ -230,15 +209,15 @@ export default class Inputs extends Component {
   /**
    * Update the price of one entry
    * @param {'costs' | 'revenues'} section
+   * @param {string} group
    * @param {string} category
-   * @param {string} name
    * @param {{value: string, change: string}} price
    */
-  updatePrice (section, category, name, price) {
-    debug('updatePrice', section, category, name, price);
+  updatePrice (section, group, category, price) {
+    debug('updatePrice', section, group, category, price);
 
-    let data = cloneDeep(this.props.data);
-    let item = data[section].find(item => item.category === category && item.name === name);
+    const data = cloneDeep(this.props.data);
+    const item = findCategory(data, section, group, category);
     if (item) {
       item.price = price;
     }
@@ -253,16 +232,16 @@ export default class Inputs extends Component {
   /**
    * Update a quantity in one entry
    * @param {string} section
-   * @param {string} name
+   * @param {string} group
    * @param {string} category
    * @param {string} period
    * @param {string} quantity
    */
-  updateQuantity (section, category, name, period, quantity) {
-    debug('updateQuantity', section, category, name, period, quantity);
+  updateQuantity (section, group, category, period, quantity) {
+    debug('updateQuantity', section, group, category, period, quantity);
 
-    let data = cloneDeep(this.props.data);
-    let item = data[section].find(item => item.category === category && item.name === name);
+    const data = cloneDeep(this.props.data);
+    const item = findCategory(data, section, group, category);
     if (item) {
       // replace the quantity with the new value
       item.quantities[period] = quantity;
@@ -273,6 +252,24 @@ export default class Inputs extends Component {
 
     // emit a change event
     this.props.onChange(data);
+  }
+
+  removeCategory(section, group, category) {
+    debug('removeCategory', section, group, category);
+
+    // TODO: ask confirmation before deleting the category
+
+    const data = cloneDeep(this.props.data);
+    const g = findGroup(data, section, group);
+    if (g && g.categories) {
+      const index = g.categories.findIndex(item => item.name === category);
+      if (index !== -1) {
+        g.categories.splice(index, 1);
+      }
+
+      // emit a change event
+      this.props.onChange(data);
+    }
   }
 
 }

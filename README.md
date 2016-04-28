@@ -206,8 +206,27 @@ A saved scenario has the following structure:
 {
   "title": "",
   "data": {
-    costs: {},
-    revenues: {}
+    "costs": [
+      {
+        "name": "<group name>",
+        "categories": [
+          {
+            "name": "<category name>",
+            "price": { ... },
+            "quantities": {
+               "<period>": amount,
+               ...
+            }
+          },
+          ...
+        ]
+      }
+    ],
+    "investments": [...]
+    "revenues": [...],
+    "parameters": {
+      "periods": ["2016", "2017", "2018", ...]
+    }
   },
   "auth": {
     "userId": "role",
@@ -217,6 +236,8 @@ A saved scenario has the following structure:
   "updated": "ISODate"
 }
 ```
+
+The `data` contains three sections: `costs`, `investments`, `revenues`, and a section `parameters` holding generic parameters. Each section contains groups, and every group contains a list with categories. Each category describes a name, price, and category.
 
 The following roles are available:
 

@@ -4,17 +4,41 @@ import debugFactory from 'debug/browser';
 const debug = debugFactory('vbi:formulas');
 
 /**
- * Extract all unique categories defined in the items. The returned categories
- * are sorted alphabetically.
- * @param items
- * @return {Array.<string>}
+ * Find a category object in the data model. Example:
+ *
+ * findCategory(data, 'costs', 'Personnel', 'Support')
+ *
+ * @param {Object} data
+ * @param {string} section
+ * @param {string} group
+ * @param {string} category
+ * @return {*}
  */
-export function getCategories (items) {
-  let categories = items
-      .map(item => item.category)
-      .filter(category => category != undefined);  // not undefined or null
+export function findCategory (data, section, group, category) {
+  const g = findGroup(data, section, group);
+  if (!g || !g.categories) {
+    return null;
+  }
 
-  return uniq(categories).sort(); // dedupe and sort
+  return g.categories.find(item => item.name === category) || null;
+}
+
+/**
+ * Find a group object in the data model. Example:
+ *
+ * findCategory(data, 'costs', 'Personnel', 'Support')
+ *
+ * @param {Object} data
+ * @param {string} section
+ * @param {string} group
+ * @return {*}
+ */
+export function findGroup (data, section, group) {
+  if (!data[section]) {
+    return null;
+  }
+
+  return data[section].find(item => item.name === group) || null;
 }
 
 /**
@@ -24,7 +48,7 @@ export function getCategories (items) {
  * @return {{period: string, quantity: number}} Returns an object with quantity 0 if not found
  */
 export function findQuantity (item, period) {
-  return item.quantities[period] !== undefined
+  return (item.quantities[period] !== undefined)
       ? item.quantities[period]
       : '0';
 }
@@ -158,21 +182,21 @@ export let types = {
 /**
  * Calculate totals for all costs per category
  * @param {{costs: Array}} data
- * @return {Array.<{category: string, totals: Object.<string, number>}>}
+ * @return {Array.<{name: string, totals: Object.<string, number>}>}
  */
 export function calculateCostsTotals (data) {
   let revenueTotals = calculateRevenueTotals(data);
-  let categories = getCategories(data.costs);
   let periods = data.parameters.periods;
 
-  return categories.map(category => {
-    let totals = data.costs
-        .filter(item => item.category === category)
-        .map(item => calculatePrices(item, periods, revenueTotals))
-        .reduce(addTotals);
-
-    return {category, totals};
-  });
+  return data.costs
+      .map(group => {
+        return {
+          name: group.name,
+          totals: group.categories
+              .map(item => calculatePrices(item, periods, revenueTotals))
+              .reduce(addTotals)
+        }
+      });
 }
 
 /**
@@ -181,17 +205,17 @@ export function calculateCostsTotals (data) {
  * @return {Array.<{category: string, totals: Object.<string, number>}>}
  */
 export function calculateRevenueTotals (data) {
-  let categories = getCategories(data.revenues);
   let periods = data.parameters.periods;
 
-  return categories.map(category => {
-    let totals = data.revenues
-        .filter(item => item.category === category)
-        .map(item => calculatePrices(item, periods))
-        .reduce(addTotals);
-
-    return {category, totals};
-  });
+  return data.revenues
+      .map(group => {
+        return {
+          name: group.name,
+          totals: group.categories
+              .map(item => calculatePrices(item, periods))
+              .reduce(addTotals)
+        }
+      });
 }
 
 /**

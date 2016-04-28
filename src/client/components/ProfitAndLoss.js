@@ -17,6 +17,10 @@ export default class ProfitAndLoss extends Component {
       debug ('categoryRevenueTotals', categoryRevenueTotals);
 
       return <div>
+        <p>
+          (not yet worked out in detail...)
+        </p>
+
         <h1>Costs</h1>
         {ProfitAndLoss.renderTotals(categoryCostsTotals, periods)}
 
@@ -39,8 +43,8 @@ export default class ProfitAndLoss extends Component {
         {periods.map(period => <th key={period}>{period}</th>)}
       </tr>
       {
-        categoryTotals.map(entry => <tr key={entry.category}>
-          <td className="read-only">{entry.category}</td>
+        categoryTotals.map(entry => <tr key={entry.name}>
+          <td className="read-only">{entry.name}</td>
           {
             periods.map(period => {
               let total = entry.totals[period];

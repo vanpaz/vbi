@@ -13,7 +13,7 @@ export default class PriceTypeInvestment extends Component {
       <TextField
           value={this.props.price.value}
           hintText="1000"
-          floatingLabelText="Value"
+          floatingLabelText="Value (cost)"
           onChange={this.handleChangePrice.bind(this)} />
       <br />
       <TextField
@@ -37,7 +37,7 @@ export default class PriceTypeInvestment extends Component {
   }
 
   static format (price) {
-    return `${price.value} over ${price.deprecationPeriod} periods`;
+    return `${price.value} spread over ${price.deprecationPeriod} periods`;
   }
 
   static label = 'Investment';
