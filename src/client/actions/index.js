@@ -7,3 +7,7 @@
 export function setUser (user) {
   return { type: 'SET_USER', user }
 }
+
+export function setDoc (doc) {
+  return { type: 'SET_DOC', doc }
+}
