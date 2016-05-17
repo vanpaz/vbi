@@ -24,7 +24,7 @@ import { hash } from '../js/hash'
 
 const debug = debugFactory('vbi:app')
 
-const AUTO_SAVE_DELAY = 5000; // milliseconds
+const AUTO_SAVE_DELAY = 5000 // milliseconds
 
 const APP_BAR_STYLE = {
   position: 'fixed',
@@ -106,14 +106,14 @@ class App extends Component {
       this.handleSaveDoc()
     }
 
-    let changed = (this.props.doc && this.props.doc._id && this.isChanged())
+    let saveNeeded = (this.props.doc && this.props.doc._id && this.isChanged())
         ? <span>
             <span className="changed">changed (</span>
             <a className="changed" href="#" onClick={handleSaveDoc}>save now</a>
             <span className="changed">)</span>
           </span>
         : null
-    let title = <div>VanPaz Business Intelligence {docTitle} {changed}</div>
+    let title = <div>VanPaz Business Intelligence {docTitle} {saveNeeded}</div>
 
     return <AppBar
         style={APP_BAR_STYLE}
@@ -159,7 +159,7 @@ class App extends Component {
 
     // listen for changes in the hash
     hash.onChange('id', (id, oldId) => {
-      debug('hash changed, new id:', id, ', old id:', oldId);
+      debug('hash changed, new id:', id, ', old id:', oldId)
 
       if (id) {
         this.handleOpenDoc(id)
@@ -167,7 +167,7 @@ class App extends Component {
       else {
         this.props.dispatch(newDoc())
       }
-    });
+    })
 
     this.fetchUser()
     // FIXME: setUser should throw an error when setting a regular JSON object instead of immutable, test this
@@ -192,7 +192,7 @@ class App extends Component {
     debug('handleNewDoc')
 
     if (this.isChanged()) {
-      return this.handleError(new Error('Cannot open new document, current document has unsaved changes'));
+      return this.handleError(new Error('Cannot open new document, current document has unsaved changes'))
     }
 
     this.props.dispatch(newDoc())
@@ -209,7 +209,7 @@ class App extends Component {
     debug('handleOpenDoc', id, title)
 
     if (this.isChanged()) {
-      return this.handleError(new Error('Cannot open document, current document has unsaved changes'));
+      return this.handleError(new Error('Cannot open document, current document has unsaved changes'))
     }
 
     open(id, title, n => this.handleNotification(n) )
@@ -217,7 +217,9 @@ class App extends Component {
           const immutableDoc = Immutable(doc)
           this.props.dispatch(setDoc(immutableDoc))
           this.props.dispatch(setRemoteDoc(immutableDoc))
-          hash.set('id', doc._id);
+          this.handleAutoSave.cancel()
+
+          hash.set('id', doc._id)
         })
         .catch((err) => this.handleError(err))
   }
@@ -232,10 +234,9 @@ class App extends Component {
           const immutableDoc = Immutable(doc)
           this.props.dispatch(setDoc(immutableDoc))
           this.props.dispatch(setRemoteDoc(immutableDoc))
-
           this.handleAutoSave.cancel()
 
-          hash.set('id', doc._id);
+          hash.set('id', doc._id)
           this.fetchDocs()
         })
         .catch((err) => this.handleError(err))
@@ -251,7 +252,7 @@ class App extends Component {
     del(doc.id, doc.rev, doc.title, n => this.handleNotification(n))
         .then(() => {
           if (hash.get('id') === doc.id) {
-            hash.remove('id');
+            hash.remove('id')
           }
           this.fetchDocs()
         })

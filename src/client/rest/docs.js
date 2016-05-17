@@ -17,7 +17,7 @@ export function open (id, title, onNotification) {
 
   onNotification({
     closeable: false,
-    message: `Opening ${title || id}`
+    message: `Opening ${title || id}...`
   })
 
   return request('GET', `/docs/${id}`)
@@ -45,7 +45,7 @@ export function save (doc, onNotification) {
 
   onNotification({
     closeable: false,
-    message: `Saving ${doc.title || doc._id}`
+    message: `Saving ${doc.title || doc._id}...`
   });
 
   let promise = doc._id
