@@ -13,8 +13,7 @@ import ThemeManager from 'material-ui/lib/styles/theme-manager'
 
 import theme from '../theme'
 import Notification from './dialogs/Notification'
-import Prompt from './dialogs/Prompt'
-import { setUser, listDocs, newDoc, renameDoc, setDoc, setPeriods } from '../actions'
+import { setUser, listDocs, newDoc, renameDoc, setDoc } from '../actions'
 import Menu from './Menu'
 import Inputs from './Inputs'
 import Outputs from './Outputs'
@@ -67,15 +66,11 @@ class App extends Component {
             onDeleteDoc={doc => this.handleDeleteDoc(doc)}
         />
 
-        <Prompt ref="prompt" />
         <Notification ref="notification" />
 
         <div>
           <div className="container">
-            <Inputs
-                data={this.props.doc.data}
-                onEditPeriods={() => this.handleSetPeriods()}
-            />
+            <Inputs />
           </div>
 
           <div className="container">
@@ -255,50 +250,6 @@ class App extends Component {
         .catch(err => this.handleError(err))
   }
 
-  /**
-   * Open a prompt where the user can enter a comma separated list with periods
-   */
-  handleSetPeriods () {
-    const parameters = this.props.doc &&
-        this.props.doc.data &&
-        this.props.doc.data.parameters
-
-    const periods = (parameters && parameters.periods)
-        ? parameters.periods.join(', ')
-        : ''
-
-    const options = {
-      title: 'Periods',
-      description: 'Enter a comma separated list with periods:',
-      hintText: comingYears().join(', '),
-      value: periods
-    }
-
-    this.refs.prompt.show(options).then(newPeriods => {
-      if (newPeriods !== null) {
-        this.setPeriods(newPeriods)
-      }
-    })
-  }
-
-  /**
-   * Apply a new series of periods
-   * @param {string | Array.<string>} periods   A comma separated string or
-   *                                            an array with strings.
-   */
-  setPeriods (periods) {
-    debug('setPeriods', periods)
-
-    if (Array.isArray(periods)) {
-      this.props.dispatch(setPeriods(periods))
-    }
-    else {
-      // periods is a string
-      const array = periods.split(',').map(trim)
-      this.setPeriods(array)
-    }
-  }
-
   handleError (err) {
     this.refs.notification.show({
       type: 'error',
@@ -346,21 +297,6 @@ class App extends Component {
       muiTheme: ThemeManager.getMuiTheme(theme)
     }
   }
-}
-
-function trim (str) {
-  return str.trim()
-}
-
-function comingYears (count = 5) {
-  const years = []
-  let year = new Date().getFullYear()
-
-  for (let i = 0; i < count; i++) {
-    years.push(year + i)
-  }
-
-  return years
 }
 
 // getChildContext and childContextTypes are needed to set a custom material-ui theme

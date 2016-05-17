@@ -15,7 +15,8 @@ import ClearIcon from 'material-ui/lib/svg-icons/content/clear';
 import DownIcon from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-down';
 import UpIcon from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-up';
 
-import { deleteCategory, deleteGroup, setQuantity, setPrice } from '../actions'
+import Prompt from './dialogs/Prompt'
+import { deleteCategory, deleteGroup, setPeriods, setQuantity, setPrice } from '../actions'
 import { findQuantity, clearIfZero } from './../js/formulas';
 import Price from './Price';
 import theme from '../theme';
@@ -54,6 +55,8 @@ class Inputs extends Component {
           </Tabs>
         </CardText>
       </Card>
+
+      <Prompt ref="prompt" />
     </div>
   }
 
@@ -151,7 +154,7 @@ class Inputs extends Component {
       <IconButton
           key="edit"
           title="Edit periods"
-          onTouchTap={event => this.props.onEditPeriods()}
+          onTouchTap={event => this.handleSetPeriods()}
           style={{width: 24, height: 24, padding: 0}}>
         <EditIcon color="white" hoverColor={theme.palette.accent1Color} />
       </IconButton>
@@ -262,11 +265,75 @@ class Inputs extends Component {
       {category}
     </ActionMenu>
   }
+
+  /**
+   * Open a prompt where the user can enter a comma separated list with periods
+   */
+  handleSetPeriods () {
+    const parameters = this.props.data &&
+        this.props.data.parameters
+
+    const periods = (parameters && parameters.periods)
+        ? parameters.periods.join(', ')
+        : ''
+
+    const options = {
+      title: 'Periods',
+      description: 'Enter a comma separated list with periods:',
+      hintText: comingYears().join(', '),
+      value: periods
+    }
+
+    this.refs.prompt.show(options).then(newPeriods => {
+      if (newPeriods !== null) {
+        this.setPeriods(newPeriods)
+      }
+    })
+  }
+
+  /**
+   * Apply a new series of periods
+   * @param {string | Array.<string>} periods   A comma separated string or
+   *                                            an array with strings.
+   */
+  setPeriods (periods) {
+    debug('setPeriods', periods)
+
+    if (Array.isArray(periods)) {
+      this.props.dispatch(setPeriods(periods))
+    }
+    else {
+      // periods is a string
+      const array = periods.split(',').map(trim)
+      this.setPeriods(array)
+    }
+  }
+
+  handleRenameCategory (section, group, categoryIndex) {
+
+  }
 }
 
 Inputs = connect((state, ownProps) => {
-  return state
+  return {
+    data: state.doc.data
+  }
 })(Inputs)
 
+
+function trim (str) {
+  return str.trim()
+}
+
+function comingYears (count = 5) {
+  const years = []
+  let year = new Date().getFullYear()
+
+  for (let i = 0; i < count; i++) {
+    years.push(year + i)
+  }
+
+  return years
+}
 
 export default Inputs
