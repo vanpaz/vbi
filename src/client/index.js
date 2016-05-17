@@ -16,7 +16,7 @@ injectTapEventPlugin()
 let initialState = Immutable({
   user: {},
 
-  remoteDoc: null,  // contains the document as loaded/saved in the database
+  unchangedDoc: null,  // contains the document as loaded/saved in the database
   doc: require('../../data/example_scenario.json'),   // The current doc
   docs: [] // list with all docs of the user
 })

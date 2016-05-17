@@ -14,7 +14,7 @@ import ThemeManager from 'material-ui/lib/styles/theme-manager'
 import theme from '../theme'
 import Notification from './dialogs/Notification'
 import Prompt from './dialogs/Prompt'
-import { setUser, listDocs, newDoc, renameDoc, setDoc, setRemoteDoc, setPeriods } from '../actions'
+import { setUser, listDocs, newDoc, renameDoc, setDoc, setPeriods } from '../actions'
 import Menu from './Menu'
 import Inputs from './Inputs'
 import Outputs from './Outputs'
@@ -216,8 +216,6 @@ class App extends Component {
         .then(doc => {
           const immutableDoc = Immutable(doc)
           this.props.dispatch(setDoc(immutableDoc))
-          this.props.dispatch(setRemoteDoc(immutableDoc))
-          this.handleAutoSave.cancel()
 
           hash.set('id', doc._id)
         })
@@ -233,8 +231,6 @@ class App extends Component {
         .then((doc) => {
           const immutableDoc = Immutable(doc)
           this.props.dispatch(setDoc(immutableDoc))
-          this.props.dispatch(setRemoteDoc(immutableDoc))
-          this.handleAutoSave.cancel()
 
           hash.set('id', doc._id)
           this.fetchDocs()
@@ -329,7 +325,7 @@ class App extends Component {
   }
 
   isChanged () {
-    return this.props.remoteDoc !== null && this.props.doc !== this.props.remoteDoc
+    return this.props.unchangedDoc !== null && this.props.doc !== this.props.unchangedDoc
   }
 
   /**

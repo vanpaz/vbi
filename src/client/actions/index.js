@@ -16,10 +16,6 @@ export function setDoc (doc) {
   return { type: 'SET_DOC', doc }
 }
 
-export function setRemoteDoc (doc) {
-  return { type: 'SET_REMOTE_DOC', doc }
-}
-
 export function newDoc () {
   return { type: 'NEW_DOC' }
 }
