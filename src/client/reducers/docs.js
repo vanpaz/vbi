@@ -1,12 +1,13 @@
+import Immutable from 'seamless-immutable'
 
-const doc = (state = [], action) => {
+const docs = (state = Immutable([]), action) => {
   switch (action.type) {
-    case 'DELETE_DOC':
-      
+    case 'LIST_DOCS':
+      return Immutable(action.docs)
 
     default:
       return state
   }
 }
 
-export default doc
+export default docs

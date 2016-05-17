@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import debugFactory from 'debug/browser';
 
-import { assign } from 'lodash';
-
 import Popover from 'material-ui/lib/popover/popover';
 import SelectField from 'material-ui/lib/select-field';
 import MenuItem from 'material-ui/lib/menus/menu-item';
@@ -132,7 +130,7 @@ export default class Price extends Component {
   }
 
   handleChangeType (event, index, value) {
-    let price = assign(this.props.price, { type: value });
+    let price = this.props.price.set('type', value);
 
     debug('handleChangeType', price);
 

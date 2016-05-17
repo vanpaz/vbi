@@ -39,7 +39,7 @@ export default class Menu extends React.Component {
   }
 
   render () {
-    const docsList = this.props.docs.map(doc => {
+    let docsList = this.props.docs.map(doc => {
       const rightIcon = <ClearIcon onTouchTap={ (event) => {
         event.stopPropagation()
         this.deleteDoc(doc)
@@ -51,7 +51,7 @@ export default class Menu extends React.Component {
           rightIcon={rightIcon}
           onTouchTap={(event) => {
             this.hide()
-            this.openDoc(doc.id)
+            this.openDoc(doc.id, doc.title)
           }}
       />
     })
@@ -62,7 +62,7 @@ export default class Menu extends React.Component {
           key={'none'}
           primaryText={<span style={{color: 'gray'}}>(no documents)</span>}
       />
-      docsList.push(none)
+      docsList = docsList.concat([none])
     }
 
     // limit the number of displayed documents
@@ -75,7 +75,7 @@ export default class Menu extends React.Component {
         />
 
         docsList.splice(MAX_DOCS)
-        docsList.push(more)
+        docsList = docsList.concat([more])
       }
     }
 
@@ -165,14 +165,14 @@ export default class Menu extends React.Component {
     })
   }
 
-  openDoc (id) {
-    debug('openDoc', id)
+  openDoc (id, title) {
+    debug('openDoc', id, title)
 
     if (!this.props.signedIn) {
       return this.askToSignIn()
     }
 
-    this.props.onOpenDoc(id)
+    this.props.onOpenDoc(id, title)
   }
 
   saveDoc () {

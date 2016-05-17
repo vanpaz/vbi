@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { clone, cloneDeep, debounce } from 'lodash'
-import Immutable from 'immutable'
+import Immutable from 'seamless-immutable'
+import { debounce } from 'lodash'
 import debugFactory from 'debug/browser'
 
 import Avatar from 'material-ui/lib/avatar'
@@ -14,16 +14,15 @@ import ThemeManager from 'material-ui/lib/styles/theme-manager'
 import theme from '../theme'
 import Notification from './dialogs/Notification'
 import Prompt from './dialogs/Prompt'
-import { setUser } from '../actions'
+import { setUser, listDocs, newDoc, renameDoc, setDoc, setRemoteDoc, setPeriods } from '../actions'
 import Menu from './Menu'
-import Scenario from './Scenario'
 import Inputs from './Inputs'
 import Outputs from './Outputs'
-import { request } from '../js/request'
+import { request } from '../rest/request'
+import { list, open, save, del } from '../rest/docs'
+import { hash } from '../js/hash'
 
 const debug = debugFactory('vbi:app')
-
-const MAX_DOCS = 10;  // maximum number of visible docs in the left navigation menu
 
 const AUTO_SAVE_DELAY = 5000; // milliseconds
 
@@ -47,28 +46,8 @@ class App extends Component {
   constructor (props) {
     super(props)
 
-    // TODO: replace Scenario with react-router-redux
-    this.scenario = new Scenario()
-    this.scenario.on('change', (doc) => {
-      this.setState({doc, changed: false})
-      this.handleAutoSave.cancel()
-    })
-    this.scenario.on('notification', (notification) => {
-      debug('notification', notification)
-      this.refs.notification.show(notification)
-    })
-    this.scenario.on('error', (err) => this.handleError(err))
-
     this.handleSaveDoc = this.handleSaveDoc.bind(this)
     this.handleAutoSave = debounce(this.handleSaveDoc, AUTO_SAVE_DELAY)
-
-    // FIXME: remove this state
-    this.state = {
-      changed: false,
-      doc: this.scenario.get(),   // The current doc
-      docs: [],                   // list with all docs of the user
-      docsLimit: true,            // limit the number of visible docs
-    }
   }
 
   render() {
@@ -78,11 +57,11 @@ class App extends Component {
 
         <Menu
             ref="menu"
-            docs={this.state.docs} // TODO: read docs from props (redux store) instead
-            title={this.state.doc.title}
+            docs={this.props.docs}
+            title={this.props.doc.title}
             signedIn={this.isSignedIn()}
             onNewDoc={() => this.handleNewDoc()}
-            onOpenDoc={id => this.handleOpenDoc(id)}
+            onOpenDoc={(id, title) => this.handleOpenDoc(id, title)}
             onRenameDoc={newTitle => this.handleRenameDoc(newTitle)}
             onSaveDoc={() => this.handleSaveDoc()}
             onDeleteDoc={doc => this.handleDeleteDoc(doc)}
@@ -94,14 +73,13 @@ class App extends Component {
         <div>
           <div className="container">
             <Inputs
-                data={this.state.doc.data}
-                onChange={data => this.handleChange(data)}
-                onEditPeriods={() => this.handleEditPeriods()}
+                data={this.props.doc.data}
+                onEditPeriods={() => this.handleSetPeriods()}
             />
           </div>
 
           <div className="container">
-            <Outputs data={this.state.doc.data} />
+            <Outputs data={this.props.doc.data} />
           </div>
         </div>
 
@@ -113,14 +91,14 @@ class App extends Component {
   }
 
   renderAppBar () {
-    let docTitle = this.state.doc
+    let docTitle = this.props.doc
         ? <span className="title" onTouchTap={(event) => {
             event.stopPropagation()
             event.preventDefault()
 
             // open dialog where the user can enter a new name
             this.refs.menu.renameDoc()
-          }}>[{this.state.doc.title}]</span>
+          }}>[{this.props.doc.title}]</span>
         : ''
 
     let handleSaveDoc = (event) => {
@@ -128,7 +106,7 @@ class App extends Component {
       this.handleSaveDoc()
     }
 
-    let changed = this.state.doc && this.state.doc._id && this.state.changed
+    let changed = (this.props.doc && this.props.doc._id && this.isChanged())
         ? <span>
             <span className="changed">changed (</span>
             <a className="changed" href="#" onClick={handleSaveDoc}>save now</a>
@@ -150,11 +128,11 @@ class App extends Component {
   // render "sign in" or "signed in as"
   renderUser () {
     if (this.isSignedIn()) {
-      let source = this.props.user.get('email') || this.props.user.get('provider')
-      let title = `Logged in as ${this.props.user.get('displayName')} (${source})`
+      let source = this.props.user.email || this.props.user.provider
+      let title = `Logged in as ${this.props.user.displayName} (${source})`
       let buttonContents = <div title={title} >
         <span style={{color: '#FFFFFF', marginRight: 10}}>Sign out</span>
-        <Avatar src={this.props.user.get('photo')} style={{verticalAlign: 'bottom'}} />
+        <Avatar src={this.props.user.photo} style={{verticalAlign: 'bottom'}} />
       </div>
 
       return <span>
@@ -167,40 +145,80 @@ class App extends Component {
   }
 
   isSignedIn () {
-    return this.props.user && this.props.user.get('id')
+    return this.props.user && this.props.user.id
   }
 
   componentDidMount () {
+    // TODO: use react-router-redux instead of handling hash changes ourselves
+
+    // read the hash
+    let id = hash.get('id')
+    if (id) {
+      this.handleOpenDoc(id)
+    }
+
+    // listen for changes in the hash
+    hash.onChange('id', (id, oldId) => {
+      debug('hash changed, new id:', id, ', old id:', oldId);
+
+      if (id) {
+        this.handleOpenDoc(id)
+      }
+      else {
+        this.props.dispatch(newDoc())
+      }
+    });
+
     this.fetchUser()
     // FIXME: setUser should throw an error when setting a regular JSON object instead of immutable, test this
-        .then(user => this.props.dispatch(setUser(Immutable.fromJS(user))))
+        .then(user => this.props.dispatch(setUser(user)))
         .catch(err => this.handleError(err))
 
     this.fetchDocs()
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.isChanged()) {
+      this.handleAutoSave()
+    }
+  }
+
+  handleNotification (notification) {
+    debug('notification', notification)
+    this.refs.notification.show(notification)
+  }
+
   handleNewDoc () {
-    // FIXME: refactor
-    this.scenario.createNew()
-    this.setState({
-      doc: this.scenario.get()
-    })
+    debug('handleNewDoc')
+
+    if (this.isChanged()) {
+      return this.handleError(new Error('Cannot open new document, current document has unsaved changes'));
+    }
+
+    this.props.dispatch(newDoc())
+    hash.remove('id')
   }
 
   handleRenameDoc (newTitle) {
     debug('handleRenameDoc', newTitle)
 
-    // TODO: replace cloneDeep
-    let doc = cloneDeep(this.state.doc)
-    doc.title = newTitle
-    this.changeDoc(doc)
+    this.props.dispatch(renameDoc(newTitle))
   }
 
-  handleOpenDoc (id) {
-    debug('handleOpenDoc', id)
+  handleOpenDoc (id, title) {
+    debug('handleOpenDoc', id, title)
 
-    this.scenario.open(id)
-        .then(doc => this.setState({ doc }))
+    if (this.isChanged()) {
+      return this.handleError(new Error('Cannot open document, current document has unsaved changes'));
+    }
+
+    open(id, title, n => this.handleNotification(n) )
+        .then(doc => {
+          const immutableDoc = Immutable(doc)
+          this.props.dispatch(setDoc(immutableDoc))
+          this.props.dispatch(setRemoteDoc(immutableDoc))
+          hash.set('id', doc._id);
+        })
         .catch((err) => this.handleError(err))
   }
 
@@ -209,9 +227,15 @@ class App extends Component {
 
     this.handleAutoSave.cancel()
 
-    this.scenario.save()
+    save(this.props.doc, n => this.handleNotification(n))
         .then((doc) => {
-          this.setState({doc, changed: false})
+          const immutableDoc = Immutable(doc)
+          this.props.dispatch(setDoc(immutableDoc))
+          this.props.dispatch(setRemoteDoc(immutableDoc))
+
+          this.handleAutoSave.cancel()
+
+          hash.set('id', doc._id);
           this.fetchDocs()
         })
         .catch((err) => this.handleError(err))
@@ -224,15 +248,23 @@ class App extends Component {
   handleDeleteDoc (doc) {
     debug('deleteDoc')
 
-    this.scenario.del(doc.id, doc.rev, doc.title)
-        .then(() => this.fetchDocs())
+    del(doc.id, doc.rev, doc.title, n => this.handleNotification(n))
+        .then(() => {
+          if (hash.get('id') === doc.id) {
+            hash.remove('id');
+          }
+          this.fetchDocs()
+        })
         .catch(err => this.handleError(err))
   }
 
-  handleEditPeriods () {
-    const parameters = this.state.doc &&
-        this.state.doc.data &&
-        this.state.doc.data.parameters
+  /**
+   * Open a prompt where the user can enter a comma separated list with periods
+   */
+  handleSetPeriods () {
+    const parameters = this.props.doc &&
+        this.props.doc.data &&
+        this.props.doc.data.parameters
 
     const periods = (parameters && parameters.periods)
         ? parameters.periods.join(', ')
@@ -261,13 +293,7 @@ class App extends Component {
     debug('setPeriods', periods)
 
     if (Array.isArray(periods)) {
-      let updatedDoc = cloneDeep(this.state.doc)
-      if (!updatedDoc.data.parameters) {
-        updatedDoc.data.parameters = {}
-      }
-      updatedDoc.data.parameters.periods = clone(periods)
-
-      this.changeDoc(updatedDoc)
+      this.props.dispatch(setPeriods(periods))
     }
     else {
       // periods is a string
@@ -283,29 +309,6 @@ class App extends Component {
     })
   }
 
-  handleChange (data) {
-    debug('handleChange', data)
-
-    let updatedDoc = cloneDeep(this.state.doc)
-    updatedDoc.data = data
-
-    this.changeDoc(updatedDoc)
-  }
-
-  changeDoc (doc) {
-    this.scenario.set(doc)
-
-    this.setState({
-      doc,
-      changed: true
-    })
-
-    // auto save after a delay
-    if (doc._id) {
-      this.handleAutoSave()
-    }
-  }
-
   fetchUser () {
     debug('fetching user...')
     return request('GET', '/user')
@@ -313,15 +316,19 @@ class App extends Component {
 
   fetchDocs () {
     debug('fetching docs...')
-    this.scenario.list()
+    list()
         .then(docs => {
           // sort by updated field, from newest to oldest document
-          docs.sort( this.compareUpdated  )
+          docs.sort(this.compareUpdated )
           debug('docs', docs)
 
-          this.setState({ docs })
+          this.props.dispatch(listDocs(docs))
         })
         .catch(err => this.handleError(err))
+  }
+
+  isChanged () {
+    return this.props.remoteDoc !== null && this.props.doc !== this.props.remoteDoc
   }
 
   /**
@@ -366,11 +373,7 @@ App.childContextTypes = {
 }
 
 App = connect((state, ownProps) => {
-  return {
-    components: state.get('components'),
-    user: state.get('user'),
-    doc: state.get('doc')
-  }
+  return state
 })(App)
 
 

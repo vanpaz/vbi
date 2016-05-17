@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
 import debugFactory from 'debug/browser';
 import { cloneDeep } from 'lodash';
 
@@ -14,8 +15,8 @@ import ClearIcon from 'material-ui/lib/svg-icons/content/clear';
 import DownIcon from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-down';
 import UpIcon from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-up';
 
-
-import { findGroup, findCategory, findQuantity, clearIfZero } from './../js/formulas';
+import { deleteCategory, deleteGroup, setQuantity, setPrice } from '../actions'
+import { findQuantity, clearIfZero } from './../js/formulas';
 import Price from './Price';
 import theme from '../theme';
 
@@ -33,9 +34,9 @@ const styles = {
   }
 };
 
-// TODO: refactor Inputs, split renderGroup into a separate component
+// TODO: refactor Inputs, split renderCategory into a separate component
 
-export default class Inputs extends Component {
+class Inputs extends Component {
   render () {
     return <div style={{width: '100%', display: 'inline-flex'}}>
       <Card className="card">
@@ -58,11 +59,11 @@ export default class Inputs extends Component {
 
   renderSection (section, priceTypes) {
     const periods = this.props.data.parameters.periods;
-    const groups = this.props.data[section];
+    const group = this.props.data[section];
 
     return <div>
       {
-        groups && groups.map(group => this.renderGroup('costs', group, periods, priceTypes))
+        group && group.map((group, groupIndex) => this.renderGroup(section, group, groupIndex, periods, priceTypes))
       }
       <p>
         <button className="add-group" title="Add a new group" onTouchTap={
@@ -75,11 +76,11 @@ export default class Inputs extends Component {
     </div>
   }
 
-  renderGroup (section, group, periods, priceTypes) {
+  renderGroup (section, group, groupIndex, periods, priceTypes) {
     const revenueCategories = this.props.data.revenues.map(g => g.name);
 
     return <div key={group.name}>
-      <h1>{this.renderGroupActionMenu(section, group.name)}</h1>
+      <h1>{this.renderGroupActionMenu(section, group.name, groupIndex)}</h1>
 
       <table className="category-table" >
         <colgroup>
@@ -112,8 +113,8 @@ export default class Inputs extends Component {
                   <input className="quantity"
                          value={clearIfZero(findQuantity(item, period))}
                          onChange={(event) => {
-                           let quantity = event.target.value;
-                           this.updateQuantity(section, group.name, item.name, period, quantity);
+                           const quantity = event.target.value;
+                           this.props.dispatch(setQuantity(section, group.name, item.name, period, quantity));
                          }}
                          onFocus={(event) => event.target.select()} />
                 </td>))
@@ -124,7 +125,7 @@ export default class Inputs extends Component {
                        periods={periods}
                        priceTypes={priceTypes}
                        onChange={(price) => {
-                         this.updatePrice(section, group.name, item.name, price);
+                         this.props.dispatch(setPrice (section, group.name, item.name, price))
                        }} />
               </td>
             </tr>)
@@ -162,7 +163,8 @@ export default class Inputs extends Component {
   }
 
   // TODO: move into a separate component
-  renderGroupActionMenu (section, group) {
+
+  renderGroupActionMenu (section, name, groupIndex) {
     // TODO: implement actions for GroupActionMenu
 
     let periodActions = [
@@ -199,7 +201,7 @@ export default class Inputs extends Component {
       <IconButton
           key="delete"
           title="Delete group"
-          onTouchTap={(event) => this.removeGroup(section, group)}
+          onTouchTap={(event) => this.props.dispatch(deleteGroup(section, groupIndex))}
           style={{width: 24, height: 24, padding: 0}}>
         <ClearIcon color="white" hoverColor={theme.palette.accent1Color} />
       </IconButton>
@@ -207,7 +209,7 @@ export default class Inputs extends Component {
     ];
 
     return <ActionMenu actions={periodActions}>
-      {group}
+      {name}
     </ActionMenu>
   }
 
@@ -249,7 +251,7 @@ export default class Inputs extends Component {
       <IconButton
           key="delete"
           title="Delete category"
-          onTouchTap={(event) => this.removeCategory(section, group, category)}
+          onTouchTap={(event) => this.props.dispatch(deleteCategory(section, group, category))}
           style={{width: 24, height: 24, padding: 0}}>
         <ClearIcon color="white" hoverColor={theme.palette.accent1Color} />
       </IconButton>
@@ -260,89 +262,11 @@ export default class Inputs extends Component {
       {category}
     </ActionMenu>
   }
-
-  /**
-   * Update the price of one entry
-   * @param {'costs' | 'revenues'} section
-   * @param {string} group
-   * @param {string} category
-   * @param {{value: string, change: string}} price
-   */
-  updatePrice (section, group, category, price) {
-    debug('updatePrice', section, group, category, price);
-
-    const data = cloneDeep(this.props.data);
-    const item = findCategory(data, section, group, category);
-    if (item) {
-      item.price = price;
-    }
-    else {
-      // TODO: handle adding a new item
-    }
-
-    // emit a change event
-    this.props.onChange(data);
-  }
-
-  /**
-   * Update a quantity in one entry
-   * @param {string} section
-   * @param {string} group
-   * @param {string} category
-   * @param {string} period
-   * @param {string} quantity
-   */
-  updateQuantity (section, group, category, period, quantity) {
-    debug('updateQuantity', section, group, category, period, quantity);
-
-    const data = cloneDeep(this.props.data);
-    const item = findCategory(data, section, group, category);
-    if (item) {
-      // replace the quantity with the new value
-      item.quantities[period] = quantity;
-    }
-    else {
-      // TODO: handle adding a new item
-    }
-
-    // emit a change event
-    this.props.onChange(data);
-  }
-
-  removeCategory(section, group, category) {
-    debug('removeCategory', section, group, category);
-
-    // TODO: ask confirmation before deleting the category
-
-    const data = cloneDeep(this.props.data);
-    const g = findGroup(data, section, group);
-    if (g && g.categories) {
-      const index = g.categories.findIndex(item => item.name === category);
-      if (index !== -1) {
-        g.categories.splice(index, 1);
-
-        // emit a change event
-        this.props.onChange(data);
-      }
-    }
-  }
-
-  removeGroup(section, group) {
-    debug('removeGroup', section, group);
-
-    // TODO: ask confirmation before deleting the group
-
-    const data = cloneDeep(this.props.data);
-    const groups = data[section];
-    if (groups) {
-      const index = groups.findIndex(g => g.name === group);
-      if (index !== -1) {
-        groups.splice(index, 1);
-
-        // emit a change event
-        this.props.onChange(data);
-      }
-    }
-  }
-
 }
+
+Inputs = connect((state, ownProps) => {
+  return state
+})(Inputs)
+
+
+export default Inputs

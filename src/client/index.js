@@ -3,7 +3,7 @@ import { render } from 'react-dom'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
-import Immutable from 'immutable'
+import Immutable from 'seamless-immutable'
 
 import './js/polyfills'
 import App from './components/App'
@@ -13,13 +13,12 @@ import reducers from './reducers'
 // see https://github.com/callemall/material-ui#react-tap-event-plugin
 injectTapEventPlugin()
 
-let initialState = Immutable.fromJS({
+let initialState = Immutable({
   user: {},
 
-  // changed: false, // FIXME
+  remoteDoc: null,  // contains the document as loaded/saved in the database
   doc: require('../../data/example_scenario.json'),   // The current doc
-  // docs: [],                   // list with all docs of the user
-
+  docs: [] // list with all docs of the user
 })
 
 let store = createStore(reducers, initialState)

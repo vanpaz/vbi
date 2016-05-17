@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import debugFactory from 'debug/browser';
-import { assign, cloneDeep } from 'lodash';
+import Immutable from 'seamless-immutable'
 import TextField from 'material-ui/lib/text-field';
 import FlatButton from 'material-ui/lib/flat-button';
 import SelectField from 'material-ui/lib/select-field';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import RadioButton from 'material-ui/lib/radio-button';
 import RadioButtonGroup from 'material-ui/lib/radio-button-group';
+
+import { appendItem, removeItem } from '../js/immutable'
 
 const debug = debugFactory('vbi:PriceTypeRevenue');
 
@@ -75,13 +77,13 @@ export default class PriceTypeRevenue extends Component {
         {this.props.price.percentages && this.props.price.percentages.map((entry, index) => {
           return <tr key={index}>
             <td>
-              {this.renderSelectCategory(entry)}
+              {this.renderSelectCategory(entry, index)}
             </td>
             <td>
-              {this.renderTextPercentage(entry)}
+              {this.renderTextPercentage(entry, index)}
             </td>
             <td>
-              <FlatButton label="Remove" onTouchTap={this.handleRemoveEntry.bind(this, entry)} />
+              <FlatButton label="Remove" onTouchTap={(event) => this.handleRemoveEntry(index)} />
             </td>
           </tr>
         })}
@@ -89,7 +91,7 @@ export default class PriceTypeRevenue extends Component {
           <td/>
           <td/>
           <td>
-            <FlatButton label="Add" onTouchTap={this.handleAddEntry.bind(this)} />
+            <FlatButton label="Add" onTouchTap={(event) => this.handleAddEntry()} />
           </td>
         </tr>
         </tbody>
@@ -97,84 +99,76 @@ export default class PriceTypeRevenue extends Component {
     </div>;
   }
 
-  renderSelectCategory (entry) {
+  renderSelectCategory (entry, entryIndex) {
     return <SelectField
         value={entry.category}
         hintText="category"
         style={styles.selectCategory}
         onChange={(event, index, value) => {
-              let newEntry = {
-                category: value,
-                percentage: entry.percentage
-              };
-              this.handleChangeEntry(entry, newEntry);
-            }} >
+          this.handleUpdateEntryCategory(entryIndex, value);
+        }} >
       {this.props.categories.map(category => {
         return <MenuItem key={category} value={category} primaryText={category} />
       })}
     </SelectField>
   }
 
-  renderTextPercentage (entry) {
+  renderTextPercentage (entry, entryIndex) {
     return <TextField
         value={entry.percentage}
         hintText="5%"
         style={styles.textPercentage}
         onChange={(event) => {
-              let newEntry = {
-                category: entry.category,
-                percentage: event.target.value
-              };
-              this.handleChangeEntry(entry, newEntry);
-            }} />
+          this.handleUpdateEntryPercentage(entryIndex, event.target.value);
+        }} />
   }
 
-  handleChangeEntry (oldEntry, newEntry) {
-    debug('handleChangeEntry', oldEntry, newEntry);
+  handleUpdateEntryCategory (index, category) {
+    debug('handleUpdatePercentageCategory', index, category);
 
-    if (this.props.price.percentages) {
-      var price = cloneDeep(this.props.price);
-      let index = this.props.price.percentages.indexOf(oldEntry);
-      if (index !== -1) {
-        price.percentages[index] = newEntry;
-      }
+    const price = this.props.price.setIn(['percentages', index, 'category'], category)
 
-      this.props.onChange(price);
-    }
+    this.props.onChange(price);
   }
 
-  handleRemoveEntry (entry) {
-    debug('handleRemoveEntry', entry);
+  handleUpdateEntryPercentage (index, percentage) {
+    debug('handleUpdateEntryPercentage', index, percentage);
 
-    if (this.props.price.percentages) {
-      var price = cloneDeep(this.props.price);
-      let index = this.props.price.percentages.indexOf(entry);
-      if (index !== -1) {
-        price.percentages.splice(index, 1);
-      }
+    const price = this.props.price.setIn(['percentages', index, 'percentage'], percentage)
 
-      this.props.onChange(price);
-    }
+    this.props.onChange(price);
+  }
+
+  handleRemoveEntry (index) {
+    debug('handleRemoveEntry', index);
+
+    const price = this.props.price.updateIn(['percentages'],
+        percentages => removeItem(percentages, index))
+
+    this.props.onChange(price);
   }
 
   handleAddEntry () {
     debug('handleAddEntry');
 
-    var price = cloneDeep(this.props.price);
+    const item = {category: '', percentage: ''}
+    let price
 
-    if (!price.percentages) {
-      price.percentages = [];
+    if (this.props.price.percentages) {
+      price = this.props.price.updateIn(['percentages'],
+          percentages => appendItem(percentages, Immutable(item)))
     }
-    price.percentages.push({category: '', percentage: ''});
-
+    else {
+      price = this.props.price.set('percentages', Immutable([item]))
+    }
+    
     this.props.onChange(price);
   }
 
   handleChangePercentage (percentage) {
     debug('handleChangePercentage', percentage);
 
-    var price = cloneDeep(this.props.price);
-    price.percentage = percentage;
+    const price = this.props.price.set('percentage', percentage);
 
     this.props.onChange(price);
   }
@@ -182,8 +176,7 @@ export default class PriceTypeRevenue extends Component {
   handleChangeAll (all) {
     debug('handleChangeAll', all);
 
-    var price = cloneDeep(this.props.price);
-    price.all = all;
+    const price = this.props.price.set('all', all);
 
     this.props.onChange(price);
   }

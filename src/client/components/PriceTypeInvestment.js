@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-import { assign } from 'lodash';
-
 import TextField from 'material-ui/lib/text-field';
 
 export default class PriceTypeInvestment extends Component {
@@ -25,13 +23,13 @@ export default class PriceTypeInvestment extends Component {
   }
 
   handleChangePrice (event) {
-    let price = assign(this.props.price, { value: event.target.value });
+    const price = this.props.price.set('value', event.target.value)
 
     this.props.onChange(price);
   }
 
   handleChangeDeprecation (event) {
-    let price = assign(this.props.price, { deprecationPeriod: event.target.value });
+    const price = this.props.price.set('deprecationPeriod', event.target.value)
 
     this.props.onChange(price);
   }

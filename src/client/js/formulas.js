@@ -4,29 +4,9 @@ import debugFactory from 'debug/browser';
 const debug = debugFactory('vbi:formulas');
 
 /**
- * Find a category object in the data model. Example:
- *
- * findCategory(data, 'costs', 'Personnel', 'Support')
- *
- * @param {Object} data
- * @param {string} section
- * @param {string} group
- * @param {string} category
- * @return {*}
- */
-export function findCategory (data, section, group, category) {
-  const g = findGroup(data, section, group);
-  if (!g || !g.categories) {
-    return null;
-  }
-
-  return g.categories.find(item => item.name === category) || null;
-}
-
-/**
  * Find a group object in the data model. Example:
  *
- * findCategory(data, 'costs', 'Personnel', 'Support')
+ * findGroup(data, 'costs', 'Personnel')
  *
  * @param {Object} data
  * @param {string} section

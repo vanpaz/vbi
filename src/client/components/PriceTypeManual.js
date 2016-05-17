@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import debugFactory from 'debug/browser';
-import { assign, cloneDeep } from 'lodash';
 import TextField from 'material-ui/lib/text-field';
 
 const debug = debugFactory('vbi:PriceTypeManual');
@@ -49,12 +48,7 @@ export default class PriceTypeManual extends Component {
   handleChangeEntry (period, value) {
     debug('handleChangeEntry', period, value);
 
-    var price = cloneDeep(this.props.price);
-    if (!price.values) {
-      price.values = {};
-    }
-
-    price.values[period] = value;
+    const price = this.props.price.setIn(['values', period], value)
 
     this.props.onChange(price);
   }
