@@ -165,8 +165,9 @@ export let types = {
  * @return {Array.<{name: string, totals: Object.<string, number>}>}
  */
 export function calculateCostsTotals (data) {
-  let revenueTotals = calculateRevenueTotals(data);
-  let periods = data.parameters.periods;
+  const revenueTotals = calculateRevenueTotals(data);
+  const periods = data.parameters.periods;
+  const initial = initializeTotals(periods)
 
   return data.costs
       .map(group => {
@@ -174,7 +175,7 @@ export function calculateCostsTotals (data) {
           name: group.name,
           totals: group.categories
               .map(item => calculatePrices(item, periods, revenueTotals))
-              .reduce(addTotals)
+              .reduce(addTotals, initial)
         }
       });
 }
@@ -185,7 +186,8 @@ export function calculateCostsTotals (data) {
  * @return {Array.<{category: string, totals: Object.<string, number>}>}
  */
 export function calculateRevenueTotals (data) {
-  let periods = data.parameters.periods;
+  const periods = data.parameters.periods;
+  const initial = initializeTotals(periods)
 
   return data.revenues
       .map(group => {
@@ -193,7 +195,7 @@ export function calculateRevenueTotals (data) {
           name: group.name,
           totals: group.categories
               .map(item => calculatePrices(item, periods))
-              .reduce(addTotals)
+              .reduce(addTotals, initial)
         }
       });
 }
@@ -208,11 +210,9 @@ export function calculateTotals (categoryTotals) {
     return {};
   }
 
-  if (categoryTotals.length == 1) {
-    return clone(categoryTotals[0].totals);
-  }
-
-  return categoryTotals.reduce((a, b) => addTotals(a.totals, b.totals));
+  return categoryTotals
+      .map(a => a.totals)
+      .reduce(addTotals);
 }
 
 /**
@@ -222,7 +222,7 @@ export function calculateTotals (categoryTotals) {
  * @return {Object.<string, number>} Returns an object with periods as key and prices as value
  */
 export function addTotals (a, b) {
-  let c = {};
+  const c = {};
 
   Object.keys(a).forEach(period => c[period] = a[period] + b[period]);
 
@@ -319,4 +319,23 @@ export function formatPrice (price) {
   if (Math.abs(price) > 1e3)  { return (price / 1e3).toFixed(1) + 'k'; }
 
   return (price).toFixed();
+}
+
+/**
+ * Create a totals object with a key for every period and zero as value.
+ * For example:
+ *
+ *     initializeTotals(['2016', '2017', '2018'])
+ *
+ *     // output: {'2016': 0, '2017': 0, '2018': 0}
+ *
+ * @param {Array.<string>} periods
+ * @return {{}} Returns a totals object
+ */
+export function initializeTotals (periods) {
+  const totals = {}
+
+  periods.forEach(period => totals[period] = 0);
+
+  return totals
 }

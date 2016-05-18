@@ -8,13 +8,12 @@ const debug = debugFactory('vbi:profit-loss')
 export default class ProfitAndLoss extends Component {
   render () {
     try {
-      let periods = this.props.data.parameters.periods
+      const periods = this.props.data.parameters.periods
+      const categoryCostsTotals = calculateCostsTotals(this.props.data)
+      const categoryRevenueTotals = calculateRevenueTotals(this.props.data)
+
       debug ('periods', periods)
-
-      let categoryCostsTotals = calculateCostsTotals(this.props.data)
       debug ('categoryCostsTotals', categoryCostsTotals)
-
-      let categoryRevenueTotals = calculateRevenueTotals(this.props.data)
       debug ('categoryRevenueTotals', categoryRevenueTotals)
 
       return <div>
