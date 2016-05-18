@@ -131,7 +131,7 @@ class App extends Component {
       </div>
 
       return <span>
-        <FlatButton children={ buttonContents } onTouchTap={(event) => refs.menu.signOut()} />
+        <FlatButton children={ buttonContents } onTouchTap={(event) => this.refs.menu.signOut()} />
       </span>
     }
     else {
