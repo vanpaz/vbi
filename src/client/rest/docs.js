@@ -54,18 +54,14 @@ export function save (doc, onNotification) {
 
   return promise
       .then(response => {
-        debug ('document saved', doc);
-
-        const updatedDoc = doc
-            .set('_id', response.id)
-            .set('_rev', response.rev)
+        debug ('document saved', response);
 
         onNotification({
           message: `Saved ${doc.title || doc._id}`,
           duration: NOTIFICATION_AUTO_HIDE_DURATION
         });
 
-        return updatedDoc;
+        return response;
       });
 }
 

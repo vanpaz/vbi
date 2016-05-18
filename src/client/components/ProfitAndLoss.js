@@ -1,20 +1,21 @@
-import React, { Component } from 'react';
-import debugFactory from 'debug/browser';
+import React, { Component } from 'react'
+import debugFactory from 'debug/browser'
 
-import { calculateCostsTotals, calculateRevenueTotals, calculateTotals, clearIfZero, formatPrice } from './../js/formulas';
+import { calculateCostsTotals, calculateRevenueTotals, calculateTotals, clearIfZero, formatPrice } from './../js/formulas'
 
-const debug = debugFactory('vbi:profit-loss');
+const debug = debugFactory('vbi:profit-loss')
 
 export default class ProfitAndLoss extends Component {
   render () {
     try {
-      let periods = this.props.data.parameters.periods;
-      let categoryCostsTotals = calculateCostsTotals(this.props.data);
-      let categoryRevenueTotals = calculateRevenueTotals(this.props.data);
+      let periods = this.props.data.parameters.periods
+      debug ('periods', periods)
 
-      debug ('periods', periods);
-      debug ('categoryCostsTotals', categoryCostsTotals);
-      debug ('categoryRevenueTotals', categoryRevenueTotals);
+      let categoryCostsTotals = calculateCostsTotals(this.props.data)
+      debug ('categoryCostsTotals', categoryCostsTotals)
+
+      let categoryRevenueTotals = calculateRevenueTotals(this.props.data)
+      debug ('categoryRevenueTotals', categoryRevenueTotals)
 
       return <div>
         <p>
@@ -26,15 +27,16 @@ export default class ProfitAndLoss extends Component {
 
         <h1>Revenues</h1>
         {ProfitAndLoss.renderTotals(categoryRevenueTotals, periods)}
-      </div>;
+      </div>
     }
     catch (err) {
+      debug(err)
       return <div className="error"><p>{err.toString()}</p></div>
     }
   }
 
   static renderTotals (categoryTotals, periods) {
-    let totals = calculateTotals(categoryTotals);
+    let totals = calculateTotals(categoryTotals)
 
     return <table className="category-table" >
       <tbody>
@@ -47,7 +49,7 @@ export default class ProfitAndLoss extends Component {
           <td className="read-only">{entry.name}</td>
           {
             periods.map(period => {
-              let total = entry.totals[period];
+              let total = entry.totals[period]
               
               return <td key={period} className="read-only">{
                 clearIfZero(total && formatPrice(total))
@@ -60,7 +62,7 @@ export default class ProfitAndLoss extends Component {
         <td className="read-only total">total</td>
         {
           periods.map(period => {
-            let total = totals[period];
+            let total = totals[period]
 
             return  <td key={period} className="read-only total">{
               clearIfZero(total && formatPrice(total))

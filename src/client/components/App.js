@@ -222,12 +222,19 @@ class App extends Component {
 
     this.handleAutoSave.cancel()
 
-    save(this.props.doc, n => this.handleNotification(n))
-        .then((doc) => {
-          const immutableDoc = Immutable(doc)
-          this.props.dispatch(setDoc(immutableDoc))
+    // TODO: should mark the doc in it's current state as saved
+    // TODO: better: use a changed flag
 
-          hash.set('id', doc._id)
+    save(this.props.doc, n => this.handleNotification(n))
+        .then((response) => {
+
+          const updatedDoc = this.props.doc
+              .set('_id', response.id)
+              .set('_rev', response.rev)
+          
+          this.props.dispatch(setDoc(updatedDoc))
+
+          hash.set('id', updatedDoc._id)
           this.fetchDocs()
         })
         .catch((err) => this.handleError(err))

@@ -16,7 +16,12 @@ import DownIcon from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-down';
 import UpIcon from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-up';
 
 import Prompt from './dialogs/Prompt'
-import { deleteCategory, deleteGroup, setPeriods, setQuantity, setPrice } from '../actions'
+import Confirm from './dialogs/Confirm'
+import {
+    addGroup, renameGroup, deleteGroup,
+    addCategory, deleteCategory, renameCategory,
+    setPeriods, setQuantity, setPrice
+} from '../actions'
 import { findQuantity, clearIfZero } from './../js/formulas';
 import Price from './Price';
 import theme from '../theme';
@@ -57,6 +62,7 @@ class Inputs extends Component {
       </Card>
 
       <Prompt ref="prompt" />
+      <Confirm ref="confirm" />
     </div>
   }
 
@@ -66,24 +72,24 @@ class Inputs extends Component {
 
     return <div>
       {
-        group && group.map((group, groupIndex) => this.renderGroup(section, group, groupIndex, periods, priceTypes))
+        group && group.map((group) => this.renderGroup(section, group, periods, priceTypes))
       }
       <p>
-        <button className="add-group" title="Add a new group" onTouchTap={
-            // TODO: implement action
-            (event) => alert('not yet implemented')
-        }>
+        <button
+            className="add-group"
+            title="Add a new group"
+            onTouchTap={ (event) => this.handleAddGroup(section) }>
           +
         </button>
       </p>
     </div>
   }
 
-  renderGroup (section, group, groupIndex, periods, priceTypes) {
+  renderGroup (section, group, periods, priceTypes) {
     const revenueCategories = this.props.data.revenues.map(g => g.name);
 
-    return <div key={group.name}>
-      <h1>{this.renderGroupActionMenu(section, group.name, groupIndex)}</h1>
+    return <div key={group.id}>
+      <h1>{this.renderGroupActionMenu(section, group)}</h1>
 
       <table className="category-table" >
         <colgroup>
@@ -107,38 +113,38 @@ class Inputs extends Component {
             <th />
           </tr>
           {
-            group.categories && group.categories.map(item => <tr key={group.name + ':' + item.name}>
+            group.categories && group.categories.map(category => <tr key={group.name + ':' + category.name}>
               <td className="read-only">{
-                this.renderCategoryActionMenu(section, group.name, item.name)
+                this.renderCategoryActionMenu(section, group, category)
               }</td>
               {
                 periods.map(period => (<td key={period} className="quantity">
                   <input className="quantity"
-                         value={clearIfZero(findQuantity(item, period))}
+                         value={clearIfZero(findQuantity(category, period))}
                          onChange={(event) => {
                            const quantity = event.target.value;
-                           this.props.dispatch(setQuantity(section, group.name, item.name, period, quantity));
+                           this.props.dispatch(setQuantity(section, group.id, category.id, period, quantity));
                          }}
                          onFocus={(event) => event.target.select()} />
                 </td>))
               }
               <td>
-                <Price price={item.price}
+                <Price price={category.price}
                        categories={revenueCategories}
                        periods={periods}
                        priceTypes={priceTypes}
                        onChange={(price) => {
-                         this.props.dispatch(setPrice (section, group.name, item.name, price))
+                         this.props.dispatch(setPrice (section, group.id, category.id, price))
                        }} />
               </td>
             </tr>)
           }
         <tr>
           <td className="read-only">
-            <button className="add-category" title="Add a new category" onTouchTap={
-              // TODO: implement action
-              (event) => alert('not yet implemented')
-            }>
+            <button
+                className="add-category"
+                title="Add a new category"
+                onTouchTap={ (event) => this.handleAddCategory(section, group.id) }>
               +
             </button>
           </td>
@@ -167,17 +173,14 @@ class Inputs extends Component {
 
   // TODO: move into a separate component
 
-  renderGroupActionMenu (section, name, groupIndex) {
+  renderGroupActionMenu (section, group) {
     // TODO: implement actions for GroupActionMenu
 
     let periodActions = [
       <IconButton
           key="rename"
           title="Rename group"
-          onTouchTap={
-            // TODO: implement action
-            (event) => alert('not yet implemented')
-          }
+          onTouchTap={ (event) => this.handleRenameGroup(section, group.id) }
           style={styles.actionButton}>
         <EditIcon color="white" hoverColor={theme.palette.accent1Color} />
       </IconButton>,
@@ -204,15 +207,14 @@ class Inputs extends Component {
       <IconButton
           key="delete"
           title="Delete group"
-          onTouchTap={(event) => this.props.dispatch(deleteGroup(section, groupIndex))}
+          onTouchTap={(event) => this.handleDeleteGroup(section, group.id) }
           style={{width: 24, height: 24, padding: 0}}>
         <ClearIcon color="white" hoverColor={theme.palette.accent1Color} />
       </IconButton>
-        // TODO: add buttons to move up/down
     ];
 
     return <ActionMenu actions={periodActions}>
-      {name}
+      {group.name}
     </ActionMenu>
   }
 
@@ -224,10 +226,7 @@ class Inputs extends Component {
       <IconButton
           key="rename"
           title="Rename category"
-          onTouchTap={
-            // TODO: implement action
-            (event) => alert('not yet implemented')
-          }
+          onTouchTap={ (event) => this.handleRenameCategory(section, group.id, category.id) }
           style={styles.actionButton}>
         <EditIcon color="white" hoverColor={theme.palette.accent1Color} />
       </IconButton>,
@@ -254,15 +253,14 @@ class Inputs extends Component {
       <IconButton
           key="delete"
           title="Delete category"
-          onTouchTap={(event) => this.props.dispatch(deleteCategory(section, group, category))}
+          onTouchTap={(event) => this.handleDeleteCategory(section, group.id, category.id)}
           style={{width: 24, height: 24, padding: 0}}>
         <ClearIcon color="white" hoverColor={theme.palette.accent1Color} />
       </IconButton>
-        // TODO: add buttons to move up/down
     ];
 
     return <ActionMenu actions={periodActions}>
-      {category}
+      {category.name}
     </ActionMenu>
   }
 
@@ -270,8 +268,7 @@ class Inputs extends Component {
    * Open a prompt where the user can enter a comma separated list with periods
    */
   handleSetPeriods () {
-    const parameters = this.props.data &&
-        this.props.data.parameters
+    const parameters = this.props.data && this.props.data.parameters
 
     const periods = (parameters && parameters.periods)
         ? parameters.periods.join(', ')
@@ -284,34 +281,120 @@ class Inputs extends Component {
       value: periods
     }
 
-    this.refs.prompt.show(options).then(newPeriods => {
-      if (newPeriods !== null) {
-        this.setPeriods(newPeriods)
+    this.refs.prompt.show(options).then(value => {
+      if (value !== null) {
+        const newPeriods = value.split(',').map(trim)
+        this.props.dispatch(setPeriods(newPeriods))
       }
     })
   }
 
-  /**
-   * Apply a new series of periods
-   * @param {string | Array.<string>} periods   A comma separated string or
-   *                                            an array with strings.
-   */
-  setPeriods (periods) {
-    debug('setPeriods', periods)
+  handleAddGroup (section) {
+    const options = {
+      title: 'New group',
+      description: 'Enter a name for the new group:',
+      hintText: 'New group',
+      value: 'New group'
+    }
 
-    if (Array.isArray(periods)) {
-      this.props.dispatch(setPeriods(periods))
-    }
-    else {
-      // periods is a string
-      const array = periods.split(',').map(trim)
-      this.setPeriods(array)
-    }
+    this.refs.prompt.show(options).then(name => {
+      if (name !== null) {
+        this.props.dispatch(addGroup(section, name))
+      }
+    })
   }
 
-  handleRenameCategory (section, group, categoryIndex) {
+  handleRenameGroup (section, groupId) {
+    const group = this.findGroup(section, groupId)
 
+    const options = {
+      title: 'Rename group',
+      description: 'Enter a new name for the group:',
+      hintText: 'New Group',
+      value: group.name
+    }
+
+    this.refs.prompt.show(options).then(name => {
+      if (name !== null) {
+        this.props.dispatch(renameGroup(section, groupId, name))
+      }
+    })
   }
+
+  handleDeleteGroup(section, groupId) {
+    const group = this.findGroup(section, groupId)
+
+    const options = {
+      title: 'Delete group',
+      description: <p>Are you sure you want to delete group "{group.name}"?</p>
+    }
+
+    this.refs.confirm.show(options).then(ok => {
+      if (ok) {
+        this.props.dispatch(deleteGroup(section, groupId))
+      }
+    })
+  }
+
+  handleAddCategory (section, groupId) {
+    const options = {
+      title: 'New category',
+      description: 'Enter a name for the new category:',
+      hintText: 'New category',
+      value: 'New category'
+    }
+
+    this.refs.prompt.show(options).then(name => {
+      if (name !== null) {
+        this.props.dispatch(addCategory(section, groupId, name))
+      }
+    })
+  }
+
+  handleRenameCategory (section, groupId, categoryId) {
+    const category = this.findCategory(section, groupId, categoryId)
+
+    const options = {
+      title: 'Rename category',
+      description: 'Enter a new name for the category:',
+      hintText: 'New category',
+      value: category.name
+    }
+
+    this.refs.prompt.show(options).then(newName => {
+      if (newName !== null) {
+        this.props.dispatch(renameCategory(section, groupId, categoryId, newName))
+      }
+    })
+  }
+
+  handleDeleteCategory (section, groupId, categoryId) {
+    const category = this.findCategory(section, groupId, categoryId)
+
+    const options = {
+      title: 'Delete category',
+      description: <p>Are you sure you want to delete category "{category.name}"?</p>
+    }
+
+    this.refs.confirm.show(options).then(ok => {
+      if (ok) {
+        this.props.dispatch(deleteCategory(section, groupId, categoryId))
+      }
+    })
+  }
+
+  findGroup (section, groupId) {
+    return this.props
+        .data[section]
+        .find(g => g.id === groupId)
+  }
+
+  findCategory (section, groupId, categoryId) {
+    return this.findGroup(section, groupId)
+        .categories
+        .find(c => c.id === categoryId)
+  }
+
 }
 
 Inputs = connect((state, ownProps) => {
@@ -319,7 +402,6 @@ Inputs = connect((state, ownProps) => {
     data: state.doc.data
   }
 })(Inputs)
-
 
 function trim (str) {
   return str.trim()
