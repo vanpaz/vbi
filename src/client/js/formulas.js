@@ -1,24 +1,26 @@
-import { uniq, flatMap, unzipWith, clone } from 'lodash';
+import { uniq, flatMap, clone } from 'lodash';
 import debugFactory from 'debug/browser';
 
 const debug = debugFactory('vbi:formulas');
 
 /**
- * Find a group object in the data model. Example:
+ * Find a group object in the data model. Case insensitive search
  *
- * findGroup(data, 'costs', 'Personnel')
+ * Example:
+ *
+ *     findGroup(data, 'costs', 'Personnel')
  *
  * @param {Object} data
  * @param {string} section
- * @param {string} group
+ * @param {string} groupName
  * @return {*}
  */
-export function findGroup (data, section, group) {
+export function findGroup (data, section, groupName) {
   if (!data[section]) {
     return null;
   }
 
-  return data[section].find(item => item.name === group) || null;
+  return data[section].find(group => group.name && group.name.toLowerCase() === groupName )
 }
 
 /**
@@ -34,10 +36,85 @@ export function findQuantity (item, period) {
 }
 
 /**
+ * Generate profit and loss data
+ * @param data
+ */
+export function profitAndLoss (data) {
+  const periods = data.parameters.periods
+
+  const groupDirect = findGroup(data, 'costs', 'direct' )
+  const groupPersonnel = findGroup(data, 'costs', 'personnel' )
+  const groupsOther = data.costs
+      .filter(group => group !== groupDirect && group !== groupPersonnel )
+
+  const VATRate = 0.25          // TODO: make VATRate customizable
+  const holidayProvision = 1/12 // TODO: read holidayProvision from price
+  const sscEmployer = 0.18      // TODO: read sscEmployer from price
+
+  function calculateSalaryCosts (monthlySalary) {
+    return (1 + holidayProvision) * (1 + sscEmployer) * 12 * monthlySalary
+  }
+
+  const revenueTotalsPerCategory = calculateRevenueTotalsPerCategory(data)
+  const revenueTotals = calculateTotals(revenueTotalsPerCategory)
+  const directCosts = calculateGroupTotals(groupDirect, periods, revenueTotalsPerCategory)
+  let personnelCosts = calculateGroupTotals(groupPersonnel, periods, revenueTotalsPerCategory)
+  personnelCosts = zipObjectsWith([personnelCosts], calculateSalaryCosts)
+
+  const otherCosts = groupsOther
+      .map(group => calculateGroupTotals(group, periods, revenueTotalsPerCategory))
+      .reduce(addTotals, initializeTotals(periods))
+
+  const grossMargin = zipObjectsWith([revenueTotals, directCosts], subtract, periods)
+  const EBITDA = zipObjectsWith([grossMargin, otherCosts], subtract, periods)
+
+  // TODO: calculate depreciation
+  const depreciation = {
+    '2016': 16e3,
+    '2017': 48e3,
+    '2018': 80e3,
+    '2019': 112e3,
+    '2020': 144e3
+  }
+
+  const EBIT = zipObjectsWith([EBITDA, depreciation], subtract, periods)
+
+  // TODO: get interest from balance sheet calculations
+  const interest = {
+    '2016': 1.3e3,
+    '2017': 5.0e3,
+    '2018': 12.5e3,
+    '2019': 17.5e3,
+    '2020': 17.5e3
+  }
+
+  const EBT = zipObjectsWith([EBIT, interest], subtract, periods)
+
+  const corporateTaxes = zipObjectsWith([EBT], (value) => VATRate * value, periods)
+
+  const netResult = zipObjectsWith([EBT, corporateTaxes], subtract, periods)
+
+  return [
+    {name: 'Total revenues', values: revenueTotals },
+    {name: 'Total direct costs', values: directCosts },
+    {name: 'Gross margin', values: grossMargin },
+    {name: 'Total personnel cost', values: personnelCosts },
+    {name: 'Total other direct cost', values: otherCosts },
+    {name: 'EBITDA', values: EBITDA },
+    {name: 'Depreciation and amortization', values: depreciation },
+    {name: 'EBIT', values: EBIT, className: 'main' },
+    {name: 'Interest', values: interest },
+    {name: 'EBT', values: EBT },
+    {name: 'Corporate taxes', values: corporateTaxes },
+    {name: 'Net result', values: netResult }
+  ]
+}
+
+/**
  * Calculate actual prices for all periods configured for a single item.
  * @param item
  * @param {Array.<string>} periods
- * @param {Array.<{category: string, totals: Object.<string, number>}>} revenueTotals
+ * @param {Array.<{category: string, totals: Object.<string, number>}>} revenueTotalsPerCategory
  *                                   Totals of the revenues per category,
  *                                   needed to calculate prices based on a
  *                                   percentage of the total revenues or some
@@ -45,7 +122,7 @@ export function findQuantity (item, period) {
  * @return {Object.<string, number>} Returns an object with periods as key
  *                                   and prices as value
  */
-export function calculatePrices (item, periods, revenueTotals) {
+export function calculatePrices (item, periods, revenueTotalsPerCategory) {
   var type = types[item.price.type];
 
   if (!type) {
@@ -54,7 +131,7 @@ export function calculatePrices (item, periods, revenueTotals) {
         'Choose from: ' + Object.keys(types).join(','));
   }
 
-  return type.calculatePrices(item, periods, revenueTotals);
+  return type.calculatePrices(item, periods, revenueTotalsPerCategory);
 }
 
 /**
@@ -113,7 +190,7 @@ export let types = {
      * Calculate actual prices for all periods configured for a single item.
      * @param item
      * @param {Array.<string>} periods
-     * @param {Array.<{category: string, totals: Object.<string, number>}>} revenueTotals
+     * @param {Array.<{category: string, totals: Object.<string, number>}>} revenueTotalsPerCategory
      *                                   Totals of the revenues per category,
      *                                   needed to calculate prices based on a
      *                                   percentage of the total revenues or some
@@ -121,15 +198,15 @@ export let types = {
      * @return {Object.<string, number>} Returns an object with periods as key
      *                                   and prices as value
      */
-    calculatePrices: function (item, periods, revenueTotals) {
-      if (!revenueTotals) {
+    calculatePrices: function (item, periods, revenueTotalsPerCategory) {
+      if (!revenueTotalsPerCategory) {
         debug(new Error('No revenue totals available in this context'));
         return {};
       }
 
       if (item.price.all === true) {
         // calculate a percentage of all revenue
-        let totals = calculateTotals(revenueTotals);
+        let totals = calculateTotals(revenueTotalsPerCategory);
         let percentage = parsePercentage(item.price.percentage);
 
         return periods.reduce((prices, period) => {
@@ -145,7 +222,7 @@ export let types = {
           if (item.price.percentages) {
             item.price.percentages.forEach(p => {
               let percentage = parsePercentage(p.percentage);
-              let entry = revenueTotals.find(t => t.category === p.category);
+              let entry = revenueTotalsPerCategory.find(t => t.category === p.category);
               let total = entry && entry.totals && entry.totals[period] || 0;
 
               prices[period] += percentage * total;
@@ -165,7 +242,7 @@ export let types = {
  * @return {Array.<{name: string, totals: Object.<string, number>}>}
  */
 export function calculateCostsTotals (data) {
-  const revenueTotals = calculateRevenueTotals(data);
+  const revenueTotalsPerCategory = calculateRevenueTotalsPerCategory(data);
   const periods = data.parameters.periods;
   const initial = initializeTotals(periods)
 
@@ -173,11 +250,18 @@ export function calculateCostsTotals (data) {
       .map(group => {
         return {
           name: group.name,
-          totals: group.categories
-              .map(item => calculatePrices(item, periods, revenueTotals))
-              .reduce(addTotals, initial)
+          totals: calculateGroupTotals(group, periods, revenueTotalsPerCategory)
         }
       });
+}
+
+
+export function calculateGroupTotals (group, periods, revenueTotalsPerCategory) {
+  const initial = initializeTotals(periods)
+
+  return group.categories
+      .map(item => calculatePrices(item, periods, revenueTotalsPerCategory))
+      .reduce(addTotals, initial)
 }
 
 /**
@@ -185,7 +269,7 @@ export function calculateCostsTotals (data) {
  * @param {{revenues: Array}} data
  * @return {Array.<{category: string, totals: Object.<string, number>}>}
  */
-export function calculateRevenueTotals (data) {
+export function calculateRevenueTotalsPerCategory (data) {
   const periods = data.parameters.periods;
   const initial = initializeTotals(periods)
 
@@ -338,4 +422,31 @@ export function initializeTotals (periods) {
   periods.forEach(period => totals[period] = 0);
 
   return totals
+}
+
+/**
+ * Merge objects given a callback function which is invoked on pairs of property
+ * values of the objects.
+ * @param {Array.<Object>} objects
+ * @param {function} callback
+ * @param {Array.<string>} [keys]
+ * @return {object}
+ */
+export function zipObjectsWith (objects, callback, keys = null) {
+  const result = {}
+  const _keys = keys || (objects && objects[0] && Object.keys(objects[0])) || []
+
+  _keys.forEach(key => {
+    result[key] = callback.apply(null, objects.map(object => object[key]))
+  })
+
+  return result
+}
+
+export function add (a, b) {
+  return a + b
+}
+
+export function subtract (a, b) {
+  return a - b
 }

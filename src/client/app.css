@@ -84,13 +84,24 @@ table.category-table th {
   padding: 5px;
 }
 
-table.category-table td.read-only {
-  padding: 5px;
+table.output {
+  border-collapse: collapse;
+  margin: 30px 0;
 }
 
-table.category-table td.total {
+table.output th,
+table.output td {
+  text-align: right;
+  vertical-align: top;
+  padding: 5px 10px;
+}
+
+table.output tr.main {
   font-weight: bold;
-  border-top: 3px double #d4d4d4;
+}
+
+table.output td.name {
+  text-align: left;
 }
 
 
