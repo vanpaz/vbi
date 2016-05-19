@@ -32,18 +32,6 @@ export function renameDoc (title) {
   return { type: 'RENAME_DOC', title }
 }
 
-export function addGroup (section, name) {
-  return { type: 'ADD_GROUP', section, name}
-}
-
-export function renameGroup (section, groupId, name) {
-  return { type: 'RENAME_GROUP', section, groupId, name}
-}
-
-export function deleteGroup (section, groupId) {
-  return { type: 'DELETE_GROUP', section, groupId}
-}
-
 export function addCategory (section, groupId, name, price = DEFAULT_PRICE, quantities = DEFAULT_QUANTITIES) {
   return { type: 'ADD_CATEGORY', section, groupId, name, price, quantities }
 }

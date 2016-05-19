@@ -8,9 +8,7 @@ import CardText from 'material-ui/lib/card/card-text';
 import Tabs from 'material-ui/lib/tabs/tabs';
 import Tab from 'material-ui/lib/tabs/tab';
 import IconButton from 'material-ui/lib/icon-button';
-import FlatButton from 'material-ui/lib/flat-button';
 import EditIcon from 'material-ui/lib/svg-icons/image/edit';
-import AddIcon from 'material-ui/lib/svg-icons/content/add';
 import ClearIcon from 'material-ui/lib/svg-icons/content/clear';
 import DownIcon from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-down';
 import UpIcon from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-up';
@@ -18,7 +16,6 @@ import UpIcon from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-up';
 import Prompt from './dialogs/Prompt'
 import Confirm from './dialogs/Confirm'
 import {
-    addGroup, renameGroup, deleteGroup,
     addCategory, deleteCategory, renameCategory,
     setPeriods, setQuantity, setPrice
 } from '../actions'
@@ -74,14 +71,6 @@ class Inputs extends Component {
       {
         group && group.map((group) => this.renderGroup(section, group, periods, priceTypes))
       }
-      <p>
-        <button
-            className="add-group"
-            title="Add a new group"
-            onTouchTap={ (event) => this.handleAddGroup(section) }>
-          +
-        </button>
-      </p>
     </div>
   }
 
@@ -89,7 +78,7 @@ class Inputs extends Component {
     const revenueCategories = this.props.data.revenues.map(g => g.name);
 
     return <div key={group.id}>
-      <h1>{this.renderGroupActionMenu(section, group)}</h1>
+      <h1>{group.name}</h1>
 
       <table className="category-table" >
         <colgroup>
@@ -172,53 +161,6 @@ class Inputs extends Component {
   }
 
   // TODO: move into a separate component
-
-  renderGroupActionMenu (section, group) {
-    // TODO: implement actions for GroupActionMenu
-
-    let periodActions = [
-      <IconButton
-          key="rename"
-          title="Rename group"
-          onTouchTap={ (event) => this.handleRenameGroup(section, group.id) }
-          style={styles.actionButton}>
-        <EditIcon color="white" hoverColor={theme.palette.accent1Color} />
-      </IconButton>,
-      <IconButton
-          key="up"
-          title="Move group up"
-          onTouchTap={
-            // TODO: implement action
-            (event) => alert('not yet implemented')
-          }
-          style={styles.actionButton}>
-        <UpIcon color="white" hoverColor={theme.palette.accent1Color} />
-      </IconButton>,
-      <IconButton
-          key="down"
-          title="Move group down"
-          onTouchTap={
-            // TODO: implement action
-            (event) => alert('not yet implemented')
-          }
-          style={styles.actionButton}>
-        <DownIcon color="white" hoverColor={theme.palette.accent1Color} />
-      </IconButton>,
-      <IconButton
-          key="delete"
-          title="Delete group"
-          onTouchTap={(event) => this.handleDeleteGroup(section, group.id) }
-          style={{width: 24, height: 24, padding: 0}}>
-        <ClearIcon color="white" hoverColor={theme.palette.accent1Color} />
-      </IconButton>
-    ];
-
-    return <ActionMenu actions={periodActions}>
-      {group.name}
-    </ActionMenu>
-  }
-
-  // TODO: move into a separate component
   renderCategoryActionMenu (section, group, category) {
     // TODO: implement actions for CategoryActionMenu
 
@@ -285,53 +227,6 @@ class Inputs extends Component {
       if (value !== null) {
         const newPeriods = value.split(',').map(trim)
         this.props.dispatch(setPeriods(newPeriods))
-      }
-    })
-  }
-
-  handleAddGroup (section) {
-    const options = {
-      title: 'New group',
-      description: 'Enter a name for the new group:',
-      hintText: 'New group',
-      value: 'New group'
-    }
-
-    this.refs.prompt.show(options).then(name => {
-      if (name !== null) {
-        this.props.dispatch(addGroup(section, name))
-      }
-    })
-  }
-
-  handleRenameGroup (section, groupId) {
-    const group = this.findGroup(section, groupId)
-
-    const options = {
-      title: 'Rename group',
-      description: 'Enter a new name for the group:',
-      hintText: 'New Group',
-      value: group.name
-    }
-
-    this.refs.prompt.show(options).then(name => {
-      if (name !== null) {
-        this.props.dispatch(renameGroup(section, groupId, name))
-      }
-    })
-  }
-
-  handleDeleteGroup(section, groupId) {
-    const group = this.findGroup(section, groupId)
-
-    const options = {
-      title: 'Delete group',
-      description: <p>Are you sure you want to delete group "{group.name}"?</p>
-    }
-
-    this.refs.confirm.show(options).then(ok => {
-      if (ok) {
-        this.props.dispatch(deleteGroup(section, groupId))
       }
     })
   }

@@ -39,38 +39,6 @@ const doc = (state = Immutable({}), action) => {
     case 'SET_PERIODS':
       return state.setIn(['data', 'parameters', 'periods'], action.periods)
 
-
-
-    case 'ADD_GROUP':
-      const newGroup = Immutable({
-        id: uuid(),
-        name: action.name,
-        categories: []
-      })
-
-      return state.updateIn(['data', action.section],
-          groups => groups.concat([newGroup]))
-
-      return state
-
-    case 'RENAME_GROUP':
-      return state.updateIn(['data', action.section],
-          groups => groups.map(group => {
-            if (group.id === action.groupId) {
-              return group.set('name', action.name)
-            }
-            else {
-              return group
-            }
-          }))
-
-      return state
-
-    case 'DELETE_GROUP':
-      return state.updateIn(['data', action.section],
-          groups => groups.filter(group => group.id !== action.groupId))
-
-
     case 'ADD_CATEGORY':
       path = findGroupPath(state.data, action.section, action.groupId)
           .concat(['categories'])
