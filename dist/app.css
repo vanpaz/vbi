@@ -15,6 +15,9 @@ html, body {
   box-sizing: border-box;
   padding-top: 70px;
   padding-bottom: 70px;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 div.container {
@@ -25,7 +28,8 @@ div.container {
 
 div.card {
   margin: 20px;
-  overflow: auto;
+  padding: 0 0 40px 0;
+  overflow: auto !important;
 }
 
 
@@ -54,6 +58,7 @@ h1 {
   font-weight: normal;
   color: #f3742c;
   margin-top: 30px;
+  text-transform: lowercase;
 }
 
 th {
@@ -79,18 +84,29 @@ table.category-table th {
   padding: 5px;
 }
 
-table.category-table td.read-only {
-  padding: 5px;
+table.output {
+  border-collapse: collapse;
+  margin: 30px 0;
 }
 
-table.category-table td.total {
+table.output th,
+table.output td {
+  text-align: right;
+  vertical-align: top;
+  padding: 5px 10px;
+}
+
+table.output tr.main {
   font-weight: bold;
-  border-top: 3px double #d4d4d4;
+}
+
+table.output td.name {
+  text-align: left;
 }
 
 
-table.category-table td input,
-table.category-table td button {
+table.category-table td input.quantity,
+table.category-table td button.price {
   border: none;
   font-family: roboto, sans-serif;
   font-size: 14px;
@@ -114,12 +130,12 @@ table.category-table td input:focus {
   outline: none;
 }
 
-table.category-table td button {
+table.category-table td button.price {
   padding: 5px;
   min-width: 140px;
 }
 
-table.category-table td button.expanded {
+table.category-table td button.price.expanded {
   background: #f3742c;
   color: white;
 }
@@ -218,4 +234,87 @@ div.price-popover {
 
 div.price-type p.description {
   width: 256px;
+}
+
+div.action-menu-root {
+  position: relative;
+  display: inline-block;
+}
+
+div.action-menu-root div.action-menu {
+  position: absolute;
+  box-sizing: border-box;
+  margin-left: -100%;
+  margin-bottom: -24px;
+  padding-left: 100%;
+  padding-bottom: 24px;
+  bottom: 100%;
+  left: 100%;
+  width: auto;
+  display: none;
+
+  /* FIXME: get transition working */
+  opacity: 0;
+  transition:opacity 1s ease;
+}
+
+div.action-menu-root:hover {
+  color: #f3742c;
+}
+
+div.action-menu-root:hover div.action-menu {
+  display: inline-block;
+  opacity: 1;
+}
+
+div.action-menu-root div.action-menu  table.action-menu-contents {
+  background: #4d4d4d;
+  color: white;
+  z-index: 999;
+  box-shadow: rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px;
+  border-radius: 3px;
+  padding: 5px;
+}
+
+div.action-menu-root div.action-menu  table.action-menu-contents button {
+  min-width: unset;
+}
+
+button.add-group {
+  font-size: 24px;
+  font-weight: normal;
+  text-transform: lowercase;
+  margin-top: 30px;
+  padding: 0 30px;
+
+  background: transparent;
+  color: #f3742c;
+  opacity: 0.5;
+  border: 1px dashed #f3742c;
+  border-radius: 3px;
+  outline: none;
+}
+
+button.add-group:hover,
+button.add-group:focus {
+  opacity: 1;
+}
+
+
+button.add-category {
+  font-size: 18px;
+  font-weight: normal;
+  text-transform: lowercase;
+  padding: 0 30px;
+  background: transparent;
+  border: 1px dashed rgba(0, 0, 0, 0.87);
+  border-radius: 3px;
+  color: rgba(0, 0, 0, 0.87);
+  opacity: 0.5;
+  outline: none;
+}
+
+button.add-category:hover,
+button.add-category:focus {
+  opacity: 1;
 }
