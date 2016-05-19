@@ -21,7 +21,7 @@ export function findQuantity (item, period) {
  */
 export function profitAndLoss (data) {
   const periods = data.parameters.periods
-  const corporateTaxRate = data.parameters.corporateTaxRate
+  const corporateTaxRate = parsePercentage(data.parameters.corporateTaxRate)
 
   const revenueTotalsPerCategory = calculateTotalsPerCategory(data.revenues.all, periods)
   const revenueTotals = calculateTotals(data.revenues.all, periods)

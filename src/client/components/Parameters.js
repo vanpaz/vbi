@@ -7,7 +7,7 @@ const debug = debugFactory('vbi:parameters')
 
 const style = {
   button: {
-    width: 400
+    width: '100%'
   }
 }
 
