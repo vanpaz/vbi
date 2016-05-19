@@ -14,7 +14,7 @@ if (!Array.prototype.includes) {
       k = n
     } else {
       k = len + n
-      if (k < 0) {k = 0;}
+      if (k < 0) {k = 0}
     }
     var currentElement
     while (k < len) {

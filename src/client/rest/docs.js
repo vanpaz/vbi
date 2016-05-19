@@ -50,7 +50,7 @@ export function save (doc, onNotification) {
 
   let promise = doc._id
       ? request('PUT', `/docs/${doc._id}`, doc)   // update existing
-      : request('POST', '/docs', doc);                 // create new
+      : request('POST', '/docs', doc)             // create new
 
   return promise
       .then(response => {

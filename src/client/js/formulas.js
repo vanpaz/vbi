@@ -391,17 +391,17 @@ export function parsePrice (price) {
  * @return {string} Returns the formatted price
  */
 export function formatPrice (price) {
-  if (Math.abs(price) > 1e13) { return (price / 1e12).toFixed() + 'T'; }
-  if (Math.abs(price) > 1e12) { return (price / 1e12).toFixed(1) + 'T'; }
+  if (Math.abs(price) > 1e13) { return (price / 1e12).toFixed() + 'T' }
+  if (Math.abs(price) > 1e12) { return (price / 1e12).toFixed(1) + 'T' }
 
-  if (Math.abs(price) > 1e10) { return (price / 1e9).toFixed() + 'B'; }
-  if (Math.abs(price) > 1e9)  { return (price / 1e9).toFixed(1) + 'B'; }
+  if (Math.abs(price) > 1e10) { return (price / 1e9).toFixed() + 'B' }
+  if (Math.abs(price) > 1e9)  { return (price / 1e9).toFixed(1) + 'B' }
 
-  if (Math.abs(price) > 1e7)  { return (price / 1e6).toFixed() + 'M'; }
-  if (Math.abs(price) > 1e6)  { return (price / 1e6).toFixed(1) + 'M'; }
+  if (Math.abs(price) > 1e7)  { return (price / 1e6).toFixed() + 'M' }
+  if (Math.abs(price) > 1e6)  { return (price / 1e6).toFixed(1) + 'M' }
 
-  if (Math.abs(price) > 1e4)  { return (price / 1e3).toFixed() + 'k'; }
-  if (Math.abs(price) > 1e3)  { return (price / 1e3).toFixed(1) + 'k'; }
+  if (Math.abs(price) > 1e4)  { return (price / 1e3).toFixed() + 'k' }
+  if (Math.abs(price) > 1e3)  { return (price / 1e3).toFixed(1) + 'k' }
 
   return (price).toFixed()
 }
