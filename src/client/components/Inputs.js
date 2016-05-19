@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import debugFactory from 'debug/browser'
-import { cloneDeep } from 'lodash'
 
 import Card from 'material-ui/lib/card/card'
 import CardText from 'material-ui/lib/card/card-text'
@@ -17,10 +16,11 @@ import Prompt from './dialogs/Prompt'
 import Confirm from './dialogs/Confirm'
 import {
     addCategory, deleteCategory, renameCategory,
-    setPeriods, setQuantity, setPrice
+    setPeriods, setParameter, setQuantity, setPrice
 } from '../actions'
 import { findQuantity, clearIfZero } from './../js/formulas'
 import Price from './Price'
+import Parameters from './Parameters'
 import theme from '../theme'
 
 import ActionMenu from './ActionMenu'
@@ -45,6 +45,12 @@ class Inputs extends Component {
       <Card className="card">
         <CardText>
           <Tabs inkBarStyle={{height: 4, marginTop: -4}}>
+            <Tab label="Parameters">
+              <Parameters
+                  parameters={this.props.data.parameters}
+                  onChange={(parameter, value) => this.handleSetParameter(parameter, value)} />
+            </Tab>
+
             <Tab label="Costs">
               <h1>Direct</h1>
               {this.renderCategory('costs', 'direct', ['constant', 'manual', 'revenue'])}
@@ -238,6 +244,10 @@ class Inputs extends Component {
         this.props.dispatch(setPeriods(newPeriods))
       }
     })
+  }
+  
+  handleSetParameter (parameter, value) {
+    this.props.dispatch(setParameter(parameter, value))
   }
 
   handleAddCategory (section, group) {

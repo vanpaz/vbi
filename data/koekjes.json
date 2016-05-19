@@ -9,7 +9,32 @@
         "2019",
         "2020"
       ],
-      "VATRate": 0.25
+
+      "startingYear": "2016",
+      "numberOfYears": "5",
+      "startingCapital": "10k",
+      "VATRate": "21%",
+      "corporateTaxRate": "25%",
+
+      "interestPayableOnOverdraft": "8%",
+      "interestPayableOnLoans": "5%",
+      "interestReceivableOnCredit": "1%",
+
+      "VATPaidAfter": "3",
+      "corporateTaxPaidAfter": "12",
+      "incomeTaxPaidAfter": "1",
+      "socialSecurityContributionsPaidAfter": "1",
+
+      "daysInStockOfInventory": "10 days",
+      "daysAccountsReceivablesOutstanding": "30",
+      "daysPrepaymentOfExpenditure": "5",
+      "daysAccrualOfIncomeInvoice": "15",
+      "daysAccountsPayableOutstanding": "30",
+      "daysAccrualOfCost": "15",
+      "daysDeferredIncome": "15",
+
+      "monthOfHolidayPayment": "5"
+
     },
     "costs": {
       "direct": [

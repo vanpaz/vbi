@@ -21,7 +21,7 @@ export function findQuantity (item, period) {
  */
 export function profitAndLoss (data) {
   const periods = data.parameters.periods
-  const VATRate = data.parameters.VATRate
+  const corporateTaxRate = data.parameters.corporateTaxRate
 
   const revenueTotalsPerCategory = calculateTotalsPerCategory(data.revenues.all, periods)
   const revenueTotals = calculateTotals(data.revenues.all, periods)
@@ -51,7 +51,7 @@ export function profitAndLoss (data) {
 
   const EBT = zipObjectsWith([EBIT, interest], subtract, periods)
 
-  const corporateTaxes = zipObjectsWith([EBT], (value) => VATRate * value, periods)
+  const corporateTaxes = zipObjectsWith([EBT], (value) => corporateTaxRate * value, periods)
 
   const netResult = zipObjectsWith([EBT, corporateTaxes], subtract, periods)
 
@@ -92,7 +92,8 @@ export function balanceSheet (data) {
     {name: 'Prepayments', values: {} },
     {name: 'Accrued income', values: {} },
     {name: 'Receivable VAT', values: {} },
-    {name: 'Cash & bank', values: {} },
+
+    {name: 'Cash & bank', values: {}, className: 'main-middle' },
 
     {name: 'Liabilities', values: {}, className: 'header' },
 

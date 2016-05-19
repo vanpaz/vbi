@@ -48,6 +48,10 @@ export function setPeriods (periods) {
   return { type: 'SET_PERIODS', periods }
 }
 
+export function setParameter (parameter, value) {
+  return { type: 'SET_PARAMETER', parameter, value }
+}
+
 export function setPrice (section, group, categoryId, price) {
   return { type: 'SET_PRICE', section, group, categoryId, price }
 }

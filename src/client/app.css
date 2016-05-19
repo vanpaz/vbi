@@ -66,6 +66,10 @@ th {
   font-weight: normal;
 }
 
+table.parameters th {
+  padding-right: 20px;
+}
+
 table.category-table {
   border-collapse: collapse;
 }
