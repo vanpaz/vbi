@@ -14,6 +14,10 @@ module.exports = {
     publicPath: '/dist/'
   },
   plugins: [
+    new webpack.DefinePlugin({
+      // make Redux happy
+      'process.env.NODE_ENV': '"production"'
+    }),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false
