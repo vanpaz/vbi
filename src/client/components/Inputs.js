@@ -105,19 +105,15 @@ class Inputs extends Component {
         </tr>
         {
           categories.map(category => <tr key={category.id}>
-            <td className="read-only">{
+            <td>{
               this.renderActionMenu(section, group, category)
             }</td>
             {
-              periods.map(period => (<td key={period} className="quantity">
-                <input className="quantity"
-                       value={clearIfZero(findQuantity(category, period))}
-                       onChange={(event) => {
-                         const quantity = event.target.value
-                         this.props.dispatch(setQuantity(section, group, category.id, period, quantity))
-                       }}
-                       onFocus={(event) => event.target.select()} />
-              </td>))
+                category.price.type !== 'revenue'
+                    ? this.renderQuantities(section, group, category, periods)
+                    : <td className="info"
+                          colSpan={periods.length}
+                          title="Quantities are coupled with revenue">(coupled with revenue)</td>
             }
             <td>
               <Price price={category.price}
@@ -142,6 +138,18 @@ class Inputs extends Component {
       </tr>
       </tbody>
     </table>
+  }
+
+  renderQuantities (section, group, category, periods) {
+    return periods.map(period => (<td key={period} className="quantity">
+      <input className="quantity"
+             value={clearIfZero(findQuantity(category, period))}
+             onChange={(event) => {
+                         const quantity = event.target.value
+                         this.props.dispatch(setQuantity(section, group, category.id, period, quantity))
+                       }}
+             onFocus={(event) => event.target.select()} />
+    </td>))
   }
 
   // TODO: move into a separate component

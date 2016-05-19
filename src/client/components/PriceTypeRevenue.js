@@ -20,8 +20,6 @@ const styles = {
 
 export default class PriceTypeRevenue extends Component {
   render () {
-    const all = (this.props.price.all !== false);
-
     return <div className="price-type">
       <p className="description">
         Enter a percentage of one, multiple, or all revenue categories.
@@ -29,8 +27,7 @@ export default class PriceTypeRevenue extends Component {
 
       <RadioButtonGroup
           name="radioAll"
-          valueSelected={all ? 'true' : 'false'}
-          defaultSelected="true"
+          valueSelected={this.props.price.all + ''}
           onChange={(event, value) => this.handleChangeAll(value === 'true') }>
         <RadioButton
             value="true"
@@ -44,11 +41,8 @@ export default class PriceTypeRevenue extends Component {
         />
       </RadioButtonGroup>
       <div>
-        {
-          (all)
-            ? this.renderOptionAll()
-            : this.renderOptionPerCategory()
-        }
+        { this.props.price.all === true ? this.renderOptionAll() : null}
+        { this.props.price.all === false ? this.renderOptionPerCategory() : null }
       </div>
     </div>
   }
@@ -183,7 +177,7 @@ export default class PriceTypeRevenue extends Component {
 
   static format (price, categories) {
     if (price.all) {
-      return `${price.percentage} of revenue`
+      return `${price.percentage || '%'} of revenue`
     }
     else {
       if (Array.isArray(price.percentages)) {
