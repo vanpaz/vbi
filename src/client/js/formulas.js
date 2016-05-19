@@ -63,11 +63,108 @@ export function profitAndLoss (data) {
     {name: 'Total other direct cost', values: indirectCosts },
     {name: 'EBITDA', values: EBITDA },
     {name: 'Depreciation and amortization', values: depreciation },
-    {name: 'EBIT', values: EBIT, className: 'main' },
+    {name: 'EBIT', values: EBIT, className: 'bold' },
     {name: 'Interest (not yet available...)', values: interest },
     {name: 'EBT', values: EBT },
     {name: 'Corporate taxes', values: corporateTaxes },
     {name: 'Net result', values: netResult }
+  ]
+}
+
+/**
+ * Generate balance sheet data
+ * @param data
+ */
+export function balanceSheet (data) {
+  // TODO: implement balanceSheet calculations
+
+  return [
+    {name: 'Assets', values: {}, className: 'header' },
+
+    {name: 'Fixed assets', values: {}, className: 'main-top' },
+    {name: 'Tangibles & intangibles', values: {} },
+    {name: 'Financial fixed assets', values: {} },
+    {name: 'Deferred tax asset', values: {} },
+
+    {name: 'Current assets', values: {}, className: 'main-top' },
+    {name: 'Goods in stock', values: {} },
+    {name: 'Trade receivables', values: {} },
+    {name: 'Prepayments', values: {} },
+    {name: 'Accrued income', values: {} },
+    {name: 'Receivable VAT', values: {} },
+    {name: 'Cash & bank', values: {} },
+
+    {name: 'Liabilities', values: {}, className: 'header' },
+
+    {name: 'Equity', values: {}, className: 'main-top' },
+    {name: 'Paid-in capital', values: {} },
+    {name: 'Agio', values: {} },
+    {name: 'Reserves', values: {} },
+    {name: 'Profit/loss for the year', values: {} },
+
+    {name: 'Long-term debt', values: {}, className: 'main-top' },
+    {name: 'Bank loans', values: {} },
+    {name: 'other long-term interest bearing debt', values: {} },
+
+    {name: 'Short-term liabilities', values: {}, className: 'main-top' },
+    {name: 'Trade creditors', values: {} },
+    {name: 'Accruals', values: {} },
+    {name: 'Deferred Income', values: {} },
+    {name: 'Payable VAT', values: {} },
+    {name: 'Payable Corporate tax', values: {} },
+    {name: 'Payable income tax', values: {} },
+    {name: 'Payable Social security contributions', values: {} },
+    {name: 'Provision holiday pay', values: {} },
+
+    {name: 'Balance', values: {}, className: 'balance' }
+  ]
+}
+
+/**
+ * Generate balance sheet data
+ * @param data
+ */
+export function cashflow (data) {
+  // TODO: implement cashflow calculations
+
+  return [
+    {name: 'Net result', values: {} },
+    {name: 'Correction on paid Corporate tax', values: {} },
+    {name: 'Changes in deferred tax assets', values: {} },
+    {name: 'NOPLAT', values: {} },
+    
+    {name: 'Depreciation & amortization', values: {} },
+      
+    {name: 'Changes in working capital', values: {}, className: 'main-top' },
+    {name: 'Changes in stock', values: {}},
+    {name: 'Changes in accounts receivables', values: {}},
+    {name: 'Changes in prepayments', values: {}},
+    {name: 'Changes in accrued income', values: {}},
+    {name: 'Changes in accounts payables', values: {}},
+    {name: 'Changes in accruals', values: {}},
+    {name: 'Changes in deferred income', values: {}},
+
+    {name: 'Changes in taxes & social security contributions', values: {}, className: 'main-top'},
+    {name: 'Changes in VAT receivable', values: {} },
+    {name: 'Changes In VAT payable', values: {} },
+    {name: 'Changes in corporate tax payable', values: {} },
+    {name: 'Changes in income tax payable', values: {} },
+    {name: 'Changes in social security contributions payable', values: {} },
+    {name: 'Holiday payment', values: {} },
+
+    {name: 'Cashflow from operations', values: {}, className: 'main-middle' },
+
+    {name: 'Investments in fixed assets', values: {} },
+    {name: 'Investments in participations', values: {} },
+    {name: 'Cashflow from investments', values: {}, className: 'main-bottom' },
+
+    {name: 'Equity contibutions', values: {} },
+    {name: 'Bank loans capital calls', values: {} },
+    {name: 'Bank loans redemption installments', values: {} },
+    {name: 'Other sources of finance', values: {} },
+    {name: 'Cashflow from financing', values: {}, className: 'main-bottom' },
+
+    {name: 'Total cash balance EoP', values: {}, className: 'main-middle' }
   ]
 }
 

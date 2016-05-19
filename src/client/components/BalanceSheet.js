@@ -1,15 +1,15 @@
 import React, { Component } from 'react'
 import debugFactory from 'debug/browser'
 
-import { profitAndLoss, clearIfZero, formatPrice } from './../js/formulas'
+import { balanceSheet, clearIfZero, formatPrice } from './../js/formulas'
 
 const debug = debugFactory('vbi:profit-loss')
 
-export default class ProfitAndLoss extends Component {
+export default class BalanceSheet extends Component {
   render () {
     try {
       const periods = this.props.data.parameters.periods
-      const calculations = profitAndLoss(this.props.data)
+      const calculations = balanceSheet(this.props.data)
 
       return <div>
         <table className="output" >
@@ -19,7 +19,7 @@ export default class ProfitAndLoss extends Component {
             {periods.map(period => <th key={period}>{period}</th>)}
           </tr>
           {
-            calculations.map(entry => ProfitAndLoss.renderEntry(periods, entry))
+            calculations.map(entry => BalanceSheet.renderEntry(periods, entry))
           }
           </tbody>
         </table>

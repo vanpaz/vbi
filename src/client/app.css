@@ -96,7 +96,28 @@ table.output td {
   padding: 5px 10px;
 }
 
-table.output tr.main {
+table.output tr.header {
+  font-size: 14pt;
+  font-weight: normal;
+  color: #f3742c;
+  margin-top: 30px;
+  text-transform: lowercase;
+  border-top: 18px solid transparent;
+}
+
+table.output tr.main-top,
+table.output tr.main-middle {
+  font-weight: bold;
+  border-top: 18px solid transparent;
+}
+
+table.output tr.main-bottom,
+table.output tr.main-middle {
+  font-weight: bold;
+  border-bottom: 18px solid transparent;
+}
+
+table.output tr.bold {
   font-weight: bold;
 }
 

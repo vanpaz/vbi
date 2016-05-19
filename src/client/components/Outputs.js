@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import debugFactory from 'debug/browser'
 
 import { cloneDeep } from 'lodash'
 
@@ -9,9 +8,8 @@ import Tabs from 'material-ui/lib/tabs/tabs'
 import Tab from 'material-ui/lib/tabs/tab'
 
 import ProfitAndLoss from './ProfitAndLoss'
-
-
-const debug = debugFactory('vbi:outputs')
+import BalanceSheet from './BalanceSheet'
+import Cashflow from './Cashflow'
 
 export default class Outputs extends Component {
   render () {
@@ -23,10 +21,10 @@ export default class Outputs extends Component {
               <ProfitAndLoss data={this.props.data} />
             </Tab>
             <Tab label="Balance sheet">
-              <p>(not yet implemented...)</p>
+              <BalanceSheet data={this.props.data} />
             </Tab>
             <Tab label="Cashflow">
-              <p>(not yet implemented...)</p>
+              <Cashflow data={this.props.data} />
             </Tab>
           </Tabs>
         </CardText>
