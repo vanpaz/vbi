@@ -80,7 +80,7 @@ class Inputs extends Component {
   renderCategory (section, group, priceTypes) {
     const periods = this.props.data.parameters.periods
     const categories = this.props.data[section][group]
-    const revenueCategories = this.props.data.revenues.all.map(g => g.name)
+    const revenueCategories = this.props.data.revenues.all
 
     return <table className="category-table" >
       <colgroup>

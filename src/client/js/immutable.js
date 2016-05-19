@@ -6,7 +6,7 @@
  * @return
  */
 export function appendItem(array, item) {
-  return array.concat(Immutable([item]));
+  return array.concat([item]);
 }
 
 /**

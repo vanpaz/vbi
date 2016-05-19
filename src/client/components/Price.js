@@ -28,7 +28,7 @@ const debug = debugFactory('vbi:Price');
  *       change: '+3%'
  *     }
  *
- *     var categories = ['licenses', 'projects'];
+ *     var categories = [{id: 1, name: 'licenses'}, {id: 2, name: 'projects'}];
  *
  *     var periods = ['2015', '2016', '2017', '2018']
  *
@@ -59,7 +59,7 @@ export default class Price extends Component {
       <button
           className={this.state.showPopover ? 'price expanded' : 'price'}
           onTouchTap={this.showPopover.bind(this)} >
-        {PriceType && PriceType.format(this.props.price)}
+        {PriceType && PriceType.format(this.props.price, this.props.categories)}
         {' \u25BE'}
       </button>
 

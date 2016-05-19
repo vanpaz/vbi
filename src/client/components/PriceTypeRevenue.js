@@ -101,14 +101,14 @@ export default class PriceTypeRevenue extends Component {
 
   renderSelectCategory (entry, entryIndex) {
     return <SelectField
-        value={entry.category}
+        value={entry.categoryId}
         hintText="category"
         style={styles.selectCategory}
         onChange={(event, index, value) => {
           this.handleUpdateEntryCategory(entryIndex, value);
         }} >
       {this.props.categories.map(category => {
-        return <MenuItem key={category} value={category} primaryText={category} />
+        return <MenuItem key={category.id} value={category.id} primaryText={category.name} />
       })}
     </SelectField>
   }
@@ -123,10 +123,10 @@ export default class PriceTypeRevenue extends Component {
         }} />
   }
 
-  handleUpdateEntryCategory (index, category) {
-    debug('handleUpdatePercentageCategory', index, category);
+  handleUpdateEntryCategory (index, categoryId) {
+    debug('handleUpdatePercentageCategory', index, categoryId);
 
-    const price = this.props.price.setIn(['percentages', index, 'category'], category)
+    const price = this.props.price.setIn(['percentages', index, 'categoryId'], categoryId)
 
     this.props.onChange(price);
   }
@@ -151,7 +151,7 @@ export default class PriceTypeRevenue extends Component {
   handleAddEntry () {
     debug('handleAddEntry');
 
-    const item = {category: '', percentage: ''}
+    const item = {categoryId: '', percentage: ''}
     let price
 
     if (this.props.price.percentages) {
@@ -181,7 +181,7 @@ export default class PriceTypeRevenue extends Component {
     this.props.onChange(price);
   }
 
-  static format (price) {
+  static format (price, categories) {
     if (price.all) {
       return `${price.percentage} of revenue`
     }
@@ -189,7 +189,9 @@ export default class PriceTypeRevenue extends Component {
       if (Array.isArray(price.percentages)) {
         return price.percentages
             .map(entry => {
-              return `${entry.percentage} of ${entry.category}`
+              const category = categories.find(category => category.id === entry.categoryId)
+
+              return `${entry.percentage} of ${category && category.name || 'unknown'}`
             })
             .join(', ');
       }

@@ -212,6 +212,7 @@ A saved scenario has the following structure:
     "costs": {
       "direct": [
         {
+          "id": "<uuid>",
           "name": "<category name>",
           "price": { ... },
           "quantities": {
@@ -233,7 +234,7 @@ A saved scenario has the following structure:
     }
   },
   "auth": {
-    "userId": "role",
+    "<user id>": "role",
     "*": "role",   // anybody
     // ...
   },
