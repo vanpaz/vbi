@@ -41,13 +41,13 @@ export function findQuantity (item, period) {
  */
 export function profitAndLoss (data) {
   const periods = data.parameters.periods
+  const VATRate = data.parameters.VATRate
 
   const groupDirect = findGroup(data, 'costs', 'direct' )
   const groupPersonnel = findGroup(data, 'costs', 'personnel' )
   const groupsOther = data.costs
       .filter(group => group !== groupDirect && group !== groupPersonnel )
 
-  const VATRate = 0.25          // TODO: make VATRate customizable
   const holidayProvision = 1/12 // TODO: read holidayProvision from price
   const sscEmployer = 0.18      // TODO: read sscEmployer from price
 
