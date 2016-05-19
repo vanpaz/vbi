@@ -49,7 +49,7 @@ class Inputs extends Component {
         <CardText>
           <Tabs inkBarStyle={{height: 4, marginTop: -4}}>
             <Tab label="Costs">
-              {this.renderSection('costs', ['constant', 'manual', 'revenue'])}
+              {this.renderSection('costs', ['constant', 'manual', 'revenue', 'salary'])}
             </Tab>
             <Tab label="Investments">
               {this.renderSection('investments', ['investment'])}

@@ -17,7 +17,7 @@ let initialState = Immutable({
   user: {},
 
   unchangedDoc: null,  // contains the document as loaded/saved in the database
-  doc: require('../../data/example_scenario.json'),   // The current doc
+  doc: require('../../data/koekjes.json'),   // The current doc
   docs: [] // list with all docs of the user
 })
 

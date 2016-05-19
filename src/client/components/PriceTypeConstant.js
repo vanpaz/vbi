@@ -6,32 +6,28 @@ export default class PriceTypeConstant extends Component {
   render () {
     return <div className="price-type">
       <p className="description">
-        Enter an initial price and a constant change per period.
+        Enter an initial price and a change per year.
       </p>
       <TextField
           value={this.props.price.value}
           hintText="23k"
           floatingLabelText="Initial price"
-          onChange={this.handleChangePrice.bind(this)} />
+          onChange={event => this.handleChange('value', event.target.value)} />
       <br />
       <TextField
           value={this.props.price.change}
           hintText="+3%"
-          floatingLabelText="Percentage of change per period"
-          onChange={this.handleChangeChange.bind(this)}  />
+          floatingLabelText="Percentage of change per year"
+          onChange={event => this.handleChange('change', event.target.value)}  />
     </div>
   }
 
-  handleChangePrice (event) {
-    const price = this.props.price.set('value', event.target.value);
+  handleChange(property, value) {
+    const price = this.props.price
+        .set('type', 'constant')
+        .set(property, value)
 
-    this.props.onChange(price);
-  }
-
-  handleChangeChange (event) {
-    const price = this.props.price.set('change', event.target.value);
-
-    this.props.onChange(price);
+    this.props.onChange(price)
   }
 
   static format (price) {

@@ -325,6 +325,28 @@ The application supports multiple types of prices:
   }
   ```
 
+- an investment
+
+  ```js
+  {
+    "type": "investment",
+    "value": "100",
+    "depreciationPeriod": "5"
+  }
+  ```
+
+- a salary
+
+  ```js
+  {
+    "type": "salary",
+    "value": "50k",    // monthly salary
+    "change": "+2%"    // yearly increase in salary
+    "holidayProvision": "8.3333%"
+    "sscEmployer": "18%"
+  }
+  ```
+
 
 ## License
 

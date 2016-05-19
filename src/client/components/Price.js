@@ -9,6 +9,7 @@ import PriceTypeConstant from './PriceTypeConstant';
 import PriceTypeInvestment from './PriceTypeInvestment';
 import PriceTypeManual from './PriceTypeManual';
 import PriceTypeRevenue from './PriceTypeRevenue';
+import PriceTypeSalary from './PriceTypeSalary';
 
 const debug = debugFactory('vbi:Price');
 
@@ -144,6 +145,7 @@ export default class Price extends Component {
     constant: PriceTypeConstant,
     investment: PriceTypeInvestment,
     manual: PriceTypeManual,
-    revenue: PriceTypeRevenue
+    revenue: PriceTypeRevenue,
+    salary: PriceTypeSalary
   };
 }

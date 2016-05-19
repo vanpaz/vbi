@@ -48,18 +48,10 @@ export function profitAndLoss (data) {
   const groupsOther = data.costs
       .filter(group => group !== groupDirect && group !== groupPersonnel )
 
-  const holidayProvision = 1/12 // TODO: read holidayProvision from price
-  const sscEmployer = 0.18      // TODO: read sscEmployer from price
-
-  function calculateSalaryCosts (monthlySalary) {
-    return (1 + holidayProvision) * (1 + sscEmployer) * 12 * monthlySalary
-  }
-
   const revenueTotalsPerCategory = calculateRevenueTotalsPerCategory(data)
   const revenueTotals = calculateTotals(revenueTotalsPerCategory)
   const directCosts = calculateGroupTotals(groupDirect, periods, revenueTotalsPerCategory)
-  let personnelCosts = calculateGroupTotals(groupPersonnel, periods, revenueTotalsPerCategory)
-  personnelCosts = zipObjectsWith([personnelCosts], calculateSalaryCosts)
+  const personnelCosts = calculateGroupTotals(groupPersonnel, periods, revenueTotalsPerCategory)
 
   const otherCosts = groupsOther
       .map(group => calculateGroupTotals(group, periods, revenueTotalsPerCategory))
@@ -268,7 +260,39 @@ export let types = {
 
       return prices
     }
+  },
+
+  salary: {
+    /**
+     * Calculate actual prices for all periods configured for a single item.
+     * @param item
+     * @param {Array.<string>} periods
+     * @return {Object.<string, number>} Returns an object with periods as key
+     *                                   and prices as value
+     */
+    calculatePrices: function (item, periods) {
+      const montlySalary = parsePrice(item.price.value)
+      const change = 1 + parsePercentage(item.price.change)
+      const holidayProvision = 1 + parsePercentage(item.price.holidayProvision)
+      const SSCEmployer = 1 + parsePercentage(item.price.SSCEmployer)
+
+      const prices = initializeTotals(periods)
+
+      periods.forEach((period, periodIndex) => {
+        const quantity = findQuantity(item, period);
+
+        if (item.price.value != undefined && item.price.change != undefined) {
+          prices[period] =
+              holidayProvision * SSCEmployer * Math.pow(change, periodIndex) *
+              montlySalary * 12 *
+              quantity
+        }
+      })
+
+      return prices
+    }
   }
+
 };
 
 /**

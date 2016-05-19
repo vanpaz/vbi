@@ -20,9 +20,11 @@
             "id": "1",
             "name": "General manager",
             "price": {
-              "type": "constant",
-              "value": "5k",
-              "change": "+2%"
+              "type": "salary",
+              "value": "5000",
+              "change": "+2%",
+              "holidayProvision": "8.33%",
+              "SSCEmployer": "18%"
             },
             "quantities": {
               "2015": "0",
@@ -116,6 +118,7 @@
               "depreciationPeriod": "10"
             },
             "quantities": {
+              "2015": "1",
               "2016": "500",
               "2017": "500",
               "2018": "500",
