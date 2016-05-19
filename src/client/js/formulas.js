@@ -68,14 +68,9 @@ export function profitAndLoss (data) {
   const grossMargin = zipObjectsWith([revenueTotals, directCosts], subtract, periods)
   const EBITDA = zipObjectsWith([grossMargin, otherCosts], subtract, periods)
 
-  // TODO: calculate depreciation
-  const depreciation = {
-    '2016': 16e3,
-    '2017': 48e3,
-    '2018': 80e3,
-    '2019': 112e3,
-    '2020': 144e3
-  }
+  const depreciation = data.investments
+      .map(group => calculateGroupTotals(group, periods, revenueTotalsPerCategory))
+      .reduce(addTotals, initializeTotals(periods))
 
   const EBIT = zipObjectsWith([EBITDA, depreciation], subtract, periods)
 
@@ -232,6 +227,45 @@ export let types = {
           return prices;
         }, {});
       }
+    }
+  },
+  
+  investment: {
+    /**
+     * Calculate actual prices for all periods configured for a single item.
+     * @param item
+     * @param {Array.<string>} periods
+     * @return {Object.<string, number>} Returns an object with periods as key
+     *                                   and prices as value
+     */
+    calculatePrices: function (item, periods) {
+      const prices = initializeTotals(periods)
+
+      // for every quantity filled in for the item, we loop over all periods
+      // and add up the prices
+      Object.keys(item.quantities).forEach(quantityPeriod => {
+        const offset = periods.indexOf(quantityPeriod)
+        if (offset !== -1) { // ignore quantities outside of scope
+          const price = item.price.value
+          const quantity = item.quantities[quantityPeriod]
+          const depreciationPeriod = item.price.depreciationPeriod
+          const costPerPeriod = price * quantity / depreciationPeriod
+
+          periods
+              .slice(offset)
+              .forEach((period, index) => {
+                if (index === 0 || index === depreciationPeriod) {
+                  // first and last period we depreciate half of the cost per period
+                  prices[period] += costPerPeriod / 2
+                }
+                else {
+                  prices[period] += costPerPeriod
+                }
+              })
+        }
+      })
+
+      return prices
     }
   }
 };

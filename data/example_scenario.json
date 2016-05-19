@@ -180,8 +180,9 @@
             "id": "13",
             "name": "Laptops",
             "price": {
+              "type": "investment",
               "value": "1000",
-              "deprecationPeriod": 3
+              "depreciationPeriod": 3
             },
             "quantities": {
               "2015": "1",
@@ -194,8 +195,9 @@
             "id": "14",
             "name": "Smartphones",
             "price": {
+              "type": "investment",
               "value": "500",
-              "deprecationPeriod": 2
+              "depreciationPeriod": 2
             },
             "quantities": {
               "2015": "1",
