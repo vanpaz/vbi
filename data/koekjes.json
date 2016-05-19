@@ -1,5 +1,5 @@
 {
-  "title": "Koekjes Scenario",
+  "title": "Example Scenario",
   "data": {
     "parameters": {
       "periods": [
@@ -9,323 +9,299 @@
         "2019",
         "2020"
       ],
-      "VATRate": "0.25"
+      "VATRate": 0.25
     },
-    "costs": [
-      {
-        "id": "0",
-        "name": "Personnel",
-        "categories": [
-          {
-            "id": "1",
-            "name": "General manager",
-            "price": {
-              "type": "salary",
-              "value": "5000",
-              "change": "+2%",
-              "holidayProvision": "8.33%",
-              "SSCEmployer": "18%"
-            },
-            "quantities": {
-              "2015": "0",
-              "2016": "1",
-              "2017": "2",
-              "2018": "1",
-              "2019": "1",
-              "2020": "1"
-            }
+    "costs": {
+      "direct": [
+        {
+          "id": "fcf8d479-1393-d675-931e-69301c866284",
+          "name": "Cookies",
+          "price": {
+            "type": "constant",
+            "value": "100",
+            "change": "+0%"
+          },
+          "quantities": {
+            "2016": "100",
+            "2017": "200",
+            "2018": "400",
+            "2019": "800",
+            "2020": "1600"
           }
-        ]
-      },
-      {
-        "id": "10",
-        "name": "Direct",
-        "categories": [
-          {
-            "id": "fcf8d479-1393-d675-931e-69301c866284",
-            "name": "Koekjes",
-            "price": {
-              "type": "constant",
-              "value": "100",
-              "change": "+0%"
-            },
-            "quantities": {
-              "2016": "100",
-              "2017": "200",
-              "2018": "400",
-              "2019": "800",
-              "2020": "1600"
-            }
+        },
+        {
+          "id": "014bdb19-dae2-0484-01d4-e6467c62b89a",
+          "name": "Cake",
+          "price": {
+            "type": "constant",
+            "value": "30",
+            "change": "+3%"
           },
-          {
-            "id": "014bdb19-dae2-0484-01d4-e6467c62b89a",
-            "name": "Gebak",
-            "price": {
-              "type": "constant",
-              "value": "30",
-              "change": "+3%"
-            },
-            "quantities": {
-              "2016": "100"
-            }
+          "quantities": {
+            "2016": "100"
           }
-        ]
-      },
-      {
-        "id": "a960824c-e260-2c99-a857-ed6f0d65e6de",
-        "name": "other indirect",
-        "categories": [
-          {
-            "id": "5b921362-3350-8293-f1e2-50780eaf40ff",
-            "name": "Rent space",
-            "price": {
-              "type": "constant",
-              "value": "20k",
-              "change": "+4%"
-            },
-            "quantities": {
-              "2016": "1",
-              "2017": "2",
-              "2018": "0",
-              "2019": "0",
-              "2020": "0"
-            }
+        }
+      ],
+      "personnel": [
+        {
+          "id": "1",
+          "name": "General manager",
+          "price": {
+            "type": "salary",
+            "value": "5k",
+            "change": "+2%",
+            "holidayProvision": "8.33%",
+            "SSCEmployer": "18%"
           },
-          {
-            "id": "03e65480-5ee1-1c4d-0bbf-8e413388ec04",
-            "name": "Marketing",
-            "price": {
-              "type": "constant",
-              "value": "10k",
-              "change": "+3%"
-            },
-            "quantities": {}
+          "quantities": {
+            "2015": "0",
+            "2016": "1",
+            "2017": "2",
+            "2018": "1",
+            "2019": "1",
+            "2020": "1"
           }
-        ]
-      }
-    ],
-    "investments": [
-      {
-        "id": "12",
-        "name": "tangible fixed assets",
-        "categories": [
-          {
-            "id": "13",
-            "name": "Asset type 1",
-            "price": {
-              "value": "100",
-              "type": "investment",
-              "depreciationPeriod": "10"
-            },
-            "quantities": {
-              "2015": "1",
-              "2016": "500",
-              "2017": "500",
-              "2018": "500",
-              "2019": "500",
-              "2020": "500"
-            }
+        }
+      ],
+      "indirect": [
+        {
+          "id": "5b921362-3350-8293-f1e2-50780eaf40ff",
+          "name": "Rent space",
+          "price": {
+            "type": "constant",
+            "value": "20k",
+            "change": "+4%"
           },
-          {
-            "id": "250de3b9-3473-f07a-1f57-26d5c3ee4098",
-            "name": "Asset type 2",
-            "price": {
-              "type": "investment",
-              "value": "100",
-              "change": "+3%",
-              "depreciationPeriod": "5"
-            },
-            "quantities": {
-              "2016": "400",
-              "2017": "400",
-              "2018": "400",
-              "2019": "400",
-              "2020": "400"
-            }
-          },
-          {
-            "id": "210eb73f-b387-7de7-3cf8-b4a38ea95e6e",
-            "name": "Asset type 3",
-            "price": {
-              "type": "investment",
-              "value": "100",
-              "change": "+3%",
-              "depreciationPeriod": "5"
-            },
-            "quantities": {
-              "2016": "300",
-              "2017": "300",
-              "2018": "300",
-              "2019": "300",
-              "2020": "300"
-            }
-          },
-          {
-            "id": "8b89c951-91d8-8ce2-e17f-220216d69c11",
-            "name": "Asset type 4",
-            "price": {
-              "type": "investment",
-              "value": "100",
-              "change": "+3%",
-              "depreciationPeriod": "5"
-            },
-            "quantities": {
-              "2016": "200",
-              "2017": "200",
-              "2018": "200",
-              "2019": "200",
-              "2020": "200"
-            }
-          },
-          {
-            "id": "ebcf8bfc-552b-6a65-09be-f496cdfb60f1",
-            "name": "Asset type 5",
-            "price": {
-              "type": "investment",
-              "value": "100",
-              "change": "+3%",
-              "depreciationPeriod": "5"
-            },
-            "quantities": {
-              "2016": "100",
-              "2017": "100",
-              "2018": "100",
-              "2019": "100",
-              "2020": "100"
-            }
-          },
-          {
-            "id": "e769a557-f076-9ba8-7ab6-5655486a7322",
-            "name": "Asset type 6",
-            "price": {
-              "type": "investment",
-              "value": "100",
-              "change": "+3%",
-              "depreciationPeriod": "5"
-            },
-            "quantities": {
-              "2016": "90",
-              "2017": "90",
-              "2018": "90",
-              "2019": "90",
-              "2020": "90"
-            }
-          },
-          {
-            "id": "db8a5f69-ffd5-ff3b-e720-ed0c7cf02c55",
-            "name": "Asset type 7",
-            "price": {
-              "type": "investment",
-              "value": "100",
-              "change": "+3%",
-              "depreciationPeriod": "5"
-            },
-            "quantities": {
-              "2016": "80",
-              "2017": "80",
-              "2018": "80",
-              "2019": "80",
-              "2020": "80"
-            }
-          },
-          {
-            "id": "f2da23a0-1bc0-2a33-e00b-3f328bb94f34",
-            "name": "Asset type 8",
-            "price": {
-              "type": "investment",
-              "value": "100",
-              "change": "+3%",
-              "depreciationPeriod": "5"
-            },
-            "quantities": {
-              "2016": "70",
-              "2017": "70",
-              "2018": "70",
-              "2019": "70",
-              "2020": "70"
-            }
-          },
-          {
-            "id": "f206a2c4-2a1a-ad9f-21f8-ac4fefb23010",
-            "name": "Asset type 9",
-            "price": {
-              "type": "investment",
-              "value": "100",
-              "change": "+3%",
-              "depreciationPeriod": "5"
-            },
-            "quantities": {
-              "2016": "60",
-              "2017": "60",
-              "2018": "60",
-              "2019": "60",
-              "2020": "60"
-            }
-          },
-          {
-            "id": "af7280d4-7050-594d-3af4-5605100792bf",
-            "name": "Asset type 10",
-            "price": {
-              "type": "investment",
-              "value": "100",
-              "change": "+3%",
-              "depreciationPeriod": "5"
-            },
-            "quantities": {
-              "2016": "50",
-              "2017": "50",
-              "2018": "50",
-              "2019": "50",
-              "2020": "50"
-            }
+          "quantities": {
+            "2016": "1",
+            "2017": "2",
+            "2018": "0",
+            "2019": "0",
+            "2020": "0"
           }
-        ]
-      },
-      {
-        "id": "1c6ba394-a9f4-5436-8dfd-d708f8bfbe09",
-        "name": "intangible fixed assets",
-        "categories": []
-      }
-    ],
-    "revenues": [
-      {
-        "id": "15",
-        "name": "Sales",
-        "categories": [
-          {
-            "id": "16",
-            "name": "Koekjes",
-            "price": {
-              "type": "constant",
-              "value": "200",
-              "change": "+0%"
-            },
-            "quantities": {
-              "2016": "100",
-              "2017": "200",
-              "2018": "400",
-              "2019": "800",
-              "2020": "1600"
-            }
+        },
+        {
+          "id": "03e65480-5ee1-1c4d-0bbf-8e413388ec04",
+          "name": "Marketing",
+          "price": {
+            "type": "constant",
+            "value": "10k",
+            "change": "+3%"
           },
-          {
-            "id": "2f3ee91f-04ad-c9ee-93a5-07ca99243370",
-            "name": "Gebak",
-            "price": {
-              "type": "constant",
-              "value": "150",
-              "change": "+5%"
-            },
-            "quantities": {
-              "2016": "100",
-              "2017": "100",
-              "2018": "100",
-              "2019": "400",
-              "2020": "1600"
-            }
+          "quantities": {}
+        }
+      ]
+    },
+    "investments": {
+      "tangible": [
+        {
+          "id": "13",
+          "name": "Asset type 1",
+          "price": {
+            "value": "100",
+            "type": "investment",
+            "depreciationPeriod": "10"
+          },
+          "quantities": {
+            "2015": "1",
+            "2016": "500",
+            "2017": "500",
+            "2018": "500",
+            "2019": "500",
+            "2020": "500"
           }
-        ]
-      }
-    ]
+        },
+        {
+          "id": "250de3b9-3473-f07a-1f57-26d5c3ee4098",
+          "name": "Asset type 2",
+          "price": {
+            "type": "investment",
+            "value": "100",
+            "change": "+3%",
+            "depreciationPeriod": "5"
+          },
+          "quantities": {
+            "2016": "400",
+            "2017": "400",
+            "2018": "400",
+            "2019": "400",
+            "2020": "400"
+          }
+        },
+        {
+          "id": "210eb73f-b387-7de7-3cf8-b4a38ea95e6e",
+          "name": "Asset type 3",
+          "price": {
+            "type": "investment",
+            "value": "100",
+            "change": "+3%",
+            "depreciationPeriod": "5"
+          },
+          "quantities": {
+            "2016": "300",
+            "2017": "300",
+            "2018": "300",
+            "2019": "300",
+            "2020": "300"
+          }
+        },
+        {
+          "id": "8b89c951-91d8-8ce2-e17f-220216d69c11",
+          "name": "Asset type 4",
+          "price": {
+            "type": "investment",
+            "value": "100",
+            "change": "+3%",
+            "depreciationPeriod": "5"
+          },
+          "quantities": {
+            "2016": "200",
+            "2017": "200",
+            "2018": "200",
+            "2019": "200",
+            "2020": "200"
+          }
+        },
+        {
+          "id": "ebcf8bfc-552b-6a65-09be-f496cdfb60f1",
+          "name": "Asset type 5",
+          "price": {
+            "type": "investment",
+            "value": "100",
+            "change": "+3%",
+            "depreciationPeriod": "5"
+          },
+          "quantities": {
+            "2016": "100",
+            "2017": "100",
+            "2018": "100",
+            "2019": "100",
+            "2020": "100"
+          }
+        },
+        {
+          "id": "e769a557-f076-9ba8-7ab6-5655486a7322",
+          "name": "Asset type 6",
+          "price": {
+            "type": "investment",
+            "value": "100",
+            "change": "+3%",
+            "depreciationPeriod": "5"
+          },
+          "quantities": {
+            "2016": "90",
+            "2017": "90",
+            "2018": "90",
+            "2019": "90",
+            "2020": "90"
+          }
+        },
+        {
+          "id": "db8a5f69-ffd5-ff3b-e720-ed0c7cf02c55",
+          "name": "Asset type 7",
+          "price": {
+            "type": "investment",
+            "value": "100",
+            "change": "+3%",
+            "depreciationPeriod": "5"
+          },
+          "quantities": {
+            "2016": "80",
+            "2017": "80",
+            "2018": "80",
+            "2019": "80",
+            "2020": "80"
+          }
+        },
+        {
+          "id": "f2da23a0-1bc0-2a33-e00b-3f328bb94f34",
+          "name": "Asset type 8",
+          "price": {
+            "type": "investment",
+            "value": "100",
+            "change": "+3%",
+            "depreciationPeriod": "5"
+          },
+          "quantities": {
+            "2016": "70",
+            "2017": "70",
+            "2018": "70",
+            "2019": "70",
+            "2020": "70"
+          }
+        },
+        {
+          "id": "f206a2c4-2a1a-ad9f-21f8-ac4fefb23010",
+          "name": "Asset type 9",
+          "price": {
+            "type": "investment",
+            "value": "100",
+            "change": "+3%",
+            "depreciationPeriod": "5"
+          },
+          "quantities": {
+            "2016": "60",
+            "2017": "60",
+            "2018": "60",
+            "2019": "60",
+            "2020": "60"
+          }
+        },
+        {
+          "id": "af7280d4-7050-594d-3af4-5605100792bf",
+          "name": "Asset type 10",
+          "price": {
+            "type": "investment",
+            "value": "100",
+            "change": "+3%",
+            "depreciationPeriod": "5"
+          },
+          "quantities": {
+            "2016": "50",
+            "2017": "50",
+            "2018": "50",
+            "2019": "50",
+            "2020": "50"
+          }
+        }
+      ],
+      "intangible": []
+    },
+    "revenues": {
+      "all": [
+        {
+          "id": "16",
+          "name": "Cookies",
+          "price": {
+            "type": "constant",
+            "value": "200",
+            "change": "+0%"
+          },
+          "quantities": {
+            "2016": "100",
+            "2017": "200",
+            "2018": "400",
+            "2019": "800",
+            "2020": "1600"
+          }
+        },
+        {
+          "id": "2f3ee91f-04ad-c9ee-93a5-07ca99243370",
+          "name": "Cake",
+          "price": {
+            "type": "constant",
+            "value": "150",
+            "change": "+5%"
+          },
+          "quantities": {
+            "2016": "100",
+            "2017": "100",
+            "2018": "100",
+            "2019": "400",
+            "2020": "1600"
+          }
+        }
+      ]
+    }
   }
 }

@@ -11,13 +11,13 @@ export default class PriceTypeInvestment extends Component {
       <TextField
           value={this.props.price.value}
           hintText="1000"
-          floatingLabelText="Value (cost)"
+          floatingLabelText="Cost"
           onChange={this.handleChangePrice.bind(this)} />
       <br />
       <TextField
           value={this.props.price.depreciationPeriod}
           hintText="5"
-          floatingLabelText="Depreciation period"
+          floatingLabelText="Depreciation period (years)"
           onChange={this.handleChangeDepreciation.bind(this)}  />
     </div>
   }

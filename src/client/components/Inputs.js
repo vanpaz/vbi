@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import debugFactory from 'debug/browser';
-import { cloneDeep } from 'lodash';
+import debugFactory from 'debug/browser'
+import { cloneDeep } from 'lodash'
 
-import Card from 'material-ui/lib/card/card';
-import CardText from 'material-ui/lib/card/card-text';
-import Tabs from 'material-ui/lib/tabs/tabs';
-import Tab from 'material-ui/lib/tabs/tab';
-import IconButton from 'material-ui/lib/icon-button';
-import EditIcon from 'material-ui/lib/svg-icons/image/edit';
-import ClearIcon from 'material-ui/lib/svg-icons/content/clear';
-import DownIcon from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-down';
-import UpIcon from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-up';
+import Card from 'material-ui/lib/card/card'
+import CardText from 'material-ui/lib/card/card-text'
+import Tabs from 'material-ui/lib/tabs/tabs'
+import Tab from 'material-ui/lib/tabs/tab'
+import IconButton from 'material-ui/lib/icon-button'
+import EditIcon from 'material-ui/lib/svg-icons/image/edit'
+import ClearIcon from 'material-ui/lib/svg-icons/content/clear'
+import DownIcon from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-down'
+import UpIcon from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-up'
 
 import Prompt from './dialogs/Prompt'
 import Confirm from './dialogs/Confirm'
@@ -19,13 +19,13 @@ import {
     addCategory, deleteCategory, renameCategory,
     setPeriods, setQuantity, setPrice
 } from '../actions'
-import { findQuantity, clearIfZero } from './../js/formulas';
-import Price from './Price';
-import theme from '../theme';
+import { findQuantity, clearIfZero } from './../js/formulas'
+import Price from './Price'
+import theme from '../theme'
 
-import ActionMenu from './ActionMenu';
+import ActionMenu from './ActionMenu'
 
-const debug = debugFactory('vbi:inputs');
+const debug = debugFactory('vbi:inputs')
 
 
 const styles = {
@@ -35,7 +35,7 @@ const styles = {
     padding: 0,
     display: 'inline-block'
   }
-};
+}
 
 // TODO: refactor Inputs, split renderCategory into a separate component
 
@@ -46,13 +46,27 @@ class Inputs extends Component {
         <CardText>
           <Tabs inkBarStyle={{height: 4, marginTop: -4}}>
             <Tab label="Costs">
-              {this.renderSection('costs', ['constant', 'manual', 'revenue', 'salary'])}
+              <h1>Direct</h1>
+              {this.renderCategory('costs', 'direct', ['constant', 'manual', 'revenue'])}
+
+              <h1>Indirect - personnel</h1>
+              {this.renderCategory('costs', 'personnel', ['salary'])}
+
+              <h1>Indirect - other</h1>
+              {this.renderCategory('costs', 'indirect', ['constant', 'manual', 'revenue'])}
             </Tab>
+
             <Tab label="Investments">
-              {this.renderSection('investments', ['investment'])}
+              <h1>Tangible fixed assets</h1>
+              {this.renderCategory('investments', 'tangible', ['investment'])}
+
+              <h1>Intangible fixed assets</h1>
+              {this.renderCategory('investments', 'intangible', ['investment'])}
             </Tab>
+
             <Tab label="Revenues">
-              {this.renderSection('revenues', ['constant', 'manual'])}
+              <h1>&nbsp;</h1>
+              {this.renderCategory('revenues', 'all', ['constant', 'manual'])}
             </Tab>
           </Tabs>
         </CardText>
@@ -63,84 +77,71 @@ class Inputs extends Component {
     </div>
   }
 
-  renderSection (section, priceTypes) {
-    const periods = this.props.data.parameters.periods;
-    const group = this.props.data[section];
+  renderCategory (section, group, priceTypes) {
+    const periods = this.props.data.parameters.periods
+    const categories = this.props.data[section][group]
+    const revenueCategories = this.props.data.revenues.all.map(g => g.name)
 
-    return <div>
-      {
-        group && group.map((group) => this.renderGroup(section, group, periods, priceTypes))
-      }
-    </div>
-  }
-
-  renderGroup (section, group, periods, priceTypes) {
-    const revenueCategories = this.props.data.revenues.map(g => g.name);
-
-    return <div key={group.id}>
-      <h1>{group.name}</h1>
-
-      <table className="category-table" >
-        <colgroup>
-          <col width='120px'/>
-        </colgroup>
-        <tbody>
-          <tr>
-            <th />
-            <th className="main" colSpan={periods.length}>Quantity</th>
-            <th className="main" colSpan={1}>Price</th>
-          </tr>
-          <tr>
-            <th />
-            {
-              periods.map(period => {
-                return <th key={period}>
-                  {this.renderPeriodsActionMenu(period)}
-                </th>
-              })
-            }
-            <th />
-          </tr>
-          {
-            group.categories && group.categories.map(category => <tr key={group.name + ':' + category.name}>
-              <td className="read-only">{
-                this.renderCategoryActionMenu(section, group, category)
-              }</td>
-              {
-                periods.map(period => (<td key={period} className="quantity">
-                  <input className="quantity"
-                         value={clearIfZero(findQuantity(category, period))}
-                         onChange={(event) => {
-                           const quantity = event.target.value;
-                           this.props.dispatch(setQuantity(section, group.id, category.id, period, quantity));
-                         }}
-                         onFocus={(event) => event.target.select()} />
-                </td>))
-              }
-              <td>
-                <Price price={category.price}
-                       categories={revenueCategories}
-                       periods={periods}
-                       priceTypes={priceTypes}
-                       onChange={(price) => {
-                         this.props.dispatch(setPrice (section, group.id, category.id, price))
-                       }} />
-              </td>
-            </tr>)
-          }
+    return <table className="category-table" >
+      <colgroup>
+        <col width='120px'/>
+      </colgroup>
+      <tbody>
         <tr>
-          <td className="read-only">
-            <button
-                className="add-category"
-                title="Add a new category"
-                onTouchTap={ (event) => this.handleAddCategory(section, group.id) }>
-              +
-            </button>
-          </td>
+          <th />
+          <th className="main" colSpan={periods.length}>Quantity</th>
+          <th className="main" colSpan={1}>Price</th>
         </tr>
-        </tbody>
-      </table>
-    </div>
+        <tr>
+          <th />
+          {
+            periods.map(period => {
+              return <th key={period}>
+                {this.renderPeriodsActionMenu(period)}
+              </th>
+            })
+          }
+          <th />
+        </tr>
+        {
+          categories.map(category => <tr key={category.id}>
+            <td className="read-only">{
+              this.renderActionMenu(section, group, category)
+            }</td>
+            {
+              periods.map(period => (<td key={period} className="quantity">
+                <input className="quantity"
+                       value={clearIfZero(findQuantity(category, period))}
+                       onChange={(event) => {
+                         const quantity = event.target.value
+                         this.props.dispatch(setQuantity(section, group, category.id, period, quantity))
+                       }}
+                       onFocus={(event) => event.target.select()} />
+              </td>))
+            }
+            <td>
+              <Price price={category.price}
+                     categories={revenueCategories}
+                     periods={periods}
+                     priceTypes={priceTypes}
+                     onChange={(price) => {
+                       this.props.dispatch(setPrice (section, group, category.id, price))
+                     }} />
+            </td>
+          </tr>)
+        }
+      <tr>
+        <td className="read-only">
+          <button
+              className="add-category"
+              title="Add a new category"
+              onTouchTap={ (event) => this.handleAddCategory(section, group) }>
+            +
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
   }
 
   // TODO: move into a separate component
@@ -153,7 +154,7 @@ class Inputs extends Component {
           style={{width: 24, height: 24, padding: 0}}>
         <EditIcon color="white" hoverColor={theme.palette.accent1Color} />
       </IconButton>
-    ];
+    ]
 
     return <ActionMenu actions={periodActions}>
       {period}
@@ -161,14 +162,14 @@ class Inputs extends Component {
   }
 
   // TODO: move into a separate component
-  renderCategoryActionMenu (section, group, category) {
+  renderActionMenu (section, group, category) {
     // TODO: implement actions for CategoryActionMenu
 
     let periodActions = [
       <IconButton
           key="rename"
           title="Rename category"
-          onTouchTap={ (event) => this.handleRenameCategory(section, group.id, category.id) }
+          onTouchTap={ (event) => this.handleRenameCategory(section, group, category.id) }
           style={styles.actionButton}>
         <EditIcon color="white" hoverColor={theme.palette.accent1Color} />
       </IconButton>,
@@ -195,11 +196,11 @@ class Inputs extends Component {
       <IconButton
           key="delete"
           title="Delete category"
-          onTouchTap={(event) => this.handleDeleteCategory(section, group.id, category.id)}
+          onTouchTap={(event) => this.handleDeleteCategory(section, group, category.id)}
           style={{width: 24, height: 24, padding: 0}}>
         <ClearIcon color="white" hoverColor={theme.palette.accent1Color} />
       </IconButton>
-    ];
+    ]
 
     return <ActionMenu actions={periodActions}>
       {category.name}
@@ -231,7 +232,7 @@ class Inputs extends Component {
     })
   }
 
-  handleAddCategory (section, groupId) {
+  handleAddCategory (section, group) {
     const options = {
       title: 'New category',
       description: 'Enter a name for the new category:',
@@ -241,13 +242,13 @@ class Inputs extends Component {
 
     this.refs.prompt.show(options).then(name => {
       if (name !== null) {
-        this.props.dispatch(addCategory(section, groupId, name))
+        this.props.dispatch(addCategory(section, group, name))
       }
     })
   }
 
-  handleRenameCategory (section, groupId, categoryId) {
-    const category = this.findCategory(section, groupId, categoryId)
+  handleRenameCategory (section, group, categoryId) {
+    const category = this.findCategory(section, group, categoryId)
 
     const options = {
       title: 'Rename category',
@@ -258,13 +259,13 @@ class Inputs extends Component {
 
     this.refs.prompt.show(options).then(newName => {
       if (newName !== null) {
-        this.props.dispatch(renameCategory(section, groupId, categoryId, newName))
+        this.props.dispatch(renameCategory(section, group, categoryId, newName))
       }
     })
   }
 
-  handleDeleteCategory (section, groupId, categoryId) {
-    const category = this.findCategory(section, groupId, categoryId)
+  handleDeleteCategory (section, group, categoryId) {
+    const category = this.findCategory(section, group, categoryId)
 
     const options = {
       title: 'Delete category',
@@ -273,21 +274,14 @@ class Inputs extends Component {
 
     this.refs.confirm.show(options).then(ok => {
       if (ok) {
-        this.props.dispatch(deleteCategory(section, groupId, categoryId))
+        this.props.dispatch(deleteCategory(section, group, categoryId))
       }
     })
   }
 
-  findGroup (section, groupId) {
-    return this.props
-        .data[section]
-        .find(g => g.id === groupId)
-  }
-
-  findCategory (section, groupId, categoryId) {
-    return this.findGroup(section, groupId)
-        .categories
-        .find(c => c.id === categoryId)
+  findCategory (section, group, categoryId) {
+    return this.props.data[section][group]
+        .find(category => category.id === categoryId)
   }
 
 }

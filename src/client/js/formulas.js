@@ -4,26 +4,6 @@ import debugFactory from 'debug/browser';
 const debug = debugFactory('vbi:formulas');
 
 /**
- * Find a group object in the data model. Case insensitive search
- *
- * Example:
- *
- *     findGroup(data, 'costs', 'Personnel')
- *
- * @param {Object} data
- * @param {string} section
- * @param {string} groupName
- * @return {*}
- */
-export function findGroup (data, section, groupName) {
-  if (!data[section]) {
-    return null;
-  }
-
-  return data[section].find(group => group.name && group.name.toLowerCase() === groupName )
-}
-
-/**
  * Find the quantity for a certain period
  * @param item
  * @param {string} period
@@ -43,26 +23,19 @@ export function profitAndLoss (data) {
   const periods = data.parameters.periods
   const VATRate = data.parameters.VATRate
 
-  const groupDirect = findGroup(data, 'costs', 'direct' )
-  const groupPersonnel = findGroup(data, 'costs', 'personnel' )
-  const groupsOther = data.costs
-      .filter(group => group !== groupDirect && group !== groupPersonnel )
+  const revenueTotalsPerCategory = calculateTotalsPerCategory(data.revenues.all, periods)
+  const revenueTotals = calculateTotals(data.revenues.all, periods)
 
-  const revenueTotalsPerCategory = calculateRevenueTotalsPerCategory(data)
-  const revenueTotals = calculateTotals(revenueTotalsPerCategory)
-  const directCosts = calculateGroupTotals(groupDirect, periods, revenueTotalsPerCategory)
-  const personnelCosts = calculateGroupTotals(groupPersonnel, periods, revenueTotalsPerCategory)
-
-  const otherCosts = groupsOther
-      .map(group => calculateGroupTotals(group, periods, revenueTotalsPerCategory))
-      .reduce(addTotals, initializeTotals(periods))
+  const directCosts = calculateTotals(data.costs.direct, periods, revenueTotalsPerCategory)
+  const personnelCosts = calculateTotals(data.costs.personnel, periods, revenueTotalsPerCategory)
+  const indirectCosts = calculateTotals(data.costs.indirect, periods, revenueTotalsPerCategory)
 
   const grossMargin = zipObjectsWith([revenueTotals, directCosts], subtract, periods)
-  const EBITDA = zipObjectsWith([grossMargin, otherCosts], subtract, periods)
+  const EBITDA = zipObjectsWith([grossMargin, indirectCosts], subtract, periods)
 
-  const depreciation = data.investments
-      .map(group => calculateGroupTotals(group, periods, revenueTotalsPerCategory))
-      .reduce(addTotals, initializeTotals(periods))
+  const depreciationTangible = calculateTotals(data.investments.tangible, periods)
+  const depreciationIntangible = calculateTotals(data.investments.intangible, periods)
+  const depreciation = addTotals(depreciationTangible, depreciationIntangible)
 
   const EBIT = zipObjectsWith([EBITDA, depreciation], subtract, periods)
 
@@ -87,7 +60,7 @@ export function profitAndLoss (data) {
     {name: 'Total direct costs', values: directCosts },
     {name: 'Gross margin', values: grossMargin },
     {name: 'Total personnel cost', values: personnelCosts },
-    {name: 'Total other direct cost', values: otherCosts },
+    {name: 'Total other direct cost', values: indirectCosts },
     {name: 'EBITDA', values: EBITDA },
     {name: 'Depreciation and amortization', values: depreciation },
     {name: 'EBIT', values: EBIT, className: 'main' },
@@ -100,9 +73,9 @@ export function profitAndLoss (data) {
 
 /**
  * Calculate actual prices for all periods configured for a single item.
- * @param item
+ * @param {{price: Object, quantities: Object}} item
  * @param {Array.<string>} periods
- * @param {Array.<{category: string, totals: Object.<string, number>}>} revenueTotalsPerCategory
+ * @param {Array.<{category: string, totals: Object.<string, number>}>} [revenueTotalsPerCategory]
  *                                   Totals of the revenues per category,
  *                                   needed to calculate prices based on a
  *                                   percentage of the total revenues or some
@@ -188,37 +161,40 @@ export let types = {
      */
     calculatePrices: function (item, periods, revenueTotalsPerCategory) {
       if (!revenueTotalsPerCategory) {
-        debug(new Error('No revenue totals available in this context'));
-        return {};
+        debug(new Error('No revenue totals available in this context'))
+        return {}
       }
 
       if (item.price.all === true) {
         // calculate a percentage of all revenue
-        let totals = calculateTotals(revenueTotalsPerCategory);
-        let percentage = parsePercentage(item.price.percentage);
+        let totals = revenueTotalsPerCategory
+            .map(category => category.totals)
+            .reduce(addTotals, initializeTotals(periods))
+        let percentage = parsePercentage(item.price.percentage)
 
         return periods.reduce((prices, period) => {
-          prices[period] = percentage * (totals[period] || 0);
+          prices[period] = percentage * (totals[period] || 0)
 
-          return prices;
-        }, {});
+          return prices
+        }, {})
       }
       else {
         return periods.reduce((prices, period) => {
-          prices[period] = 0;
+          prices[period] = 0
 
           if (item.price.percentages) {
             item.price.percentages.forEach(p => {
-              let percentage = parsePercentage(p.percentage);
-              let entry = revenueTotalsPerCategory.find(t => t.category === p.category);
-              let total = entry && entry.totals && entry.totals[period] || 0;
+              let percentage = parsePercentage(p.percentage)
+              let category = revenueTotalsPerCategory
+                  .find(category => category.id === p.categoryId)
+              let total = category && category.totals[period] || 0
 
-              prices[period] += percentage * total;
-            });
+              prices[period] += percentage * total
+            })
           }
 
-          return prices;
-        }, {});
+          return prices
+        }, {})
       }
     }
   },
@@ -296,66 +272,32 @@ export let types = {
 };
 
 /**
- * Calculate totals for all costs per category
- * @param {{costs: Array}} data
- * @return {Array.<{name: string, totals: Object.<string, number>}>}
- */
-export function calculateCostsTotals (data) {
-  const revenueTotalsPerCategory = calculateRevenueTotalsPerCategory(data);
-  const periods = data.parameters.periods;
-  const initial = initializeTotals(periods)
-
-  return data.costs
-      .map(group => {
-        return {
-          name: group.name,
-          totals: calculateGroupTotals(group, periods, revenueTotalsPerCategory)
-        }
-      });
-}
-
-
-export function calculateGroupTotals (group, periods, revenueTotalsPerCategory) {
-  const initial = initializeTotals(periods)
-
-  return group.categories
-      .map(item => calculatePrices(item, periods, revenueTotalsPerCategory))
-      .reduce(addTotals, initial)
-}
-
-/**
  * Calculate totals for all revenues per category
- * @param {{revenues: Array}} data
+ * @param {Array} categories
+ * @param {Array.<string>} periods
  * @return {Array.<{category: string, totals: Object.<string, number>}>}
  */
-export function calculateRevenueTotalsPerCategory (data) {
-  const periods = data.parameters.periods;
-  const initial = initializeTotals(periods)
-
-  return data.revenues
-      .map(group => {
-        return {
-          name: group.name,
-          totals: group.categories
-              .map(item => calculatePrices(item, periods))
-              .reduce(addTotals, initial)
-        }
-      });
+export function calculateTotalsPerCategory (categories, periods) {
+  return categories.map(category => ({
+    id: category.id,
+    category: category.name,
+    totals: calculatePrices(category, periods)
+  }))
 }
 
 /**
- * Calculate totals of all categories
- * @param {Array.<{category: string, totals: totals: Object.<string, number>}>} categoryTotals
+ * Calculate totals of an array with categories
+ * @param {Array.<{price: Object, quantities: Object}>} categories
+ * @param {Array.<string>} periods
+ * @param {Array} [revenueTotalsPerCategory]
  * @return {Object.<string, number>}
  */
-export function calculateTotals (categoryTotals) {
-  if (categoryTotals.length == 0) {
-    return {};
-  }
+export function calculateTotals (categories, periods, revenueTotalsPerCategory) {
+  const initial = initializeTotals(periods)
 
-  return categoryTotals
-      .map(a => a.totals)
-      .reduce(addTotals);
+  return categories
+      .map(category => calculatePrices(category, periods, revenueTotalsPerCategory))
+      .reduce(addTotals, initial)
 }
 
 /**

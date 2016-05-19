@@ -40,8 +40,7 @@ const doc = (state = Immutable({}), action) => {
       return state.setIn(['data', 'parameters', 'periods'], action.periods)
 
     case 'ADD_CATEGORY':
-      path = findGroupPath(state.data, action.section, action.groupId)
-          .concat(['categories'])
+      path = ['data', action.section, action.group]
 
       const category = Immutable({
         id: uuid(),
@@ -50,17 +49,18 @@ const doc = (state = Immutable({}), action) => {
         quantities: action.quantities
       })
 
-      return state.updateIn(path, categories => categories.concat([category]))
+      return state.updateIn(path,
+          categories => categories.concat([category]))
 
     case 'RENAME_CATEGORY':
-      path = findCategoryPath(state.data, action.section, action.groupId, action.categoryId)
+      path = findCategoryPath(state.data, action.section, action.group, action.categoryId)
           .concat(['name'])
 
       return state.setIn(path, action.name)
 
     case 'MOVE_CATEGORY_UP':
         // TODO: simplify this function
-      path = findCategoryPath(state.data, action.section, action.groupId, action.categoryId)
+      path = findCategoryPath(state.data, action.section, action.group, action.categoryId)
 
       last = path.length - 1
       categoryIndex = path[last]
@@ -84,7 +84,7 @@ const doc = (state = Immutable({}), action) => {
 
     case 'DELETE_CATEGORY':
       // TODO: simplify this function
-      path = findCategoryPath(state.data, action.section, action.groupId, action.categoryId)
+      path = findCategoryPath(state.data, action.section, action.group, action.categoryId)
 
       last = path.length - 1
       categoryIndex = path[last]
@@ -93,13 +93,13 @@ const doc = (state = Immutable({}), action) => {
       return state.updateIn(path, categories => removeItem(categories, categoryIndex))
 
     case 'SET_PRICE':
-      path = findCategoryPath(state.data, action.section, action.groupId, action.categoryId)
+      path = findCategoryPath(state.data, action.section, action.group, action.categoryId)
           .concat(['price'])
 
       return state.setIn(path, action.price)
 
     case 'SET_QUANTITY':
-      path = findCategoryPath(state.data, action.section, action.groupId, action.categoryId)
+      path = findCategoryPath(state.data, action.section, action.group, action.categoryId)
           .concat(['quantities', action.period])
 
       return state.setIn(path, action.quantity)
@@ -110,30 +110,14 @@ const doc = (state = Immutable({}), action) => {
 }
 
 
-function findGroupPath (data, section, groupId) {
-  const groupIndex = data[section].findIndex(g => g.id === groupId)
-  if (groupIndex === -1) {
-    throw new Error(`Group not found`)
-  }
-
-  return ['data', section, groupIndex]
-}
-
-
-function findCategoryPath (data, section, groupId, categoryId) {
-  const groupIndex = data[section].findIndex(g => g.id === groupId)
-  if (groupIndex === -1) {
-    throw new Error(`Group not found`)
-  }
-
-  const categoryIndex = data[section][groupIndex].categories
-      .findIndex(c => c.id === categoryId)
+function findCategoryPath (data, section, group, categoryId) {
+  const categoryIndex = data[section][group].findIndex(c => c.id === categoryId)
 
   if (categoryIndex === -1) {
     throw new Error(`Category not found`)
   }
 
-  return ['data', section, groupIndex, 'categories', categoryIndex]
+  return ['data', section, group, categoryIndex]
 }
 
 

@@ -32,26 +32,26 @@ export function renameDoc (title) {
   return { type: 'RENAME_DOC', title }
 }
 
-export function addCategory (section, groupId, name, price = DEFAULT_PRICE, quantities = DEFAULT_QUANTITIES) {
-  return { type: 'ADD_CATEGORY', section, groupId, name, price, quantities }
+export function addCategory (section, group, name, price = DEFAULT_PRICE, quantities = DEFAULT_QUANTITIES) {
+  return { type: 'ADD_CATEGORY', section, group, name, price, quantities }
 }
 
-export function renameCategory (section, groupId, categoryId, name) {
-  return { type: 'RENAME_CATEGORY', section, groupId, categoryId, name }
+export function renameCategory (section, group, categoryId, name) {
+  return { type: 'RENAME_CATEGORY', section, group, categoryId, name }
 }
 
-export function deleteCategory (section, groupId, categoryId) {
-  return { type: 'DELETE_CATEGORY', section, groupId, categoryId }
+export function deleteCategory (section, group, categoryId) {
+  return { type: 'DELETE_CATEGORY', section, group, categoryId }
 }
 
 export function setPeriods (periods) {
   return { type: 'SET_PERIODS', periods }
 }
 
-export function setPrice (section, groupId, categoryId, price) {
-  return { type: 'SET_PRICE', section, groupId, categoryId, price }
+export function setPrice (section, group, categoryId, price) {
+  return { type: 'SET_PRICE', section, group, categoryId, price }
 }
 
-export function setQuantity (section, groupId, categoryId, period, quantity) {
-  return { type: 'SET_QUANTITY', section, groupId, categoryId, period, quantity }
+export function setQuantity (section, group, categoryId, period, quantity) {
+  return { type: 'SET_QUANTITY', section, group, categoryId, period, quantity }
 }

@@ -206,26 +206,30 @@ A saved scenario has the following structure:
 {
   "title": "",
   "data": {
-    "costs": [
-      {
-        "name": "<group name>",
-        "categories": [
-          {
-            "name": "<category name>",
-            "price": { ... },
-            "quantities": {
-               "<period>": amount,
-               ...
-            }
-          },
-          ...
-        ]
-      }
-    ],
-    "investments": [...]
-    "revenues": [...],
     "parameters": {
       "periods": ["2016", "2017", "2018", ...]
+    },
+    "costs": {
+      "direct": [
+        {
+          "name": "<category name>",
+          "price": { ... },
+          "quantities": {
+             "<period>": amount,
+             ...
+          }
+        },
+        ...
+      ],
+      "personnel": [...],
+      "indirect": [...]
+    }
+    "investments": {
+      "tangible": [...],
+      "intangible": [...]
+    }
+    "revenues": {
+      "all": [...]
     }
   },
   "auth": {
