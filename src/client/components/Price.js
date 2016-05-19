@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
-import debugFactory from 'debug/browser';
+import React, { Component } from 'react'
+import debugFactory from 'debug/browser'
 
-import Popover from 'material-ui/lib/popover/popover';
-import SelectField from 'material-ui/lib/select-field';
-import MenuItem from 'material-ui/lib/menus/menu-item';
+import Popover from 'material-ui/lib/popover/popover'
+import SelectField from 'material-ui/lib/select-field'
+import MenuItem from 'material-ui/lib/menus/menu-item'
 
-import PriceTypeConstant from './PriceTypeConstant';
-import PriceTypeInvestment from './PriceTypeInvestment';
-import PriceTypeManual from './PriceTypeManual';
-import PriceTypeRevenue from './PriceTypeRevenue';
-import PriceTypeSalary from './PriceTypeSalary';
+import PriceTypeConstant from './PriceTypeConstant'
+import PriceTypeInvestment from './PriceTypeInvestment'
+import PriceTypeManual from './PriceTypeManual'
+import PriceTypeRevenue from './PriceTypeRevenue'
+import PriceTypeSalary from './PriceTypeSalary'
 
-const debug = debugFactory('vbi:Price');
+const debug = debugFactory('vbi:Price')
 
 /**
  * Price
@@ -28,12 +28,12 @@ const debug = debugFactory('vbi:Price');
  *       change: '+3%'
  *     }
  *
- *     var categories = [{id: 1, name: 'licenses'}, {id: 2, name: 'projects'}];
+ *     var categories = [{id: 1, name: 'licenses'}, {id: 2, name: 'projects'}]
  *
  *     var periods = ['2015', '2016', '2017', '2018']
  *
  *     function onChange (price) {
- *       console.log('changed', price);
+ *       console.log('changed', price)
  *     }
  *
  *     <Price price={price} categories={categories} onChange={onChange} />
@@ -41,19 +41,19 @@ const debug = debugFactory('vbi:Price');
  */
 export default class Price extends Component {
   constructor (props) {
-    super(props);
+    super(props)
 
     this.state = {
       showPopover: false,
       anchorEl: null
-    };
+    }
   }
 
   render () {
     const type = Price.PRICE_TYPES[this.props.price.type] && this.props.priceTypes.includes(this.props.price.type)
         ? this.props.price.type
-        : this.props.priceTypes[0];
-    const PriceType = Price.PRICE_TYPES[type];
+        : this.props.priceTypes[0]
+    const PriceType = Price.PRICE_TYPES[type]
 
     return <div className="price">
       <button
@@ -91,7 +91,7 @@ export default class Price extends Component {
   renderTypeSelection () {
     // only render the select field when there are multiple types allowed
     if (this.props.priceTypes.length <= 1) {
-      return null;
+      return null
     }
 
     let priceTypes = Object.keys(Price.PRICE_TYPES)
@@ -102,7 +102,7 @@ export default class Price extends Component {
               key={type}
               value={type}
               primaryText={Price.PRICE_TYPES[type].label} />
-        });
+        })
 
     return <SelectField value={this.props.price.type} onChange={this.handleChangeType.bind(this)} >
       {priceTypes}
@@ -113,29 +113,29 @@ export default class Price extends Component {
   showPopover (event) {
     event.preventDefault(); // prevent from immediately closing on tap
 
-    debug('showPopover');
+    debug('showPopover')
     this.setState({
       showPopover: true,
       anchorEl: event.currentTarget
-    });
+    })
   }
 
   hidePopover (event) {
-    debug('hidePopover');
-    this.setState({showPopover: false});
+    debug('hidePopover')
+    this.setState({showPopover: false})
   }
 
   handleChangePrice (price) {
-    debug('handleChangePrice', price);
-    this.props.onChange(price);
+    debug('handleChangePrice', price)
+    this.props.onChange(price)
   }
 
   handleChangeType (event, index, value) {
-    let price = this.props.price.set('type', value);
+    let price = this.props.price.set('type', value)
 
-    debug('handleChangeType', price);
+    debug('handleChangeType', price)
 
-    this.props.onChange(price);
+    this.props.onChange(price)
   }
 
   /**
@@ -147,5 +147,5 @@ export default class Price extends Component {
     manual: PriceTypeManual,
     revenue: PriceTypeRevenue,
     salary: PriceTypeSalary
-  };
+  }
 }

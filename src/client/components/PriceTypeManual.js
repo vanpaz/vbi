@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import debugFactory from 'debug/browser';
-import TextField from 'material-ui/lib/text-field';
+import React, { Component } from 'react'
+import debugFactory from 'debug/browser'
+import TextField from 'material-ui/lib/text-field'
 
-const debug = debugFactory('vbi:PriceTypeManual');
+const debug = debugFactory('vbi:PriceTypeManual')
 
 const styles = {
   textField: {width: 128}
-};
+}
 
 export default class PriceTypeManual extends Component {
   render () {
@@ -21,7 +21,7 @@ export default class PriceTypeManual extends Component {
           <th>Price</th>
         </tr>
         {this.props.periods.map(period => {
-          let value = this.props.price.values && this.props.price.values[period];
+          let value = this.props.price.values && this.props.price.values[period]
 
           return <tr key={period}>
             <td>
@@ -46,21 +46,21 @@ export default class PriceTypeManual extends Component {
   }
 
   handleChangeEntry (period, value) {
-    debug('handleChangeEntry', period, value);
+    debug('handleChangeEntry', period, value)
 
     const price = this.props.price.setIn(['values', period], value)
 
-    this.props.onChange(price);
+    this.props.onChange(price)
   }
 
   static format (price) {
     if (price.values) {
-      return Object.keys(price.values).map(period => price.values[period]).join(', ');
+      return Object.keys(price.values).map(period => price.values[period]).join(', ')
     }
     else {
-      return '';
+      return ''
     }
   }
 
-  static label = 'Manual per period';
+  static label = 'Manual per period'
 }

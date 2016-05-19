@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
-import TextField from 'material-ui/lib/text-field';
+import TextField from 'material-ui/lib/text-field'
 
 export default class PriceTypeInvestment extends Component {
   render () {
@@ -27,7 +27,7 @@ export default class PriceTypeInvestment extends Component {
         .set('type', 'investment')
         .set('value', event.target.value)
 
-    this.props.onChange(price);
+    this.props.onChange(price)
   }
 
   handleChangeDepreciation (event) {
@@ -35,12 +35,12 @@ export default class PriceTypeInvestment extends Component {
         .set('type', 'investment')
         .set('depreciationPeriod', event.target.value)
 
-    this.props.onChange(price);
+    this.props.onChange(price)
   }
 
   static format (price) {
-    return `${price.value} spread over ${price.depreciationPeriod} years`;
+    return `${price.value} spread over ${price.depreciationPeriod} years`
   }
 
-  static label = 'Investment';
+  static label = 'Investment'
 }

@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
-import TextField from 'material-ui/lib/text-field';
+import TextField from 'material-ui/lib/text-field'
 
 export default class PriceTypeConstant extends Component {
   render () {
@@ -31,8 +31,8 @@ export default class PriceTypeConstant extends Component {
   }
 
   static format (price) {
-    return `${price.value || ''} ${price.change || ''}`;
+    return `${price.value || ''} ${price.change || ''}`
   }
 
-  static label = 'Constant change';
+  static label = 'Constant change'
 }

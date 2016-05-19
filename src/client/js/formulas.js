@@ -1,7 +1,7 @@
-import { uniq, flatMap, clone } from 'lodash';
-import debugFactory from 'debug/browser';
+import { uniq, flatMap, clone } from 'lodash'
+import debugFactory from 'debug/browser'
 
-const debug = debugFactory('vbi:formulas');
+const debug = debugFactory('vbi:formulas')
 
 /**
  * Find the quantity for a certain period
@@ -12,7 +12,7 @@ const debug = debugFactory('vbi:formulas');
 export function findQuantity (item, period) {
   return (item.quantities[period] !== undefined)
       ? item.quantities[period]
-      : '0';
+      : '0'
 }
 
 /**
@@ -84,15 +84,15 @@ export function profitAndLoss (data) {
  *                                   and prices as value
  */
 export function calculatePrices (item, periods, revenueTotalsPerCategory) {
-  var type = types[item.price.type];
+  var type = types[item.price.type]
 
   if (!type) {
     throw new Error('Unknown item price type ' + JSON.stringify(item.price.type) + ' ' +
         'in item ' + JSON.stringify(item) + '. ' +
-        'Choose from: ' + Object.keys(types).join(','));
+        'Choose from: ' + Object.keys(types).join(','))
   }
 
-  return type.calculatePrices(item, periods, revenueTotalsPerCategory);
+  return type.calculatePrices(item, periods, revenueTotalsPerCategory)
 }
 
 /**
@@ -108,21 +108,21 @@ export let types = {
      *                                   and prices as value
      */
     calculatePrices: function (item, periods) {
-      let initialPrice = parsePrice(item.price.value);
-      let change = 1 + parsePercentage(item.price.change);
+      let initialPrice = parsePrice(item.price.value)
+      let change = 1 + parsePercentage(item.price.change)
 
       return periods.reduce((prices, period, periodIndex) => {
-        let quantity = findQuantity(item, period);
+        let quantity = findQuantity(item, period)
 
         if (item.price.value != undefined && item.price.change != undefined) {
-          prices[period] = initialPrice * quantity * Math.pow(change, periodIndex);
+          prices[period] = initialPrice * quantity * Math.pow(change, periodIndex)
         }
         else {
-          prices[period] = 0;
+          prices[period] = 0
         }
 
-        return prices;
-      }, {});
+        return prices
+      }, {})
     }
   },
 
@@ -136,13 +136,13 @@ export let types = {
      */
     calculatePrices: function (item, periods) {
       return periods.reduce((prices, period) => {
-        let quantity = findQuantity(item, period);
-        let value = item.price.values && item.price.values[period] || 0;
+        let quantity = findQuantity(item, period)
+        let value = item.price.values && item.price.values[period] || 0
 
-        prices[period] = quantity * value;
+        prices[period] = quantity * value
 
-        return prices;
-      }, {});
+        return prices
+      }, {})
     }
   },
 
@@ -255,7 +255,7 @@ export let types = {
       const prices = initializeTotals(periods)
 
       periods.forEach((period, periodIndex) => {
-        const quantity = findQuantity(item, period);
+        const quantity = findQuantity(item, period)
 
         if (item.price.value != undefined && item.price.change != undefined) {
           prices[period] =
@@ -269,7 +269,7 @@ export let types = {
     }
   }
 
-};
+}
 
 /**
  * Calculate totals for all revenues per category
@@ -307,11 +307,11 @@ export function calculateTotals (categories, periods, revenueTotalsPerCategory) 
  * @return {Object.<string, number>} Returns an object with periods as key and prices as value
  */
 export function addTotals (a, b) {
-  const c = {};
+  const c = {}
 
-  Object.keys(a).forEach(period => c[period] = a[period] + b[period]);
+  Object.keys(a).forEach(period => c[period] = a[period] + b[period])
 
-  return c;
+  return c
 }
 
 /**
@@ -320,7 +320,7 @@ export function addTotals (a, b) {
  * @return {string}
  */
 export function clearIfZero (value) {
-  return (value === '0' || value === 0) ? '' : value;
+  return (value === '0' || value === 0) ? '' : value
 }
 
 /**
@@ -334,13 +334,13 @@ export function clearIfZero (value) {
  * @return {number} Returns the numeric value of the percentage
  */
 export function parsePercentage (percentage) {
-  let match = /^([+-]?[0-9]+[.]?[0-9]*)%$/.exec(percentage);
+  let match = /^([+-]?[0-9]+[.]?[0-9]*)%$/.exec(percentage)
 
   if (!match) {
     throw new Error('Invalid percentage "' + percentage + '"')
   }
 
-  return parseFloat(match[1]) / 100;
+  return parseFloat(match[1]) / 100
 }
 
 /**
@@ -355,10 +355,10 @@ export function parsePercentage (percentage) {
  * @return {number} The numeric value of the price
  */
 export function parsePrice (price) {
-  let match = /^([+-]?[0-9]+[.]?[0-9]*)([kMBT])?$/.exec(price);
+  let match = /^([+-]?[0-9]+[.]?[0-9]*)([kMBT])?$/.exec(price)
 
   if (!match) {
-    throw new Error('Invalid price "' + price + '"');
+    throw new Error('Invalid price "' + price + '"')
   }
 
   let suffixes = {
@@ -367,13 +367,13 @@ export function parsePrice (price) {
     M: 1e6,
     B: 1e9,
     T: 1e12
-  };
-
-  if (match[2] && (!(match[2] in suffixes))) {
-    throw new Error('Invalid price "' + price + '"');
   }
 
-  return parseFloat(match[1]) * suffixes[match[2]];
+  if (match[2] && (!(match[2] in suffixes))) {
+    throw new Error('Invalid price "' + price + '"')
+  }
+
+  return parseFloat(match[1]) * suffixes[match[2]]
 }
 
 /**
@@ -403,7 +403,7 @@ export function formatPrice (price) {
   if (Math.abs(price) > 1e4)  { return (price / 1e3).toFixed() + 'k'; }
   if (Math.abs(price) > 1e3)  { return (price / 1e3).toFixed(1) + 'k'; }
 
-  return (price).toFixed();
+  return (price).toFixed()
 }
 
 /**
@@ -420,7 +420,7 @@ export function formatPrice (price) {
 export function initializeTotals (periods) {
   const totals = {}
 
-  periods.forEach(period => totals[period] = 0);
+  periods.forEach(period => totals[period] = 0)
 
   return totals
 }

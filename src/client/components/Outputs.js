@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
-import debugFactory from 'debug/browser';
+import React, { Component } from 'react'
+import debugFactory from 'debug/browser'
 
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash'
 
-import Card from 'material-ui/lib/card/card';
-import CardText from 'material-ui/lib/card/card-text';
-import Tabs from 'material-ui/lib/tabs/tabs';
-import Tab from 'material-ui/lib/tabs/tab';
+import Card from 'material-ui/lib/card/card'
+import CardText from 'material-ui/lib/card/card-text'
+import Tabs from 'material-ui/lib/tabs/tabs'
+import Tab from 'material-ui/lib/tabs/tab'
 
-import ProfitAndLoss from './ProfitAndLoss';
+import ProfitAndLoss from './ProfitAndLoss'
 
 
-const debug = debugFactory('vbi:outputs');
+const debug = debugFactory('vbi:outputs')
 
 export default class Outputs extends Component {
   render () {

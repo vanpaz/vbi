@@ -1,7 +1,7 @@
 import React from 'react'
 import debugFactory from 'debug/browser'
 
-import Snackbar from 'material-ui/lib/snackbar';
+import Snackbar from 'material-ui/lib/snackbar'
 
 const debug = debugFactory('vbi:notification')
 
@@ -32,10 +32,10 @@ export default class Notification extends React.Component {
   }
 
   render () {
-    let isError = this.state.type === 'error';
+    let isError = this.state.type === 'error'
     let close = () => this.hide()
     let ignore = () => null;  // just ignore request to close
-    let onRequestClose = this.state.closeable ? close : ignore;
+    let onRequestClose = this.state.closeable ? close : ignore
 
     return <Snackbar
         className={`snackbar${isError ? ' error' : ''}`}
@@ -45,7 +45,7 @@ export default class Notification extends React.Component {
         onRequestClose={onRequestClose}
         action={isError ? 'Close' : null}
         onActionTouchTap={ event => this.hide() }
-    />;
+    />
   }
 
   show ({ type = 'notification', message, duration = null, closeable = true }) {

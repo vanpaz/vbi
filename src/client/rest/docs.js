@@ -3,7 +3,7 @@ import debugFactory from 'debug/browser'
 
 const debug = debugFactory('vbi:rest:docs')
 
-const NOTIFICATION_AUTO_HIDE_DURATION = 4000;
+const NOTIFICATION_AUTO_HIDE_DURATION = 4000
 
 /**
  * Open a document by it's id
@@ -41,12 +41,12 @@ export function open (id, title, onNotification) {
  * @return {Promise.<Object, Error>}
  */
 export function save (doc, onNotification) {
-  debug ('saving document...', doc);
+  debug ('saving document...', doc)
 
   onNotification({
     closeable: false,
     message: `Saving ${doc.title || doc._id}...`
-  });
+  })
 
   let promise = doc._id
       ? request('PUT', `/docs/${doc._id}`, doc)   // update existing
@@ -54,15 +54,15 @@ export function save (doc, onNotification) {
 
   return promise
       .then(response => {
-        debug ('document saved', response);
+        debug ('document saved', response)
 
         onNotification({
           message: `Saved ${doc.title || doc._id}`,
           duration: NOTIFICATION_AUTO_HIDE_DURATION
-        });
+        })
 
-        return response;
-      });
+        return response
+      })
 }
 
 /**
@@ -74,18 +74,18 @@ export function save (doc, onNotification) {
  * @return {*}
  */
 export function del (id, rev, title, onNotification) {
-  debug('delete document', id, rev);
+  debug('delete document', id, rev)
 
   onNotification({
     message: `Deleting ${title || id}`
-  });
+  })
 
   return request('DELETE', `/docs/${id}/${rev}`)
       .then(() => {
         onNotification({
           message: `Deleted ${title || id}`
-        });
-      });
+        })
+      })
 }
 
 /**
@@ -93,11 +93,11 @@ export function del (id, rev, title, onNotification) {
  * @return {Array.<{id: string, rev: string, title: string, updated: string}>}
  */
 export function list () {
-  debug('list documents');
+  debug('list documents')
 
   return request('GET', '/docs').then(response => {
-    let list = response.rows.map(row => row.value);
-    debug('documents', list);
-    return list;
-  });
+    let list = response.rows.map(row => row.value)
+    debug('documents', list)
+    return list
+  })
 }

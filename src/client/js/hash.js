@@ -13,17 +13,17 @@ export let hash = {
    */
   getAll: function () {
     var str = window.location.hash.substring(1); // skip the # character
-    var params = str.split('&');
-    var query = {};
+    var params = str.split('&')
+    var query = {}
     for (var i = 0, iMax = params.length; i < iMax; i++) {
-      var keyvalue = params[i].split('=');
+      var keyvalue = params[i].split('=')
       if (keyvalue.length >= 2) {
-        var key = decodeURIComponent(keyvalue.shift());
-        var value = decodeURIComponent(keyvalue.join('='));
-        query[key] = value;
+        var key = decodeURIComponent(keyvalue.shift())
+        var value = decodeURIComponent(keyvalue.join('='))
+        query[key] = value
       }
     }
-    return query;
+    return query
   },
 
   /**
@@ -35,31 +35,31 @@ export let hash = {
   onChange: function (key, callback) {
     // TODO: make key optional
 
-    hash._prevHash = '';
+    hash._prevHash = ''
     if (!hash._callbacks) {
-      hash._callbacks = [];
+      hash._callbacks = []
     }
     hash._callbacks.push({
       'key': key,
       'value': undefined,
       'callback': callback
-    });
+    })
 
     function checkForChanges() {
       for (var i = 0; i < hash._callbacks.length; i++) {
-        var obj = hash._callbacks[i];
+        var obj = hash._callbacks[i]
         if (obj.key === '*') {
-          var oldValue = obj.value;
-          obj.value = hash.getAll();
-          obj.callback(obj.value, oldValue);
+          var oldValue = obj.value
+          obj.value = hash.getAll()
+          obj.callback(obj.value, oldValue)
         }
         else {
-          var oldValue = obj.value;
-          var value = hash.get(obj.key);
-          var changed = (value !== oldValue);
+          var oldValue = obj.value
+          var value = hash.get(obj.key)
+          var changed = (value !== oldValue)
           if (changed) {
-            obj.value = value;
-            obj.callback(value, oldValue);
+            obj.value = value
+            obj.callback(value, oldValue)
           }
         }
       }
@@ -68,19 +68,19 @@ export let hash = {
     // source: http://stackoverflow.com/questions/2161906/handle-url-anchor-change-event-in-js
     if ('onhashchange' in window) {
       window.onhashchange = function () {
-        checkForChanges();
+        checkForChanges()
       }
     }
     else {
       // onhashchange event not supported
-      hash._prevHash = window.location.hash;
+      hash._prevHash = window.location.hash
       window.setInterval(function () {
-        var hash = window.location.hash;
+        var hash = window.location.hash
         if (hash != hash._prevHash) {
-          hash._prevHash = hash;
-          checkForChanges();
+          hash._prevHash = hash
+          checkForChanges()
         }
-      }, 1000);
+      }, 1000)
     }
   },
 
@@ -91,8 +91,8 @@ export let hash = {
    */
   offChange: function (key, callback) {
     hash._callbacks = hash._callbacks.filter(function (entry) {
-      return entry.key !== key || entry.callback !== callback;
-    });
+      return entry.key !== key || entry.callback !== callback
+    })
   },
 
   /**
@@ -100,24 +100,24 @@ export let hash = {
    * @param {Object} query    object with strings
    */
   setAll: function (query) {
-    var str = '';
+    var str = ''
 
     for (var key in query) {
       if (query.hasOwnProperty(key)) {
-        var value = query[key];
+        var value = query[key]
         if (value != undefined) {
           if (str.length) {
-            str += '&';
+            str += '&'
           }
-          str += encodeURIComponent(key);
-          str += '=';
-          str += encodeURIComponent(query[key]);
+          str += encodeURIComponent(key)
+          str += '='
+          str += encodeURIComponent(query[key])
         }
 
         // apply changes to registered callbacks, so they will not fire a change
         if (hash._callbacks) {
           for (var i = 0; i < hash._callbacks.length; i++) {
-            var obj = hash._callbacks[i];
+            var obj = hash._callbacks[i]
             if (obj.key == key) {
               obj.value = value + ''; // to string
             }
@@ -126,7 +126,7 @@ export let hash = {
       }
     }
 
-    window.location.hash = (str.length ? ('#' + str) : '');
+    window.location.hash = (str.length ? ('#' + str) : '')
   },
 
 
@@ -136,8 +136,8 @@ export let hash = {
    * @return {String | undefined} value   undefined when the value is not found
    */
   'get': function (key) {
-    var query = this.getAll();
-    return query[key];
+    var query = this.getAll()
+    return query[key]
   },
 
   /**
@@ -146,20 +146,20 @@ export let hash = {
    * @param {String} [value]
    */
   'set': function (key, value) {
-    var query = this.getAll();
+    var query = this.getAll()
 
     if (typeof key === 'string') {
-      query[key] = value;
+      query[key] = value
     }
     else {
       for (var k in key) {
         if (key.hasOwnProperty(k)) {
-          query[k] = key[k];
+          query[k] = key[k]
         }
       }
     }
 
-    this.setAll(query);
+    this.setAll(query)
   },
 
   /**
@@ -167,10 +167,10 @@ export let hash = {
    * @param {String} key
    */
   remove: function (key) {
-    var query = this.getAll();
+    var query = this.getAll()
     if (query[key]) {
-      delete query[key];
-      this.setAll(query);
+      delete query[key]
+      this.setAll(query)
     }
   }
-};
+}

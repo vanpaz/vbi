@@ -6,7 +6,7 @@
  * @return
  */
 export function appendItem(array, item) {
-  return array.concat([item]);
+  return array.concat([item])
 }
 
 /**
@@ -16,5 +16,5 @@ export function appendItem(array, item) {
  * @return
  */
 export function removeItem(array, index) {
-  return array.slice(0, index).concat(array.slice(index + 1));
+  return array.slice(0, index).concat(array.slice(index + 1))
 }

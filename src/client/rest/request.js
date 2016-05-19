@@ -1,11 +1,11 @@
-import debugFactory from 'debug/browser';
+import debugFactory from 'debug/browser'
 
 // load HTML5 fetch polyfill
-require('isomorphic-fetch');
+require('isomorphic-fetch')
 
-const debug = debugFactory('vbi:rest');
+const debug = debugFactory('vbi:rest')
 
-export const BASE_URL = '/api/v1';
+export const BASE_URL = '/api/v1'
 
 /**
  * Fetch a url, where request and response bodies are always JSON.
@@ -16,7 +16,7 @@ export const BASE_URL = '/api/v1';
  * @return {Promise.<Object, Error>}
  */
 export function request (method, url, body) {
-  debug('fetch', method, url, body);
+  debug('fetch', method, url, body)
 
   return fetch(BASE_URL + url, {
     method: method,
@@ -31,14 +31,14 @@ export function request (method, url, body) {
     credentials: 'include'
   }).then((response) => {
     if (response.status < 200 || response.status >= 300) {
-      debug('Error fetching user profile', response.status, response);
-      throw new Error(`Error fetching ${method} ${url}`);
+      debug('Error fetching user profile', response.status, response)
+      throw new Error(`Error fetching ${method} ${url}`)
     }
 
     // Parse response body
     return response.json().then(data => {
-      debug('fetch response', data);
-      return data;
-    });
-  });
+      debug('fetch response', data)
+      return data
+    })
+  })
 }

@@ -1,22 +1,22 @@
-import React, { Component } from 'react';
-import debugFactory from 'debug/browser';
+import React, { Component } from 'react'
+import debugFactory from 'debug/browser'
 import Immutable from 'seamless-immutable'
-import TextField from 'material-ui/lib/text-field';
-import FlatButton from 'material-ui/lib/flat-button';
-import SelectField from 'material-ui/lib/select-field';
-import MenuItem from 'material-ui/lib/menus/menu-item';
-import RadioButton from 'material-ui/lib/radio-button';
-import RadioButtonGroup from 'material-ui/lib/radio-button-group';
+import TextField from 'material-ui/lib/text-field'
+import FlatButton from 'material-ui/lib/flat-button'
+import SelectField from 'material-ui/lib/select-field'
+import MenuItem from 'material-ui/lib/menus/menu-item'
+import RadioButton from 'material-ui/lib/radio-button'
+import RadioButtonGroup from 'material-ui/lib/radio-button-group'
 
 import { appendItem, removeItem } from '../js/immutable'
 
-const debug = debugFactory('vbi:PriceTypeRevenue');
+const debug = debugFactory('vbi:PriceTypeRevenue')
 
 const styles = {
   selectCategory: {width: 128},
   textPercentage: {width: 96},
   radioAll: {margin: '8px 0'}
-};
+}
 
 export default class PriceTypeRevenue extends Component {
   render () {
@@ -54,9 +54,9 @@ export default class PriceTypeRevenue extends Component {
         hintText="5%"
         style={styles.textPercentage}
         onChange={(event) => {
-              this.handleChangePercentage(event.target.value) ;
+              this.handleChangePercentage(event.target.value) 
             }} />
-    </div>;
+    </div>
   }
 
   renderOptionPerCategory () {
@@ -90,7 +90,7 @@ export default class PriceTypeRevenue extends Component {
         </tr>
         </tbody>
       </table>
-    </div>;
+    </div>
   }
 
   renderSelectCategory (entry, entryIndex) {
@@ -99,7 +99,7 @@ export default class PriceTypeRevenue extends Component {
         hintText="category"
         style={styles.selectCategory}
         onChange={(event, index, value) => {
-          this.handleUpdateEntryCategory(entryIndex, value);
+          this.handleUpdateEntryCategory(entryIndex, value)
         }} >
       {this.props.categories.map(category => {
         return <MenuItem key={category.id} value={category.id} primaryText={category.name} />
@@ -113,37 +113,37 @@ export default class PriceTypeRevenue extends Component {
         hintText="5%"
         style={styles.textPercentage}
         onChange={(event) => {
-          this.handleUpdateEntryPercentage(entryIndex, event.target.value);
+          this.handleUpdateEntryPercentage(entryIndex, event.target.value)
         }} />
   }
 
   handleUpdateEntryCategory (index, categoryId) {
-    debug('handleUpdatePercentageCategory', index, categoryId);
+    debug('handleUpdatePercentageCategory', index, categoryId)
 
     const price = this.props.price.setIn(['percentages', index, 'categoryId'], categoryId)
 
-    this.props.onChange(price);
+    this.props.onChange(price)
   }
 
   handleUpdateEntryPercentage (index, percentage) {
-    debug('handleUpdateEntryPercentage', index, percentage);
+    debug('handleUpdateEntryPercentage', index, percentage)
 
     const price = this.props.price.setIn(['percentages', index, 'percentage'], percentage)
 
-    this.props.onChange(price);
+    this.props.onChange(price)
   }
 
   handleRemoveEntry (index) {
-    debug('handleRemoveEntry', index);
+    debug('handleRemoveEntry', index)
 
     const price = this.props.price.updateIn(['percentages'],
         percentages => removeItem(percentages, index))
 
-    this.props.onChange(price);
+    this.props.onChange(price)
   }
 
   handleAddEntry () {
-    debug('handleAddEntry');
+    debug('handleAddEntry')
 
     const item = {categoryId: '', percentage: ''}
     let price
@@ -156,23 +156,23 @@ export default class PriceTypeRevenue extends Component {
       price = this.props.price.set('percentages', Immutable([item]))
     }
     
-    this.props.onChange(price);
+    this.props.onChange(price)
   }
 
   handleChangePercentage (percentage) {
-    debug('handleChangePercentage', percentage);
+    debug('handleChangePercentage', percentage)
 
-    const price = this.props.price.set('percentage', percentage);
+    const price = this.props.price.set('percentage', percentage)
 
-    this.props.onChange(price);
+    this.props.onChange(price)
   }
 
   handleChangeAll (all) {
-    debug('handleChangeAll', all);
+    debug('handleChangeAll', all)
 
-    const price = this.props.price.set('all', all);
+    const price = this.props.price.set('all', all)
 
-    this.props.onChange(price);
+    this.props.onChange(price)
   }
 
   static format (price, categories) {
@@ -187,12 +187,12 @@ export default class PriceTypeRevenue extends Component {
 
               return `${entry.percentage} of ${category && category.name || 'unknown'}`
             })
-            .join(', ');
+            .join(', ')
       }
     }
 
-    return '';
+    return ''
   }
 
-  static label = 'Percentage of revenue';
+  static label = 'Percentage of revenue'
 }
