@@ -75,13 +75,14 @@ export function profitAndLoss (data) {
   const EBIT = zipObjectsWith([EBITDA, depreciation], subtract, periods)
 
   // TODO: get interest from balance sheet calculations
-  const interest = {
-    '2016': 1.3e3,
-    '2017': 5.0e3,
-    '2018': 12.5e3,
-    '2019': 17.5e3,
-    '2020': 17.5e3
-  }
+  // const interest = {
+  //   '2016': 1.3e3,
+  //   '2017': 5.0e3,
+  //   '2018': 12.5e3,
+  //   '2019': 17.5e3,
+  //   '2020': 17.5e3
+  // }
+  const interest = initializeTotals(periods)
 
   const EBT = zipObjectsWith([EBIT, interest], subtract, periods)
 
@@ -98,7 +99,7 @@ export function profitAndLoss (data) {
     {name: 'EBITDA', values: EBITDA },
     {name: 'Depreciation and amortization', values: depreciation },
     {name: 'EBIT', values: EBIT, className: 'main' },
-    {name: 'Interest', values: interest },
+    {name: 'Interest (not yet available...)', values: interest },
     {name: 'EBT', values: EBT },
     {name: 'Corporate taxes', values: corporateTaxes },
     {name: 'Net result', values: netResult }
