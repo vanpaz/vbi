@@ -44,10 +44,6 @@ export function deleteCategory (section, group, categoryId) {
   return { type: 'DELETE_CATEGORY', section, group, categoryId }
 }
 
-export function setPeriods (periods) {
-  return { type: 'SET_PERIODS', periods }
-}
-
 export function setParameter (parameter, value) {
   return { type: 'SET_PARAMETER', parameter, value }
 }

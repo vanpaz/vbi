@@ -2,13 +2,6 @@
   "title": "Example Scenario",
   "data": {
     "parameters": {
-      "periods": [
-        "2016",
-        "2017",
-        "2018",
-        "2019",
-        "2020"
-      ],
 
       "startingYear": "2016",
       "numberOfYears": "5",

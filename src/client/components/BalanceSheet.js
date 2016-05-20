@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import debugFactory from 'debug/browser'
 
-import { balanceSheet, clearIfZero, formatPrice } from './../js/formulas'
+import { balanceSheet, clearIfZero, formatPrice, getYears } from './../js/formulas'
 
 const debug = debugFactory('vbi:profit-loss')
 
 export default class BalanceSheet extends Component {
   render () {
     try {
-      const periods = this.props.data.parameters.periods
+      const years = getYears(this.props.data)
       const calculations = balanceSheet(this.props.data)
 
       return <div>
@@ -16,10 +16,10 @@ export default class BalanceSheet extends Component {
           <tbody>
           <tr>
             <th />
-            {periods.map(period => <th key={period}>{period}</th>)}
+            {years.map(period => <th key={period}>{period}</th>)}
           </tr>
           {
-            calculations.map(entry => BalanceSheet.renderEntry(periods, entry))
+            calculations.map(entry => BalanceSheet.renderEntry(years, entry))
           }
           </tbody>
         </table>
@@ -31,11 +31,11 @@ export default class BalanceSheet extends Component {
     }
   }
 
-  static renderEntry (periods, entry) {
+  static renderEntry (years, entry) {
     return <tr key={entry.name} className={entry.className}>
       <td className="name">{entry.name}</td>
       {
-        periods.map(period => {
+        years.map(period => {
           const total = entry.values[period]
 
           return <td key={period} >

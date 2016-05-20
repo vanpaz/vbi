@@ -18,7 +18,7 @@ import {
     addCategory, deleteCategory, renameCategory,
     setPeriods, setParameter, setQuantity, setPrice
 } from '../actions'
-import { findQuantity, clearIfZero } from './../js/formulas'
+import { findQuantity, clearIfZero, getYears } from './../js/formulas'
 import Price from './Price'
 import Parameters from './Parameters'
 import theme from '../theme'
@@ -84,7 +84,7 @@ class Inputs extends Component {
   }
 
   renderCategory (section, group, priceTypes) {
-    const periods = this.props.data.parameters.periods
+    const years = getYears(this.props.data)
     const categories = this.props.data[section][group]
     const revenueCategories = this.props.data.revenues.all
 
@@ -95,17 +95,13 @@ class Inputs extends Component {
       <tbody>
         <tr>
           <th />
-          <th className="main" colSpan={periods.length}>Quantity</th>
+          <th className="main" colSpan={years.length}>Quantity</th>
           <th className="main" colSpan={1}>Price</th>
         </tr>
         <tr>
           <th />
           {
-            periods.map(period => {
-              return <th key={period}>
-                {this.renderPeriodsActionMenu(period)}
-              </th>
-            })
+            years.map(year => <th key={year}>{year}</th> )
           }
           <th />
         </tr>
@@ -116,15 +112,15 @@ class Inputs extends Component {
             }</td>
             {
                 category.price.type !== 'revenue'
-                    ? this.renderQuantities(section, group, category, periods)
+                    ? this.renderQuantities(section, group, category, years)
                     : <td className="info"
-                          colSpan={periods.length}
+                          colSpan={years.length}
                           title="Quantities are coupled with revenue">(coupled with revenue)</td>
             }
             <td>
               <Price price={category.price}
                      categories={revenueCategories}
-                     periods={periods}
+                     years={years}
                      priceTypes={priceTypes}
                      onChange={(price) => {
                        this.props.dispatch(setPrice (section, group, category.id, price))
@@ -146,8 +142,8 @@ class Inputs extends Component {
     </table>
   }
 
-  renderQuantities (section, group, category, periods) {
-    return periods.map(period => (<td key={period} className="quantity">
+  renderQuantities (section, group, category, years) {
+    return years.map(period => (<td key={period} className="quantity">
       <input className="quantity"
              value={clearIfZero(findQuantity(category, period))}
              onChange={(event) => {
@@ -156,23 +152,6 @@ class Inputs extends Component {
                        }}
              onFocus={(event) => event.target.select()} />
     </td>))
-  }
-
-  // TODO: move into a separate component
-  renderPeriodsActionMenu (period) {
-    let periodActions = [
-      <IconButton
-          key="edit"
-          title="Edit periods"
-          onTouchTap={event => this.handleSetPeriods()}
-          style={{width: 24, height: 24, padding: 0}}>
-        <EditIcon color="white" hoverColor={theme.palette.accent1Color} />
-      </IconButton>
-    ]
-
-    return <ActionMenu actions={periodActions}>
-      {period}
-    </ActionMenu>
   }
 
   // TODO: move into a separate component
@@ -221,31 +200,6 @@ class Inputs extends Component {
     </ActionMenu>
   }
 
-  /**
-   * Open a prompt where the user can enter a comma separated list with periods
-   */
-  handleSetPeriods () {
-    const parameters = this.props.data && this.props.data.parameters
-
-    const periods = (parameters && parameters.periods)
-        ? parameters.periods.join(', ')
-        : ''
-
-    const options = {
-      title: 'Periods',
-      description: 'Enter a comma separated list with periods:',
-      hintText: comingYears().join(', '),
-      value: periods
-    }
-
-    this.refs.prompt.show(options).then(value => {
-      if (value !== null) {
-        const newPeriods = value.split(',').map(trim)
-        this.props.dispatch(setPeriods(newPeriods))
-      }
-    })
-  }
-  
   handleSetParameter (parameter, value) {
     this.props.dispatch(setParameter(parameter, value))
   }

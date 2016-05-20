@@ -12,7 +12,8 @@ const EMPTY_DOC = Immutable({
   title: 'New Scenario',
   data: {
     parameters: {
-      periods: [year, year + 1, year + 2]
+      startingYear: '2016',
+      numberOfYears: '5'
     },
     costs: [],
     revenues: []
@@ -34,10 +35,6 @@ const doc = (state = Immutable({}), action) => {
 
     case 'RENAME_DOC':
       return state.set('title', action.title)
-
-
-    case 'SET_PERIODS':
-      return state.setIn(['data', 'parameters', 'periods'], action.periods)
 
     case 'SET_PARAMETER':
       return state.setIn(['data', 'parameters', action.parameter], action.value)

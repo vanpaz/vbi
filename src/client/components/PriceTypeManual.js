@@ -20,7 +20,7 @@ export default class PriceTypeManual extends Component {
           <th>Period</th>
           <th>Price</th>
         </tr>
-        {this.props.periods.map(period => {
+        {this.props.years.map(period => {
           let value = this.props.price.values && this.props.price.values[period]
 
           return <tr key={period}>

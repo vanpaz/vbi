@@ -20,24 +20,24 @@ export function findQuantity (item, period) {
  * @param data
  */
 export function profitAndLoss (data) {
-  const periods = data.parameters.periods
+  const years = getYears(data)
   const corporateTaxRate = parsePercentage(data.parameters.corporateTaxRate)
 
-  const revenueTotalsPerCategory = calculateTotalsPerCategory(data.revenues.all, periods)
-  const revenueTotals = calculateTotals(data.revenues.all, periods)
+  const revenueTotalsPerCategory = calculateTotalsPerCategory(data.revenues.all, years)
+  const revenueTotals = calculateTotals(data.revenues.all, years)
 
-  const directCosts = calculateTotals(data.costs.direct, periods, revenueTotalsPerCategory)
-  const personnelCosts = calculateTotals(data.costs.personnel, periods, revenueTotalsPerCategory)
-  const indirectCosts = calculateTotals(data.costs.indirect, periods, revenueTotalsPerCategory)
+  const directCosts = calculateTotals(data.costs.direct, years, revenueTotalsPerCategory)
+  const personnelCosts = calculateTotals(data.costs.personnel, years, revenueTotalsPerCategory)
+  const indirectCosts = calculateTotals(data.costs.indirect, years, revenueTotalsPerCategory)
 
-  const grossMargin = zipObjectsWith([revenueTotals, directCosts], subtract, periods)
-  const EBITDA = zipObjectsWith([grossMargin, indirectCosts], subtract, periods)
+  const grossMargin = zipObjectsWith([revenueTotals, directCosts], subtract, years)
+  const EBITDA = zipObjectsWith([grossMargin, indirectCosts], subtract, years)
 
-  const depreciationTangible = calculateTotals(data.investments.tangible, periods)
-  const depreciationIntangible = calculateTotals(data.investments.intangible, periods)
+  const depreciationTangible = calculateTotals(data.investments.tangible, years)
+  const depreciationIntangible = calculateTotals(data.investments.intangible, years)
   const depreciation = addTotals(depreciationTangible, depreciationIntangible)
 
-  const EBIT = zipObjectsWith([EBITDA, depreciation], subtract, periods)
+  const EBIT = zipObjectsWith([EBITDA, depreciation], subtract, years)
 
   // TODO: get interest from balance sheet calculations
   // const interest = {
@@ -47,13 +47,13 @@ export function profitAndLoss (data) {
   //   '2019': 17.5e3,
   //   '2020': 17.5e3
   // }
-  const interest = initializeTotals(periods)
+  const interest = initializeTotals(years)
 
-  const EBT = zipObjectsWith([EBIT, interest], subtract, periods)
+  const EBT = zipObjectsWith([EBIT, interest], subtract, years)
 
-  const corporateTaxes = zipObjectsWith([EBT], (value) => corporateTaxRate * value, periods)
+  const corporateTaxes = zipObjectsWith([EBT], (value) => corporateTaxRate * value, years)
 
-  const netResult = zipObjectsWith([EBT, corporateTaxes], subtract, periods)
+  const netResult = zipObjectsWith([EBT, corporateTaxes], subtract, years)
 
   return [
     {name: 'Total revenues', values: revenueTotals },
@@ -170,18 +170,18 @@ export function cashflow (data) {
 }
 
 /**
- * Calculate actual prices for all periods configured for a single item.
+ * Calculate actual prices for all years configured for a single item.
  * @param {{price: Object, quantities: Object}} item
- * @param {Array.<string>} periods
+ * @param {Array.<string>} years
  * @param {Array.<{category: string, totals: Object.<string, number>}>} [revenueTotalsPerCategory]
  *                                   Totals of the revenues per category,
  *                                   needed to calculate prices based on a
  *                                   percentage of the total revenues or some
  *                                   categories.
- * @return {Object.<string, number>} Returns an object with periods as key
+ * @return {Object.<string, number>} Returns an object with years as key
  *                                   and prices as value
  */
-export function calculatePrices (item, periods, revenueTotalsPerCategory) {
+export function calculatePrices (item, years, revenueTotalsPerCategory) {
   var type = types[item.price.type]
 
   if (!type) {
@@ -190,7 +190,7 @@ export function calculatePrices (item, periods, revenueTotalsPerCategory) {
         'Choose from: ' + Object.keys(types).join(','))
   }
 
-  return type.calculatePrices(item, periods, revenueTotalsPerCategory)
+  return type.calculatePrices(item, years, revenueTotalsPerCategory)
 }
 
 /**
@@ -199,17 +199,17 @@ export function calculatePrices (item, periods, revenueTotalsPerCategory) {
 export let types = {
   constant: {
     /**
-     * Calculate actual prices for all periods configured for a single item.
+     * Calculate actual prices for all years configured for a single item.
      * @param item
-     * @param {Array.<string>} periods
-     * @return {Object.<string, number>} Returns an object with periods as key
+     * @param {Array.<string>} years
+     * @return {Object.<string, number>} Returns an object with years as key
      *                                   and prices as value
      */
-    calculatePrices: function (item, periods) {
+    calculatePrices: function (item, years) {
       let initialPrice = parsePrice(item.price.value)
       let change = 1 + parsePercentage(item.price.change)
 
-      return periods.reduce((prices, period, periodIndex) => {
+      return years.reduce((prices, period, periodIndex) => {
         let quantity = findQuantity(item, period)
 
         if (item.price.value != undefined && item.price.change != undefined) {
@@ -226,14 +226,14 @@ export let types = {
 
   manual: {
     /**
-     * Calculate actual prices for all periods configured for a single item.
+     * Calculate actual prices for all years configured for a single item.
      * @param item
-     * @param {Array.<string>} periods
-     * @return {Object.<string, number>} Returns an object with periods as key
+     * @param {Array.<string>} years
+     * @return {Object.<string, number>} Returns an object with years as key
      *                                   and prices as value
      */
-    calculatePrices: function (item, periods) {
-      return periods.reduce((prices, period) => {
+    calculatePrices: function (item, years) {
+      return years.reduce((prices, period) => {
         let quantity = findQuantity(item, period)
         let value = item.price.values && item.price.values[period] || 0
 
@@ -246,18 +246,18 @@ export let types = {
 
   revenue: {
     /**
-     * Calculate actual prices for all periods configured for a single item.
+     * Calculate actual prices for all years configured for a single item.
      * @param item
-     * @param {Array.<string>} periods
+     * @param {Array.<string>} years
      * @param {Array.<{category: string, totals: Object.<string, number>}>} revenueTotalsPerCategory
      *                                   Totals of the revenues per category,
      *                                   needed to calculate prices based on a
      *                                   percentage of the total revenues or some
      *                                   categories.
-     * @return {Object.<string, number>} Returns an object with periods as key
+     * @return {Object.<string, number>} Returns an object with years as key
      *                                   and prices as value
      */
-    calculatePrices: function (item, periods, revenueTotalsPerCategory) {
+    calculatePrices: function (item, years, revenueTotalsPerCategory) {
       if (!revenueTotalsPerCategory) {
         debug(new Error('No revenue totals available in this context'))
         return {}
@@ -267,17 +267,17 @@ export let types = {
         // calculate a percentage of all revenue
         let totals = revenueTotalsPerCategory
             .map(category => category.totals)
-            .reduce(addTotals, initializeTotals(periods))
+            .reduce(addTotals, initializeTotals(years))
         let percentage = parsePercentage(item.price.percentage)
 
-        return periods.reduce((prices, period) => {
+        return years.reduce((prices, period) => {
           prices[period] = percentage * (totals[period] || 0)
 
           return prices
         }, {})
       }
       else {
-        return periods.reduce((prices, period) => {
+        return years.reduce((prices, period) => {
           prices[period] = 0
 
           if (item.price.percentages) {
@@ -299,26 +299,26 @@ export let types = {
   
   investment: {
     /**
-     * Calculate actual prices for all periods configured for a single item.
+     * Calculate actual prices for all years configured for a single item.
      * @param item
-     * @param {Array.<string>} periods
-     * @return {Object.<string, number>} Returns an object with periods as key
+     * @param {Array.<string>} years
+     * @return {Object.<string, number>} Returns an object with years as key
      *                                   and prices as value
      */
-    calculatePrices: function (item, periods) {
-      const prices = initializeTotals(periods)
+    calculatePrices: function (item, years) {
+      const prices = initializeTotals(years)
 
-      // for every quantity filled in for the item, we loop over all periods
+      // for every quantity filled in for the item, we loop over all years
       // and add up the prices
       Object.keys(item.quantities).forEach(quantityPeriod => {
-        const offset = periods.indexOf(quantityPeriod)
+        const offset = years.indexOf(quantityPeriod)
         if (offset !== -1) { // ignore quantities outside of scope
           const price = item.price.value
           const quantity = item.quantities[quantityPeriod]
           const depreciationPeriod = item.price.depreciationPeriod
           const costPerPeriod = price * quantity / depreciationPeriod
 
-          periods
+          years
               .slice(offset)
               .forEach((period, index) => {
                 if (index === 0 || index === depreciationPeriod) {
@@ -338,21 +338,21 @@ export let types = {
 
   salary: {
     /**
-     * Calculate actual prices for all periods configured for a single item.
+     * Calculate actual prices for all years configured for a single item.
      * @param item
-     * @param {Array.<string>} periods
-     * @return {Object.<string, number>} Returns an object with periods as key
+     * @param {Array.<string>} years
+     * @return {Object.<string, number>} Returns an object with years as key
      *                                   and prices as value
      */
-    calculatePrices: function (item, periods) {
+    calculatePrices: function (item, years) {
       const montlySalary = parsePrice(item.price.value)
       const change = 1 + parsePercentage(item.price.change)
       const holidayProvision = 1 + parsePercentage(item.price.holidayProvision)
       const SSCEmployer = 1 + parsePercentage(item.price.SSCEmployer)
 
-      const prices = initializeTotals(periods)
+      const prices = initializeTotals(years)
 
-      periods.forEach((period, periodIndex) => {
+      years.forEach((period, periodIndex) => {
         const quantity = findQuantity(item, period)
 
         if (item.price.value != undefined && item.price.change != undefined) {
@@ -370,39 +370,56 @@ export let types = {
 }
 
 /**
+ * Get
+ * @param {{parameters: {startingYear: string, numberOfYears: string}}} data
+ * @return {Array} Returns an array with years, like ["2016", "2017", "2018"]
+ */
+export function getYears (data) {
+  const startingYear = parseInt(data.parameters.startingYear)
+  const numberOfYears = parseInt(data.parameters.numberOfYears)
+  const years = []
+
+  for (var i = 0; i < numberOfYears; i++) {
+    years.push(String(startingYear + i))
+  }
+
+  return years
+}
+
+/**
  * Calculate totals for all revenues per category
  * @param {Array} categories
- * @param {Array.<string>} periods
+ * @param {Array.<string>} years
  * @return {Array.<{category: string, totals: Object.<string, number>}>}
  */
-export function calculateTotalsPerCategory (categories, periods) {
+export function calculateTotalsPerCategory (categories, years) {
   return categories.map(category => ({
     id: category.id,
     category: category.name,
-    totals: calculatePrices(category, periods)
+    totals: calculatePrices(category, years)
   }))
 }
 
 /**
  * Calculate totals of an array with categories
  * @param {Array.<{price: Object, quantities: Object}>} categories
- * @param {Array.<string>} periods
+ * @param {Array.<string>} years
  * @param {Array} [revenueTotalsPerCategory]
  * @return {Object.<string, number>}
  */
-export function calculateTotals (categories, periods, revenueTotalsPerCategory) {
-  const initial = initializeTotals(periods)
+export function calculateTotals (categories, years, revenueTotalsPerCategory) {
+  const initial = initializeTotals(years)
 
   return categories
-      .map(category => calculatePrices(category, periods, revenueTotalsPerCategory))
+      .map(category => calculatePrices(category, years, revenueTotalsPerCategory))
       .reduce(addTotals, initial)
 }
 
 /**
  * Merge two objects, add the property values of object a to that of object b.
- * @param {Object.<string, number>} a  Object with periods as key and prices as value
- * @param {Object.<string, number>} b  Object with periods as key and prices as value
- * @return {Object.<string, number>} Returns an object with periods as key and prices as value
+ * @param {Object.<string, number>} a  Object with years as key and prices as value
+ * @param {Object.<string, number>} b  Object with years as key and prices as value
+ * @return {Object.<string, number>} Returns an object with years as key and prices as value
  */
 export function addTotals (a, b) {
   const c = {}
@@ -512,13 +529,13 @@ export function formatPrice (price) {
  *
  *     // output: {'2016': 0, '2017': 0, '2018': 0}
  *
- * @param {Array.<string>} periods
+ * @param {Array.<string>} years
  * @return {{}} Returns a totals object
  */
-export function initializeTotals (periods) {
+export function initializeTotals (years) {
   const totals = {}
 
-  periods.forEach(period => totals[period] = 0)
+  years.forEach(period => totals[period] = 0)
 
   return totals
 }

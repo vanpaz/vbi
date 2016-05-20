@@ -5,9 +5,10 @@ import * as formulas from '../src/client/js/formulas';
 import { readFileSync } from 'fs';
 
 
-// FIXME: make the unit tests independent from example_scenario.json
-
-let data = JSON.parse(readFileSync('../data/example_scenario.json', 'utf8')).data;
+test('getYears', t => {
+  const years = formulas.getYears({parameters: {startingYear: '2016', numberOfYears: '5'}})
+  t.deepEqual(years, ['2016', '2017', '2018', '2019', '2020'])
+})
 
 test('findQuantity', t => {
   t.deepEqual(formulas.findQuantity({

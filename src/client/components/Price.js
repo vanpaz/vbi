@@ -30,7 +30,7 @@ const debug = debugFactory('vbi:Price')
  *
  *     var categories = [{id: 1, name: 'licenses'}, {id: 2, name: 'projects'}]
  *
- *     var periods = ['2015', '2016', '2017', '2018']
+ *     var years = ['2015', '2016', '2017', '2018']
  *
  *     function onChange (price) {
  *       console.log('changed', price)
@@ -79,7 +79,7 @@ export default class Price extends Component {
                 ? <PriceType 
                       price={this.props.price} 
                       categories={this.props.categories}
-                      periods={this.props.periods}
+                      years={this.props.years}
                       onChange={this.handleChangePrice.bind(this)} />
                 : <p>(Select a price type first...)</p>
           }
