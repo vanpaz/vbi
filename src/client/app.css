@@ -28,8 +28,8 @@ div.container {
 
 div.card {
   margin: 20px;
-  padding: 0 0 40px 0;
-  overflow: auto !important;
+  padding: 0;
+  overflow: hidden;
 }
 
 

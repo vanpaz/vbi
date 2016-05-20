@@ -16,7 +16,7 @@ import Prompt from './dialogs/Prompt'
 import Confirm from './dialogs/Confirm'
 import {
     addCategory, deleteCategory, renameCategory,
-    setPeriods, setParameter, setQuantity, setPrice
+    setParameter, setQuantity, setPrice
 } from '../actions'
 import { findQuantity, clearIfZero, getYears } from './../js/formulas'
 import Price from './Price'
@@ -29,11 +29,27 @@ const debug = debugFactory('vbi:inputs')
 
 
 const styles = {
+  container: {
+    width: '100%',
+    display: 'inline-flex'
+  },
+  cardText: {
+    padding: 0
+  },
   actionButton: {
     width: 24,
     height: 24,
     padding: 0,
     display: 'inline-block'
+  },
+  inkBar: {
+    height: 6,
+    marginTop: -6
+  },
+  tabContents: {
+    padding: 16,
+    paddingBottom: 50,
+    overflow: 'auto'
   }
 }
 
@@ -41,17 +57,21 @@ const styles = {
 
 class Inputs extends Component {
   render () {
-    return <div style={{width: '100%', display: 'inline-flex'}}>
+    function tabTemplate (contents) {
+      return <div className="YES">{contents}</div>
+    }
+
+    return <div style={styles.container}>
       <Card className="card">
-        <CardText>
-          <Tabs inkBarStyle={{height: 4, marginTop: -4}}>
+        <CardText style={styles.cardText}>
+          <Tabs inkBarStyle={styles.inkBar} contentContainerStyle={styles.tabContents}>
             <Tab label="Parameters">
               <Parameters
                   parameters={this.props.data.parameters}
                   onChange={(parameter, value) => this.handleSetParameter(parameter, value)} />
             </Tab>
 
-            <Tab label="Costs">
+            <Tab label="Costs" >
               <h1>Direct</h1>
               {this.renderCategory('costs', 'direct', ['constant', 'manual', 'revenue'])}
 
