@@ -8,7 +8,9 @@ import shouldComponentUpdate from '../js/shouldComponentUpdate'
 
 const styles = {
   button: {
-    width: '100%'
+    width: 400,
+    maxWidth: '100%',
+    display: 'block'
   },
   container: {
     margin: '0 30px'
@@ -101,13 +103,17 @@ class Parameters extends Component {
   }
 
   renderParameter ({parameter, text, hint}) {
+    const onChange = (event) => {
+      this.props.onChange(parameter, event.target.value)
+    }
+
     return <TextField
         key={parameter}
         value={this.props.parameters[parameter]}
         floatingLabelText={text}
         hintText={hint}
         style={styles.button}
-        onChange={(event) => this.props.onChange(parameter, event.target.value)} />
+        onChange={onChange} />
   }
 
 }
