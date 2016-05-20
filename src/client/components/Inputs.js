@@ -165,7 +165,7 @@ class Inputs extends Component {
   renderQuantities (section, group, category, years) {
     return years.map(period => (<td key={period} className="quantity">
       <input className="quantity"
-             value={clearIfZero(findQuantity(category, period))}
+             value={findQuantity(category, period)}
              onChange={(event) => {
                          const quantity = event.target.value
                          this.props.dispatch(setQuantity(section, group, category.id, period, quantity))
@@ -283,20 +283,5 @@ Inputs = connect((state, ownProps) => {
     data: state.doc.data
   }
 })(Inputs)
-
-function trim (str) {
-  return str.trim()
-}
-
-function comingYears (count = 5) {
-  const years = []
-  let year = new Date().getFullYear()
-
-  for (let i = 0; i < count; i++) {
-    years.push(year + i)
-  }
-
-  return years
-}
 
 export default Inputs

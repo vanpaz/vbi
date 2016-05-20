@@ -207,7 +207,7 @@ A saved scenario has the following structure:
   "title": "",
   "data": {
     "parameters": {
-      "periods": ["2016", "2017", "2018", ...]
+      // ...
     },
     "costs": {
       "direct": [
@@ -216,7 +216,7 @@ A saved scenario has the following structure:
           "name": "<category name>",
           "price": { ... },
           "quantities": {
-             "<period>": amount,
+             "<YEAR>": "<AMOUNT>",
              ...
           }
         },
@@ -231,6 +231,16 @@ A saved scenario has the following structure:
     }
     "revenues": {
       "all": [...]
+    },
+    "financing": {
+      "investmentsInParticipations": {
+        "<YEAR>": "<AMOUNT>",
+        ...
+      },
+      "equityContributions": { ... },
+      "bankLoansCapitalCalls": { ... },
+      "bankLoansRedemptionInstallments": { ... },
+      "otherSourcesOfFinance": { ... }
     }
   },
   "auth": {

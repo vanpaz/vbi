@@ -128,6 +128,18 @@ export function balanceSheet (data) {
 export function cashflow (data) {
   // TODO: implement cashflow calculations
 
+  const years = getYears(data)
+
+  function parseAndInit (value) {
+    return value != undefined ? parsePrice(value) : 0
+  }
+
+  // const investmentsInParticipations     = zipObjectsWith([data.financing.investmentsInParticipations], parseAndInit, years)
+  // const equityContributions             = zipObjectsWith([data.financing.equityContributions], parseAndInit, years)
+  // const bankLoansCapitalCalls           = zipObjectsWith([data.financing.bankLoansCapitalCalls], parseAndInit, years)
+  // const bankLoansRedemptionInstallments = zipObjectsWith([data.financing.bankLoansRedemptionInstallments], parseAndInit, years)
+  // const otherSourcesOfFinance           = zipObjectsWith([data.financing.otherSourcesOfFinance], parseAndInit, years)
+
   return [
     {name: 'Net result', values: {} },
     {name: 'Correction on paid Corporate tax', values: {} },
@@ -156,15 +168,15 @@ export function cashflow (data) {
     {name: 'Cashflow from operations', values: {}, className: 'main-middle' },
 
     {name: 'Investments in fixed assets', values: {} },
-    {name: 'Investments in participations', values: {} },
+    {name: 'Investments in participations', editable: true, path: ['data', 'financing', 'investmentsInParticipations']},
     {name: 'Cashflow from investments', values: {}, className: 'main-bottom' },
 
-    {name: 'Equity contibutions', values: {} },
-    {name: 'Bank loans capital calls', values: {} },
-    {name: 'Bank loans redemption installments', values: {} },
-    {name: 'Other sources of finance', values: {} },
+    {name: 'Equity contributions', editable: true, path: ['data', 'financing', 'equityContributions'] },
+    {name: 'Bank loans capital calls', editable: true, path: ['data', 'financing', 'bankLoansCapitalCalls'] },
+    {name: 'Bank loans redemption installments', editable: true, path: ['data', 'financing', 'bankLoansRedemptionInstallments']},
+    {name: 'Other sources of finance', editable: true, path: ['data', 'financing', 'otherSourcesOfFinance']},
     {name: 'Cashflow from financing', values: {}, className: 'main-bottom' },
-
+      
     {name: 'Total cash balance EoP', values: {}, className: 'main-middle' }
   ]
 }
@@ -518,7 +530,7 @@ export function formatPrice (price) {
   if (Math.abs(price) > 1e4)  { return (price / 1e3).toFixed() + 'k' }
   if (Math.abs(price) > 1e3)  { return (price / 1e3).toFixed(1) + 'k' }
 
-  return (price).toFixed()
+  return price.toFixed()
 }
 
 /**
@@ -565,4 +577,10 @@ export function add (a, b) {
 
 export function subtract (a, b) {
   return a - b
+}
+
+export function getProp (object, path) {
+  let prop = object
+  path.forEach(key => prop = prop[key])
+  return prop
 }

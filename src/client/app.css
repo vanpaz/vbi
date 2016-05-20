@@ -63,7 +63,6 @@ h1 {
   font-weight: normal;
   color: #f3742c;
   margin-top: 30px;
-  text-transform: lowercase;
 }
 
 th {
@@ -110,7 +109,6 @@ table.output tr.header {
   font-weight: normal;
   color: #f3742c;
   margin-top: 30px;
-  text-transform: lowercase;
   border-top: 18px solid transparent;
 }
 
@@ -136,7 +134,8 @@ table.output td.name {
 
 
 table.category-table td input.quantity,
-table.category-table td button.price {
+table.category-table td button.price,
+table.output td input.financing {
   border: none;
   font-family: roboto, sans-serif;
   font-size: 14px;
@@ -144,17 +143,20 @@ table.category-table td button.price {
   background: #f5f5f5;
 }
 
-table.category-table td input {
+table.category-table td input,
+table.output td input {
   width: 42px;
   padding: 5px;
 }
 
-table.category-table td input:hover {
-  background: white;
+table.category-table td input:hover,
+table.output td input:hover {
+  background: #fafafa;
   outline: none;
 }
 
-table.category-table td input:focus {
+table.category-table td input:focus,
+table.output td input:focus {
   background: white;
   box-shadow: 0 0 3px 1px #008fd5;
   outline: none;
@@ -313,27 +315,6 @@ div.action-menu-root div.action-menu  table.action-menu-contents {
 div.action-menu-root div.action-menu  table.action-menu-contents button {
   min-width: unset;
 }
-
-button.add-group {
-  font-size: 24px;
-  font-weight: normal;
-  text-transform: lowercase;
-  margin-top: 30px;
-  padding: 0 30px;
-
-  background: transparent;
-  color: #f3742c;
-  opacity: 0.5;
-  border: 1px dashed #f3742c;
-  border-radius: 3px;
-  outline: none;
-}
-
-button.add-group:hover,
-button.add-group:focus {
-  opacity: 1;
-}
-
 
 button.add-category {
   font-size: 18px;

@@ -18,7 +18,7 @@
       "incomeTaxPaidAfter": "1",
       "socialSecurityContributionsPaidAfter": "1",
 
-      "daysInStockOfInventory": "10 days",
+      "daysInStockOfInventory": "10",
       "daysAccountsReceivablesOutstanding": "30",
       "daysPrepaymentOfExpenditure": "5",
       "daysAccrualOfIncomeInvoice": "15",
@@ -320,6 +320,20 @@
           }
         }
       ]
+    },
+    "financing": {
+      "investmentsInParticipations": {},
+      "equityContributions": {
+        "2016": "100k",
+        "2017": "100k"
+      },
+      "bankLoansCapitalCalls": {
+        "2016": "50k",
+        "2017": "100k",
+        "2018": "200k"
+      },
+      "bankLoansRedemptionInstallments": {},
+      "otherSourcesOfFinance": {}
     }
   }
 }

@@ -99,3 +99,18 @@ test('formatPrice', t => {
   t.is(formulas.formatPrice(600000000000), '600B');
   t.is(formulas.formatPrice(600000000000000), '600T');
 });
+
+test('getProp', t => {
+  const object = {
+    foo: {
+      bar: [
+        0,
+        {
+          baz: 42
+        }
+      ]
+    }
+  }
+
+  t.is(formulas.getProp(object, ['foo', 'bar', 1, 'baz']), 42)
+})

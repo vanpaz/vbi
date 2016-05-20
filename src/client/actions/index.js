@@ -48,6 +48,10 @@ export function setParameter (parameter, value) {
   return { type: 'SET_PARAMETER', parameter, value }
 }
 
+export function setProperty (path, value) {
+  return { type: 'SET_PROPERTY', path, value }
+}
+
 export function setPrice (section, group, categoryId, price) {
   return { type: 'SET_PRICE', section, group, categoryId, price }
 }

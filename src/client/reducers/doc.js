@@ -16,7 +16,8 @@ const EMPTY_DOC = Immutable({
       numberOfYears: '5'
     },
     costs: [],
-    revenues: []
+    revenues: [],
+    financing: {}
   }
 })
 
@@ -39,6 +40,8 @@ const doc = (state = Immutable({}), action) => {
     case 'SET_PARAMETER':
       return state.setIn(['data', 'parameters', action.parameter], action.value)
 
+    case 'SET_PROPERTY':
+      return state.setIn(action.path, action.value)
 
     case 'ADD_CATEGORY':
       path = ['data', action.section, action.group]
