@@ -4,6 +4,8 @@ import TextField from 'material-ui/lib/text-field'
 import List from 'material-ui/lib/lists/list'
 import ListItem from 'material-ui/lib/lists/list-item'
 
+import shouldComponentUpdate from '../js/shouldComponentUpdate'
+
 const styles = {
   button: {
     width: '100%'
@@ -14,6 +16,12 @@ const styles = {
 }
 
 class Parameters extends Component {
+  constructor (props) {
+    super(props)
+
+    // update only when props or state are change
+    this.shouldComponentUpdate = shouldComponentUpdate
+  }
 
   render () {
     return <div>
@@ -40,7 +48,7 @@ class Parameters extends Component {
             nestedItems={[ this.renderWorkingCapitalParameters() ]} />
         <ListItem
             primaryText="Provisions"
-            initiallyOpen={false}K
+            initiallyOpen={false}
             primaryTogglesNestedList={true}
             nestedItems={[ this.renderProvisionsParameters() ]} />
       </List>
@@ -100,10 +108,6 @@ class Parameters extends Component {
         hintText={hint}
         style={styles.button}
         onChange={(event) => this.props.onChange(parameter, event.target.value)} />
-  }
-
-  shouldComponentUpdate (nextProps, nextState) {
-    return this.props.parameters !== nextProps.parameters
   }
 
 }
