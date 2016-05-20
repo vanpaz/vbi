@@ -3,6 +3,8 @@ import debugFactory from 'debug/browser'
 
 const debug = debugFactory('vbi:formulas')
 
+const MAX_NUMBER_OF_YEARS = 100
+
 /**
  * Find the quantity for a certain year
  * @param item
@@ -389,8 +391,13 @@ export let types = {
  */
 export function getYears (data) {
   const startingYear = parseInt(data.parameters.startingYear)
-  const numberOfYears = parseInt(data.parameters.numberOfYears)
+  let numberOfYears = parseInt(data.parameters.numberOfYears)
   const years = []
+
+  if (numberOfYears > MAX_NUMBER_OF_YEARS) {
+    numberOfYears = MAX_NUMBER_OF_YEARS
+    console.warn('Number of years limited to ' + MAX_NUMBER_OF_YEARS)
+  }
 
   for (var i = 0; i < numberOfYears; i++) {
     years.push(String(startingYear + i))

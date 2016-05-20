@@ -6,11 +6,6 @@ import Card from 'material-ui/lib/card/card'
 import CardText from 'material-ui/lib/card/card-text'
 import Tabs from 'material-ui/lib/tabs/tabs'
 import Tab from 'material-ui/lib/tabs/tab'
-import IconButton from 'material-ui/lib/icon-button'
-import EditIcon from 'material-ui/lib/svg-icons/image/edit'
-import ClearIcon from 'material-ui/lib/svg-icons/content/clear'
-import DownIcon from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-down'
-import UpIcon from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-up'
 
 import Prompt from './dialogs/Prompt'
 import Confirm from './dialogs/Confirm'
@@ -18,10 +13,9 @@ import {
     addCategory, deleteCategory, renameCategory,
     setParameter, setQuantity, setPrice
 } from '../actions'
-import { findQuantity, clearIfZero, getYears } from './../js/formulas'
+import { findQuantity, getYears } from './../js/formulas'
 import Price from './Price'
 import Parameters from './Parameters'
-import theme from '../theme'
 
 import ActionMenu from './ActionMenu'
 
@@ -35,12 +29,6 @@ const styles = {
   },
   cardText: {
     padding: 0
-  },
-  actionButton: {
-    width: 24,
-    height: 24,
-    padding: 0,
-    display: 'inline-block'
   },
   inkBar: {
     height: 6,
@@ -56,11 +44,19 @@ const styles = {
 // TODO: refactor Inputs, split renderCategory into a separate component
 
 class Inputs extends Component {
-  render () {
-    function tabTemplate (contents) {
-      return <div className="YES">{contents}</div>
-    }
+  constructor (props) {
+    super(props)
 
+    // bind all methods to current instance so we don't have to create wrapper functions to use them
+    this.handleSetParameter = this.handleSetParameter.bind(this)
+    this.handleRenameCategory = this.handleRenameCategory.bind(this)
+    this.handleMoveCategoryUp = this.handleMoveCategoryUp.bind(this)
+    this.handleMoveCategoryDown = this.handleMoveCategoryDown.bind(this)
+    this.handleDeleteCategory = this.handleDeleteCategory.bind(this)
+    this.handleAddCategory = this.handleAddCategory.bind(this)
+  }
+
+  render () {
     return <div style={styles.container}>
       <Card className="card">
         <CardText style={styles.cardText}>
@@ -68,7 +64,7 @@ class Inputs extends Component {
             <Tab label="Parameters">
               <Parameters
                   parameters={this.props.data.parameters}
-                  onChange={(parameter, value) => this.handleSetParameter(parameter, value)} />
+                  onChange={this.handleSetParameter} />
             </Tab>
 
             <Tab label="Costs" >
@@ -127,9 +123,17 @@ class Inputs extends Component {
         </tr>
         {
           categories.map(category => <tr key={category.id}>
-            <td>{
-              this.renderActionMenu(section, group, category)
-            }</td>
+            <td>
+              <ActionMenu
+                  section={section}
+                  group={group}
+                  categoryId={category.id}
+                  name={category.name}
+                  onRename={this.handleRenameCategory }
+                  onMoveUp={this.handleMoveCategoryUp}
+                  onMoveDown={this.handleMoveCategoryDown }
+                  onDelete={this.handleDeleteCategory } />
+            </td>
             {
                 category.price.type !== 'revenue'
                     ? this.renderQuantities(section, group, category, years)
@@ -174,52 +178,6 @@ class Inputs extends Component {
     </td>))
   }
 
-  // TODO: move into a separate component
-  renderActionMenu (section, group, category) {
-    // TODO: implement actions for CategoryActionMenu
-
-    let actions = [
-      <IconButton
-          key="rename"
-          title="Rename category"
-          onTouchTap={ (event) => this.handleRenameCategory(section, group, category.id) }
-          style={styles.actionButton}>
-        <EditIcon color="white" hoverColor={theme.palette.accent1Color} />
-      </IconButton>,
-      <IconButton
-          key="up"
-          title="Move category up"
-          onTouchTap={
-            // TODO: implement action
-            (event) => alert('not yet implemented')
-          }
-          style={styles.actionButton}>
-        <UpIcon color="white" hoverColor={theme.palette.accent1Color} />
-      </IconButton>,
-      <IconButton
-          key="down"
-          title="Move category down"
-          onTouchTap={
-            // TODO: implement action
-            (event) => alert('not yet implemented')
-          }
-          style={styles.actionButton}>
-        <DownIcon color="white" hoverColor={theme.palette.accent1Color} />
-      </IconButton>,
-      <IconButton
-          key="delete"
-          title="Delete category"
-          onTouchTap={(event) => this.handleDeleteCategory(section, group, category.id)}
-          style={{width: 24, height: 24, padding: 0}}>
-        <ClearIcon color="white" hoverColor={theme.palette.accent1Color} />
-      </IconButton>
-    ]
-
-    return <ActionMenu actions={actions}>
-      {category.name}
-    </ActionMenu>
-  }
-
   handleSetParameter (parameter, value) {
     this.props.dispatch(setParameter(parameter, value))
   }
@@ -254,6 +212,14 @@ class Inputs extends Component {
         this.props.dispatch(renameCategory(section, group, categoryId, newName))
       }
     })
+  }
+
+  handleMoveCategoryUp (section, group, categoryId) {
+    alert('not yet implemented')
+  }
+
+  handleMoveCategoryDown (section, group, categoryId) {
+    alert('not yet implemented')
   }
 
   handleDeleteCategory (section, group, categoryId) {

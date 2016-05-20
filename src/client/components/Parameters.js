@@ -14,6 +14,7 @@ const styles = {
 }
 
 class Parameters extends Component {
+
   render () {
     return <div>
       <List>
@@ -100,6 +101,11 @@ class Parameters extends Component {
         style={styles.button}
         onChange={(event) => this.props.onChange(parameter, event.target.value)} />
   }
+
+  shouldComponentUpdate (nextProps, nextState) {
+    return this.props.parameters !== nextProps.parameters
+  }
+
 }
 
 export default Parameters

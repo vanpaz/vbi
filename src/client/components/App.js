@@ -4,6 +4,11 @@ import Immutable from 'seamless-immutable'
 import { debounce } from 'lodash'
 import debugFactory from 'debug/browser'
 
+// enable performance profiling
+// see https://facebook.github.io/react/docs/perf.html
+// import Perf from 'react-addons-perf'
+// window.Perf = Perf
+
 import Avatar from 'material-ui/lib/avatar'
 import AppBar from 'material-ui/lib/app-bar'
 import FlatButton from 'material-ui/lib/flat-button'
@@ -45,7 +50,13 @@ class App extends Component {
   constructor (props) {
     super(props)
 
+    // bind all methods to current instance so we don't have to create wrapper functions to use them
+    this.handleNewDoc = this.handleNewDoc.bind(this)
+    this.handleOpenDoc = this.handleOpenDoc.bind(this)
+    this.handleRenameDoc = this.handleRenameDoc.bind(this)
     this.handleSaveDoc = this.handleSaveDoc.bind(this)
+    this.handleDeleteDoc = this.handleDeleteDoc.bind(this)
+
     this.handleAutoSave = debounce(this.handleSaveDoc, AUTO_SAVE_DELAY)
   }
 
@@ -59,11 +70,11 @@ class App extends Component {
             docs={this.props.docs}
             title={this.props.doc.title}
             signedIn={this.isSignedIn()}
-            onNewDoc={() => this.handleNewDoc()}
-            onOpenDoc={(id, title) => this.handleOpenDoc(id, title)}
-            onRenameDoc={newTitle => this.handleRenameDoc(newTitle)}
-            onSaveDoc={() => this.handleSaveDoc()}
-            onDeleteDoc={doc => this.handleDeleteDoc(doc)}
+            onNewDoc={this.handleNewDoc}
+            onOpenDoc={this.handleOpenDoc}
+            onRenameDoc={this.handleRenameDoc}
+            onSaveDoc={this.handleSaveDoc}
+            onDeleteDoc={this.handleDeleteDoc}
         />
 
         <Notification ref="notification" />

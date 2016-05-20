@@ -17,6 +17,8 @@ import DeleteDialog from './dialogs/DeleteDialog'
 import Confirm from './dialogs/Confirm'
 import Prompt from './dialogs/Prompt'
 
+import shouldComponentUpdate from '../js/shouldComponentUpdate'
+
 
 const MAX_DOCS = 10  // maximum number of visible docs in the left navigation menu
 
@@ -36,6 +38,9 @@ export default class Menu extends React.Component {
       open: false,
       limitDocs: true   // limit the number of displayed docs
     }
+
+    // update only when props or state are changed
+    this.shouldComponentUpdate = shouldComponentUpdate
   }
 
   render () {
