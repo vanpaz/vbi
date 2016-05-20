@@ -11,6 +11,11 @@ html, body {
   height: 100%;
 }
 
+html {
+  /* always show vertical scrollbar, to prevent "jumping" behavior when showing/hiding large tabs */
+  overflow-y: scroll;
+}
+
 #root {
   box-sizing: border-box;
   padding-top: 70px;
