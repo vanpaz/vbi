@@ -56,6 +56,6 @@ export function setPrice (section, group, categoryId, price) {
   return { type: 'SET_PRICE', section, group, categoryId, price }
 }
 
-export function setQuantity (section, group, categoryId, period, quantity) {
-  return { type: 'SET_QUANTITY', section, group, categoryId, period, quantity }
+export function setQuantity (section, group, categoryId, year, quantity) {
+  return { type: 'SET_QUANTITY', section, group, categoryId, year, quantity }
 }

@@ -163,12 +163,12 @@ class Inputs extends Component {
   }
 
   renderQuantities (section, group, category, years) {
-    return years.map(period => (<td key={period} className="quantity">
+    return years.map(year => (<td key={year} className="quantity">
       <input className="quantity"
-             value={findQuantity(category, period)}
+             value={findQuantity(category, year, '')}
              onChange={(event) => {
                          const quantity = event.target.value
-                         this.props.dispatch(setQuantity(section, group, category.id, period, quantity))
+                         this.props.dispatch(setQuantity(section, group, category.id, year, quantity))
                        }}
              onFocus={(event) => event.target.select()} />
     </td>))
@@ -178,7 +178,7 @@ class Inputs extends Component {
   renderActionMenu (section, group, category) {
     // TODO: implement actions for CategoryActionMenu
 
-    let periodActions = [
+    let actions = [
       <IconButton
           key="rename"
           title="Rename category"
@@ -215,7 +215,7 @@ class Inputs extends Component {
       </IconButton>
     ]
 
-    return <ActionMenu actions={periodActions}>
+    return <ActionMenu actions={actions}>
       {category.name}
     </ActionMenu>
   }

@@ -12,23 +12,23 @@ export default class PriceTypeManual extends Component {
   render () {
     return <div className="price-type">
       <p className="description">
-        Manually enter a price for every period.
+        Manually enter a price for every year.
       </p>
       <table>
         <tbody>
         <tr>
-          <th>Period</th>
+          <th>Year</th>
           <th>Price</th>
         </tr>
-        {this.props.years.map(period => {
-          let value = this.props.price.values && this.props.price.values[period]
+        {this.props.years.map(year => {
+          let value = this.props.price.values && this.props.price.values[year]
 
-          return <tr key={period}>
+          return <tr key={year}>
             <td>
-              {period}
+              {year}
             </td>
             <td>
-              {this.renderValue(period, value)}
+              {this.renderValue(year, value)}
             </td>
           </tr>
         })}
@@ -37,30 +37,30 @@ export default class PriceTypeManual extends Component {
     </div>
   }
 
-  renderValue (period, value) {
+  renderValue (year, value) {
     return <TextField
         value={value}
         hintText="23k"
         style={styles.textField}
-        onChange={(event) => this.handleChangeEntry(period, event.target.value)} />
+        onChange={(event) => this.handleChangeEntry(year, event.target.value)} />
   }
 
-  handleChangeEntry (period, value) {
-    debug('handleChangeEntry', period, value)
+  handleChangeEntry (year, value) {
+    debug('handleChangeEntry', year, value)
 
-    const price = this.props.price.setIn(['values', period], value)
+    const price = this.props.price.setIn(['values', year], value)
 
     this.props.onChange(price)
   }
 
   static format (price) {
     if (price.values) {
-      return Object.keys(price.values).map(period => price.values[period]).join(', ')
+      return Object.keys(price.values).map(year => price.values[year]).join(', ')
     }
     else {
       return ''
     }
   }
 
-  static label = 'Manual per period'
+  static label = 'Manual per year'
 }

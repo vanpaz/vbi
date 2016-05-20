@@ -18,7 +18,7 @@ class Cashflow extends Component {
           <tbody>
           <tr>
             <th />
-            {years.map(period => <th key={period}>{period}</th>)}
+            {years.map(year => <th key={year}>{year}</th>)}
           </tr>
           {
             calculations.map(entry => {

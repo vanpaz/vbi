@@ -104,7 +104,7 @@ const doc = (state = Immutable({}), action) => {
 
     case 'SET_QUANTITY':
       path = findCategoryPath(state.data, action.section, action.group, action.categoryId)
-          .concat(['quantities', action.period])
+          .concat(['quantities', action.year])
 
       return state.setIn(path, action.quantity)
 

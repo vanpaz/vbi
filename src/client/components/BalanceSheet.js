@@ -16,7 +16,7 @@ export default class BalanceSheet extends Component {
           <tbody>
           <tr>
             <th />
-            {years.map(period => <th key={period}>{period}</th>)}
+            {years.map(year => <th key={year}>{year}</th>)}
           </tr>
           {
             calculations.map(entry => BalanceSheet.renderEntry(years, entry))
@@ -35,10 +35,10 @@ export default class BalanceSheet extends Component {
     return <tr key={entry.name} className={entry.className}>
       <td className="name">{entry.name}</td>
       {
-        years.map(period => {
-          const total = entry.values[period]
+        years.map(year => {
+          const total = entry.values[year]
 
-          return <td key={period} >
+          return <td key={year} >
             { clearIfZero(total && formatPrice(total)) }
           </td>
         })

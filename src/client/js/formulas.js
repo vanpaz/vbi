@@ -4,15 +4,16 @@ import debugFactory from 'debug/browser'
 const debug = debugFactory('vbi:formulas')
 
 /**
- * Find the quantity for a certain period
+ * Find the quantity for a certain year
  * @param item
- * @param {string} period
- * @return {{period: string, quantity: number}} Returns an object with quantity 0 if not found
+ * @param {string} year
+ * @param {string} [defaultValue='0']
+ * @return {string} Returns the quantity
  */
-export function findQuantity (item, period) {
-  return (item.quantities[period] !== undefined)
-      ? item.quantities[period]
-      : '0'
+export function findQuantity (item, year, defaultValue = '0') {
+  return (item.quantities[year] !== undefined)
+      ? item.quantities[year]
+      : defaultValue
 }
 
 /**
@@ -221,14 +222,14 @@ export let types = {
       let initialPrice = parsePrice(item.price.value)
       let change = 1 + parsePercentage(item.price.change)
 
-      return years.reduce((prices, period, periodIndex) => {
-        let quantity = findQuantity(item, period)
+      return years.reduce((prices, year, yearIndex) => {
+        let quantity = findQuantity(item, year)
 
         if (item.price.value != undefined && item.price.change != undefined) {
-          prices[period] = initialPrice * quantity * Math.pow(change, periodIndex)
+          prices[year] = initialPrice * quantity * Math.pow(change, yearIndex)
         }
         else {
-          prices[period] = 0
+          prices[year] = 0
         }
 
         return prices
@@ -245,11 +246,11 @@ export let types = {
      *                                   and prices as value
      */
     calculatePrices: function (item, years) {
-      return years.reduce((prices, period) => {
-        let quantity = findQuantity(item, period)
-        let value = item.price.values && item.price.values[period] || 0
+      return years.reduce((prices, year) => {
+        let quantity = findQuantity(item, year)
+        let value = item.price.values && item.price.values[year] || 0
 
-        prices[period] = quantity * value
+        prices[year] = quantity * value
 
         return prices
       }, {})
@@ -282,24 +283,24 @@ export let types = {
             .reduce(addTotals, initializeTotals(years))
         let percentage = parsePercentage(item.price.percentage)
 
-        return years.reduce((prices, period) => {
-          prices[period] = percentage * (totals[period] || 0)
+        return years.reduce((prices, year) => {
+          prices[year] = percentage * (totals[year] || 0)
 
           return prices
         }, {})
       }
       else {
-        return years.reduce((prices, period) => {
-          prices[period] = 0
+        return years.reduce((prices, year) => {
+          prices[year] = 0
 
           if (item.price.percentages) {
             item.price.percentages.forEach(p => {
               let percentage = parsePercentage(p.percentage)
               let category = revenueTotalsPerCategory
                   .find(category => category.id === p.categoryId)
-              let total = category && category.totals[period] || 0
+              let total = category && category.totals[year] || 0
 
-              prices[period] += percentage * total
+              prices[year] += percentage * total
             })
           }
 
@@ -322,23 +323,23 @@ export let types = {
 
       // for every quantity filled in for the item, we loop over all years
       // and add up the prices
-      Object.keys(item.quantities).forEach(quantityPeriod => {
-        const offset = years.indexOf(quantityPeriod)
+      Object.keys(item.quantities).forEach(yearOfQuantity => {
+        const offset = years.indexOf(yearOfQuantity)
         if (offset !== -1) { // ignore quantities outside of scope
           const price = item.price.value
-          const quantity = item.quantities[quantityPeriod]
+          const quantity = item.quantities[yearOfQuantity]
           const depreciationPeriod = item.price.depreciationPeriod
-          const costPerPeriod = price * quantity / depreciationPeriod
+          const costPerYear = price * quantity / depreciationPeriod
 
           years
               .slice(offset)
-              .forEach((period, index) => {
+              .forEach((year, index) => {
                 if (index === 0 || index === depreciationPeriod) {
-                  // first and last period we depreciate half of the cost per period
-                  prices[period] += costPerPeriod / 2
+                  // first and last year we depreciate half of the cost per year
+                  prices[year] += costPerYear / 2
                 }
                 else {
-                  prices[period] += costPerPeriod
+                  prices[year] += costPerYear
                 }
               })
         }
@@ -364,12 +365,12 @@ export let types = {
 
       const prices = initializeTotals(years)
 
-      years.forEach((period, periodIndex) => {
-        const quantity = findQuantity(item, period)
+      years.forEach((year, yearIndex) => {
+        const quantity = findQuantity(item, year)
 
         if (item.price.value != undefined && item.price.change != undefined) {
-          prices[period] =
-              holidayProvision * SSCEmployer * Math.pow(change, periodIndex) *
+          prices[year] =
+              holidayProvision * SSCEmployer * Math.pow(change, yearIndex) *
               montlySalary * 12 *
               quantity
         }
@@ -436,7 +437,7 @@ export function calculateTotals (categories, years, revenueTotalsPerCategory) {
 export function addTotals (a, b) {
   const c = {}
 
-  Object.keys(a).forEach(period => c[period] = a[period] + b[period])
+  Object.keys(a).forEach(year => c[year] = a[year] + b[year])
 
   return c
 }
@@ -534,7 +535,7 @@ export function formatPrice (price) {
 }
 
 /**
- * Create a totals object with a key for every period and zero as value.
+ * Create a totals object with a key for every year and zero as value.
  * For example:
  *
  *     initializeTotals(['2016', '2017', '2018'])
@@ -547,7 +548,7 @@ export function formatPrice (price) {
 export function initializeTotals (years) {
   const totals = {}
 
-  years.forEach(period => totals[period] = 0)
+  years.forEach(year => totals[year] = 0)
 
   return totals
 }
