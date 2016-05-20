@@ -11,6 +11,11 @@ html, body {
   height: 100%;
 }
 
+html {
+  /* always show vertical scrollbar, to prevent "jumping" behavior when showing/hiding large tabs */
+  overflow-y: scroll;
+}
+
 #root {
   box-sizing: border-box;
   padding-top: 70px;
@@ -28,8 +33,8 @@ div.container {
 
 div.card {
   margin: 20px;
-  padding: 0 0 40px 0;
-  overflow: auto !important;
+  padding: 0;
+  overflow: hidden;
 }
 
 
@@ -58,12 +63,15 @@ h1 {
   font-weight: normal;
   color: #f3742c;
   margin-top: 30px;
-  text-transform: lowercase;
 }
 
 th {
   color: #9e9e9e;
   font-weight: normal;
+}
+
+table.parameters th {
+  padding-right: 20px;
 }
 
 table.category-table {
@@ -96,7 +104,27 @@ table.output td {
   padding: 5px 10px;
 }
 
-table.output tr.main {
+table.output tr.header {
+  font-size: 14pt;
+  font-weight: normal;
+  color: #f3742c;
+  margin-top: 30px;
+  border-top: 18px solid transparent;
+}
+
+table.output tr.main-top,
+table.output tr.main-middle {
+  font-weight: bold;
+  border-top: 18px solid transparent;
+}
+
+table.output tr.main-bottom,
+table.output tr.main-middle {
+  font-weight: bold;
+  border-bottom: 18px solid transparent;
+}
+
+table.output tr.bold {
   font-weight: bold;
 }
 
@@ -106,7 +134,8 @@ table.output td.name {
 
 
 table.category-table td input.quantity,
-table.category-table td button.price {
+table.category-table td button.price,
+table.output td input.financing {
   border: none;
   font-family: roboto, sans-serif;
   font-size: 14px;
@@ -114,17 +143,20 @@ table.category-table td button.price {
   background: #f5f5f5;
 }
 
-table.category-table td input {
+table.category-table td input,
+table.output td input {
   width: 42px;
   padding: 5px;
 }
 
-table.category-table td input:hover {
-  background: white;
+table.category-table td input:hover,
+table.output td input:hover {
+  background: #fafafa;
   outline: none;
 }
 
-table.category-table td input:focus {
+table.category-table td input:focus,
+table.output td input:focus {
   background: white;
   box-shadow: 0 0 3px 1px #008fd5;
   outline: none;
@@ -140,6 +172,10 @@ table.category-table td button.price.expanded {
   color: white;
 }
 
+table.category-table td.info {
+  text-align: center;
+  color: #9e9e9e;
+}
 
 table.category-table td.quantity {
   /*color: dodgerblue;*/
@@ -279,27 +315,6 @@ div.action-menu-root div.action-menu  table.action-menu-contents {
 div.action-menu-root div.action-menu  table.action-menu-contents button {
   min-width: unset;
 }
-
-button.add-group {
-  font-size: 24px;
-  font-weight: normal;
-  text-transform: lowercase;
-  margin-top: 30px;
-  padding: 0 30px;
-
-  background: transparent;
-  color: #f3742c;
-  opacity: 0.5;
-  border: 1px dashed #f3742c;
-  border-radius: 3px;
-  outline: none;
-}
-
-button.add-group:hover,
-button.add-group:focus {
-  opacity: 1;
-}
-
 
 button.add-category {
   font-size: 18px;
