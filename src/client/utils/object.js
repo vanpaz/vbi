@@ -8,7 +8,7 @@
  *
  *     // output: {'2016': 0, '2017': 0, '2018': 0}
  *
- * @param {string[]} properties
+ * @param {Array.<string | number>} properties
  * @param {*} [defaultValue=0]
  * @return {Object} Returns the created object
  */

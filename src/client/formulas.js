@@ -1,5 +1,5 @@
 import debugFactory from 'debug/browser'
-import { addProps, subtractProps, initProps, mapProps } from './utils/object'
+import { addProps, subtractProps, initProps, mapProps, getProp } from './utils/object'
 
 const debug = debugFactory('vbi:formulas')
 
@@ -42,20 +42,17 @@ export function profitAndLoss (data) {
 
   const EBIT = subtractProps(EBITDA, depreciation)
 
-  // TODO: get interest from balance sheet calculations
-  // const interest = {
-  //   '2016': 1.3e3,
-  //   '2017': 5.0e3,
-  //   '2018': 12.5e3,
-  //   '2019': 17.5e3,
-  //   '2020': 17.5e3
-  // }
-  const interest = initProps(years)
+  const interestPayableOnLoans = parsePercentage(data.parameters.interestPayableOnLoans)
+  const longTermDept = calculateLongTermDebt(data).longTermDebt
+  const interest = {}
+  years.forEach(year => {
+    // average over current and previous year, multiplied with the interest percentage
+    interest[year] = (longTermDept[year - 1] + longTermDept[year]) / 2 * interestPayableOnLoans
+  })
 
   const EBT = subtractProps(EBIT, interest)
 
   const corporateTaxes = mapProps(EBT, (value) => corporateTaxRate * value)
-// console.log('corporateTaxes ', corporateTaxes , map(EBT, (value) => corporateTaxRate * value))
 
   const netResult = subtractProps(EBT, corporateTaxes)
 
@@ -73,6 +70,39 @@ export function profitAndLoss (data) {
     {name: 'Corporate taxes', values: corporateTaxes },
     {name: 'Net result', values: netResult }
   ]
+}
+
+export function calculateLongTermDebt (data) {
+  const years = getYearsWithInitial(data)
+  const bankLoansCapitalCalls = getProp(data, ['financing', 'bankLoansCapitalCalls'])
+  const otherSourcesOfFinance = getProp(data, ['financing', 'otherSourcesOfFinance'])
+
+  // TODO: create a helper function to do cumulative calculations
+
+  // cumulative bank loans
+  const bankLoans = {}
+  years.forEach(year => {
+    const previous = bankLoans[year - 1] || 0
+    const current = bankLoansCapitalCalls[year] ? parsePrice(bankLoansCapitalCalls[year]) : 0
+    bankLoans[year] = previous + current
+  })
+
+  // cumulative otherSourcesOfFinance
+  const otherLongTermInterestBearingDebt = {}
+  years.forEach(year => {
+    const previous = otherLongTermInterestBearingDebt[year - 1] || 0
+    const current = otherSourcesOfFinance[year] ? parsePrice(otherSourcesOfFinance[year]) : 0
+    otherLongTermInterestBearingDebt[year] = previous + current
+  })
+
+  // sum up interest
+  const longTermDebt = addProps(bankLoans, otherLongTermInterestBearingDebt)
+
+  return {
+    longTermDebt,
+    bankLoans,
+    otherLongTermInterestBearingDebt
+  }
 }
 
 /**
@@ -188,7 +218,7 @@ export function cashflow (data) {
 /**
  * Calculate actual prices for all years configured for a single item.
  * @param {{price: Object, quantities: Object}} item
- * @param {Array.<string>} years
+ * @param {Array.<number>} years
  * @param {Array.<{category: string, totals: Object.<string, number>}>} [revenueTotalsPerCategory]
  *                                   Totals of the revenues per category,
  *                                   needed to calculate prices based on a
@@ -217,7 +247,7 @@ export let types = {
     /**
      * Calculate actual prices for all years configured for a single item.
      * @param item
-     * @param {Array.<string>} years
+     * @param {Array.<number>} years
      * @return {Object.<string, number>} Returns an object with years as key
      *                                   and prices as value
      */
@@ -244,7 +274,7 @@ export let types = {
     /**
      * Calculate actual prices for all years configured for a single item.
      * @param item
-     * @param {Array.<string>} years
+     * @param {Array.<number>} years
      * @return {Object.<string, number>} Returns an object with years as key
      *                                   and prices as value
      */
@@ -264,7 +294,7 @@ export let types = {
     /**
      * Calculate actual prices for all years configured for a single item.
      * @param item
-     * @param {Array.<string>} years
+     * @param {Array.<number>} years
      * @param {Array.<{category: string, totals: Object.<string, number>}>} revenueTotalsPerCategory
      *                                   Totals of the revenues per category,
      *                                   needed to calculate prices based on a
@@ -317,7 +347,7 @@ export let types = {
     /**
      * Calculate actual prices for all years configured for a single item.
      * @param item
-     * @param {Array.<string>} years
+     * @param {Array.<number>} years
      * @return {Object.<string, number>} Returns an object with years as key
      *                                   and prices as value
      */
@@ -327,7 +357,7 @@ export let types = {
       // for every quantity filled in for the item, we loop over all years
       // and add up the prices
       Object.keys(item.quantities).forEach(yearOfQuantity => {
-        const offset = years.indexOf(yearOfQuantity)
+        const offset = years.indexOf(parseInt(yearOfQuantity))
         if (offset !== -1) { // ignore quantities outside of scope
           const price = item.price.value
           const quantity = item.quantities[yearOfQuantity]
@@ -356,7 +386,7 @@ export let types = {
     /**
      * Calculate actual prices for all years configured for a single item.
      * @param item
-     * @param {Array.<string>} years
+     * @param {Array.<number>} years
      * @return {Object.<string, number>} Returns an object with years as key
      *                                   and prices as value
      */
@@ -386,9 +416,9 @@ export let types = {
 }
 
 /**
- * Get
+ * Get an array with the years, given a starting year and the number of years
  * @param {{parameters: {startingYear: string, numberOfYears: string}}} data
- * @return {Array} Returns an array with years, like ["2016", "2017", "2018"]
+ * @return {Array.<number>} Returns an array with years, like [2016, 2017, 2018]
  */
 export function getYears (data) {
   const startingYear = parseInt(data.parameters.startingYear)
@@ -401,16 +431,29 @@ export function getYears (data) {
   }
 
   for (var i = 0; i < numberOfYears; i++) {
-    years.push(String(startingYear + i))
+    years.push(startingYear + i)
   }
 
   return years
 }
 
 /**
+ * Get an array with the years, given a starting year and the number of years.
+ * Includes the initial year, the year before the starting year.
+ * @param {{parameters: {startingYear: string, numberOfYears: string}}} data
+ * @return {Array.<number>} Returns an array with years, like [2016, 2017, 2018]
+ */
+export function getYearsWithInitial (data) {
+  const years = getYears(data)
+  const startYear = years[0]
+  const initialYear = startYear !== undefined ? (startYear - 1) : 0
+  return [initialYear].concat(years)
+}
+
+/**
  * Calculate totals for all revenues per category
  * @param {Array} categories
- * @param {Array.<string>} years
+ * @param {Array.<number>} years
  * @return {Array.<{category: string, totals: Object.<string, number>}>}
  */
 export function calculateTotalsPerCategory (categories, years) {
@@ -424,11 +467,15 @@ export function calculateTotalsPerCategory (categories, years) {
 /**
  * Calculate totals of an array with categories
  * @param {Array.<{price: Object, quantities: Object}>} categories
- * @param {Array.<string>} years
+ * @param {Array.<number>} years
  * @param {Array} [revenueTotalsPerCategory]
  * @return {Object.<string, number>}
  */
 export function calculateTotals (categories, years, revenueTotalsPerCategory) {
+  if (!Array.isArray(categories)) {
+    throw new TypeError('Array expected for calculateTotals')
+  }
+  
   const initial = initProps(years)
 
   return categories
