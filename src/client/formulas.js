@@ -1,5 +1,5 @@
 import debugFactory from 'debug/browser'
-import { addProps, subtractProps, initProps, mapProps, getProp } from './utils/object'
+import { addProps, subtractProps, initProps, multiplyPropsWith, getProp } from './utils/object'
 
 const debug = debugFactory('vbi:formulas')
 
@@ -52,7 +52,7 @@ export function profitAndLoss (data) {
 
   const EBT = subtractProps(EBIT, interest)
 
-  const corporateTaxes = mapProps(EBT, (value) => corporateTaxRate * value)
+  const corporateTaxes = multiplyPropsWith(EBT, corporateTaxRate)
 
   const netResult = subtractProps(EBT, corporateTaxes)
 
@@ -83,7 +83,7 @@ export function calculateLongTermDebt (data) {
   const bankLoans = {}
   years.forEach(year => {
     const previous = bankLoans[year - 1] || 0
-    const current = bankLoansCapitalCalls[year] ? parsePrice(bankLoansCapitalCalls[year]) : 0
+    const current = bankLoansCapitalCalls[year] ? parseValue(bankLoansCapitalCalls[year]) : 0
     bankLoans[year] = previous + current
   })
 
@@ -91,7 +91,7 @@ export function calculateLongTermDebt (data) {
   const otherLongTermInterestBearingDebt = {}
   years.forEach(year => {
     const previous = otherLongTermInterestBearingDebt[year - 1] || 0
-    const current = otherSourcesOfFinance[year] ? parsePrice(otherSourcesOfFinance[year]) : 0
+    const current = otherSourcesOfFinance[year] ? parseValue(otherSourcesOfFinance[year]) : 0
     otherLongTermInterestBearingDebt[year] = previous + current
   })
 
@@ -165,7 +165,7 @@ export function cashflow (data) {
   const years = getYears(data)
 
   function parseAndInit (value) {
-    return value != undefined ? parsePrice(value) : 0
+    return value != undefined ? parseValue(value) : 0
   }
 
   // const investmentsInParticipations     = zipObjectsWith([data.financing.investmentsInParticipations], parseAndInit, years)
@@ -252,7 +252,7 @@ export let types = {
      *                                   and prices as value
      */
     calculatePrices: function (item, years) {
-      let initialPrice = parsePrice(item.price.value)
+      let initialPrice = parseValue(item.price.value)
       let change = 1 + parsePercentage(item.price.change)
 
       return years.reduce((prices, year, yearIndex) => {
@@ -391,7 +391,7 @@ export let types = {
      *                                   and prices as value
      */
     calculatePrices: function (item, years) {
-      const montlySalary = parsePrice(item.price.value)
+      const montlySalary = parseValue(item.price.value)
       const change = 1 + parsePercentage(item.price.change)
       const holidayProvision = 1 + parsePercentage(item.price.holidayProvision)
       const SSCEmployer = 1 + parsePercentage(item.price.SSCEmployer)
@@ -515,19 +515,19 @@ export function parsePercentage (percentage) {
 /**
  * Parse a string into a number. Examples:
  *
- *     parsePrice('23')    // 23
- *     parsePrice('15k')   // 15000
- *     parsePrice('2M')    // 2000000
- *     parsePrice('6B')    // 6000000000
+ *     parseValue('23')    // 23
+ *     parseValue('15k')   // 15000
+ *     parseValue('2M')    // 2000000
+ *     parseValue('6B')    // 6000000000
  *
- * @param {string} price
- * @return {number} The numeric value of the price
+ * @param {string} value
+ * @return {number} The numeric value of the value
  */
-export function parsePrice (price) {
-  let match = /^([+-]?[0-9]+[.]?[0-9]*)([kMBT])?$/.exec(price)
+export function parseValue (value) {
+  let match = /^([+-]?[0-9]+[.]?[0-9]*)([kMBT])?$/.exec(value)
 
   if (!match) {
-    throw new Error('Invalid price "' + price + '"')
+    throw new Error('Invalid value "' + value + '"')
   }
 
   let suffixes = {
@@ -539,7 +539,7 @@ export function parsePrice (price) {
   }
 
   if (match[2] && (!(match[2] in suffixes))) {
-    throw new Error('Invalid price "' + price + '"')
+    throw new Error('Invalid value "' + value + '"')
   }
 
   return parseFloat(match[1]) * suffixes[match[2]]

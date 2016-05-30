@@ -69,6 +69,10 @@ th {
   font-weight: normal;
 }
 
+td.multiplier {
+  color: #9e9e9e;
+}
+
 table.parameters th {
   padding-right: 20px;
 }

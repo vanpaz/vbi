@@ -62,6 +62,8 @@ class Parameters extends Component {
       { this.renderParameter({ parameter: 'startingYear', text: 'Starting year', hint: 'yyyy' }) }
       { this.renderParameter({ parameter: 'numberOfYears', text: 'Number of years', hint: '5' }) }
       { this.renderParameter({ parameter: 'startingCapital', text: 'Starting capital', hint: '10k' }) }
+      { this.renderParameter({ parameter: 'currency', text: 'Currency', hint: '\u20ac' }) }
+      { this.renderParameter({ parameter: 'currencyMagnitude', text: 'Currency magnitude (display in output sheets)', hint: '1000' }) }
     </div>
   }
 
