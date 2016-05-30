@@ -187,6 +187,11 @@ export function calculateBalanceSheet (data, profitAndLoss) {
 
   const equity = sumProps([paidInCapital, agio, reserves, netResult])
 
+  // long-term debt
+  const bankLoans = calculateBankLoans(data, years)
+  const otherSourcesOfFinance = calculateOtherSourcesOfFinance(data, years)
+  const longTermDebt = sumProps([bankLoans, otherSourcesOfFinance])
+
   return [
     {name: 'Assets', values: assets, className: 'header' },
 
@@ -212,9 +217,9 @@ export function calculateBalanceSheet (data, profitAndLoss) {
     {name: 'Reserves', values: reserves },
     {name: 'Profit/loss for the year', values: netResult },
 
-    {name: 'Long-term debt', values: {}, className: 'main-top' },
-    {name: 'Bank loans', values: {} },
-    {name: 'other long-term interest bearing debt', values: {} },
+    {name: 'Long-term debt', values: longTermDebt, className: 'main-top' },
+    {name: 'Bank loans', values: bankLoans },
+    {name: 'other long-term interest bearing debt', values: otherSourcesOfFinance },
 
     {name: 'Short-term liabilities', values: {}, className: 'main-top' },
     {name: 'Trade creditors', values: {} },
@@ -361,6 +366,45 @@ export function calculatePayments(data, profitAndLoss, years) {
       .reduce(addProps, initProps(years))
 
   return sumProps([totalDirectCosts, totalOtherDirectCosts, totalInvestments])
+}
+
+/**
+ * Calculate cumulative bank loans
+ *
+ * @param data
+ * @param {Array.<number>} years
+ * @return {Object.<string, number>}
+ */
+export function calculateBankLoans(data, years) {
+  const bankLoans = initProps(years)
+
+  years.forEach(year => {
+    bankLoans[year] +=
+        (bankLoans[year - 1] || 0) +
+        parseValue(data.financing.bankLoansCapitalCalls[year] || 0) +
+        parseValue(data.financing.bankLoansRedemptionInstallments[year] || 0)
+  })
+
+  return bankLoans
+}
+
+/**
+ * Calculate cumulative other sources of finance
+ *
+ * @param data
+ * @param {Array.<number>} years
+ * @return {Object.<string, number>}
+ */
+export function calculateOtherSourcesOfFinance(data, years) {
+  const result = initProps(years)
+
+  years.forEach(year => {
+    result[year] +=
+        (result[year - 1] || 0) +
+        parseValue(data.financing.otherSourcesOfFinance[year] || 0)
+  })
+
+  return result
 }
 
 /**
