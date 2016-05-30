@@ -13,7 +13,7 @@ For development, we will start two servers: the backend server serving a REST AP
   $ npm install
   ```
 
-- Start the backend server and pass configuration:
+- Start the backend server and pass configuration (replace `###` with the actual variables):
 
   ```
   $ PORT=8080 SERVER_URL=http://localhost:8081 COUCH_DB=### GOOGLE_CLIENT_ID=### GOOGLE_CLIENT_SECRET=### FACEBOOK_APP_ID=### FACEBOOK_APP_SECRET=### DEBUG=vbi* node server
@@ -136,7 +136,7 @@ This generates files in the folder `./dist`.
 
 ### Run server
 
-To start the backend server locally, specify config variables on the command line and run `node server`:
+To start the backend server locally, specify config variables on the command line and run `node server` (replace `###` with the actual variables):
 
 ```
 $ PORT=8080 SERVER_URL=http://localhost:8080 COUCH_DB=### GOOGLE_CLIENT_ID=### GOOGLE_CLIENT_SECRET=### FACEBOOK_APP_ID=### FACEBOOK_APP_SECRET=### DEBUG=vbi* node server
