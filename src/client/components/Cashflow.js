@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import debugFactory from 'debug/browser'
 
 import { setProperty } from '../actions'
-import { cashflow, clearIfZero, formatPrice, getYears, getProp } from './../js/formulas'
+import { cashflow, clearIfZero, formatPrice, getYears, getProp } from '../formulas'
 
 const debug = debugFactory('vbi:profit-loss')
 

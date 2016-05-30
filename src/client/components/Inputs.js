@@ -13,7 +13,7 @@ import {
     addCategory, deleteCategory, renameCategory,
     setParameter, setQuantity, setPrice
 } from '../actions'
-import { findQuantity, getYears } from './../js/formulas'
+import { findQuantity, getYears } from '../formulas'
 import Price from './Price'
 import Parameters from './Parameters'
 

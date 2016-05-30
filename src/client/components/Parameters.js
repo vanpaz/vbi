@@ -4,7 +4,7 @@ import TextField from 'material-ui/lib/text-field'
 import List from 'material-ui/lib/lists/list'
 import ListItem from 'material-ui/lib/lists/list-item'
 
-import shouldComponentUpdate from '../js/shouldComponentUpdate'
+import shouldComponentUpdate from '../utils/shouldComponentUpdate'
 
 const styles = {
   button: {

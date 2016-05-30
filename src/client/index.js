@@ -5,7 +5,7 @@ import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 import Immutable from 'seamless-immutable'
 
-import './js/polyfills'
+import './utils/polyfills'
 import App from './components/App'
 import reducers from './reducers'
 

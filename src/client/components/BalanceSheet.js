@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import debugFactory from 'debug/browser'
 
-import { balanceSheet, clearIfZero, formatPrice, getYears } from './../js/formulas'
+import { balanceSheet, clearIfZero, formatPrice, getYears } from '../formulas'
 
 const debug = debugFactory('vbi:profit-loss')
 

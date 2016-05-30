@@ -8,7 +8,7 @@ import MenuItem from 'material-ui/lib/menus/menu-item'
 import RadioButton from 'material-ui/lib/radio-button'
 import RadioButtonGroup from 'material-ui/lib/radio-button-group'
 
-import { appendItem, removeItem } from '../js/immutable'
+import { appendItem, removeItem } from '../utils/immutable'
 
 const debug = debugFactory('vbi:PriceTypeRevenue')
 

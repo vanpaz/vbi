@@ -17,7 +17,7 @@ import DeleteDialog from './dialogs/DeleteDialog'
 import Confirm from './dialogs/Confirm'
 import Prompt from './dialogs/Prompt'
 
-import shouldComponentUpdate from '../js/shouldComponentUpdate'
+import shouldComponentUpdate from '../utils/shouldComponentUpdate'
 
 
 const MAX_DOCS = 10  // maximum number of visible docs in the left navigation menu

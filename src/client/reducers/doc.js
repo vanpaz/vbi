@@ -1,8 +1,8 @@
 import Immutable from 'seamless-immutable'
 import debugFactory from 'debug/browser'
 
-import { uuid } from '../js/uuid'
-import { removeItem } from '../js/immutable'
+import { uuid } from '../utils/uuid'
+import { removeItem } from '../utils/immutable'
 
 const debug = debugFactory('vbi:reducers')
 

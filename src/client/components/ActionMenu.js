@@ -8,7 +8,7 @@ import UpIcon from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-up'
 
 import theme from '../theme'
 
-import shouldComponentUpdate from '../js/shouldComponentUpdate'
+import shouldComponentUpdate from '../utils/shouldComponentUpdate'
 
 const styles = {
   actionButton: {

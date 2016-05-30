@@ -24,7 +24,7 @@ import Inputs from './Inputs'
 import Outputs from './Outputs'
 import { request } from '../rest/request'
 import { list, open, save, del } from '../rest/docs'
-import { hash } from '../js/hash'
+import { hash } from '../utils/hash'
 
 const debug = debugFactory('vbi:app')
 
