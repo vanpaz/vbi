@@ -91,7 +91,7 @@ class Parameters extends Component {
       { this.renderParameter({ parameter: 'daysInStockOfInventory', text: 'Days in stock of inventory (sold after)', hint: 'number of days' }) }
       { this.renderParameter({ parameter: 'daysAccountsReceivablesOutstanding', text: 'Days accounts receivables outstanding (received after)', hint: 'number of days' }) }
       { this.renderParameter({ parameter: 'daysPrepaymentOfExpenditure', text: 'Days prepayment of expenditure (goods received)', hint: 'number of days' }) }
-      { this.renderParameter({ parameter: 'daysAccrualOfIncomeInvoice', text: 'Days accrual of income invoice (invoice sent after)', hint: 'number of days' }) }
+      { this.renderParameter({ parameter: 'daysAccrualOfIncome', text: 'Days accrual of income (invoice sent after)', hint: 'number of days' }) }
       { this.renderParameter({ parameter: 'daysAccountsPayableOutstanding', text: 'Days accounts payable outstanding (invoice paid after)', hint: 'number of days' }) }
       { this.renderParameter({ parameter: 'daysAccrualOfCost', text: 'Days accrual of cost (invoice received)', hint: 'number of days' }) }
       { this.renderParameter({ parameter: 'daysDeferredIncome', text: 'Days deferred income (service delivered)', hint: 'number of days' }) }

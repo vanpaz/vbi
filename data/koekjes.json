@@ -23,7 +23,7 @@
       "daysInStockOfInventory": "10",
       "daysAccountsReceivablesOutstanding": "30",
       "daysPrepaymentOfExpenditure": "5",
-      "daysAccrualOfIncomeInvoice": "15",
+      "daysAccrualOfIncome": "15",
       "daysAccountsPayableOutstanding": "30",
       "daysAccrualOfCost": "15",
       "daysDeferredIncome": "15",
@@ -47,7 +47,8 @@
             "2018": "400",
             "2019": "800",
             "2020": "1600"
-          }
+          },
+          "stock": true
         },
         {
           "id": "014bdb19-dae2-0484-01d4-e6467c62b89a",
@@ -59,7 +60,8 @@
           },
           "quantities": {
             "2016": "100"
-          }
+          },
+          "stock": false
         }
       ],
       "personnel": [

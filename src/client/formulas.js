@@ -21,7 +21,7 @@ export function findQuantity (item, year, defaultValue = '0') {
 /**
  * Find the quantity for a certain year and parse it into a number
  * @param item
- * @param {string} year
+ * @param {string | number} year
  * @param {string} [defaultValue='0']
  * @return {number} Returns the quantity
  */
@@ -67,14 +67,14 @@ export function calculateProfitAndLoss (data) {
   const netResult = subtractProps(EBT, corporateTaxes)
 
   return [
-    {name: 'Total revenues', values: revenueTotals },
-    {name: 'Total direct costs', values: directCosts },
+    {name: 'Total revenues', id: 'revenues', values: revenueTotals },
+    {name: 'Total direct costs', id: 'totalDirectCosts', values: directCosts },
     {name: 'Gross margin', values: grossMargin },
-    {name: 'Total personnel cost', values: personnelCosts },
-    {name: 'Total other direct cost', values: indirectCosts },
+    {name: 'Total personnel costs', values: personnelCosts },
+    {name: 'Total other direct costs', id: 'totalOtherDirectCosts', values: indirectCosts },
     {name: 'EBITDA', values: EBITDA },
     {name: 'Depreciation and amortization', values: depreciation },
-    {name: 'EBIT', values: EBIT, className: 'bold' },
+    {name: 'EBIT', values: EBIT, className: 'main-middle' },
     {name: 'Interest (not yet available...)', values: interest },
     {name: 'EBT', id: 'ebt', values: EBT },
     {name: 'Corporate taxes', values: corporateTaxes },
@@ -126,28 +126,63 @@ export function calculateBalanceSheet (data, profitAndLoss) {
 
   const corporateTaxRate = parsePercentage(data.parameters.corporateTaxRate)
   const years = getYears(data)
+  const revenues = profitAndLoss.find(e => e.id === 'revenues').values
+  const payments = calculatePayments(data, profitAndLoss, years)
 
+  // fixedAssets
   const tangiblesAndIntangibles = calculateAssetValues(data, years)
   const financialFixedAssets = calculateFinancialFixedAssets(data, years)
   const deferredTaxAsset = calculateDeferredTaxAsset(profitAndLoss, corporateTaxRate, years)
   const fixedAssets = sumProps([tangiblesAndIntangibles, financialFixedAssets, deferredTaxAsset])
 
+  // goodsInStock
+  const daysInStockOfInventory = parseValue(data.parameters.daysInStockOfInventory)
+  const revenueTotalsPerCategory = calculateTotalsPerCategory(data.revenues.all, years)
+  const directCostscategoriesInStock = data.costs.direct.filter(category => category.stock === true)
+  const goodsInStock = multiplyPropsWith(
+      calculateTotals(directCostscategoriesInStock, years, revenueTotalsPerCategory),
+      daysInStockOfInventory / 365
+  )
+
+  // tradeReceivables
+  const daysAccountsReceivablesOutstanding = parseValue(data.parameters.daysAccountsReceivablesOutstanding)
+  const tradeReceivables = multiplyPropsWith(revenues, daysAccountsReceivablesOutstanding / 365)
+
+  // prepayments
+  const daysPrepaymentOfExpenditure = parseValue(data.parameters.daysPrepaymentOfExpenditure)
+  const prepayments = multiplyPropsWith(payments, daysPrepaymentOfExpenditure / 365)
+
+  // accrued income
+  const daysAccrualOfIncome = parseValue(data.parameters.daysAccrualOfIncome)
+  const accruedIncome = multiplyPropsWith(revenues, daysAccrualOfIncome / 365)
+
+  // receivable VAT
+  const VATRate = parsePercentage(data.parameters.VATRate)
+  const VATPaidAfter = parseValue(data.parameters.VATPaidAfter)
+  const receivableVAT = multiplyPropsWith(payments, VATRate * VATPaidAfter / 12)
+
+  const cashAndBank = initProps(years) // TODO: calculate cashAndBank
+
+  const currentAssets = sumProps([goodsInStock, tradeReceivables, prepayments, accruedIncome, receivableVAT])
+
+  const assets = sumProps([fixedAssets, currentAssets, cashAndBank])
+
   return [
-    {name: 'Assets', values: {}, className: 'header' },
+    {name: 'Assets', values: assets, className: 'header' },
 
     {name: 'Fixed assets', values: fixedAssets, className: 'main-top' },
     {name: 'Tangibles & intangibles', values: tangiblesAndIntangibles },
     {name: 'Financial fixed assets', values: financialFixedAssets },
     {name: 'Deferred tax asset', values: deferredTaxAsset },
 
-    {name: 'Current assets', values: {}, className: 'main-top' },
-    {name: 'Goods in stock', values: {} },
-    {name: 'Trade receivables', values: {} },
-    {name: 'Prepayments', values: {} },
-    {name: 'Accrued income', values: {} },
-    {name: 'Receivable VAT', values: {} },
+    {name: 'Current assets', values: currentAssets, className: 'main-top' },
+    {name: 'Goods in stock', values: goodsInStock },
+    {name: 'Trade receivables', values: tradeReceivables },
+    {name: 'Prepayments', values: prepayments },
+    {name: 'Accrued income', values: accruedIncome },
+    {name: 'Receivable VAT', values: receivableVAT },
 
-    {name: 'Cash & bank', values: {}, className: 'main-middle' },
+    {name: 'Cash & bank (not yet implemented)', values: cashAndBank, className: 'main-middle' },
 
     {name: 'Liabilities', values: {}, className: 'header' },
 
@@ -268,8 +303,8 @@ export function calculateAssetValues (data, years) {
  * Calculate the accumulated financial fixed assets
  * (based on the field data.financing.investmentsInParticipations)
  * @param data
- * @param years
- * @return {{}}
+ * @param {Array.<number>} years
+ * @return {Object.<string, number>}
  */
 export function calculateFinancialFixedAssets (data, years) {
   const investments = data.financing.investmentsInParticipations
@@ -282,6 +317,30 @@ export function calculateFinancialFixedAssets (data, years) {
   })
 
   return fixedAssets
+}
+
+/**
+ * Calculate payments, build up as the sum of:
+ *
+ * - direct costs
+ * - other direct costs
+ * - tangible and intangible investments
+ *
+ * @param data
+ * @param profitAndLoss
+ * @param {Array.<number>} years
+ * @return {Object.<string, number>}
+ */
+export function calculatePayments(data, profitAndLoss, years) {
+  const totalDirectCosts = profitAndLoss.find(e => e.id === 'totalDirectCosts').values
+  const totalOtherDirectCosts = profitAndLoss.find(e => e.id === 'totalOtherDirectCosts').values
+
+  const allInvestments = data.investments.tangible.concat(data.investments.intangible)
+  const totalInvestments = allInvestments
+      .map(category => types.investment.calculatePxQ(category, years))
+      .reduce(addProps, initProps(years))
+
+  return sumProps([totalDirectCosts, totalOtherDirectCosts, totalInvestments])
 }
 
 /**
@@ -426,24 +485,22 @@ export let types = {
 
       // we ignore years for which we don't have a quantity,
       // and also ignore quantities not inside the provided series of years
-      years
-          .filter(year => item.quantities[year] !== undefined)
-          .forEach(year => {
-            const price = parseValue(item.price.value)
-            const quantity = parseValue(item.quantities[year])
-            const depreciationPeriod = parseValue(item.price.depreciationPeriod)
-            const costPerYear = price * quantity / depreciationPeriod
+      years.forEach(year => {
+        const price = parseValue(item.price.value)
+        const quantity = parseQuantity(item, year)
+        const depreciationPeriod = parseValue(item.price.depreciationPeriod)
+        const costPerYear = price * quantity / depreciationPeriod
 
-            let y = year
-            let assetValue = price * quantity
-            while (assetValue > 0 && y in prices) {
-              // first year we depreciate half of the cost per year
-              const deprecate = (y === year) ? (costPerYear / 2) : costPerYear
-              assetValue -= deprecate
-              prices[y] += deprecate
-              y++
-            }
-          })
+        let y = year
+        let assetValue = price * quantity
+        while (assetValue > 0 && y in prices) {
+          // first year we depreciate half of the cost per year
+          const deprecate = (y === year) ? (costPerYear / 2) : costPerYear
+          assetValue -= deprecate
+          prices[y] += deprecate
+          y++
+        }
+      })
 
       return prices
     },
@@ -460,26 +517,45 @@ export let types = {
 
       // we ignore years for which we don't have a quantity,
       // and also ignore quantities not inside the provided series of years
-      years
-          .filter(year => item.quantities[year] !== undefined)
-          .forEach(year => {
-            const price = parseValue(item.price.value)
-            const quantity = parseValue(item.quantities[year])
-            const depreciationPeriod = parseValue(item.price.depreciationPeriod)
-            const costPerYear = price * quantity / depreciationPeriod
+      years.forEach(year => {
+        const price = parseValue(item.price.value)
+        const quantity = parseQuantity(item, year)
+        const depreciationPeriod = parseValue(item.price.depreciationPeriod)
+        const costPerYear = price * quantity / depreciationPeriod
 
-            let y = year
-            let assetValue = price * quantity
-            while (assetValue > 0 && y in assetValues) {
-              // first year we depreciate half of the cost per year
-              const deprecate = (y === year) ? (costPerYear / 2) : costPerYear
-              assetValue -= deprecate
-              assetValues[y] += assetValue
-              y++
-            }
-          })
+        let y = year
+        let assetValue = price * quantity
+        while (assetValue > 0 && y in assetValues) {
+          // first year we depreciate half of the cost per year
+          const deprecate = (y === year) ? (costPerYear / 2) : costPerYear
+          assetValue -= deprecate
+          assetValues[y] += assetValue
+          y++
+        }
+      })
 
       return assetValues
+    },
+
+    /**
+     * Calculate price times quantity for an asset
+     * @param item
+     * @param {Array.<number>} years
+     * @return {Object.<string, number>} Returns an object with years as key
+     *                                   and prices as value
+     */
+    calculatePxQ: function (item, years) {
+      const prices = initProps(years)
+
+      // we ignore years for which we don't have a quantity,
+      // and also ignore quantities not inside the provided series of years
+      years.forEach(year => {
+        const price = parseValue(item.price.value)
+        const quantity = parseQuantity(item, year)
+        prices[year] = price * quantity
+      })
+
+      return prices
     }
   },
 
