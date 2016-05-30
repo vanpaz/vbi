@@ -1,5 +1,5 @@
 import debugFactory from 'debug/browser'
-import { addProps, subtractProps, initProps, multiplyPropsWith, getProp } from './utils/object'
+import { addProps, subtractProps, initProps, multiplyPropsWith, sumProps, getProp } from './utils/object'
 
 const debug = debugFactory('vbi:formulas')
 
@@ -33,7 +33,7 @@ export function parseQuantity (item, year, defaultValue = '0') {
  * Generate profit and loss data
  * @param data
  */
-export function profitAndLoss (data) {
+export function calculateProfitAndLoss (data) {
   const years = getYears(data)
   const corporateTaxRate = parsePercentage(data.parameters.corporateTaxRate)
 
@@ -76,7 +76,7 @@ export function profitAndLoss (data) {
     {name: 'Depreciation and amortization', values: depreciation },
     {name: 'EBIT', values: EBIT, className: 'bold' },
     {name: 'Interest (not yet available...)', values: interest },
-    {name: 'EBT', values: EBT },
+    {name: 'EBT', id: 'ebt', values: EBT },
     {name: 'Corporate taxes', values: corporateTaxes },
     {name: 'Net result', values: netResult }
   ]
@@ -118,22 +118,27 @@ export function calculateLongTermDebt (data) {
 /**
  * Generate balance sheet data
  * @param data
+ * @param {Array} profitAndLoss   Profit and loss calculated with
+ *                                calculateProfitAndLoss(data)
  */
-export function balanceSheet (data) {
+export function calculateBalanceSheet (data, profitAndLoss) {
   // TODO: implement all balanceSheet calculations
 
+  const corporateTaxRate = parsePercentage(data.parameters.corporateTaxRate)
   const years = getYears(data)
 
   const tangiblesAndIntangibles = calculateAssetValues(data, years)
-
+  const financialFixedAssets = calculateFinancialFixedAssets(data, years)
+  const deferredTaxAsset = calculateDeferredTaxAsset(profitAndLoss, corporateTaxRate, years)
+  const fixedAssets = sumProps([tangiblesAndIntangibles, financialFixedAssets, deferredTaxAsset])
 
   return [
     {name: 'Assets', values: {}, className: 'header' },
 
-    {name: 'Fixed assets', values: {}, className: 'main-top' },
+    {name: 'Fixed assets', values: fixedAssets, className: 'main-top' },
     {name: 'Tangibles & intangibles', values: tangiblesAndIntangibles },
-    {name: 'Financial fixed assets', values: {} },
-    {name: 'Deferred tax asset', values: {} },
+    {name: 'Financial fixed assets', values: financialFixedAssets },
+    {name: 'Deferred tax asset', values: deferredTaxAsset },
 
     {name: 'Current assets', values: {}, className: 'main-top' },
     {name: 'Goods in stock', values: {} },
@@ -230,6 +235,19 @@ export function cashflow (data) {
   ]
 }
 
+export function calculateDeferredTaxAsset (profitAndLoss, corporateTaxRate, years) {
+  const ebt = profitAndLoss.find(e => e.id === 'ebt').values
+  const deferredTaxAsset = {}
+
+  let cumulative = 0
+  years.forEach(year => {
+    cumulative += (ebt[year] || 0)
+    deferredTaxAsset[year] = cumulative < 0 ? -cumulative * corporateTaxRate : 0
+  })
+
+  return deferredTaxAsset
+}
+
 /**
  * Calculate totals of a the asset values
  * @param {Object} data
@@ -244,6 +262,26 @@ export function calculateAssetValues (data, years) {
   return allInvestments
       .map(investment => types.investment.calculateAssetValue(investment, years))
       .reduce(addProps, initial)
+}
+
+/**
+ * Calculate the accumulated financial fixed assets
+ * (based on the field data.financing.investmentsInParticipations)
+ * @param data
+ * @param years
+ * @return {{}}
+ */
+export function calculateFinancialFixedAssets (data, years) {
+  const investments = data.financing.investmentsInParticipations
+  const fixedAssets = {}
+
+  let cumulative = 0
+  years.forEach(year => {
+    cumulative += parseValue(investments[year] || 0)
+    fixedAssets[year] = cumulative
+  })
+
+  return fixedAssets
 }
 
 /**

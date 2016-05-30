@@ -4,7 +4,7 @@
  *
  * For example:
  *
- *     initProps(['2016', '2017', '2018'])
+ *     initProps(['2016', '2017', '2018'], 0)
  *
  *     // output: {'2016': 0, '2017': 0, '2018': 0}
  *
@@ -44,9 +44,8 @@ export function zipObjectsWith (objects, callback, keys = null) {
  *
  * For example:
  *
- *     initProps(['2016', '2017', '2018'])
- *
- *     // output: {'2016': 0, '2017': 0, '2018': 0}
+ *     mapProps({a: 2, b: 3}, x => x * x)
+ *     // output: {a: 4, b: 6}
  *
  * @param {Object} object
  * @param {function (value: *, property: string, object: Object) } callback
@@ -65,7 +64,7 @@ export function mapProps (object, callback) {
  *
  * For example:
  *
- *     add({a: 2, b: 3}, {a: 4, b: 5}) // returns {a: 6, b: 8}
+ *     addProps({a: 2, b: 3}, {a: 4, b: 5}) // returns {a: 6, b: 8}
  *
  * @param {Object.<string, number>} a
  * @param {Object.<string, number>} b
@@ -84,7 +83,7 @@ export function addProps (a, b) {
  *
  * For example:
  *
- *     subtract({a: 4, b: 5}, {a: 1, b: 4}) // returns {a: 3, b: 1}
+ *     subtractProps({a: 4, b: 5}, {a: 1, b: 4}) // returns {a: 3, b: 1}
  *
  * @param {Object.<string, number>} a
  * @param {Object.<string, number>} b
@@ -103,7 +102,7 @@ export function subtractProps (a, b) {
  *
  * For example:
  *
- *     subtract({a: 4, b: 5}, {a: 1, b: 4}) // returns {a: 3, b: 1}
+ *     multiplyPropsWith({a: 4, b: 5}, 2) // returns {a: 8, b: 10}
  *
  * @param {Object.<string, number>} object
  * @param {Object.<string, number>} value
@@ -118,12 +117,16 @@ export function multiplyPropsWith (object, value) {
 }
 
 /**
- * For each property, calculate the average of all property of provided objects.
+ * For calculate the sum of all properties for each property on the objects
+ *
+ * For example:
+ *
+ *     sumProps([{a: 2, b: 3}, {a: 4, b: 5}, {a: 1, b: 1}]) // returns {a: 7, b: 9}
  *
  * @param {Array.<Object.<string, number>>} objects
  * @return {Object.<string, number>}
  */
-export function avgProps (objects) {
+export function sumProps (objects) {
   const props = Object.keys(objects[0])
   const sum = initProps(props)
 
@@ -131,7 +134,17 @@ export function avgProps (objects) {
     props.forEach(prop => sum[prop] += object[prop])
   })
 
-  return multiplyPropsWith(sum, 1 / objects.length)
+  return sum
+}
+
+/**
+ * For each property, calculate the average of all property of provided objects.
+ *
+ * @param {Array.<Object.<string, number>>} objects
+ * @return {Object.<string, number>}
+ */
+export function avgProps (objects) {
+  return multiplyPropsWith(sumProps(objects), 1 / objects.length)
 }
 
 /**

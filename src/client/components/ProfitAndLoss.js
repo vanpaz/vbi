@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import debugFactory from 'debug/browser'
 
 import { avgProps, avg, multiplyPropsWith } from '../utils/object'
-import { profitAndLoss, clearIfZero, getYears, parseValue } from '../formulas'
+import { calculateProfitAndLoss, clearIfZero, getYears, parseValue } from '../formulas'
 
 const debug = debugFactory('vbi:profit-loss')
 
@@ -12,7 +12,7 @@ export default class ProfitAndLoss extends Component {
       const currency = this.props.data.parameters.currency || 'x'
       const magnitude = parseValue(this.props.data.parameters.currencyMagnitude || '1')
       const years = getYears(this.props.data)
-      const calculations = profitAndLoss(this.props.data)
+      const profitAndLoss = calculateProfitAndLoss(this.props.data)
 
       return <div>
         <table className="output" >
@@ -23,7 +23,7 @@ export default class ProfitAndLoss extends Component {
             {years.map(year => <th key={year}>{year}</th>)}
           </tr>
           {
-            calculations.map(entry => ProfitAndLoss.renderEntry(years, entry, currency, magnitude))
+            profitAndLoss.map(entry => ProfitAndLoss.renderEntry(years, entry, currency, magnitude))
           }
           </tbody>
         </table>
