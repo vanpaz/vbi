@@ -78,7 +78,7 @@ export function calculateProfitAndLoss (data) {
     {name: 'Interest (not yet available...)', values: interest },
     {name: 'EBT', id: 'ebt', values: EBT },
     {name: 'Corporate taxes', values: corporateTaxes },
-    {name: 'Net result', values: netResult }
+    {name: 'Net result', id: 'netResult', values: netResult }
   ]
 }
 
@@ -127,6 +127,7 @@ export function calculateBalanceSheet (data, profitAndLoss) {
   const corporateTaxRate = parsePercentage(data.parameters.corporateTaxRate)
   const years = getYears(data)
   const revenues = profitAndLoss.find(e => e.id === 'revenues').values
+  const netResult = profitAndLoss.find(e => e.id === 'netResult').values
   const payments = calculatePayments(data, profitAndLoss, years)
 
   // fixedAssets
@@ -167,6 +168,25 @@ export function calculateBalanceSheet (data, profitAndLoss) {
 
   const assets = sumProps([fixedAssets, currentAssets, cashAndBank])
 
+  // paid in capital
+  const startingCapital = parseValue(data.parameters.startingCapital)
+  const paidInCapital = initProps(years, startingCapital)
+
+  // agio
+  const equityContributions = data.financing.equityContributions
+  let agio = {}
+  years.forEach(year => {
+    agio[year] = (agio[year - 1] || 0) + parseValue(equityContributions[year] || 0)
+  })
+
+  // reserves
+  let reserves = {}
+  years.forEach(year => {
+    reserves[year] = (reserves[year - 1] || 0) + (netResult[year - 1] || 0)
+  })
+
+  const equity = sumProps([paidInCapital, agio, reserves, netResult])
+
   return [
     {name: 'Assets', values: assets, className: 'header' },
 
@@ -184,13 +204,13 @@ export function calculateBalanceSheet (data, profitAndLoss) {
 
     {name: 'Cash & bank (not yet implemented)', values: cashAndBank, className: 'main-middle' },
 
-    {name: 'Liabilities', values: {}, className: 'header' },
+    {name: 'Liabilities', values: {}, className: 'header' }, // TODO
 
-    {name: 'Equity', values: {}, className: 'main-top' },
-    {name: 'Paid-in capital', values: {} },
-    {name: 'Agio', values: {} },
-    {name: 'Reserves', values: {} },
-    {name: 'Profit/loss for the year', values: {} },
+    {name: 'Equity', values: equity, className: 'main-top' },
+    {name: 'Paid-in capital', values: paidInCapital },
+    {name: 'Agio', values: agio },
+    {name: 'Reserves', values: reserves },
+    {name: 'Profit/loss for the year', values: netResult },
 
     {name: 'Long-term debt', values: {}, className: 'main-top' },
     {name: 'Bank loans', values: {} },
