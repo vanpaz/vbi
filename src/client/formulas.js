@@ -47,9 +47,8 @@ export function profitAndLoss (data) {
   const grossMargin = subtractProps(revenueTotals, directCosts)
   const EBITDA = subtractProps(grossMargin, indirectCosts)
 
-  const depreciationTangible = calculateTotals(data.investments.tangible, years)
-  const depreciationIntangible = calculateTotals(data.investments.intangible, years)
-  const depreciation = addProps(depreciationTangible, depreciationIntangible)
+  const allInvestments = data.investments.tangible.concat(data.investments.intangible)
+  const depreciation = calculateTotals(allInvestments, years)
 
   const EBIT = subtractProps(EBITDA, depreciation)
 
@@ -121,13 +120,18 @@ export function calculateLongTermDebt (data) {
  * @param data
  */
 export function balanceSheet (data) {
-  // TODO: implement balanceSheet calculations
+  // TODO: implement all balanceSheet calculations
+
+  const years = getYears(data)
+
+  const tangiblesAndIntangibles = calculateAssetValues(data, years)
+
 
   return [
     {name: 'Assets', values: {}, className: 'header' },
 
     {name: 'Fixed assets', values: {}, className: 'main-top' },
-    {name: 'Tangibles & intangibles', values: {} },
+    {name: 'Tangibles & intangibles', values: tangiblesAndIntangibles },
     {name: 'Financial fixed assets', values: {} },
     {name: 'Deferred tax asset', values: {} },
 
@@ -224,6 +228,22 @@ export function cashflow (data) {
       
     {name: 'Total cash balance EoP', values: {}, className: 'main-middle' }
   ]
+}
+
+/**
+ * Calculate totals of a the asset values
+ * @param {Object} data
+ * @param {Array.<number>} years
+ * @return {Object.<string, number>}
+ */
+export function calculateAssetValues (data, years) {
+  const initial = initProps(years)
+
+  const allInvestments = data.investments.tangible.concat(data.investments.intangible)
+
+  return allInvestments
+      .map(investment => types.investment.calculateAssetValue(investment, years))
+      .reduce(addProps, initial)
 }
 
 /**
@@ -357,6 +377,7 @@ export let types = {
   investment: {
     /**
      * Calculate actual prices for all years configured for a single item.
+     * This returns the depreciation of an investment
      * @param item
      * @param {Array.<number>} years
      * @return {Object.<string, number>} Returns an object with years as key
@@ -365,31 +386,62 @@ export let types = {
     calculatePrices: function (item, years) {
       const prices = initProps(years)
 
-      // for every quantity filled in for the item, we loop over all years
-      // and add up the prices
-      Object.keys(item.quantities).forEach(yearOfQuantity => {
-        const offset = years.indexOf(parseInt(yearOfQuantity))
-        if (offset !== -1) { // ignore quantities outside of scope
-          const price = parseValue(item.price.value)
-          const quantity = parseValue(item.quantities[yearOfQuantity])
-          const depreciationPeriod = parseValue(item.price.depreciationPeriod)
-          const costPerYear = price * quantity / depreciationPeriod
+      // we ignore years for which we don't have a quantity,
+      // and also ignore quantities not inside the provided series of years
+      years
+          .filter(year => item.quantities[year] !== undefined)
+          .forEach(year => {
+            const price = parseValue(item.price.value)
+            const quantity = parseValue(item.quantities[year])
+            const depreciationPeriod = parseValue(item.price.depreciationPeriod)
+            const costPerYear = price * quantity / depreciationPeriod
 
-          years
-              .slice(offset)
-              .forEach((year, index) => {
-                if (index === 0 || index === depreciationPeriod) {
-                  // first and last year we depreciate half of the cost per year
-                  prices[year] += costPerYear / 2
-                }
-                else {
-                  prices[year] += costPerYear
-                }
-              })
-        }
-      })
+            let y = year
+            let assetValue = price * quantity
+            while (assetValue > 0 && y in prices) {
+              // first year we depreciate half of the cost per year
+              const deprecate = (y === year) ? (costPerYear / 2) : costPerYear
+              assetValue -= deprecate
+              prices[y] += deprecate
+              y++
+            }
+          })
 
       return prices
+    },
+
+    /**
+     * Calculate the value of an asset: the initial value minus deprecation till now
+     * @param item
+     * @param {Array.<number>} years
+     * @return {Object.<string, number>} Returns an object with years as key
+     *                                   and prices as value
+     */
+    calculateAssetValue: function (item, years) {
+      const assetValues = initProps(years)
+
+      // we ignore years for which we don't have a quantity,
+      // and also ignore quantities not inside the provided series of years
+      years
+          .filter(year => item.quantities[year] !== undefined)
+          .forEach(year => {
+            const price = parseValue(item.price.value)
+            const quantity = parseValue(item.quantities[year])
+            const depreciationPeriod = parseValue(item.price.depreciationPeriod)
+            const costPerYear = price * quantity / depreciationPeriod
+
+            let y = year
+            let assetValue = price * quantity
+            while (assetValue > 0 && y in assetValues) {
+              // first year we depreciate half of the cost per year
+              const deprecate = (y === year) ? (costPerYear / 2) : costPerYear
+              assetValue -= deprecate
+              assetValues[y] += assetValue
+              y++
+            }
+          })
+
+      return assetValues
     }
   },
 
@@ -433,7 +485,12 @@ export let types = {
  */
 export function getYears (data) {
   const startingYear = parseInt(data.parameters.startingYear)
-  let numberOfYears = parseInt(data.parameters.numberOfYears)
+  const numberOfYears = parseInt(data.parameters.numberOfYears)
+
+  return createYearsArray(startingYear, numberOfYears)
+}
+
+export function createYearsArray(startingYear, numberOfYears) {
   const years = []
 
   if (numberOfYears > MAX_NUMBER_OF_YEARS) {
