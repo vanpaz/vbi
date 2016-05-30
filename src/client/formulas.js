@@ -192,6 +192,15 @@ export function calculateBalanceSheet (data, profitAndLoss) {
   const otherSourcesOfFinance = calculateOtherSourcesOfFinance(data, years)
   const longTermDebt = sumProps([bankLoans, otherSourcesOfFinance])
 
+  // short-term debt
+  const daysAccountsPayableOutstanding = parseValue(data.parameters.daysAccountsPayableOutstanding)
+  const daysAccrualOfCost = parseValue(data.parameters.daysAccrualOfCost)
+  const daysDeferredIncome = parseValue(data.parameters.daysDeferredIncome)
+  const tradeCreditors = multiplyPropsWith(payments, daysAccountsPayableOutstanding / 365)
+  const accruals = multiplyPropsWith(payments, daysAccrualOfCost / 365)
+  const deferredIncome = multiplyPropsWith(revenues, daysDeferredIncome / 365)
+  const payableVAT = multiplyPropsWith(revenues, VATRate * VATPaidAfter / 12)
+
   return [
     {name: 'Assets', values: assets, className: 'header' },
 
@@ -222,10 +231,10 @@ export function calculateBalanceSheet (data, profitAndLoss) {
     {name: 'other long-term interest bearing debt', values: otherSourcesOfFinance },
 
     {name: 'Short-term liabilities', values: {}, className: 'main-top' },
-    {name: 'Trade creditors', values: {} },
-    {name: 'Accruals', values: {} },
-    {name: 'Deferred Income', values: {} },
-    {name: 'Payable VAT', values: {} },
+    {name: 'Trade creditors', values: tradeCreditors },
+    {name: 'Accruals', values: accruals },
+    {name: 'Deferred Income', values: deferredIncome },
+    {name: 'Payable VAT', values: payableVAT },
     {name: 'Payable Corporate tax', values: {} },
     {name: 'Payable income tax', values: {} },
     {name: 'Payable Social security contributions', values: {} },
