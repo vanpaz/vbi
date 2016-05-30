@@ -6,8 +6,6 @@ import { removeItem } from '../js/immutable'
 
 const debug = debugFactory('vbi:reducers')
 
-const year = new Date().getFullYear()
-
 const EMPTY_DOC = Immutable({
   title: 'New Scenario',
   data: {

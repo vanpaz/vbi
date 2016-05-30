@@ -1,4 +1,4 @@
-import { uniq, flatMap, clone } from 'lodash'
+import { uniq, flatMap, clone, map } from 'lodash'
 import debugFactory from 'debug/browser'
 
 const debug = debugFactory('vbi:formulas')
@@ -33,14 +33,14 @@ export function profitAndLoss (data) {
   const personnelCosts = calculateTotals(data.costs.personnel, years, revenueTotalsPerCategory)
   const indirectCosts = calculateTotals(data.costs.indirect, years, revenueTotalsPerCategory)
 
-  const grossMargin = zipObjectsWith([revenueTotals, directCosts], subtract, years)
-  const EBITDA = zipObjectsWith([grossMargin, indirectCosts], subtract, years)
+  const grossMargin = subtractProps(revenueTotals, directCosts)
+  const EBITDA = subtractProps(grossMargin, indirectCosts)
 
   const depreciationTangible = calculateTotals(data.investments.tangible, years)
   const depreciationIntangible = calculateTotals(data.investments.intangible, years)
-  const depreciation = addTotals(depreciationTangible, depreciationIntangible)
+  const depreciation = addProps(depreciationTangible, depreciationIntangible)
 
-  const EBIT = zipObjectsWith([EBITDA, depreciation], subtract, years)
+  const EBIT = subtractProps(EBITDA, depreciation)
 
   // TODO: get interest from balance sheet calculations
   // const interest = {
@@ -50,13 +50,14 @@ export function profitAndLoss (data) {
   //   '2019': 17.5e3,
   //   '2020': 17.5e3
   // }
-  const interest = initializeTotals(years)
+  const interest = initObject(years)
 
-  const EBT = zipObjectsWith([EBIT, interest], subtract, years)
+  const EBT = subtractProps(EBIT, interest)
 
-  const corporateTaxes = zipObjectsWith([EBT], (value) => corporateTaxRate * value, years)
+  const corporateTaxes = mapProps(EBT, (value) => corporateTaxRate * value)
+// console.log('corporateTaxes ', corporateTaxes , map(EBT, (value) => corporateTaxRate * value))
 
-  const netResult = zipObjectsWith([EBT, corporateTaxes], subtract, years)
+  const netResult = subtractProps(EBT, corporateTaxes)
 
   return [
     {name: 'Total revenues', values: revenueTotals },
@@ -282,7 +283,7 @@ export let types = {
         // calculate a percentage of all revenue
         let totals = revenueTotalsPerCategory
             .map(category => category.totals)
-            .reduce(addTotals, initializeTotals(years))
+            .reduce(addProps, initObject(years))
         let percentage = parsePercentage(item.price.percentage)
 
         return years.reduce((prices, year) => {
@@ -311,7 +312,7 @@ export let types = {
       }
     }
   },
-  
+
   investment: {
     /**
      * Calculate actual prices for all years configured for a single item.
@@ -321,7 +322,7 @@ export let types = {
      *                                   and prices as value
      */
     calculatePrices: function (item, years) {
-      const prices = initializeTotals(years)
+      const prices = initObject(years)
 
       // for every quantity filled in for the item, we loop over all years
       // and add up the prices
@@ -365,7 +366,7 @@ export let types = {
       const holidayProvision = 1 + parsePercentage(item.price.holidayProvision)
       const SSCEmployer = 1 + parsePercentage(item.price.SSCEmployer)
 
-      const prices = initializeTotals(years)
+      const prices = initObject(years)
 
       years.forEach((year, yearIndex) => {
         const quantity = findQuantity(item, year)
@@ -428,25 +429,11 @@ export function calculateTotalsPerCategory (categories, years) {
  * @return {Object.<string, number>}
  */
 export function calculateTotals (categories, years, revenueTotalsPerCategory) {
-  const initial = initializeTotals(years)
+  const initial = initObject(years)
 
   return categories
       .map(category => calculatePrices(category, years, revenueTotalsPerCategory))
-      .reduce(addTotals, initial)
-}
-
-/**
- * Merge two objects, add the property values of object a to that of object b.
- * @param {Object.<string, number>} a  Object with years as key and prices as value
- * @param {Object.<string, number>} b  Object with years as key and prices as value
- * @return {Object.<string, number>} Returns an object with years as key and prices as value
- */
-export function addTotals (a, b) {
-  const c = {}
-
-  Object.keys(a).forEach(year => c[year] = a[year] + b[year])
-
-  return c
+      .reduce(addProps, initial)
 }
 
 /**
@@ -542,22 +529,24 @@ export function formatPrice (price) {
 }
 
 /**
- * Create a totals object with a key for every year and zero as value.
+ * Create a object containing given properties with a default value.
+ *
  * For example:
  *
- *     initializeTotals(['2016', '2017', '2018'])
+ *     initObject(['2016', '2017', '2018'])
  *
  *     // output: {'2016': 0, '2017': 0, '2018': 0}
  *
- * @param {Array.<string>} years
- * @return {{}} Returns a totals object
+ * @param {string[]} properties
+ * @param {*} [defaultValue=0]
+ * @return {Object} Returns the created object
  */
-export function initializeTotals (years) {
-  const totals = {}
+export function initObject (properties, defaultValue = 0) {
+  const obj = {}
 
-  years.forEach(year => totals[year] = 0)
+  properties.forEach(prop => obj[prop] = defaultValue)
 
-  return totals
+  return obj
 }
 
 /**
@@ -579,14 +568,71 @@ export function zipObjectsWith (objects, callback, keys = null) {
   return result
 }
 
-export function add (a, b) {
-  return a + b
+/**
+ * Create a object containing given properties with a default value.
+ *
+ * For example:
+ *
+ *     initObject(['2016', '2017', '2018'])
+ *
+ *     // output: {'2016': 0, '2017': 0, '2018': 0}
+ *
+ * @param {Object} object
+ * @param {function (value: *, property: string, object: Object) } callback
+ * @return {Object} Returns the mapped object
+ */
+export function mapProps (object, callback) {
+  const result = {}
+
+  Object.keys(object).forEach(prop => result[prop] = callback(object[prop], prop, object))
+
+  return result
 }
 
-export function subtract (a, b) {
-  return a - b
+/**
+ * For each property, add the property values of two objects.
+ *
+ * For example:
+ *
+ *     add({a: 2, b: 3}, {a: 4, b: 5}) // returns {a: 6, b: 8}
+ *
+ * @param {Object.<string, number>} a  Object with years as key and prices as value
+ * @param {Object.<string, number>} b  Object with years as key and prices as value
+ * @return {Object.<string, number>} Returns an object with years as key and prices as value
+ */
+export function addProps (a, b) {
+  const c = {}
+
+  Object.keys(a).forEach(year => c[year] = a[year] + b[year])
+
+  return c
 }
 
+/**
+ * For each property, subtract the property values of two objects.
+ *
+ * For example:
+ *
+ *     subtract({a: 4, b: 5}, {a: 1, b: 4}) // returns {a: 3, b: 1}
+ *
+ * @param {Object.<string, number>} a  Object with years as key and prices as value
+ * @param {Object.<string, number>} b  Object with years as key and prices as value
+ * @return {Object.<string, number>} Returns an object with years as key and prices as value
+ */
+export function subtractProps (a, b) {
+  const c = {}
+
+  Object.keys(a).forEach(year => c[year] = a[year] - b[year])
+
+  return c
+}
+
+/**
+ * Find a nested property value from an object
+ * @param {Object} object
+ * @param {string[]} path
+ * @return {*}
+ */
 export function getProp (object, path) {
   let prop = object
   path.forEach(key => prop = prop[key])
