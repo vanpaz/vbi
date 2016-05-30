@@ -19,6 +19,17 @@ export function findQuantity (item, year, defaultValue = '0') {
 }
 
 /**
+ * Find the quantity for a certain year and parse it into a number
+ * @param item
+ * @param {string} year
+ * @param {string} [defaultValue='0']
+ * @return {number} Returns the quantity
+ */
+export function parseQuantity (item, year, defaultValue = '0') {
+  return parseValue(findQuantity(item, year, defaultValue))
+}
+
+/**
  * Generate profit and loss data
  * @param data
  */
@@ -256,7 +267,7 @@ export let types = {
       let change = 1 + parsePercentage(item.price.change)
 
       return years.reduce((prices, year, yearIndex) => {
-        let quantity = findQuantity(item, year)
+        let quantity = parseQuantity(item, year)
 
         if (item.price.value != undefined && item.price.change != undefined) {
           prices[year] = initialPrice * quantity * Math.pow(change, yearIndex)
@@ -280,8 +291,8 @@ export let types = {
      */
     calculatePrices: function (item, years) {
       return years.reduce((prices, year) => {
-        let quantity = findQuantity(item, year)
-        let value = item.price.values && item.price.values[year] || 0
+        let quantity = parseQuantity(item, year)
+        let value = parseValue(item.price.values && item.price.values[year] || '0')
 
         prices[year] = quantity * value
 
@@ -359,9 +370,9 @@ export let types = {
       Object.keys(item.quantities).forEach(yearOfQuantity => {
         const offset = years.indexOf(parseInt(yearOfQuantity))
         if (offset !== -1) { // ignore quantities outside of scope
-          const price = item.price.value
-          const quantity = item.quantities[yearOfQuantity]
-          const depreciationPeriod = item.price.depreciationPeriod
+          const price = parseValue(item.price.value)
+          const quantity = parseValue(item.quantities[yearOfQuantity])
+          const depreciationPeriod = parseValue(item.price.depreciationPeriod)
           const costPerYear = price * quantity / depreciationPeriod
 
           years
@@ -399,7 +410,7 @@ export let types = {
       const prices = initProps(years)
 
       years.forEach((year, yearIndex) => {
-        const quantity = findQuantity(item, year)
+        const quantity = parseQuantity(item, year)
 
         if (item.price.value != undefined && item.price.change != undefined) {
           prices[year] =
