@@ -100,7 +100,7 @@ export function calculateProfitAndLoss (data) {
     {name: 'Total other direct costs', id: 'indirectCosts', values: partials.indirectCosts },
     {name: 'EBITDA', values: partials.EBITDA },
     {name: 'Depreciation and amortization', values: partials.depreciation },
-    {name: 'EBIT', values: partials.EBIT, className: 'main-middle' },
+    {name: 'EBIT', values: partials.EBIT, className: 'main middle' },
     {name: 'Interest', values: partials.interest },
     {name: 'EBT', id: 'ebt', values: partials.EBT },
     {name: 'Corporate taxes', id: 'corporateTaxes', values: partials.corporateTaxes },
@@ -346,33 +346,33 @@ export function calculateBalanceSheet (data) {
   return [
     {name: 'Assets', values: assets, className: 'header' },
 
-    {name: 'Fixed assets', values: fixedAssets, className: 'main-top' },
+    {name: 'Fixed assets', values: fixedAssets, className: 'main top' },
     {name: 'Tangibles & intangibles', values: partials.tangiblesAndIntangibles },
     {name: 'Financial fixed assets', values: partials.financialFixedAssets },
     {name: 'Deferred tax assets', values: partials.deferredTaxAssets },
 
-    {name: 'Current assets', values: currentAssets, className: 'main-top' },
+    {name: 'Current assets', values: currentAssets, className: 'main top' },
     {name: 'Goods in stock', values: partials.goodsInStock },
     {name: 'Trade receivables', values: partials.tradeReceivables },
     {name: 'Prepayments', values: partials.prepayments },
     {name: 'Accrued income', values: partials.accruedIncome },
     {name: 'Receivable VAT', values: partials.receivableVAT },
 
-    {name: 'Cash & bank', values: cashAndBank, className: 'main-middle' },
+    {name: 'Cash & bank', values: cashAndBank, className: 'main middle' },
 
     {name: 'Liabilities', values: liabilities, className: 'header' },
 
-    {name: 'Equity', values: equity, className: 'main-top' },
+    {name: 'Equity', values: equity, className: 'main top' },
     {name: 'Paid-in capital', values: partials.paidInCapital },
     {name: 'Agio', values: partials.agio },
     {name: 'Reserves', values: partials.reserves },
     {name: 'Profit/loss for the year', values: partials.netResult },
 
-    {name: 'Long-term debt', values: longTermDebt, className: 'main-top' },
+    {name: 'Long-term debt', values: longTermDebt, className: 'main top' },
     {name: 'Bank loans', values: partials.bankLoans },
     {name: 'other long-term interest bearing debt', values: partials.otherSourcesOfFinance },
 
-    {name: 'Short-term liabilities', values: shortTermLiabilities, className: 'main-top' },
+    {name: 'Short-term liabilities', values: shortTermLiabilities, className: 'main top' },
     {name: 'Trade creditors', values: partials.tradeCreditors },
     {name: 'Accruals', values: partials.accruals },
     {name: 'Deferred Income', values: partials.deferredIncome },
@@ -540,7 +540,7 @@ export function calulateCashflow (data) {
     
     {name: 'Depreciation & amortization', values: partials.depreciation },
       
-    {name: 'Changes in working capital', values: partials.changesInWorkingCapital, className: 'main-top' },
+    {name: 'Changes in working capital', values: partials.changesInWorkingCapital, className: 'main top' },
     {name: 'Changes in stock', values: partials.changesInStock},
     {name: 'Changes in accounts receivables', values: partials.changesInAccountsReceivables},
     {name: 'Changes in prepayments', values: partials.changesInPrepayments},
@@ -549,7 +549,7 @@ export function calulateCashflow (data) {
     {name: 'Changes in accruals', values: partials.changesInAccruals},
     {name: 'Changes in deferred income', values: partials.changesInDeferredIncome},
 
-    {name: 'Changes in taxes & social security contributions', values: partials.changesInTaxesAndSSC, className: 'main-top'},
+    {name: 'Changes in taxes & social security contributions', values: partials.changesInTaxesAndSSC, className: 'main top'},
     {name: 'Changes in receivable VAT', values: partials.changesInReceivableVAT },
     {name: 'Changes in payable VAT', values: partials.changesInPayableVAT },
     {name: 'Changes in payable corporate tax', values: partials.changesInPayableCorporateTax },
@@ -557,19 +557,19 @@ export function calulateCashflow (data) {
     {name: 'Changes in payable social security contributions ', values: partials.changesInPayableSSC },
     {name: 'Holiday payment', values: partials.changesInHolidayPayment },
 
-    {name: 'Cashflow from operations', values: partials.cashflowFromOperations, className: 'main-middle' },
+    {name: 'Cashflow from operations', values: partials.cashflowFromOperations, className: 'header middle' },
 
     {name: 'Investments in fixed assets', values: partials.investmentsInFixedAssets },
     {name: 'Investments in participations', editable: true, path: ['data', 'financing', 'investmentsInParticipations']},
-    {name: 'Cashflow from investments', values: partials.cashflowFromInvestments, className: 'main-bottom' },
+    {name: 'Cashflow from investments', values: partials.cashflowFromInvestments, className: 'header middle' },
 
     {name: 'Equity contributions', editable: true, path: ['data', 'financing', 'equityContributions'] },
     {name: 'Bank loans capital calls', editable: true, path: ['data', 'financing', 'bankLoansCapitalCalls'] },
     {name: 'Bank loans redemption installments', editable: true, path: ['data', 'financing', 'bankLoansRedemptionInstallments']},
     {name: 'Other sources of finance', editable: true, path: ['data', 'financing', 'otherSourcesOfFinance']},
-    {name: 'Cashflow from financing', values: partials.cashflowFromFinancing, className: 'main-bottom' },
+    {name: 'Cashflow from financing', values: partials.cashflowFromFinancing, className: 'header middle' },
       
-    {name: 'Total cash balance EoP', values: partials.totalCashBalanceEoP, className: 'main-middle' }
+    {name: 'Total cash balance EoP', values: partials.totalCashBalanceEoP, className: 'header middle' }
   ]
 }
 

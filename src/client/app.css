@@ -100,26 +100,31 @@ table.output th,
 table.output td {
   text-align: right;
   vertical-align: top;
-  padding: 5px 10px;
+  padding: 2px 10px;
 }
 
 table.output tr.header {
   font-size: 14pt;
   font-weight: normal;
   color: #f3742c;
-  margin-top: 30px;
   border-top: 18px solid transparent;
 }
 
-table.output tr.main-top,
-table.output tr.main-middle {
+table.output tr.header.middle {
+  border-bottom: 30px solid transparent;
+}
+
+table.output tr.main {
   font-weight: bold;
+}
+
+table.output tr.top,
+table.output tr.middle {
   border-top: 18px solid transparent;
 }
 
-table.output tr.main-bottom,
-table.output tr.main-middle {
-  font-weight: bold;
+table.output tr.bottom,
+table.output tr.middle {
   border-bottom: 18px solid transparent;
 }
 
