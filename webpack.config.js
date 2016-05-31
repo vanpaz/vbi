@@ -9,9 +9,9 @@ module.exports = {
     './src/client/index'
   ],
   output: {
-    path: path.join(__dirname, 'dist'),
+    path: path.join(__dirname, '/dist'),
     filename: 'app.js',
-    publicPath: '/dist/'
+    publicPath: '/dist'
   },
   plugins: [
     new webpack.DefinePlugin({
