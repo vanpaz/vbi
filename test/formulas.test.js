@@ -71,20 +71,20 @@ test('parsePercentage', t => {
   t.throws(() => formulas.parsePercentage('23'), /Invalid percentage/);
 });
 
-test('parsePrice', t => {
-  t.is(formulas.parsePrice('23'), 23);
-  t.is(formulas.parsePrice('23.5'), 23.5);
-  t.is(formulas.parsePrice('-2'), -2);
-  t.is(formulas.parsePrice('23k'), 23000);
-  t.is(formulas.parsePrice('+23k'), 23000);
-  t.is(formulas.parsePrice('-23k'), -23000);
-  t.is(formulas.parsePrice('23M'), 23e6);
-  t.is(formulas.parsePrice('23B'), 23e9);
-  t.is(formulas.parsePrice('23T'), 23e12);
-  t.throws(() => formulas.parsePrice('hi'), /Invalid price/);
-  t.throws(() => formulas.parsePrice('23q'), /Invalid price/);
-  t.throws(() => formulas.parsePrice('23q'), /Invalid price/);
-  t.throws(() => formulas.parsePrice('2.3.4'), /Invalid price/);
+test('parseValue', t => {
+  t.is(formulas.parseValue('23'), 23);
+  t.is(formulas.parseValue('23.5'), 23.5);
+  t.is(formulas.parseValue('-2'), -2);
+  t.is(formulas.parseValue('23k'), 23000);
+  t.is(formulas.parseValue('+23k'), 23000);
+  t.is(formulas.parseValue('-23k'), -23000);
+  t.is(formulas.parseValue('23M'), 23e6);
+  t.is(formulas.parseValue('23B'), 23e9);
+  t.is(formulas.parseValue('23T'), 23e12);
+  t.throws(() => formulas.parseValue('hi'), /Invalid value/);
+  t.throws(() => formulas.parseValue('23q'), /Invalid value/);
+  t.throws(() => formulas.parseValue('23q'), /Invalid value/);
+  t.throws(() => formulas.parseValue('2.3.4'), /Invalid value/);
 });
 
 test('formatPrice', t => {

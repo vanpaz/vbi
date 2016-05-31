@@ -9,13 +9,17 @@
  *     // output: {'2016': 0, '2017': 0, '2018': 0}
  *
  * @param {Array.<string | number>} properties
- * @param {*} [defaultValue=0]
+ * @param {* | function (prop) } [defaultValue=0]
  * @return {Object} Returns the created object
  */
 export function initProps (properties, defaultValue = 0) {
   const obj = {}
 
-  properties.forEach(prop => obj[prop] = defaultValue)
+  properties.forEach(prop => {
+    obj[prop] = (typeof defaultValue === 'function')
+        ? defaultValue(prop)
+        : defaultValue
+  })
 
   return obj
 }
@@ -76,6 +80,70 @@ export function addProps (a, b) {
   Object.keys(a).forEach(prop => c[prop] = a[prop] + b[prop])
 
   return c
+}
+
+/**
+ * Negate the value of each property of provided object
+ *
+ * For example:
+ *
+ *     negateProps({a: 2, b: 3}) // returns {a: -2, b: -3}
+ *
+ * @param {Object.<string, number>} object
+ * @return {Object.<string, number>}
+ */
+export function negateProps (object) {
+  const negated = {}
+
+  Object.keys(object).forEach(prop => negated[prop] = -object[prop])
+
+  return negated
+}
+
+/**
+ * Calculate the difference between (ordered) keys of an object
+ *
+ * For example:
+ *
+ *     diffProps({'2016': 5, '2017': 6, '2018': 9})
+ *     // returns {'2016': 5, '2017': 1, '2018': 3}
+ *
+ * @param {Object.<string, number>} object
+ * @return {Object.<string, number>}
+ */
+export function diffProps (object) {
+  const diff = {}
+  const props = Object.keys(object).sort()
+
+  props.forEach((prop, index) => {
+    diff[prop] = (object[prop] || 0) - (object[props[index - 1]] || 0)
+  })
+
+  return diff
+}
+
+/**
+ * Calculate the cumulative of (ordered) keys of an object
+ *
+ * For example:
+ *
+ *     accumulateProps({'2016': 5, '2017': 6, '2018': 9})
+ *     // returns {'2016': 5, '2017': 11, '2018': 20}
+ *
+ * @param {Object.<string, number>} object
+ * @return {Object.<string, number>}
+ */
+export function accumulateProps (object) {
+  const accumulated = {}
+  const props = Object.keys(object).sort()
+  let total = 0
+
+  props.forEach(prop => {
+    total += (object[prop] || 0)
+    accumulated[prop] = total
+  })
+
+  return accumulated
 }
 
 /**

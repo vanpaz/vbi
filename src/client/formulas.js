@@ -1,5 +1,8 @@
 import debugFactory from 'debug/browser'
-import { addProps, subtractProps, initProps, multiplyPropsWith, sumProps, getProp } from './utils/object'
+import {
+    addProps, subtractProps, mapProps, negateProps, initProps, accumulateProps,
+    diffProps, multiplyPropsWith, sumProps, getProp
+} from './utils/object'
 
 const debug = debugFactory('vbi:formulas')
 
@@ -152,12 +155,18 @@ export function calculateBalanceSheetPartials (data) {
   const revenues = profitAndLossPartials.revenues
   const netResult = profitAndLossPartials.netResult
   const corporateTaxes = profitAndLossPartials.corporateTaxes
-  const payments = calculatePayments(data, profitAndLossPartials, years)
+  const investments = calculateInvestments(data, years)
+
+  const payments = sumProps([
+    profitAndLossPartials.directCosts,
+    profitAndLossPartials.indirectCosts,
+    investments
+  ])
 
   // fixedAssets
   const tangiblesAndIntangibles = calculateAssetValues(data, years)
   const financialFixedAssets = calculateFinancialFixedAssets(data, years)
-  const deferredTaxAsset = calculateDeferredTaxAsset(profitAndLossPartials, corporateTaxRate, years)
+  const deferredTaxAssets = calculateDeferredTaxAssets(profitAndLossPartials, corporateTaxRate, years)
 
   // goodsInStock
   const daysInStockOfInventory = parseValue(data.parameters.daysInStockOfInventory)
@@ -219,7 +228,7 @@ export function calculateBalanceSheetPartials (data) {
   const corporateTaxPaidAfter = parseValue(data.parameters.corporateTaxPaidAfter)
   const payableCorporateTax = {}
   years.forEach(year => {
-    const difference = (corporateTaxes[year] || 0) - (deferredTaxAsset[year - 1] || 0)
+    const difference = (corporateTaxes[year] || 0) - (deferredTaxAssets[year - 1] || 0)
     if (difference > 0) {
       payableCorporateTax[year] = (difference * corporateTaxPaidAfter / 12)
     }
@@ -228,16 +237,16 @@ export function calculateBalanceSheetPartials (data) {
     }
   })
 
-  // payableTaxIncome
-  const payableTaxIncome = calculatePayableIncomeTax(data, years)
+  // payableIncomeTax
+  const payableIncomeTax = calculatePayableIncomeTax(data, years)
 
   // payableSSC
   const payableSSC = calculatePayableSSC(data, years)
 
-  // provisionHolidayPay
+  // provisionHolidayPayment
   const monthOfHolidayPayment = parseValue(data.parameters.monthOfHolidayPayment)
   const personnelCosts = profitAndLossPartials.personnelCosts
-  const provisionHolidayPay = multiplyPropsWith(personnelCosts,
+  const provisionHolidayPayment = multiplyPropsWith(personnelCosts,
       // (12 / 13) / 12 * ((12 - monthOfHolidayPayment) / 12))
       (12 - monthOfHolidayPayment) / 12 / 13)
 
@@ -245,7 +254,7 @@ export function calculateBalanceSheetPartials (data) {
     // fixed assets
     tangiblesAndIntangibles,
     financialFixedAssets,
-    deferredTaxAsset,
+    deferredTaxAssets,
 
     // current assets
     goodsInStock,
@@ -270,9 +279,9 @@ export function calculateBalanceSheetPartials (data) {
     deferredIncome,
     payableVAT,
     payableCorporateTax,
-    payableTaxIncome,
+    payableIncomeTax,
     payableSSC,
-    provisionHolidayPay
+    provisionHolidayPayment
   }
 }
 
@@ -287,7 +296,7 @@ export function calculateBalanceSheet (data) {
   const fixedAssets = sumProps([
     partials.tangiblesAndIntangibles,
     partials.financialFixedAssets,
-    partials.deferredTaxAsset
+    partials.deferredTaxAssets
   ])
 
   const currentAssets = sumProps([
@@ -324,9 +333,9 @@ export function calculateBalanceSheet (data) {
     partials.deferredIncome,
     partials.payableVAT,
     partials.payableCorporateTax,
-    partials.payableTaxIncome,
+    partials.payableIncomeTax,
     partials.payableSSC,
-    partials.provisionHolidayPay
+    partials.provisionHolidayPayment
   ])
 
   const liabilities = sumProps([equity, longTermDebt, shortTermLiabilities])
@@ -339,7 +348,7 @@ export function calculateBalanceSheet (data) {
     {name: 'Fixed assets', values: fixedAssets, className: 'main-top' },
     {name: 'Tangibles & intangibles', values: partials.tangiblesAndIntangibles },
     {name: 'Financial fixed assets', values: partials.financialFixedAssets },
-    {name: 'Deferred tax asset', values: partials.deferredTaxAsset },
+    {name: 'Deferred tax assets', values: partials.deferredTaxAssets },
 
     {name: 'Current assets', values: currentAssets, className: 'main-top' },
     {name: 'Goods in stock', values: partials.goodsInStock },
@@ -368,85 +377,212 @@ export function calculateBalanceSheet (data) {
     {name: 'Deferred Income', values: partials.deferredIncome },
     {name: 'Payable VAT', values: partials.payableVAT },
     {name: 'Payable Corporate tax', values: partials.payableCorporateTax },
-    {name: 'Payable income tax', values: partials.payableTaxIncome },
+    {name: 'Payable income tax', values: partials.payableIncomeTax },
     {name: 'Payable Social security contributions', values: partials.payableSSC },
-    {name: 'Provision holiday pay', values: partials.provisionHolidayPay },
+    {name: 'Provision holiday pay', values: partials.provisionHolidayPayment },
 
     {name: 'Balance', values: balance, className: 'header', showZeros: true }
   ]
 }
 
 /**
- * Generate balance sheet data
+ * Calculate partials for Cashflow
  * @param data
+ * @return {Object}
  */
-export function cashflow (data) {
-  // TODO: implement cashflow calculations
-
+export function calulateCashflowPartials (data) {
   const years = getYears(data)
+  const profitAndLossPartials = calculateProfitAndLossPartials(data)
+  const balanceSheetPartials = calculateBalanceSheetPartials(data)
 
-  function parseAndInit (value) {
-    return value != undefined ? parseValue(value) : 0
+  const correctionOnPaidCorporateTax = initProps(getYears(data)) // TODO: do we need this?
+  const changesInDeferredTaxAssets = negateProps(diffProps(balanceSheetPartials.deferredTaxAssets))
+
+  const NOPLAT = sumProps([
+    profitAndLossPartials.netResult,
+    correctionOnPaidCorporateTax,
+    changesInDeferredTaxAssets
+  ])
+
+  // changes in working capital
+  const changesInStock = negateProps(diffProps(balanceSheetPartials.goodsInStock))
+  const changesInAccountsReceivables = negateProps(diffProps(balanceSheetPartials.tradeReceivables))
+  const changesInPrepayments = negateProps(diffProps(balanceSheetPartials.prepayments))
+  const changesInAccruedIncome = negateProps(diffProps(balanceSheetPartials.accruedIncome))
+  const changesInAccountsPayables = diffProps(balanceSheetPartials.tradeCreditors)
+  const changesInAccruals = diffProps(balanceSheetPartials.accruals)
+  const changesInDeferredIncome = diffProps(balanceSheetPartials.deferredIncome)
+  const changesInWorkingCapital = sumProps([
+    changesInStock,
+    changesInAccountsReceivables,
+    changesInPrepayments,
+    changesInAccruedIncome,
+    changesInAccountsPayables,
+    changesInAccruals,
+    changesInDeferredIncome
+  ])
+
+  // Changes in taxes & social security contributions
+  const changesInReceivableVAT = negateProps(diffProps(balanceSheetPartials.receivableVAT))
+  const changesInPayableVAT = diffProps(balanceSheetPartials.payableVAT)
+  const changesInPayableCorporateTax = diffProps(balanceSheetPartials.payableCorporateTax)
+  const changesInPayableIncomeTax = diffProps(balanceSheetPartials.payableIncomeTax)
+  const changesInPayableSSC = diffProps(balanceSheetPartials.payableSSC)
+  const changesInHolidayPayment = diffProps(balanceSheetPartials.provisionHolidayPayment)
+  const changesInTaxesAndSSC = sumProps([
+    changesInReceivableVAT,
+    changesInPayableVAT,
+    changesInPayableCorporateTax,
+    changesInPayableIncomeTax,
+    changesInPayableSSC,
+    changesInHolidayPayment
+  ])
+
+  const cashflowFromOperations = sumProps([
+    NOPLAT,
+    profitAndLossPartials.depreciation,
+    changesInWorkingCapital,
+    changesInTaxesAndSSC
+  ])
+
+  // investments
+  const investmentsInFixedAssets = negateProps(calculateInvestments(data, years))
+  const investmentsInParticipations = initProps(years, function (year) {
+    return parseValue(data.financing.investmentsInParticipations[year] || '0')
+  })
+  const cashflowFromInvestments = sumProps([
+    investmentsInFixedAssets,
+    investmentsInParticipations
+  ])
+
+  // financing
+  const equityContributions = initProps(years, function (year) {
+    return parseValue(data.financing.equityContributions[year] || '0')
+  })
+  const bankLoansCapitalCalls = initProps(years, function (year) {
+    return parseValue(data.financing.bankLoansCapitalCalls[year] || '0')
+  })
+  const bankLoansRedemptionInstallments = initProps(years, function (year) {
+    return parseValue(data.financing.bankLoansRedemptionInstallments[year] || '0')
+  })
+  const otherSourcesOfFinance = initProps(years, function (year) {
+    return parseValue(data.financing.otherSourcesOfFinance[year] || '0')
+  })
+  const cashflowFromFinancing = sumProps([
+    equityContributions,
+    bankLoansCapitalCalls,
+    bankLoansRedemptionInstallments,
+    otherSourcesOfFinance
+  ])
+
+  const startingCapital = parseValue(data.parameters.startingCapital)
+  const cashflow = sumProps([
+    cashflowFromOperations,
+    cashflowFromInvestments,
+    cashflowFromFinancing
+  ])
+
+  const totalCashBalanceEoP = mapProps(accumulateProps(cashflow), value => value + startingCapital)
+
+  return {
+    netResult: profitAndLossPartials.netResult,
+    changesInDeferredTaxAssets,
+    NOPLAT,
+    depreciation: profitAndLossPartials.depreciation,
+
+    changesInStock,
+    changesInAccountsReceivables,
+    changesInPrepayments,
+    changesInAccruedIncome,
+    changesInAccountsPayables,
+    changesInAccruals,
+    changesInDeferredIncome,
+    changesInWorkingCapital,
+
+    changesInReceivableVAT,
+    changesInPayableVAT,
+    changesInPayableCorporateTax,
+    changesInPayableIncomeTax,
+    changesInPayableSSC,
+    changesInHolidayPayment,
+    changesInTaxesAndSSC,
+
+    cashflowFromOperations,
+
+    investmentsInFixedAssets,
+    investmentsInParticipations,
+    cashflowFromInvestments,
+
+    equityContributions,
+    bankLoansCapitalCalls,
+    bankLoansRedemptionInstallments,
+    otherSourcesOfFinance,
+    cashflowFromFinancing,
+
+    totalCashBalanceEoP
   }
+}
 
-  // const investmentsInParticipations     = zipObjectsWith([data.financing.investmentsInParticipations], parseAndInit, years)
-  // const equityContributions             = zipObjectsWith([data.financing.equityContributions], parseAndInit, years)
-  // const bankLoansCapitalCalls           = zipObjectsWith([data.financing.bankLoansCapitalCalls], parseAndInit, years)
-  // const bankLoansRedemptionInstallments = zipObjectsWith([data.financing.bankLoansRedemptionInstallments], parseAndInit, years)
-  // const otherSourcesOfFinance           = zipObjectsWith([data.financing.otherSourcesOfFinance], parseAndInit, years)
+/**
+ * Calculate cashflow data
+ * @param data
+ * @return {Array}
+ */
+export function calulateCashflow (data) {
+  const partials = calulateCashflowPartials(data)
 
   return [
-    {name: 'Net result', values: {} },
-    {name: 'Correction on paid Corporate tax', values: {} },
-    {name: 'Changes in deferred tax assets', values: {} },
-    {name: 'NOPLAT', values: {} },
+    {name: 'Net result', values: partials.netResult },
+    // {name: 'Correction on paid Corporate tax', values: {} }, // TODO: Implement Correction on paid Corporate tax, or remove it?
+    {name: 'Changes in deferred tax assets', values: partials.changesInDeferredTaxAssets },
+    {name: 'NOPLAT', values: partials.NOPLAT },
     
-    {name: 'Depreciation & amortization', values: {} },
+    {name: 'Depreciation & amortization', values: partials.depreciation },
       
-    {name: 'Changes in working capital', values: {}, className: 'main-top' },
-    {name: 'Changes in stock', values: {}},
-    {name: 'Changes in accounts receivables', values: {}},
-    {name: 'Changes in prepayments', values: {}},
-    {name: 'Changes in accrued income', values: {}},
-    {name: 'Changes in accounts payables', values: {}},
-    {name: 'Changes in accruals', values: {}},
-    {name: 'Changes in deferred income', values: {}},
+    {name: 'Changes in working capital', values: partials.changesInWorkingCapital, className: 'main-top' },
+    {name: 'Changes in stock', values: partials.changesInStock},
+    {name: 'Changes in accounts receivables', values: partials.changesInAccountsReceivables},
+    {name: 'Changes in prepayments', values: partials.changesInPrepayments},
+    {name: 'Changes in accrued income', values: partials.changesInAccruedIncome},
+    {name: 'Changes in accounts payables', values: partials.changesInAccountsPayables},
+    {name: 'Changes in accruals', values: partials.changesInAccruals},
+    {name: 'Changes in deferred income', values: partials.changesInDeferredIncome},
 
-    {name: 'Changes in taxes & social security contributions', values: {}, className: 'main-top'},
-    {name: 'Changes in VAT receivable', values: {} },
-    {name: 'Changes In VAT payable', values: {} },
-    {name: 'Changes in corporate tax payable', values: {} },
-    {name: 'Changes in income tax payable', values: {} },
-    {name: 'Changes in social security contributions payable', values: {} },
-    {name: 'Holiday payment', values: {} },
+    {name: 'Changes in taxes & social security contributions', values: partials.changesInTaxesAndSSC, className: 'main-top'},
+    {name: 'Changes in receivable VAT', values: partials.changesInReceivableVAT },
+    {name: 'Changes in payable VAT', values: partials.changesInPayableVAT },
+    {name: 'Changes in payable corporate tax', values: partials.changesInPayableCorporateTax },
+    {name: 'Changes in payable income tax', values: partials.changesInPayableIncomeTax },
+    {name: 'Changes in payable social security contributions ', values: partials.changesInPayableSSC },
+    {name: 'Holiday payment', values: partials.changesInHolidayPayment },
 
-    {name: 'Cashflow from operations', values: {}, className: 'main-middle' },
+    {name: 'Cashflow from operations', values: partials.cashflowFromOperations, className: 'main-middle' },
 
-    {name: 'Investments in fixed assets', values: {} },
+    {name: 'Investments in fixed assets', values: partials.investmentsInFixedAssets },
     {name: 'Investments in participations', editable: true, path: ['data', 'financing', 'investmentsInParticipations']},
-    {name: 'Cashflow from investments', values: {}, className: 'main-bottom' },
+    {name: 'Cashflow from investments', values: partials.cashflowFromInvestments, className: 'main-bottom' },
 
     {name: 'Equity contributions', editable: true, path: ['data', 'financing', 'equityContributions'] },
     {name: 'Bank loans capital calls', editable: true, path: ['data', 'financing', 'bankLoansCapitalCalls'] },
     {name: 'Bank loans redemption installments', editable: true, path: ['data', 'financing', 'bankLoansRedemptionInstallments']},
     {name: 'Other sources of finance', editable: true, path: ['data', 'financing', 'otherSourcesOfFinance']},
-    {name: 'Cashflow from financing', values: {}, className: 'main-bottom' },
+    {name: 'Cashflow from financing', values: partials.cashflowFromFinancing, className: 'main-bottom' },
       
-    {name: 'Total cash balance EoP', values: {}, className: 'main-middle' }
+    {name: 'Total cash balance EoP', values: partials.totalCashBalanceEoP, className: 'main-middle' }
   ]
 }
 
-export function calculateDeferredTaxAsset (profitAndLossPartials, corporateTaxRate, years) {
+export function calculateDeferredTaxAssets (profitAndLossPartials, corporateTaxRate, years) {
   const ebt = profitAndLossPartials.EBT
-  const deferredTaxAsset = {}
+  const deferredTaxAssets = {}
 
   let cumulative = 0
   years.forEach(year => {
     cumulative += (ebt[year] || 0)
-    deferredTaxAsset[year] = cumulative < 0 ? -cumulative * corporateTaxRate : 0
+    deferredTaxAssets[year] = cumulative < 0 ? -cumulative * corporateTaxRate : 0
   })
 
-  return deferredTaxAsset
+  return deferredTaxAssets
 }
 
 /**
@@ -486,27 +622,18 @@ export function calculateFinancialFixedAssets (data, years) {
 }
 
 /**
- * Calculate payments, build up as the sum of:
- *
- * - direct costs
- * - other direct costs
- * - tangible and intangible investments
+ * Calculate PxQ for the investments (both tangible and intangible)
  *
  * @param data
- * @param profitAndLossPartials
  * @param {Array.<number>} years
  * @return {Object.<string, number>}
  */
-export function calculatePayments(data, profitAndLossPartials, years) {
-  const directCosts = profitAndLossPartials.directCosts
-  const indirectCosts = profitAndLossPartials.indirectCosts
-
+export function calculateInvestments(data, years) {
   const allInvestments = data.investments.tangible.concat(data.investments.intangible)
-  const totalInvestments = allInvestments
+
+  return allInvestments
       .map(category => types.investment.calculatePxQ(category, years))
       .reduce(addProps, initProps(years))
-
-  return sumProps([directCosts, indirectCosts, totalInvestments])
 }
 
 /**
