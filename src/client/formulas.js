@@ -38,7 +38,7 @@ export function parseQuantity (item, year, defaultValue = '0') {
  */
 export function calculateProfitAndLossPartials (data) {
   const years = getYears(data)
-  const corporateTaxRate = parsePercentage(data.parameters.corporateTaxRate)
+  const corporateTaxRate = parseValue(data.parameters.corporateTaxRate)
 
   const revenueTotalsPerCategory = calculateTotalsPerCategory(data.revenues.all, years)
   const revenues = calculateTotals(data.revenues.all, years)
@@ -55,7 +55,7 @@ export function calculateProfitAndLossPartials (data) {
 
   const EBIT = subtractProps(EBITDA, depreciation)
 
-  const interestPayableOnLoans = parsePercentage(data.parameters.interestPayableOnLoans)
+  const interestPayableOnLoans = parseValue(data.parameters.interestPayableOnLoans)
   const longTermDept = calculateLongTermDebt(data).longTermDebt
   const interest = {}
   years.forEach(year => {
@@ -150,7 +150,7 @@ export function calculateLongTermDebt (data) {
 export function calculateBalanceSheetPartials (data) {
   const profitAndLossPartials = calculateProfitAndLossPartials(data)
 
-  const corporateTaxRate = parsePercentage(data.parameters.corporateTaxRate)
+  const corporateTaxRate = parseValue(data.parameters.corporateTaxRate)
   const years = getYears(data)
   const revenues = profitAndLossPartials.revenues
   const netResult = profitAndLossPartials.netResult
@@ -190,7 +190,7 @@ export function calculateBalanceSheetPartials (data) {
   const accruedIncome = multiplyPropsWith(revenues, daysAccrualOfIncome / 365)
 
   // receivable VAT
-  const VATRate = parsePercentage(data.parameters.VATRate)
+  const VATRate = parseValue(data.parameters.VATRate)
   const VATPaidAfter = parseValue(data.parameters.VATPaidAfter)
   const receivableVAT = multiplyPropsWith(payments, VATRate * VATPaidAfter / 12)
 
@@ -748,7 +748,7 @@ export let types = {
      */
     calculatePrices: function (item, years) {
       let initialPrice = parseValue(item.price.value)
-      let change = 1 + parsePercentage(item.price.change)
+      let change = 1 + parseValue(item.price.change)
 
       return years.reduce((prices, year, yearIndex) => {
         let quantity = parseQuantity(item, year)
@@ -809,7 +809,7 @@ export let types = {
         let totals = revenueTotalsPerCategory
             .map(category => category.totals)
             .reduce(addProps, initProps(years))
-        let percentage = parsePercentage(item.price.percentage)
+        let percentage = parseValue(item.price.percentage)
 
         return years.reduce((prices, year) => {
           prices[year] = percentage * (totals[year] || 0)
@@ -823,7 +823,7 @@ export let types = {
 
           if (item.price.percentages) {
             item.price.percentages.forEach(p => {
-              let percentage = parsePercentage(p.percentage)
+              let percentage = parseValue(p.percentage)
               let category = revenueTotalsPerCategory
                   .find(category => category.id === p.categoryId)
               let total = category && category.totals[year] || 0
@@ -936,9 +936,9 @@ export let types = {
      */
     calculatePrices: function (item, years) {
       const monthlySalary = parseValue(item.price.value)
-      const change = 1 + parsePercentage(item.price.change)
-      const holidayProvision = 1 + parsePercentage(item.price.holidayProvision)
-      const SSCEmployer = 1 + parsePercentage(item.price.SSCEmployer)
+      const change = 1 + parseValue(item.price.change)
+      const holidayProvision = 1 + parseValue(item.price.holidayProvision)
+      const SSCEmployer = 1 + parseValue(item.price.SSCEmployer)
 
       const prices = initProps(years)
 
@@ -965,9 +965,9 @@ export let types = {
      */
     calculateIncomeTax: function (item, years) {
       const monthlySalary = parseValue(item.price.value)
-      const change = 1 + parsePercentage(item.price.change)
+      const change = 1 + parseValue(item.price.change)
       const prices = initProps(years)
-      const incomeTax = parsePercentage(item.price.incomeTax)
+      const incomeTax = parseValue(item.price.incomeTax)
       
       years.forEach((year, yearIndex) => {
         const quantity = parseQuantity(item, year)
@@ -992,10 +992,10 @@ export let types = {
      */
     calculateSSC: function (item, years) {
       const monthlySalary = parseValue(item.price.value)
-      const change = 1 + parsePercentage(item.price.change)
+      const change = 1 + parseValue(item.price.change)
       const prices = initProps(years)
-      const SSCEmployer = parsePercentage(item.price.SSCEmployer)
-      const SSCEmployee = parsePercentage(item.price.SSCEmployee)
+      const SSCEmployer = parseValue(item.price.SSCEmployer)
+      const SSCEmployee = parseValue(item.price.SSCEmployee)
 
       years.forEach((year, yearIndex) => {
         const quantity = parseQuantity(item, year)
@@ -1097,56 +1097,45 @@ export function clearIfZero (value) {
 }
 
 /**
- * Parse a percentage. Examples:
- *
- *     parsePercentage('10%')     // 0.1
- *     parsePercentage('+5%')     // 0.05
- *     parsePercentage('-2.5%')   // -0.025
- *
- * @param {string} percentage
- * @return {number} Returns the numeric value of the percentage
- */
-export function parsePercentage (percentage) {
-  let match = /^([+-]?[0-9]+[.]?[0-9]*)%$/.exec(percentage)
-
-  if (!match) {
-    throw new Error('Invalid percentage "' + percentage + '"')
-  }
-
-  return parseFloat(match[1]) / 100
-}
-
-/**
  * Parse a string into a number. Examples:
  *
  *     parseValue('23')    // 23
  *     parseValue('15k')   // 15000
  *     parseValue('2M')    // 2000000
  *     parseValue('6B')    // 6000000000
+ *     parseValue('10%')   // 0.1
+ *     parseValue('+5%')   // 0.05
+ *     parseValue('-2.5%') // -0.025
  *
  * @param {string} value
- * @return {number} The numeric value of the value
+ * @return {number} The numeric value of the value.
+ *                  Return 0 when the string does not contain a valid value
  */
 export function parseValue (value) {
-  let match = /^([+-]?[0-9]+[.]?[0-9]*)([kMBT])?$/.exec(value)
+  // parse a number
+  const matchNumber = /^([+-]?[0-9]+[.]?[0-9]*)([kMBT])?$/.exec(value)
+  if (matchNumber) {
+    let suffixes = {
+      'undefined': 1,
+      k: 1e3,
+      M: 1e6,
+      B: 1e9,
+      T: 1e12
+    }
 
-  if (!match) {
-    throw new Error('Invalid value "' + value + '"')
+    if (matchNumber[2] && (!(matchNumber[2] in suffixes))) {
+      throw new Error('Invalid value "' + value + '"')
+    }
+
+    return parseFloat(matchNumber[1]) * suffixes[matchNumber[2]]
   }
 
-  let suffixes = {
-    'undefined': 1,
-    k: 1e3,
-    M: 1e6,
-    B: 1e9,
-    T: 1e12
+  let matchPercentage = /^([+-]?[0-9]+[.]?[0-9]*)%$/.exec(value)
+  if (matchPercentage) {
+    return parseFloat(matchPercentage[1]) / 100
   }
 
-  if (match[2] && (!(match[2] in suffixes))) {
-    throw new Error('Invalid value "' + value + '"')
-  }
-
-  return parseFloat(match[1]) * suffixes[match[2]]
+  return 0
 }
 
 /**

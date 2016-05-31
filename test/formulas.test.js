@@ -60,17 +60,6 @@ test('calculatePrices', t => {
   });
 });
 
-
-test('parsePercentage', t => {
-  t.is(formulas.parsePercentage('5%'), 0.05);
-  t.is(formulas.parsePercentage('+5%'), 0.05);
-  t.is(formulas.parsePercentage('2.3%'), 0.023);
-  t.is(formulas.parsePercentage('-10%'), -0.1);
-  t.throws(() => formulas.parsePercentage('2.3.4%'), /Invalid percentage/);
-  t.throws(() => formulas.parsePercentage('hi'), /Invalid percentage/);
-  t.throws(() => formulas.parsePercentage('23'), /Invalid percentage/);
-});
-
 test('parseValue', t => {
   t.is(formulas.parseValue('23'), 23);
   t.is(formulas.parseValue('23.5'), 23.5);
@@ -81,10 +70,13 @@ test('parseValue', t => {
   t.is(formulas.parseValue('23M'), 23e6);
   t.is(formulas.parseValue('23B'), 23e9);
   t.is(formulas.parseValue('23T'), 23e12);
-  t.throws(() => formulas.parseValue('hi'), /Invalid value/);
-  t.throws(() => formulas.parseValue('23q'), /Invalid value/);
-  t.throws(() => formulas.parseValue('23q'), /Invalid value/);
-  t.throws(() => formulas.parseValue('2.3.4'), /Invalid value/);
+
+  t.is(formulas.parseValue('5%'), 0.05);
+  t.is(formulas.parseValue('+5%'), 0.05);
+  t.is(formulas.parseValue('2.3%'), 0.023);
+  t.is(formulas.parseValue('-10%'), -0.1);
+
+  t.is(formulas.parseValue('hi'), 0);
 });
 
 test('formatPrice', t => {

@@ -9,7 +9,7 @@ export default class BalanceSheet extends Component {
   render () {
     try {
       const currency = this.props.data.parameters.currency || 'x'
-      const magnitude = parseValue(this.props.data.parameters.currencyMagnitude || '1')
+      const magnitude = parseValue(this.props.data.parameters.currencyMagnitude) || 1
       const years = getYears(this.props.data)
 
       const balanceSheet = calculateBalanceSheet(this.props.data)
