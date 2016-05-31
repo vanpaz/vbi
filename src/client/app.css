@@ -151,6 +151,10 @@ table.output td input.financing {
   background: #f5f5f5;
 }
 
+input.invalid {
+  background: lightpink !important;
+}
+
 table.category-table td input,
 table.output td input {
   width: 42px;

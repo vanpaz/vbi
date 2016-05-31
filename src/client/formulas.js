@@ -1096,6 +1096,9 @@ export function clearIfZero (value) {
   return (value === '0' || value === 0) ? '' : value
 }
 
+export const numberRegExp = /^([+-]?[0-9]+[.]?[0-9]*)([kMBT])?$/
+export const percentageRegExp = /^([+-]?[0-9]+[.]?[0-9]*)%$/
+
 /**
  * Parse a string into a number. Examples:
  *
@@ -1113,7 +1116,7 @@ export function clearIfZero (value) {
  */
 export function parseValue (value) {
   // parse a number
-  const matchNumber = /^([+-]?[0-9]+[.]?[0-9]*)([kMBT])?$/.exec(value)
+  const matchNumber = numberRegExp.exec(value)
   if (matchNumber) {
     let suffixes = {
       'undefined': 1,
@@ -1130,7 +1133,7 @@ export function parseValue (value) {
     return parseFloat(matchNumber[1]) * suffixes[matchNumber[2]]
   }
 
-  let matchPercentage = /^([+-]?[0-9]+[.]?[0-9]*)%$/.exec(value)
+  let matchPercentage = percentageRegExp.exec(value)
   if (matchPercentage) {
     return parseFloat(matchPercentage[1]) / 100
   }

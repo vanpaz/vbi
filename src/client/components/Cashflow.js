@@ -4,7 +4,7 @@ import debugFactory from 'debug/browser'
 
 import { setProperty } from '../actions'
 import { getProp } from '../utils/object'
-import { calulateCashflow, clearIfZero, parseValue, getYears } from '../formulas'
+import { calulateCashflow, clearIfZero, parseValue, getYears, numberRegExp } from '../formulas'
 
 const debug = debugFactory('vbi:profit-loss')
 
@@ -69,11 +69,21 @@ class Cashflow extends Component {
       <td className="magnitude">{`${currency}${magnitude !== 1 ? magnitude : ''}`}</td>
       {
         years.map(year => {
+          const hasValue = year in values && values[year] !== ''
+          const validValue = !hasValue || numberRegExp.test(values[year])
+          const value = hasValue && validValue
+              ? parseValue(values[year]) / magnitude
+              : values[year]
+
           return <td key={year} >
-            <input className="financing"
-                   value={values[year]}
+            <input className={'financing' + (validValue ? '' : ' invalid')}
+                   value={value}
                    onChange={(event) => {
-                     this.props.dispatch(setProperty(entry.path.concat(year), event.target.value))
+                     const value = numberRegExp.test(event.target.value)  // test whether a valid number
+                       ? parseValue(event.target.value) * magnitude
+                       : event.target.value
+
+                     this.props.dispatch(setProperty(entry.path.concat(year), value))
                    }}
                    onFocus={(event) => event.target.select()} />
           </td>
