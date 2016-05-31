@@ -83,6 +83,7 @@ class Parameters extends Component {
       { this.renderParameter({ parameter: 'corporateTaxPaidAfter', text: 'Corporate tax paid after (months)', hint: 'number of months' }) }
       { this.renderParameter({ parameter: 'incomeTaxPaidAfter', text: 'Income tax paid after (months)', hint: 'number of months'  }) }
       { this.renderParameter({ parameter: 'socialSecurityContributionsPaidAfter', text: 'Social security contributions paid after (months)', hint: 'number of months' }) }
+      { this.renderParameter({ parameter: 'incomeTax', text: 'Income tax (%)', hint: 'percentage' }) }
     </div>
   }
 

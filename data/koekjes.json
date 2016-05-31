@@ -73,7 +73,9 @@
             "value": "5k",
             "change": "+2%",
             "holidayProvision": "8.33%",
-            "SSCEmployer": "18%"
+            "incomeTax": "35%",
+            "SSCEmployer": "18%",
+            "SSCEmployee": "17%"
           },
           "quantities": {
             "2015": "0",

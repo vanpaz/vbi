@@ -70,14 +70,14 @@ export function calculateProfitAndLoss (data) {
     {name: 'Total revenues', id: 'revenues', values: revenueTotals },
     {name: 'Total direct costs', id: 'totalDirectCosts', values: directCosts },
     {name: 'Gross margin', values: grossMargin },
-    {name: 'Total personnel costs', values: personnelCosts },
+    {name: 'Total personnel costs', id: 'personnelCosts', values: personnelCosts },
     {name: 'Total other direct costs', id: 'totalOtherDirectCosts', values: indirectCosts },
     {name: 'EBITDA', values: EBITDA },
     {name: 'Depreciation and amortization', values: depreciation },
     {name: 'EBIT', values: EBIT, className: 'main-middle' },
     {name: 'Interest (not yet available...)', values: interest },
     {name: 'EBT', id: 'ebt', values: EBT },
-    {name: 'Corporate taxes', values: corporateTaxes },
+    {name: 'Corporate taxes', id: 'corporateTaxes', values: corporateTaxes },
     {name: 'Net result', id: 'netResult', values: netResult }
   ]
 }
@@ -128,6 +128,7 @@ export function calculateBalanceSheet (data, profitAndLoss) {
   const years = getYears(data)
   const revenues = profitAndLoss.find(e => e.id === 'revenues').values
   const netResult = profitAndLoss.find(e => e.id === 'netResult').values
+  const corporateTaxes = profitAndLoss.find(e => e.id === 'corporateTaxes').values
   const payments = calculatePayments(data, profitAndLoss, years)
 
   // fixedAssets
@@ -201,6 +202,41 @@ export function calculateBalanceSheet (data, profitAndLoss) {
   const deferredIncome = multiplyPropsWith(revenues, daysDeferredIncome / 365)
   const payableVAT = multiplyPropsWith(revenues, VATRate * VATPaidAfter / 12)
 
+  // payableCorporateTax
+  const corporateTaxPaidAfter = parseValue(data.parameters.corporateTaxPaidAfter)
+  const payableCorporateTax = {}
+  years.forEach(year => {
+    const difference = (corporateTaxes[year] || 0) - (deferredTaxAsset[year - 1] || 0)
+    if (difference > 0) {
+      payableCorporateTax[year] = (difference * corporateTaxPaidAfter / 12)
+    }
+    else {
+      payableCorporateTax[year] = 0
+    }
+  })
+
+  // payableTaxIncome
+  const payableTaxIncome = calculatePayableIncomeTax(data, years)
+
+  // payableSSC
+  const payableSSC = calculatePayableSSC(data, years)
+
+  // provisionHolidayPay
+  const monthOfHolidayPayment = parseValue(data.parameters.monthOfHolidayPayment)
+  const personnelCosts = profitAndLoss.find(e => e.id === 'personnelCosts').values
+  const provisionHolidayPay = multiplyPropsWith(personnelCosts,
+      // (12 / 13) / 12 * ((12 - monthOfHolidayPayment) / 12))
+      (12 - monthOfHolidayPayment) / 12 / 13)
+
+  const shortTermLiabilities = sumProps([
+    tradeCreditors, accruals, deferredIncome,
+    payableVAT, payableCorporateTax, payableTaxIncome,
+    payableSSC, provisionHolidayPay])
+
+  const liabilities = sumProps([equity, longTermDebt, shortTermLiabilities])
+
+  const balance = subtractProps(assets, liabilities)
+
   return [
     {name: 'Assets', values: assets, className: 'header' },
 
@@ -218,7 +254,7 @@ export function calculateBalanceSheet (data, profitAndLoss) {
 
     {name: 'Cash & bank (not yet implemented)', values: cashAndBank, className: 'main-middle' },
 
-    {name: 'Liabilities', values: {}, className: 'header' }, // TODO
+    {name: 'Liabilities', values: liabilities, className: 'header' },
 
     {name: 'Equity', values: equity, className: 'main-top' },
     {name: 'Paid-in capital', values: paidInCapital },
@@ -230,17 +266,17 @@ export function calculateBalanceSheet (data, profitAndLoss) {
     {name: 'Bank loans', values: bankLoans },
     {name: 'other long-term interest bearing debt', values: otherSourcesOfFinance },
 
-    {name: 'Short-term liabilities', values: {}, className: 'main-top' },
+    {name: 'Short-term liabilities', values: shortTermLiabilities, className: 'main-top' },
     {name: 'Trade creditors', values: tradeCreditors },
     {name: 'Accruals', values: accruals },
     {name: 'Deferred Income', values: deferredIncome },
     {name: 'Payable VAT', values: payableVAT },
-    {name: 'Payable Corporate tax', values: {} },
-    {name: 'Payable income tax', values: {} },
-    {name: 'Payable Social security contributions', values: {} },
-    {name: 'Provision holiday pay', values: {} },
+    {name: 'Payable Corporate tax', values: payableCorporateTax },
+    {name: 'Payable income tax', values: payableTaxIncome },
+    {name: 'Payable Social security contributions', values: payableSSC },
+    {name: 'Provision holiday pay', values: provisionHolidayPay },
 
-    {name: 'Balance', values: {}, className: 'balance' }
+    {name: 'Balance', values: balance, className: 'header', showZeros: true }
   ]
 }
 
@@ -375,6 +411,40 @@ export function calculatePayments(data, profitAndLoss, years) {
       .reduce(addProps, initProps(years))
 
   return sumProps([totalDirectCosts, totalOtherDirectCosts, totalInvestments])
+}
+
+/**
+ * Calculate payable income tax
+ *
+ * @param data
+ * @param {Array.<number>} years
+ * @return {Object.<string, number>}
+ */
+export function calculatePayableIncomeTax(data, years) {
+  const incomeTaxPaidAfter = parseValue(data.parameters.incomeTaxPaidAfter)
+
+  const incomeTax = data.costs.personnel
+      .map(category => types.salary.calculateIncomeTax(category, years))
+      .reduce(addProps, initProps(years))
+
+  return multiplyPropsWith(incomeTax, incomeTaxPaidAfter / 12)
+}
+
+/**
+ * Calculate payable social security contributions
+ *
+ * @param data
+ * @param {Array.<number>} years
+ * @return {Object.<string, number>}
+ */
+export function calculatePayableSSC (data, years) {
+  const socialSecurityContributionsPaidAfter = parseValue(data.parameters.socialSecurityContributionsPaidAfter)
+
+  const SSCCosts = data.costs.personnel
+      .map(category => types.salary.calculateSSC(category, years))
+      .reduce(addProps, initProps(years))
+
+  return multiplyPropsWith(SSCCosts, socialSecurityContributionsPaidAfter / 12)
 }
 
 /**
@@ -641,7 +711,7 @@ export let types = {
      *                                   and prices as value
      */
     calculatePrices: function (item, years) {
-      const montlySalary = parseValue(item.price.value)
+      const monthlySalary = parseValue(item.price.value)
       const change = 1 + parsePercentage(item.price.change)
       const holidayProvision = 1 + parsePercentage(item.price.holidayProvision)
       const SSCEmployer = 1 + parsePercentage(item.price.SSCEmployer)
@@ -654,7 +724,62 @@ export let types = {
         if (item.price.value != undefined && item.price.change != undefined) {
           prices[year] =
               holidayProvision * SSCEmployer * Math.pow(change, yearIndex) *
-              montlySalary * 12 *
+              monthlySalary * 12 *
+              quantity
+        }
+      })
+
+      return prices
+    },
+
+    /**
+     * Calculate income tax for a salary
+     * @param item
+     * @param {Array.<number>} years
+     * @return {Object.<string, number>} Returns an object with years as key
+     *                                   and prices as value
+     */
+    calculateIncomeTax: function (item, years) {
+      const monthlySalary = parseValue(item.price.value)
+      const change = 1 + parsePercentage(item.price.change)
+      const prices = initProps(years)
+      const incomeTax = parsePercentage(item.price.incomeTax)
+      
+      years.forEach((year, yearIndex) => {
+        const quantity = parseQuantity(item, year)
+
+        if (item.price.value != undefined && item.price.change != undefined) {
+          prices[year] =
+              incomeTax * Math.pow(change, yearIndex) *
+              monthlySalary * 12 *
+              quantity
+        }
+      })
+
+      return prices
+    },
+
+    /**
+     * Calculate social security costs for a salary (SSC employer + SSC employee)
+     * @param item
+     * @param {Array.<number>} years
+     * @return {Object.<string, number>} Returns an object with years as key
+     *                                   and prices as value
+     */
+    calculateSSC: function (item, years) {
+      const monthlySalary = parseValue(item.price.value)
+      const change = 1 + parsePercentage(item.price.change)
+      const prices = initProps(years)
+      const SSCEmployer = parsePercentage(item.price.SSCEmployer)
+      const SSCEmployee = parsePercentage(item.price.SSCEmployee)
+
+      years.forEach((year, yearIndex) => {
+        const quantity = parseQuantity(item, year)
+
+        if (item.price.value != undefined && item.price.change != undefined) {
+          prices[year] =
+              (SSCEmployer + SSCEmployee) * Math.pow(change, yearIndex) *
+              monthlySalary * 12 *
               quantity
         }
       })
@@ -740,7 +865,7 @@ export function calculateTotals (categories, years, revenueTotalsPerCategory) {
 
 /**
  * Return an empty string when the input value is '0', else return the value as is.
- * @param {string} value
+ * @param {string | number} value
  * @return {string}
  */
 export function clearIfZero (value) {

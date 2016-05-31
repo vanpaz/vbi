@@ -123,6 +123,10 @@ table.output tr.main-middle {
   border-bottom: 18px solid transparent;
 }
 
+table.output tr.gray {
+  color: #9e9e9e;
+}
+
 table.output tr.bold {
   font-weight: bold;
 }

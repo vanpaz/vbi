@@ -42,9 +42,10 @@ export default class BalanceSheet extends Component {
       {
         years.map(year => {
           const total = entry.values[year]
+          const value = total && Math.round(total / magnitude)
 
           return <td key={year} >
-            { clearIfZero(total && Math.round(total / magnitude)) }
+            { entry.showZeros ? value : clearIfZero(value) }
           </td>
         })
       }
