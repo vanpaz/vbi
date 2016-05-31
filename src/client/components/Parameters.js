@@ -64,6 +64,7 @@ class Parameters extends Component {
       { this.renderParameter({ parameter: 'startingCapital', text: 'Starting capital', hint: '10k' }) }
       { this.renderParameter({ parameter: 'currency', text: 'Currency', hint: '\u20ac' }) }
       { this.renderParameter({ parameter: 'currencyMagnitude', text: 'Currency magnitude (display in output sheets)', hint: '1000' }) }
+      { this.renderParameter({ parameter: 'numberOfDecimals', text: 'Number of decimals (display in output sheets)', hint: '0' }) }
     </div>
   }
 

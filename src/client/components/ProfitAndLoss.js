@@ -10,6 +10,7 @@ export default class ProfitAndLoss extends Component {
     try {
       const currency = this.props.data.parameters.currency || 'x'
       const magnitude = parseValue(this.props.data.parameters.currencyMagnitude) || 1
+      const numberOfDecimals = parseValue(this.props.data.parameters.numberOfDecimals)
       const years = getYears(this.props.data)
       const profitAndLoss = calculateProfitAndLoss(this.props.data)
 
@@ -22,7 +23,7 @@ export default class ProfitAndLoss extends Component {
             {years.map(year => <th key={year}>{year}</th>)}
           </tr>
           {
-            profitAndLoss.map(entry => ProfitAndLoss.renderEntry(years, entry, currency, magnitude))
+            profitAndLoss.map(entry => ProfitAndLoss.renderEntry(years, entry, currency, magnitude, numberOfDecimals))
           }
           </tbody>
         </table>
@@ -34,14 +35,14 @@ export default class ProfitAndLoss extends Component {
     }
   }
 
-  static renderEntry (years, entry, currency, magnitude) {
+  static renderEntry (years, entry, currency, magnitude, numberOfDecimals) {
     return <tr key={entry.name} className={entry.className}>
       <td className="name">{entry.name}</td>
       <td className="magnitude">{`${currency}${magnitude !== 1 ? magnitude : ''}`}</td>
       {
         years.map(year => {
           const total = entry.values[year]
-          const value = total && Math.round(total / magnitude)
+          const value = total && (total / magnitude).toFixed(numberOfDecimals)
 
           return <td key={year} >
             { entry.showZeros ? value : clearIfZero(value) }

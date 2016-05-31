@@ -13,6 +13,7 @@ class Cashflow extends Component {
     try {
       const currency = this.props.data.parameters.currency || 'x'
       const magnitude = parseValue(this.props.data.parameters.currencyMagnitude) || 1
+      const numberOfDecimals = parseValue(this.props.data.parameters.numberOfDecimals)
       const years = getYears(this.props.data)
       const cashflow = calulateCashflow(this.props.data)
 
@@ -30,7 +31,7 @@ class Cashflow extends Component {
                 return this.renderEditableEntry(years, entry, currency, magnitude)
               }
               else {
-                return this.renderEntry(years, entry, currency, magnitude)
+                return this.renderEntry(years, entry, currency, magnitude, numberOfDecimals)
               }
             })
           }
@@ -44,14 +45,14 @@ class Cashflow extends Component {
     }
   }
 
-  renderEntry (years, entry, currency, magnitude) {
+  renderEntry (years, entry, currency, magnitude, numberOfDecimals) {
     return <tr key={entry.name} className={entry.className}>
       <td className="name">{entry.name}</td>
       <td className="magnitude">{`${currency}${magnitude !== 1 ? magnitude : ''}`}</td>
       {
         years.map(year => {
           const total = entry.values[year]
-          const value = total && Math.round(total / magnitude)
+          const value = total && (total / magnitude).toFixed(numberOfDecimals)
 
           return <td key={year} >
             { entry.showZeros ? value : clearIfZero(value) }

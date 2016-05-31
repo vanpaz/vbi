@@ -7,6 +7,7 @@
       "numberOfYears": "5",
       "currency": "\u20ac",
       "currencyMagnitude": "1000",
+      "numberOfDecimals": "0",
       "startingCapital": "10k",
       "VATRate": "21%",
       "corporateTaxRate": "25%",
