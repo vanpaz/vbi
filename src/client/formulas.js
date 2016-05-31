@@ -101,7 +101,7 @@ export function calculateProfitAndLoss (data) {
     {name: 'EBITDA', values: partials.EBITDA },
     {name: 'Depreciation and amortization', values: partials.depreciation },
     {name: 'EBIT', values: partials.EBIT, className: 'main-middle' },
-    {name: 'Interest (not yet available...)', values: partials.interest },
+    {name: 'Interest', values: partials.interest },
     {name: 'EBT', id: 'ebt', values: partials.EBT },
     {name: 'Corporate taxes', id: 'corporateTaxes', values: partials.corporateTaxes },
     {name: 'Net result', id: 'netResult', values: partials.netResult }
@@ -292,6 +292,7 @@ export function calculateBalanceSheetPartials (data) {
  */
 export function calculateBalanceSheet (data) {
   const partials = calculateBalanceSheetPartials(data)
+  const cashflowPartials = calulateCashflowPartials(data)
   
   const fixedAssets = sumProps([
     partials.tangiblesAndIntangibles,
@@ -307,7 +308,7 @@ export function calculateBalanceSheet (data) {
     partials.receivableVAT
   ])
 
-  const cashAndBank = initProps(getYears(data)) // TODO: implement cash and bank
+  const cashAndBank = cashflowPartials.totalCashBalanceEoP
 
   const assets = sumProps([
     fixedAssets,
@@ -357,7 +358,7 @@ export function calculateBalanceSheet (data) {
     {name: 'Accrued income', values: partials.accruedIncome },
     {name: 'Receivable VAT', values: partials.receivableVAT },
 
-    {name: 'Cash & bank (not yet implemented)', values: cashAndBank, className: 'main-middle' },
+    {name: 'Cash & bank', values: cashAndBank, className: 'main-middle' },
 
     {name: 'Liabilities', values: liabilities, className: 'header' },
 
