@@ -84,11 +84,11 @@ export function calculateProfitAndLossPartials (data) {
 
 /**
  * Generate profit and loss data
- * @param data
+ * @param {Object} data
  */
 export function calculateProfitAndLoss (data) {
   const partials = calculateProfitAndLossPartials(data)
-
+  
   return [
     {name: 'Total revenues', id: 'revenues', values: partials.revenues },
     {name: 'Total direct costs', id: 'directCosts', values: partials.directCosts },
@@ -142,23 +142,22 @@ export function calculateLongTermDebt (data) {
  * Generate partials for the balance sheet, excluding totals
  * This partials is used both for the BalanceSheet as well as the Cashflow
  * @param data
- * @param {Array} profitAndLoss   Profit and loss calculated with
- *                                calculateProfitAndLoss(data)
  * @returns {Object} Returns an object with balance sheet partials
  */
-export function calculateBalanceSheetPartials (data, profitAndLoss) {
+export function calculateBalanceSheetPartials (data) {
+  const profitAndLossPartials = calculateProfitAndLossPartials(data)
 
   const corporateTaxRate = parsePercentage(data.parameters.corporateTaxRate)
   const years = getYears(data)
-  const revenues = profitAndLoss.find(e => e.id === 'revenues').values
-  const netResult = profitAndLoss.find(e => e.id === 'netResult').values
-  const corporateTaxes = profitAndLoss.find(e => e.id === 'corporateTaxes').values
-  const payments = calculatePayments(data, profitAndLoss, years)
+  const revenues = profitAndLossPartials.revenues
+  const netResult = profitAndLossPartials.netResult
+  const corporateTaxes = profitAndLossPartials.corporateTaxes
+  const payments = calculatePayments(data, profitAndLossPartials, years)
 
   // fixedAssets
   const tangiblesAndIntangibles = calculateAssetValues(data, years)
   const financialFixedAssets = calculateFinancialFixedAssets(data, years)
-  const deferredTaxAsset = calculateDeferredTaxAsset(profitAndLoss, corporateTaxRate, years)
+  const deferredTaxAsset = calculateDeferredTaxAsset(profitAndLossPartials, corporateTaxRate, years)
 
   // goodsInStock
   const daysInStockOfInventory = parseValue(data.parameters.daysInStockOfInventory)
@@ -237,7 +236,7 @@ export function calculateBalanceSheetPartials (data, profitAndLoss) {
 
   // provisionHolidayPay
   const monthOfHolidayPayment = parseValue(data.parameters.monthOfHolidayPayment)
-  const personnelCosts = profitAndLoss.find(e => e.id === 'personnelCosts').values
+  const personnelCosts = profitAndLossPartials.personnelCosts
   const provisionHolidayPay = multiplyPropsWith(personnelCosts,
       // (12 / 13) / 12 * ((12 - monthOfHolidayPayment) / 12))
       (12 - monthOfHolidayPayment) / 12 / 13)
@@ -279,15 +278,12 @@ export function calculateBalanceSheetPartials (data, profitAndLoss) {
 
 /**
  * Generate balance sheet data
- * @param data
- * @param {Array} profitAndLoss   Profit and loss calculated with
- *                                calculateProfitAndLoss(data)
+ * @param {Object} data
  * @return {Array.<{name: string, values: {}, className: string, showZeros: boolean}>}
  */
-export function calculateBalanceSheet (data, profitAndLoss) {
-  const years = getYears(data)
-  const partials = calculateBalanceSheetPartials(data, profitAndLoss) // TODO: pass as argument
-
+export function calculateBalanceSheet (data) {
+  const partials = calculateBalanceSheetPartials(data)
+  
   const fixedAssets = sumProps([
     partials.tangiblesAndIntangibles,
     partials.financialFixedAssets,
@@ -302,7 +298,7 @@ export function calculateBalanceSheet (data, profitAndLoss) {
     partials.receivableVAT
   ])
 
-  const cashAndBank = initProps(years) // TODO: implement cash and bank
+  const cashAndBank = initProps(getYears(data)) // TODO: implement cash and bank
 
   const assets = sumProps([
     fixedAssets,
@@ -440,8 +436,8 @@ export function cashflow (data) {
   ]
 }
 
-export function calculateDeferredTaxAsset (profitAndLoss, corporateTaxRate, years) {
-  const ebt = profitAndLoss.find(e => e.id === 'ebt').values
+export function calculateDeferredTaxAsset (profitAndLossPartials, corporateTaxRate, years) {
+  const ebt = profitAndLossPartials.EBT
   const deferredTaxAsset = {}
 
   let cumulative = 0
@@ -497,13 +493,13 @@ export function calculateFinancialFixedAssets (data, years) {
  * - tangible and intangible investments
  *
  * @param data
- * @param profitAndLoss
+ * @param profitAndLossPartials
  * @param {Array.<number>} years
  * @return {Object.<string, number>}
  */
-export function calculatePayments(data, profitAndLoss, years) {
-  const directCosts = profitAndLoss.find(e => e.id === 'directCosts').values
-  const indirectCosts = profitAndLoss.find(e => e.id === 'indirectCosts').values
+export function calculatePayments(data, profitAndLossPartials, years) {
+  const directCosts = profitAndLossPartials.directCosts
+  const indirectCosts = profitAndLossPartials.indirectCosts
 
   const allInvestments = data.investments.tangible.concat(data.investments.intangible)
   const totalInvestments = allInvestments

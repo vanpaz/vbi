@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import debugFactory from 'debug/browser'
 
-import { avgProps, avg, multiplyPropsWith } from '../utils/object'
 import { calculateProfitAndLoss, clearIfZero, getYears, parseValue } from '../formulas'
 
 const debug = debugFactory('vbi:profit-loss')

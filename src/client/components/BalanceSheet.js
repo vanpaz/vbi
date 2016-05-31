@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import debugFactory from 'debug/browser'
 
-import { calculateProfitAndLoss, calculateBalanceSheet, clearIfZero, parseValue, getYears } from '../formulas'
+import { calculateBalanceSheet, clearIfZero, parseValue, getYears } from '../formulas'
 
 const debug = debugFactory('vbi:profit-loss')
 
@@ -11,8 +11,8 @@ export default class BalanceSheet extends Component {
       const currency = this.props.data.parameters.currency || 'x'
       const magnitude = parseValue(this.props.data.parameters.currencyMagnitude || '1')
       const years = getYears(this.props.data)
-      const profitAndLoss = calculateProfitAndLoss(this.props.data)
-      const balanceSheet = calculateBalanceSheet(this.props.data, profitAndLoss)
+
+      const balanceSheet = calculateBalanceSheet(this.props.data)
 
       return <div>
         <table className="output" >
