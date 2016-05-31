@@ -116,13 +116,14 @@ export function calculateLongTermDebt (data) {
 }
 
 /**
- * Generate balance sheet data
+ * Generate partials for the balance sheet, excluding totals
+ * This partials is used both for the BalanceSheet as well as the Cashflow
  * @param data
  * @param {Array} profitAndLoss   Profit and loss calculated with
  *                                calculateProfitAndLoss(data)
+ * @returns {Object} Returns an object with balance sheet partials
  */
-export function calculateBalanceSheet (data, profitAndLoss) {
-  // TODO: implement all balanceSheet calculations
+export function calculateBalanceSheetPartials (data, profitAndLoss) {
 
   const corporateTaxRate = parsePercentage(data.parameters.corporateTaxRate)
   const years = getYears(data)
@@ -135,7 +136,6 @@ export function calculateBalanceSheet (data, profitAndLoss) {
   const tangiblesAndIntangibles = calculateAssetValues(data, years)
   const financialFixedAssets = calculateFinancialFixedAssets(data, years)
   const deferredTaxAsset = calculateDeferredTaxAsset(profitAndLoss, corporateTaxRate, years)
-  const fixedAssets = sumProps([tangiblesAndIntangibles, financialFixedAssets, deferredTaxAsset])
 
   // goodsInStock
   const daysInStockOfInventory = parseValue(data.parameters.daysInStockOfInventory)
@@ -163,12 +163,6 @@ export function calculateBalanceSheet (data, profitAndLoss) {
   const VATPaidAfter = parseValue(data.parameters.VATPaidAfter)
   const receivableVAT = multiplyPropsWith(payments, VATRate * VATPaidAfter / 12)
 
-  const cashAndBank = initProps(years) // TODO: calculate cashAndBank
-
-  const currentAssets = sumProps([goodsInStock, tradeReceivables, prepayments, accruedIncome, receivableVAT])
-
-  const assets = sumProps([fixedAssets, currentAssets, cashAndBank])
-
   // paid in capital
   const startingCapital = parseValue(data.parameters.startingCapital)
   const paidInCapital = initProps(years, startingCapital)
@@ -186,12 +180,9 @@ export function calculateBalanceSheet (data, profitAndLoss) {
     reserves[year] = (reserves[year - 1] || 0) + (netResult[year - 1] || 0)
   })
 
-  const equity = sumProps([paidInCapital, agio, reserves, netResult])
-
   // long-term debt
   const bankLoans = calculateBankLoans(data, years)
   const otherSourcesOfFinance = calculateOtherSourcesOfFinance(data, years)
-  const longTermDebt = sumProps([bankLoans, otherSourcesOfFinance])
 
   // short-term debt
   const daysAccountsPayableOutstanding = parseValue(data.parameters.daysAccountsPayableOutstanding)
@@ -228,10 +219,96 @@ export function calculateBalanceSheet (data, profitAndLoss) {
       // (12 / 13) / 12 * ((12 - monthOfHolidayPayment) / 12))
       (12 - monthOfHolidayPayment) / 12 / 13)
 
+  return {
+    // fixed assets
+    tangiblesAndIntangibles,
+    financialFixedAssets,
+    deferredTaxAsset,
+
+    // current assets
+    goodsInStock,
+    tradeReceivables,
+    prepayments,
+    accruedIncome,
+    receivableVAT,
+
+    // equity
+    paidInCapital,
+    agio,
+    reserves,
+    netResult,
+
+    // long-term debt
+    bankLoans,
+    otherSourcesOfFinance,
+
+    // short-term liabilities
+    tradeCreditors,
+    accruals,
+    deferredIncome,
+    payableVAT,
+    payableCorporateTax,
+    payableTaxIncome,
+    payableSSC,
+    provisionHolidayPay
+  }
+}
+
+/**
+ * Generate balance sheet data
+ * @param data
+ * @param {Array} profitAndLoss   Profit and loss calculated with
+ *                                calculateProfitAndLoss(data)
+ * @return {Array.<{name: string, values: {}, className: string, showZeros: boolean}>}
+ */
+export function calculateBalanceSheet (data, profitAndLoss) {
+  const years = getYears(data)
+  const partials = calculateBalanceSheetPartials(data, profitAndLoss) // TODO: pass as argument
+
+  const fixedAssets = sumProps([
+    partials.tangiblesAndIntangibles,
+    partials.financialFixedAssets,
+    partials.deferredTaxAsset
+  ])
+
+  const currentAssets = sumProps([
+    partials.goodsInStock,
+    partials.tradeReceivables,
+    partials.prepayments,
+    partials.accruedIncome,
+    partials.receivableVAT
+  ])
+
+  const cashAndBank = initProps(years) // TODO: implement cash and bank
+
+  const assets = sumProps([
+    fixedAssets,
+    currentAssets,
+    cashAndBank
+  ])
+
+  const equity = sumProps([
+    partials.paidInCapital,
+    partials.agio,
+    partials.reserves,
+    partials.netResult
+  ])
+
+  const longTermDebt = sumProps([
+    partials.bankLoans,
+    partials.otherSourcesOfFinance
+  ])
+
   const shortTermLiabilities = sumProps([
-    tradeCreditors, accruals, deferredIncome,
-    payableVAT, payableCorporateTax, payableTaxIncome,
-    payableSSC, provisionHolidayPay])
+    partials.tradeCreditors,
+    partials.accruals,
+    partials.deferredIncome,
+    partials.payableVAT,
+    partials.payableCorporateTax,
+    partials.payableTaxIncome,
+    partials.payableSSC,
+    partials.provisionHolidayPay
+  ])
 
   const liabilities = sumProps([equity, longTermDebt, shortTermLiabilities])
 
@@ -241,40 +318,40 @@ export function calculateBalanceSheet (data, profitAndLoss) {
     {name: 'Assets', values: assets, className: 'header' },
 
     {name: 'Fixed assets', values: fixedAssets, className: 'main-top' },
-    {name: 'Tangibles & intangibles', values: tangiblesAndIntangibles },
-    {name: 'Financial fixed assets', values: financialFixedAssets },
-    {name: 'Deferred tax asset', values: deferredTaxAsset },
+    {name: 'Tangibles & intangibles', values: partials.tangiblesAndIntangibles },
+    {name: 'Financial fixed assets', values: partials.financialFixedAssets },
+    {name: 'Deferred tax asset', values: partials.deferredTaxAsset },
 
     {name: 'Current assets', values: currentAssets, className: 'main-top' },
-    {name: 'Goods in stock', values: goodsInStock },
-    {name: 'Trade receivables', values: tradeReceivables },
-    {name: 'Prepayments', values: prepayments },
-    {name: 'Accrued income', values: accruedIncome },
-    {name: 'Receivable VAT', values: receivableVAT },
+    {name: 'Goods in stock', values: partials.goodsInStock },
+    {name: 'Trade receivables', values: partials.tradeReceivables },
+    {name: 'Prepayments', values: partials.prepayments },
+    {name: 'Accrued income', values: partials.accruedIncome },
+    {name: 'Receivable VAT', values: partials.receivableVAT },
 
     {name: 'Cash & bank (not yet implemented)', values: cashAndBank, className: 'main-middle' },
 
     {name: 'Liabilities', values: liabilities, className: 'header' },
 
     {name: 'Equity', values: equity, className: 'main-top' },
-    {name: 'Paid-in capital', values: paidInCapital },
-    {name: 'Agio', values: agio },
-    {name: 'Reserves', values: reserves },
-    {name: 'Profit/loss for the year', values: netResult },
+    {name: 'Paid-in capital', values: partials.paidInCapital },
+    {name: 'Agio', values: partials.agio },
+    {name: 'Reserves', values: partials.reserves },
+    {name: 'Profit/loss for the year', values: partials.netResult },
 
     {name: 'Long-term debt', values: longTermDebt, className: 'main-top' },
-    {name: 'Bank loans', values: bankLoans },
-    {name: 'other long-term interest bearing debt', values: otherSourcesOfFinance },
+    {name: 'Bank loans', values: partials.bankLoans },
+    {name: 'other long-term interest bearing debt', values: partials.otherSourcesOfFinance },
 
     {name: 'Short-term liabilities', values: shortTermLiabilities, className: 'main-top' },
-    {name: 'Trade creditors', values: tradeCreditors },
-    {name: 'Accruals', values: accruals },
-    {name: 'Deferred Income', values: deferredIncome },
-    {name: 'Payable VAT', values: payableVAT },
-    {name: 'Payable Corporate tax', values: payableCorporateTax },
-    {name: 'Payable income tax', values: payableTaxIncome },
-    {name: 'Payable Social security contributions', values: payableSSC },
-    {name: 'Provision holiday pay', values: provisionHolidayPay },
+    {name: 'Trade creditors', values: partials.tradeCreditors },
+    {name: 'Accruals', values: partials.accruals },
+    {name: 'Deferred Income', values: partials.deferredIncome },
+    {name: 'Payable VAT', values: partials.payableVAT },
+    {name: 'Payable Corporate tax', values: partials.payableCorporateTax },
+    {name: 'Payable income tax', values: partials.payableTaxIncome },
+    {name: 'Payable Social security contributions', values: partials.payableSSC },
+    {name: 'Provision holiday pay', values: partials.provisionHolidayPay },
 
     {name: 'Balance', values: balance, className: 'header', showZeros: true }
   ]
