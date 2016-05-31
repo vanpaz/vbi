@@ -30,21 +30,21 @@ export function parseQuantity (item, year, defaultValue = '0') {
 }
 
 /**
- * Generate profit and loss data
+ * Generate partials for profit and loss (including totals)
  * @param data
  */
-export function calculateProfitAndLoss (data) {
+export function calculateProfitAndLossPartials (data) {
   const years = getYears(data)
   const corporateTaxRate = parsePercentage(data.parameters.corporateTaxRate)
 
   const revenueTotalsPerCategory = calculateTotalsPerCategory(data.revenues.all, years)
-  const revenueTotals = calculateTotals(data.revenues.all, years)
+  const revenues = calculateTotals(data.revenues.all, years)
 
   const directCosts = calculateTotals(data.costs.direct, years, revenueTotalsPerCategory)
   const personnelCosts = calculateTotals(data.costs.personnel, years, revenueTotalsPerCategory)
   const indirectCosts = calculateTotals(data.costs.indirect, years, revenueTotalsPerCategory)
 
-  const grossMargin = subtractProps(revenueTotals, directCosts)
+  const grossMargin = subtractProps(revenues, directCosts)
   const EBITDA = subtractProps(grossMargin, indirectCosts)
 
   const allInvestments = data.investments.tangible.concat(data.investments.intangible)
@@ -66,19 +66,42 @@ export function calculateProfitAndLoss (data) {
 
   const netResult = subtractProps(EBT, corporateTaxes)
 
+  return {
+    revenues,
+    directCosts,
+    grossMargin,
+    personnelCosts,
+    indirectCosts,
+    EBITDA,
+    depreciation,
+    EBIT,
+    interest,
+    EBT,
+    corporateTaxes,
+    netResult
+  }
+}
+
+/**
+ * Generate profit and loss data
+ * @param data
+ */
+export function calculateProfitAndLoss (data) {
+  const partials = calculateProfitAndLossPartials(data)
+
   return [
-    {name: 'Total revenues', id: 'revenues', values: revenueTotals },
-    {name: 'Total direct costs', id: 'totalDirectCosts', values: directCosts },
-    {name: 'Gross margin', values: grossMargin },
-    {name: 'Total personnel costs', id: 'personnelCosts', values: personnelCosts },
-    {name: 'Total other direct costs', id: 'totalOtherDirectCosts', values: indirectCosts },
-    {name: 'EBITDA', values: EBITDA },
-    {name: 'Depreciation and amortization', values: depreciation },
-    {name: 'EBIT', values: EBIT, className: 'main-middle' },
-    {name: 'Interest (not yet available...)', values: interest },
-    {name: 'EBT', id: 'ebt', values: EBT },
-    {name: 'Corporate taxes', id: 'corporateTaxes', values: corporateTaxes },
-    {name: 'Net result', id: 'netResult', values: netResult }
+    {name: 'Total revenues', id: 'revenues', values: partials.revenues },
+    {name: 'Total direct costs', id: 'directCosts', values: partials.directCosts },
+    {name: 'Gross margin', values: partials.grossMargin },
+    {name: 'Total personnel costs', id: 'personnelCosts', values: partials.personnelCosts },
+    {name: 'Total other direct costs', id: 'indirectCosts', values: partials.indirectCosts },
+    {name: 'EBITDA', values: partials.EBITDA },
+    {name: 'Depreciation and amortization', values: partials.depreciation },
+    {name: 'EBIT', values: partials.EBIT, className: 'main-middle' },
+    {name: 'Interest (not yet available...)', values: partials.interest },
+    {name: 'EBT', id: 'ebt', values: partials.EBT },
+    {name: 'Corporate taxes', id: 'corporateTaxes', values: partials.corporateTaxes },
+    {name: 'Net result', id: 'netResult', values: partials.netResult }
   ]
 }
 
@@ -479,15 +502,15 @@ export function calculateFinancialFixedAssets (data, years) {
  * @return {Object.<string, number>}
  */
 export function calculatePayments(data, profitAndLoss, years) {
-  const totalDirectCosts = profitAndLoss.find(e => e.id === 'totalDirectCosts').values
-  const totalOtherDirectCosts = profitAndLoss.find(e => e.id === 'totalOtherDirectCosts').values
+  const directCosts = profitAndLoss.find(e => e.id === 'directCosts').values
+  const indirectCosts = profitAndLoss.find(e => e.id === 'indirectCosts').values
 
   const allInvestments = data.investments.tangible.concat(data.investments.intangible)
   const totalInvestments = allInvestments
       .map(category => types.investment.calculatePxQ(category, years))
       .reduce(addProps, initProps(years))
 
-  return sumProps([totalDirectCosts, totalOtherDirectCosts, totalInvestments])
+  return sumProps([directCosts, indirectCosts, totalInvestments])
 }
 
 /**
