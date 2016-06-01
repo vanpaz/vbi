@@ -363,6 +363,11 @@ The application supports multiple types of prices:
   ```
 
 
+## Literature
+
+- [Fundamental Analysis](http://zerodha.com/varsity/module/fundamental-analysis/) (book)
+
+
 ## License
 
 MIT

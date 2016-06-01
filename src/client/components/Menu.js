@@ -127,7 +127,10 @@ export default class Menu extends React.Component {
           <ListItem
               primaryText="Save as..."
               leftIcon={<SaveIcon />}
-              onTouchTap={(event) => alert('Sorry, not yet implemented...') } />
+              onTouchTap={(event) => {
+                this.hide()
+                this.saveDocAs()
+              }} />
         </List>
 
       </LeftNav>
@@ -163,7 +166,7 @@ export default class Menu extends React.Component {
     }
 
     this.refs.prompt.show(options).then(newTitle => {
-      console.log('rename doc', newTitle)
+      debug('rename doc', newTitle)
       if (newTitle !== null) {
         this.props.onRenameDoc(newTitle)
       }
@@ -187,7 +190,48 @@ export default class Menu extends React.Component {
       return this.askToSignIn()
     }
 
-    this.props.onSaveDoc()
+    if (!this.props.id) {
+      // new document, open a prompt to ask for a title
+      const options = {
+        title: 'Save',
+        description: 'Enter a title for the scenario:',
+        hintText: 'My Scenario',
+        value: this.props.title
+      }
+
+      this.refs.prompt.show(options).then(newTitle => {
+        debug('save new doc', newTitle)
+        if (newTitle !== null) {
+          this.props.onSaveDocAs(newTitle)
+        }
+      })
+    }
+    else {
+      // save an existing document
+      this.props.onSaveDoc()
+    }
+  }
+
+  saveDocAs () {
+    debug('saveDocAs')
+
+    if (!this.props.signedIn) {
+      return this.askToSignIn()
+    }
+
+    const options = {
+      title: 'Save as...',
+      description: 'Enter a title for the scenario:',
+      hintText: 'My Scenario',
+      value: this.props.title + ' (copy)'
+    }
+
+    this.refs.prompt.show(options).then(newTitle => {
+      debug('save doc as', newTitle)
+      if (newTitle !== null) {
+        this.props.onSaveDocAs(newTitle)
+      }
+    })
   }
 
   /**

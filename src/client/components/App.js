@@ -55,6 +55,7 @@ class App extends Component {
     this.handleOpenDoc = this.handleOpenDoc.bind(this)
     this.handleRenameDoc = this.handleRenameDoc.bind(this)
     this.handleSaveDoc = this.handleSaveDoc.bind(this)
+    this.handleSaveDocAs = this.handleSaveDocAs.bind(this)
     this.handleDeleteDoc = this.handleDeleteDoc.bind(this)
 
     this.handleAutoSave = debounce(this.handleSaveDoc, AUTO_SAVE_DELAY)
@@ -69,11 +70,13 @@ class App extends Component {
             ref="menu"
             docs={this.props.docs}
             title={this.props.doc.title}
+            id={this.props.doc._id}
             signedIn={this.isSignedIn()}
             onNewDoc={this.handleNewDoc}
             onOpenDoc={this.handleOpenDoc}
             onRenameDoc={this.handleRenameDoc}
             onSaveDoc={this.handleSaveDoc}
+            onSaveDocAs={this.handleSaveDocAs}
             onDeleteDoc={this.handleDeleteDoc}
         />
 
@@ -251,12 +254,42 @@ class App extends Component {
         .catch((err) => this.handleError(err))
   }
 
+  handleSaveDocAs (newTitle) {
+    debug('handleSaveDocAs')
+
+    this.handleAutoSave.cancel()
+
+    const copyOfDoc = this.props.doc
+        .without(['_id', '_rev'])
+        .set('title', newTitle)
+
+    console.log('copyOfDoc', copyOfDoc)
+
+    save(copyOfDoc, n => this.handleNotification(n))
+        .then((response) => {
+
+          const updatedDoc = copyOfDoc
+              .set('_id', response.id)
+              .set('_rev', response.rev)
+
+          this.props.dispatch(setDoc(updatedDoc))
+
+          hash.set('id', updatedDoc._id)
+          this.fetchDocs()
+        })
+        .catch((err) => this.handleError(err))
+  }
+
   /**
    * Delete a document
    * @param {{id: string, rev: string, title: string}} doc
    */
   handleDeleteDoc (doc) {
     debug('deleteDoc')
+
+    if (hash.get('id') === doc.id) {
+      this.handleAutoSave.cancel()
+    }
 
     del(doc.id, doc.rev, doc.title, n => this.handleNotification(n))
         .then(() => {
