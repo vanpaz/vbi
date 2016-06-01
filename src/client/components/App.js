@@ -178,6 +178,14 @@ class App extends Component {
       }
     })
 
+    // listen for the unload event, check whether there are unsaved changes
+    window.addEventListener('beforeunload', (event) => {
+      if (this.saveNeeded()) {
+        this.handleSaveDoc()
+        event.returnValue = 'Are you sure you want to leave?\n\nThere are unsaved changes.'
+      }
+    })
+
     this.fetchUser()
     // FIXME: setUser should throw an error when setting a regular JSON object instead of immutable, test this
         .then(user => this.props.dispatch(setUser(user)))
@@ -235,9 +243,6 @@ class App extends Component {
     debug('handleSaveDoc')
 
     this.handleAutoSave.cancel()
-
-    // TODO: should mark the doc in it's current state as saved
-    // TODO: better: use a changed flag
 
     save(this.props.doc, n => this.handleNotification(n))
         .then((response) => {
