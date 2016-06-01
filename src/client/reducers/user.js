@@ -2,7 +2,7 @@ import Immutable from 'seamless-immutable'
 
 const user = (state = Immutable({}), action) => {
   switch (action.type) {
-    case 'SET_USER':
+    case 'USER_SET':
       return Immutable(action.user)
 
     default:

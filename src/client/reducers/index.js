@@ -3,8 +3,8 @@ import { combineReducers } from 'redux-seamless-immutable'
 import user from './user'
 import docs from './docs'
 import doc from './doc'
-import unchangedDoc from './unchangedDoc'
+import changed from './changed'
 
-const reducers = combineReducers({ user, docs, doc, unchangedDoc })
+const reducers = combineReducers({ user, docs, doc, changed })
 
 export default reducers

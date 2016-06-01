@@ -16,7 +16,7 @@ injectTapEventPlugin()
 let initialState = Immutable({
   user: {},
 
-  unchangedDoc: null,  // contains the document as loaded/saved in the database
+  changed: false,  // true when the current document contains unsaved changes
   doc: require('../../data/koekjes.json'),   // The current doc
   docs: [] // list with all docs of the user
 })

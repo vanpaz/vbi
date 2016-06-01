@@ -1,6 +1,8 @@
 import Immutable from 'seamless-immutable'
 import debugFactory from 'debug/browser'
 
+import { merge } from 'lodash'
+
 import { uuid } from '../utils/uuid'
 import { removeItem } from '../utils/immutable'
 
@@ -10,14 +12,65 @@ const EMPTY_DOC = Immutable({
   title: 'New Scenario',
   data: {
     parameters: {
-      startingYear: '2016',
-      numberOfYears: '5'
+      startingYear: "2016",
+      numberOfYears: "5",
+      currency: "\u20ac",
+      currencyMagnitude: "1000",
+      numberOfDecimals: "0",
+      startingCapital: "10k",
+      VATRate: "21%",
+      corporateTaxRate: "25%",
+
+      interestPayableOnOverdraft: "8%",
+      interestPayableOnLoans: "5%",
+      interestReceivableOnCredit: "1%",
+
+      VATPaidAfter: "3",
+      corporateTaxPaidAfter: "12",
+      incomeTaxPaidAfter: "1",
+      socialSecurityContributionsPaidAfter: "1",
+
+      daysInStockOfInventory: "10",
+      daysAccountsReceivablesOutstanding: "30",
+      daysPrepaymentOfExpenditure: "5",
+      daysAccrualOfIncome: "15",
+      daysAccountsPayableOutstanding: "30",
+      daysAccrualOfCost: "15",
+      daysDeferredIncome: "15",
+
+      monthOfHolidayPayment: "5"
     },
-    costs: [],
-    revenues: [],
-    financing: {}
+    costs: {
+      direct: [],
+      personnel: [],
+      indirect: []
+    },
+    investments: {
+      tangible: [],
+      intangible: []
+    },
+    revenues: {
+      all: []
+    },
+    financing: {
+      investmentsInParticipations: {},
+      equityContributions: {},
+      bankLoansCapitalCalls: {},
+      bankLoansRedemptionInstallments: {},
+      otherSourcesOfFinance: {}
+    }
   }
 })
+
+/**
+ * Ensure that all required fields are available in the document.
+ * Missing fields will be added
+ * @param {Object} doc
+ * @return {Object}
+ */
+function sanitizeDoc (doc) {
+  return Immutable(merge({}, EMPTY_DOC, doc))
+}
 
 
 const doc = (state = Immutable({}), action) => {
@@ -26,22 +79,22 @@ const doc = (state = Immutable({}), action) => {
   debug(action.type, action)
 
   switch (action.type) {
-    case 'SET_DOC':
-      return action.doc
+    case 'DOC_SET':
+      return sanitizeDoc(action.doc)
 
-    case 'NEW_DOC':
+    case 'DOC_NEW':
       return EMPTY_DOC
 
-    case 'RENAME_DOC':
+    case 'DOC_RENAME':
       return state.set('title', action.title)
 
-    case 'SET_PARAMETER':
+    case 'DOC_SET_PARAMETER':
       return state.setIn(['data', 'parameters', action.parameter], action.value)
 
-    case 'SET_PROPERTY':
+    case 'DOC_SET_PROPERTY':
       return state.setIn(action.path, action.value)
 
-    case 'ADD_CATEGORY':
+    case 'DOC_ADD_CATEGORY':
       path = ['data', action.section, action.group]
 
       const category = Immutable({
@@ -54,13 +107,13 @@ const doc = (state = Immutable({}), action) => {
       return state.updateIn(path,
           categories => categories.concat([category]))
 
-    case 'RENAME_CATEGORY':
+    case 'DOC_RENAME_CATEGORY':
       path = findCategoryPath(state.data, action.section, action.group, action.categoryId)
           .concat(['name'])
 
       return state.setIn(path, action.name)
 
-    case 'MOVE_CATEGORY_UP':
+    case 'DOC_MOVE_CATEGORY_UP':
         // TODO: simplify this function
       path = findCategoryPath(state.data, action.section, action.group, action.categoryId)
 
@@ -81,10 +134,10 @@ const doc = (state = Immutable({}), action) => {
         return state
       }
 
-    case 'MOVE_CATEGORY_DOWN': // TODO
+    case 'DOC_MOVE_CATEGORY_DOWN': // TODO
 
 
-    case 'DELETE_CATEGORY':
+    case 'DOC_DELETE_CATEGORY':
       // TODO: simplify this function
       path = findCategoryPath(state.data, action.section, action.group, action.categoryId)
 
@@ -94,13 +147,13 @@ const doc = (state = Immutable({}), action) => {
 
       return state.updateIn(path, categories => removeItem(categories, categoryIndex))
 
-    case 'SET_PRICE':
+    case 'DOC_SET_PRICE':
       path = findCategoryPath(state.data, action.section, action.group, action.categoryId)
           .concat(['price'])
 
       return state.setIn(path, action.price)
 
-    case 'SET_QUANTITY':
+    case 'DOC_SET_QUANTITY':
       path = findCategoryPath(state.data, action.section, action.group, action.categoryId)
           .concat(['quantities', action.year])
 

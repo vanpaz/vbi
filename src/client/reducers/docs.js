@@ -2,7 +2,7 @@ import Immutable from 'seamless-immutable'
 
 const docs = (state = Immutable([]), action) => {
   switch (action.type) {
-    case 'LIST_DOCS':
+    case 'DOCS_LIST':
       return Immutable(action.docs)
 
     default:

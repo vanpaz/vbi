@@ -115,14 +115,14 @@ class App extends Component {
       this.handleSaveDoc()
     }
 
-    let saveNeeded = (this.props.doc && this.props.doc._id && this.isChanged())
+    let changed = this.saveNeeded()
         ? <span>
             <span className="changed">changed (</span>
             <a className="changed" href="#" onClick={handleSaveDoc}>save now</a>
             <span className="changed">)</span>
           </span>
         : null
-    let title = <div>VanPaz Business Intelligence {docTitle} {saveNeeded}</div>
+    let title = <div>VanPaz Business Intelligence {docTitle} {changed}</div>
 
     return <AppBar
         style={APP_BAR_STYLE}
@@ -187,7 +187,7 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.isChanged()) {
+    if (this.saveNeeded()) {
       this.handleAutoSave()
     }
   }
@@ -200,7 +200,7 @@ class App extends Component {
   handleNewDoc () {
     debug('handleNewDoc')
 
-    if (this.isChanged()) {
+    if (this.saveNeeded()) {
       return this.handleError(new Error('Cannot open new document, current document has unsaved changes'))
     }
 
@@ -217,7 +217,7 @@ class App extends Component {
   handleOpenDoc (id, title) {
     debug('handleOpenDoc', id, title)
 
-    if (this.isChanged()) {
+    if (this.saveNeeded()) {
       return this.handleError(new Error('Cannot open document, current document has unsaved changes'))
     }
 
@@ -326,8 +326,8 @@ class App extends Component {
         .catch(err => this.handleError(err))
   }
 
-  isChanged () {
-    return this.props.unchangedDoc !== null && this.props.doc !== this.props.unchangedDoc
+  saveNeeded () {
+    return (this.props.doc && this.props.doc._id && this.props.changed)
   }
 
   /**
