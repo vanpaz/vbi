@@ -1,0 +1,49 @@
+{
+  "title": "New Scenario",
+  "data": {
+    "parameters": {
+      "startingYear": "2016",
+      "numberOfYears": "5",
+      "currency": "€",
+      "currencyMagnitude": "1000",
+      "numberOfDecimals": "0",
+      "startingCapital": "10k",
+      "VATRate": "21%",
+      "corporateTaxRate": "25%",
+      "interestPayableOnOverdraft": "8%",
+      "interestPayableOnLoans": "5%",
+      "interestReceivableOnCredit": "1%",
+      "VATPaidAfter": "3",
+      "corporateTaxPaidAfter": "12",
+      "incomeTaxPaidAfter": "1",
+      "socialSecurityContributionsPaidAfter": "1",
+      "daysInStockOfInventory": "10",
+      "daysAccountsReceivablesOutstanding": "30",
+      "daysPrepaymentOfExpenditure": "5",
+      "daysAccrualOfIncome": "15",
+      "daysAccountsPayableOutstanding": "30",
+      "daysAccrualOfCost": "15",
+      "daysDeferredIncome": "15",
+      "monthOfHolidayPayment": "5"
+    },
+    "costs": {
+      "direct": [],
+      "personnel": [],
+      "indirect": []
+    },
+    "investments": {
+      "tangible": [],
+      "intangible": []
+    },
+    "revenues": {
+      "all": []
+    },
+    "financing": {
+      "investmentsInParticipations": {},
+      "equityContributions": {},
+      "bankLoansCapitalCalls": {},
+      "bankLoansRedemptionInstallments": {},
+      "otherSourcesOfFinance": {}
+    }
+  }
+}

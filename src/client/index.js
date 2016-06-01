@@ -17,7 +17,7 @@ let initialState = Immutable({
   user: {},
 
   changed: false,  // true when the current document contains unsaved changes
-  doc: require('../../data/koekjes.json'),   // The current doc
+  doc: require('./data/demoScenario.json'),   // The current doc
   docs: [] // list with all docs of the user
 })
 

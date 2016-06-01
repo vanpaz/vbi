@@ -8,59 +8,7 @@ import { removeItem } from '../utils/immutable'
 
 const debug = debugFactory('vbi:reducers')
 
-const EMPTY_DOC = Immutable({
-  title: 'New Scenario',
-  data: {
-    parameters: {
-      startingYear: "2016",
-      numberOfYears: "5",
-      currency: "\u20ac",
-      currencyMagnitude: "1000",
-      numberOfDecimals: "0",
-      startingCapital: "10k",
-      VATRate: "21%",
-      corporateTaxRate: "25%",
-
-      interestPayableOnOverdraft: "8%",
-      interestPayableOnLoans: "5%",
-      interestReceivableOnCredit: "1%",
-
-      VATPaidAfter: "3",
-      corporateTaxPaidAfter: "12",
-      incomeTaxPaidAfter: "1",
-      socialSecurityContributionsPaidAfter: "1",
-
-      daysInStockOfInventory: "10",
-      daysAccountsReceivablesOutstanding: "30",
-      daysPrepaymentOfExpenditure: "5",
-      daysAccrualOfIncome: "15",
-      daysAccountsPayableOutstanding: "30",
-      daysAccrualOfCost: "15",
-      daysDeferredIncome: "15",
-
-      monthOfHolidayPayment: "5"
-    },
-    costs: {
-      direct: [],
-      personnel: [],
-      indirect: []
-    },
-    investments: {
-      tangible: [],
-      intangible: []
-    },
-    revenues: {
-      all: []
-    },
-    financing: {
-      investmentsInParticipations: {},
-      equityContributions: {},
-      bankLoansCapitalCalls: {},
-      bankLoansRedemptionInstallments: {},
-      otherSourcesOfFinance: {}
-    }
-  }
-})
+const newScenario = Immutable(require('../data/newScenario.json'))
 
 /**
  * Ensure that all required fields are available in the document.
@@ -69,7 +17,7 @@ const EMPTY_DOC = Immutable({
  * @return {Object}
  */
 function sanitizeDoc (doc) {
-  return Immutable(merge({}, EMPTY_DOC, doc))
+  return Immutable(merge({}, newScenario, doc))
 }
 
 
@@ -83,7 +31,7 @@ const doc = (state = Immutable({}), action) => {
       return sanitizeDoc(action.doc)
 
     case 'DOC_NEW':
-      return EMPTY_DOC
+      return newScenario
 
     case 'DOC_RENAME':
       return state.set('title', action.title)

@@ -18,13 +18,16 @@ import ThemeManager from 'material-ui/lib/styles/theme-manager'
 
 import theme from '../theme'
 import Notification from './dialogs/Notification'
-import { setUser, listDocs, newDoc, renameDoc, setDoc } from '../actions'
+import { setUser, listDocs, renameDoc, setDoc } from '../actions'
 import Menu from './Menu'
 import Inputs from './Inputs'
 import Outputs from './Outputs'
 import { request } from '../rest/request'
 import { list, open, save, del } from '../rest/docs'
 import { hash } from '../utils/hash'
+
+const newScenario  = Immutable(require('../data/newScenario.json'))
+const demoScenario = Immutable(require('../data/demoScenario.json'))
 
 const debug = debugFactory('vbi:app')
 
@@ -52,6 +55,7 @@ class App extends Component {
 
     // bind all methods to current instance so we don't have to create wrapper functions to use them
     this.handleNewDoc = this.handleNewDoc.bind(this)
+    this.handleDemoDoc = this.handleDemoDoc.bind(this)
     this.handleOpenDoc = this.handleOpenDoc.bind(this)
     this.handleRenameDoc = this.handleRenameDoc.bind(this)
     this.handleSaveDoc = this.handleSaveDoc.bind(this)
@@ -73,6 +77,7 @@ class App extends Component {
             id={this.props.doc._id}
             signedIn={this.isSignedIn()}
             onNewDoc={this.handleNewDoc}
+            onDemoDoc={this.handleDemoDoc}
             onOpenDoc={this.handleOpenDoc}
             onRenameDoc={this.handleRenameDoc}
             onSaveDoc={this.handleSaveDoc}
@@ -174,7 +179,7 @@ class App extends Component {
         this.handleOpenDoc(id)
       }
       else {
-        this.props.dispatch(newDoc())
+        this.props.dispatch(setDoc(newScenario))
       }
     })
 
@@ -212,7 +217,18 @@ class App extends Component {
       return this.handleError(new Error('Cannot open new document, current document has unsaved changes'))
     }
 
-    this.props.dispatch(newDoc())
+    this.props.dispatch(setDoc(newScenario))
+    hash.remove('id')
+  }
+
+  handleDemoDoc () {
+    debug('handleDemoDoc')
+
+    if (this.saveNeeded()) {
+      return this.handleError(new Error('Cannot open demo document, current document has unsaved changes'))
+    }
+
+    this.props.dispatch(setDoc(demoScenario))
     hash.remove('id')
   }
 

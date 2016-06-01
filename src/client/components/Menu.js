@@ -11,6 +11,7 @@ import OpenIcon from 'material-ui/lib/svg-icons/file/folder-open'
 import SaveIcon from 'material-ui/lib/svg-icons/content/save'
 import CreateIcon from 'material-ui/lib/svg-icons/content/add'
 import ClearIcon from 'material-ui/lib/svg-icons/content/clear'
+import ToggleStarIcon from 'material-ui/lib/svg-icons/toggle/star'
 
 import SignInDialog from './dialogs/SignInDialog'
 import DeleteDialog from './dialogs/DeleteDialog'
@@ -105,6 +106,13 @@ export default class Menu extends React.Component {
                 this.newDoc()
               }} />
           <ListItem
+              primaryText="Demo"
+              leftIcon={<ToggleStarIcon />}
+              onTouchTap={event => {
+                this.hide()
+                this.demoDoc()
+              }} />
+          <ListItem
               primaryText="Rename"
               leftIcon={<EditIcon />}
               onTouchTap={(event) => {
@@ -152,7 +160,15 @@ export default class Menu extends React.Component {
   }
 
   newDoc () {
+    debug('newDoc')
+    
     this.props.onNewDoc()
+  }
+
+  demoDoc () {
+    debug('demoDoc')
+    
+    this.props.onDemoDoc()
   }
 
   renameDoc () {
