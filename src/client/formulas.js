@@ -400,12 +400,10 @@ export function calulateCashflowPartials (data) {
   const profitAndLossPartials = calculateProfitAndLossPartials(data)
   const balanceSheetPartials = calculateBalanceSheetPartials(data)
 
-  const correctionOnPaidCorporateTax = initProps(getYears(data)) // TODO: do we need this?
   const changesInDeferredTaxAssets = negateProps(diffProps(balanceSheetPartials.deferredTaxAssets))
 
   const NOPLAT = sumProps([
     profitAndLossPartials.netResult,
-    correctionOnPaidCorporateTax,
     changesInDeferredTaxAssets
   ])
 
