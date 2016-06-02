@@ -19,30 +19,6 @@ export default class PriceTypeSalary extends Component {
           hintText="+2%"
           floatingLabelText="Change per year (percentage)"
           onChange={event => this.handleChange('change', event.target.value)}  />
-      <br />
-      <TextField
-          value={this.props.price.holidayProvision}
-          hintText="8.33%"
-          floatingLabelText="Holiday provision (percentage)"
-          onChange={event => this.handleChange('holidayProvision', event.target.value)}  />
-      <br />
-      <TextField
-          value={this.props.price.incomeTax}
-          hintText="35%"
-          floatingLabelText="Income tax (percentage)"
-          onChange={event => this.handleChange('incomeTax', event.target.value)}  />
-      <br />
-      <TextField
-          value={this.props.price.SSCEmployer}
-          hintText="18%"
-          floatingLabelText="SSC employer (percentage)"
-          onChange={event => this.handleChange('SSCEmployer', event.target.value)}  />
-      <br />
-      <TextField
-          value={this.props.price.SSCEmployee}
-          hintText="17%"
-          floatingLabelText="SSC employee (percentage)"
-          onChange={event => this.handleChange('SSCEmployee', event.target.value)}  />
     </div>
   }
 

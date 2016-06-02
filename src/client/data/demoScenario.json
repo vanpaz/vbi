@@ -30,7 +30,7 @@
       "monthsVATPaidAfter": "3",
       "monthsCorporateTaxPaidAfter": "12",
       "monthsIncomeTaxPaidAfter": "1",
-      "monthsSocialSecurityContributionsPaidAfter": "1",
+      "monthsSSCPaidAfter": "1",
 
       "holidayProvision": "8.33%",
       "monthOfHolidayPayment": "5"
@@ -75,11 +75,7 @@
           "price": {
             "type": "salary",
             "value": "5k",
-            "change": "+2%",
-            "holidayProvision": "8.33%",
-            "incomeTax": "35%",
-            "SSCEmployer": "18%",
-            "SSCEmployee": "17%"
+            "change": "+2%"
           },
           "quantities": {
             "2015": "0",

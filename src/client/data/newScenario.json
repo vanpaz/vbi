@@ -30,7 +30,7 @@
       "monthsVATPaidAfter": "3",
       "monthsCorporateTaxPaidAfter": "12",
       "monthsIncomeTaxPaidAfter": "1",
-      "monthsSocialSecurityContributionsPaidAfter": "1",
+      "monthsSSCPaidAfter": "1",
 
       "holidayProvision": "8.33%",
       "monthOfHolidayPayment": "5"

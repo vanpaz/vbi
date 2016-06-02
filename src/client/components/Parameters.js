@@ -99,7 +99,7 @@ class Parameters extends Component {
       { this.renderParameter({ parameter: 'monthsCorporateTaxPaidAfter', text: 'Months corporate tax paid after', hint: 'number of months' }) }
       { this.renderParameter({ parameter: 'monthsVATPaidAfter', text: 'Months VAT paid after', hint: 'number of months' }) }
       { this.renderParameter({ parameter: 'monthsIncomeTaxPaidAfter', text: 'Months income tax paid after', hint: 'number of months'  }) }
-      { this.renderParameter({ parameter: 'monthsSocialSecurityContributionsPaidAfter', text: 'Months social security contributions paid after', hint: 'number of months' }) }
+      { this.renderParameter({ parameter: 'monthsSSCPaidAfter', text: 'Months social security contributions paid after', hint: 'number of months' }) }
     </div>
   }
 

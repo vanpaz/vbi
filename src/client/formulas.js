@@ -44,7 +44,12 @@ export function calculateProfitAndLossPartials (data) {
   const revenues = calculateTotals(data.revenues.all, years)
 
   const directCosts = calculateTotals(data.costs.direct, years, revenueTotalsPerCategory)
-  const personnelCosts = calculateTotals(data.costs.personnel, years, revenueTotalsPerCategory)
+  const holidayProvision = parseValue(data.parameters.holidayProvision)
+  const SSCEmployer = parseValue(data.parameters.SSCEmployer)
+  const personnelCosts = multiplyPropsWith(
+      calculateTotals(data.costs.personnel, years),
+      (1 + holidayProvision) * (1 + SSCEmployer)
+  )
   const indirectCosts = calculateTotals(data.costs.indirect, years, revenueTotalsPerCategory)
 
   const grossMargin = subtractProps(revenues, directCosts)
@@ -645,13 +650,13 @@ export function calculateInvestments(data, years) {
  * @return {Object.<string, number>}
  */
 export function calculatePayableIncomeTax(data, years) {
+  const incomeTax = parseValue(data.parameters.incomeTax)
   const monthsIncomeTaxPaidAfter = parseValue(data.parameters.monthsIncomeTaxPaidAfter)
 
-  const incomeTax = data.costs.personnel
-      .map(category => types.salary.calculateIncomeTax(category, years))
-      .reduce(addProps, initProps(years))
-
-  return multiplyPropsWith(incomeTax, monthsIncomeTaxPaidAfter / 12)
+  return multiplyPropsWith(
+      calculateTotals(data.costs.personnel, years),
+      incomeTax * monthsIncomeTaxPaidAfter / 12
+  )
 }
 
 /**
@@ -662,13 +667,14 @@ export function calculatePayableIncomeTax(data, years) {
  * @return {Object.<string, number>}
  */
 export function calculatePayableSSC (data, years) {
-  const monthsSocialSecurityContributionsPaidAfter = parseValue(data.parameters.monthsSocialSecurityContributionsPaidAfter)
+  const monthsSSCPaidAfter = parseValue(data.parameters.monthsSSCPaidAfter)
+  const SSCEmployer = parseValue(data.parameters.SSCEmployer)
+  const SSCEmployee = parseValue(data.parameters.SSCEmployee)
 
-  const SSCCosts = data.costs.personnel
-      .map(category => types.salary.calculateSSC(category, years))
-      .reduce(addProps, initProps(years))
-
-  return multiplyPropsWith(SSCCosts, monthsSocialSecurityContributionsPaidAfter / 12)
+  return multiplyPropsWith(
+      calculateTotals(data.costs.personnel, years),
+      (SSCEmployer + SSCEmployee) * monthsSSCPaidAfter / 12
+  )
 }
 
 /**
@@ -937,9 +943,6 @@ export let types = {
     calculatePrices: function (item, years) {
       const monthlySalary = parseValue(item.price.value)
       const change = 1 + parseValue(item.price.change)
-      const holidayProvision = 1 + parseValue(item.price.holidayProvision)
-      const SSCEmployer = 1 + parseValue(item.price.SSCEmployer)
-
       const prices = initProps(years)
 
       years.forEach((year, yearIndex) => {
@@ -947,62 +950,7 @@ export let types = {
 
         if (item.price.value != undefined && item.price.change != undefined) {
           prices[year] =
-              holidayProvision * SSCEmployer * Math.pow(change, yearIndex) *
-              monthlySalary * 12 *
-              quantity
-        }
-      })
-
-      return prices
-    },
-
-    /**
-     * Calculate income tax for a salary
-     * @param item
-     * @param {Array.<number>} years
-     * @return {Object.<string, number>} Returns an object with years as key
-     *                                   and prices as value
-     */
-    calculateIncomeTax: function (item, years) {
-      const monthlySalary = parseValue(item.price.value)
-      const change = 1 + parseValue(item.price.change)
-      const prices = initProps(years)
-      const incomeTax = parseValue(item.price.incomeTax)
-      
-      years.forEach((year, yearIndex) => {
-        const quantity = parseQuantity(item, year)
-
-        if (item.price.value != undefined && item.price.change != undefined) {
-          prices[year] =
-              incomeTax * Math.pow(change, yearIndex) *
-              monthlySalary * 12 *
-              quantity
-        }
-      })
-
-      return prices
-    },
-
-    /**
-     * Calculate social security costs for a salary (SSC employer + SSC employee)
-     * @param item
-     * @param {Array.<number>} years
-     * @return {Object.<string, number>} Returns an object with years as key
-     *                                   and prices as value
-     */
-    calculateSSC: function (item, years) {
-      const monthlySalary = parseValue(item.price.value)
-      const change = 1 + parseValue(item.price.change)
-      const prices = initProps(years)
-      const SSCEmployer = parseValue(item.price.SSCEmployer)
-      const SSCEmployee = parseValue(item.price.SSCEmployee)
-
-      years.forEach((year, yearIndex) => {
-        const quantity = parseQuantity(item, year)
-
-        if (item.price.value != undefined && item.price.change != undefined) {
-          prices[year] =
-              (SSCEmployer + SSCEmployee) * Math.pow(change, yearIndex) *
+              Math.pow(change, yearIndex) *
               monthlySalary * 12 *
               quantity
         }
