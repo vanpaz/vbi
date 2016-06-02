@@ -1,7 +1,7 @@
 import debugFactory from 'debug/browser'
 import {
     addProps, subtractProps, mapProps, negateProps, initProps, accumulateProps,
-    diffProps, multiplyPropsWith, sumProps, getProp
+    diffProps, multiplyPropsWith, sumProps
 } from './utils/object'
 
 const debug = debugFactory('vbi:formulas')
@@ -61,7 +61,7 @@ export function calculateProfitAndLossPartials (data) {
   const EBIT = subtractProps(EBITDA, depreciation)
 
   const interestPayableOnLoans = parseValue(data.parameters.interestPayableOnLoans)
-  const longTermDept = calculateLongTermDebt(data).longTermDebt
+  const longTermDept = calculateLongTermDebt(data, years)
   const interest = {}
   years.forEach(year => {
     // average over current and previous year, multiplied with the interest percentage
@@ -115,35 +115,17 @@ export function calculateProfitAndLoss (data) {
 
 export function calculateLongTermDebt (data) {
   const years = getYearsWithInitial(data)
-  const bankLoansCapitalCalls = getProp(data, ['financing', 'bankLoansCapitalCalls'])
-  const otherSourcesOfFinance = getProp(data, ['financing', 'otherSourcesOfFinance'])
-
-  // TODO: create a helper function to do cumulative calculations
 
   // cumulative bank loans
-  const bankLoans = {}
-  years.forEach(year => {
-    const previous = bankLoans[year - 1] || 0
-    const current = bankLoansCapitalCalls[year] ? parseValue(bankLoansCapitalCalls[year]) : 0
-    bankLoans[year] = previous + current
-  })
+  const bankLoansCapitalCalls = initProps(years, year => parseValue(data.financing.bankLoansCapitalCalls[year]))
+  const bankLoans = accumulateProps(bankLoansCapitalCalls)
 
   // cumulative otherSourcesOfFinance
-  const otherLongTermInterestBearingDebt = {}
-  years.forEach(year => {
-    const previous = otherLongTermInterestBearingDebt[year - 1] || 0
-    const current = otherSourcesOfFinance[year] ? parseValue(otherSourcesOfFinance[year]) : 0
-    otherLongTermInterestBearingDebt[year] = previous + current
-  })
+  const otherSourcesOfFinance = initProps(years, year => parseValue(data.financing.otherSourcesOfFinance[year]))
+  const otherLongTermInterestBearingDebt = accumulateProps(otherSourcesOfFinance)
 
   // sum up interest
-  const longTermDebt = addProps(bankLoans, otherLongTermInterestBearingDebt)
-
-  return {
-    longTermDebt,
-    bankLoans,
-    otherLongTermInterestBearingDebt
-  }
+  return addProps(bankLoans, otherLongTermInterestBearingDebt)
 }
 
 /**
