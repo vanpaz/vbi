@@ -176,9 +176,8 @@ export function calculateBalanceSheetPartials (data) {
   // goodsInStock
   const daysInStockOfInventory = parseValue(data.parameters.daysInStockOfInventory)
   const revenueTotalsPerCategory = calculateTotalsPerCategory(data.revenues.all, years)
-  const directCostscategoriesInStock = data.costs.direct.filter(category => category.stock === true)
   const goodsInStock = multiplyPropsWith(
-      calculateTotals(directCostscategoriesInStock, years, revenueTotalsPerCategory),
+      calculateTotals(data.costs.direct, years, revenueTotalsPerCategory),
       daysInStockOfInventory / 365
   )
 
