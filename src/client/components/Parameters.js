@@ -79,12 +79,8 @@ class Parameters extends Component {
   renderTaxParameters () {
     return <div key="interest" style={styles.container}>
       { this.renderParameter({ parameter: 'VATRate', text: 'VAT rate (%)', hint: 'percentage' }) }
-      { this.renderParameter({ parameter: 'VATPaidAfter', text: 'VAT paid after (months)', hint: 'number of months' }) }
       { this.renderParameter({ parameter: 'corporateTaxRate', text: 'Corporate tax rate (%)', hint: 'percentage' }) }
-      { this.renderParameter({ parameter: 'corporateTaxPaidAfter', text: 'Corporate tax paid after (months)', hint: 'number of months' }) }
-      { this.renderParameter({ parameter: 'incomeTaxPaidAfter', text: 'Income tax paid after (months)', hint: 'number of months'  }) }
-      { this.renderParameter({ parameter: 'socialSecurityContributionsPaidAfter', text: 'Social security contributions paid after (months)', hint: 'number of months' }) }
-    </div>
+  </div>
   }
 
   renderWorkingCapitalParameters () {
@@ -96,6 +92,11 @@ class Parameters extends Component {
       { this.renderParameter({ parameter: 'daysAccountsPayableOutstanding', text: 'Days accounts payable outstanding (invoice paid after)', hint: 'number of days' }) }
       { this.renderParameter({ parameter: 'daysAccrualOfCost', text: 'Days accrual of cost (invoice received)', hint: 'number of days' }) }
       { this.renderParameter({ parameter: 'daysDeferredIncome', text: 'Days deferred income (service delivered)', hint: 'number of days' }) }
+
+      { this.renderParameter({ parameter: 'corporateTaxPaidAfter', text: 'Months corporate tax paid after', hint: 'number of months' }) }
+      { this.renderParameter({ parameter: 'VATPaidAfter', text: 'Months VAT paid after', hint: 'number of months' }) }
+      { this.renderParameter({ parameter: 'incomeTaxPaidAfter', text: 'Months income tax paid after', hint: 'number of months'  }) }
+      { this.renderParameter({ parameter: 'socialSecurityContributionsPaidAfter', text: 'Months social security contributions paid after', hint: 'number of months' }) }
     </div>
   }
 
