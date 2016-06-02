@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import debugFactory from 'debug/browser'
 
-import { calculateBalanceSheet, clearIfZero, parseValue, getYears } from '../formulas'
+import { calculateBalanceSheet, parseValue, getYears } from '../formulas'
 
 const debug = debugFactory('vbi:profit-loss')
 
@@ -46,7 +46,7 @@ export default class BalanceSheet extends Component {
           const value = total && (total / magnitude).toFixed(numberOfDecimals)
 
           return <td key={year} >
-            { entry.showZeros ? value : clearIfZero(value) }
+            { value }
           </td>
         })
       }

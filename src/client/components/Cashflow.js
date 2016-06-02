@@ -4,7 +4,7 @@ import debugFactory from 'debug/browser'
 
 import { setProperty } from '../actions'
 import { getProp } from '../utils/object'
-import { calulateCashflow, clearIfZero, parseValue, getYears, numberRegExp } from '../formulas'
+import { calulateCashflow, parseValue, getYears, numberRegExp } from '../formulas'
 
 const debug = debugFactory('vbi:profit-loss')
 
@@ -55,7 +55,7 @@ class Cashflow extends Component {
           const value = total && (total / magnitude).toFixed(numberOfDecimals)
 
           return <td key={year} >
-            { entry.showZeros ? value : clearIfZero(value) }
+            { value }
           </td>
         })
       }

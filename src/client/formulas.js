@@ -292,7 +292,7 @@ export function calculateBalanceSheetPartials (data) {
 /**
  * Generate balance sheet data
  * @param {Object} data
- * @return {Array.<{name: string, values: {}, className: string, showZeros: boolean}>}
+ * @return {Array.<{name: string, values: {}, className: string}>}
  */
 export function calculateBalanceSheet (data) {
   const partials = calculateBalanceSheetPartials(data)
@@ -386,7 +386,7 @@ export function calculateBalanceSheet (data) {
     {name: 'Payable Social security contributions', values: partials.payableSSC },
     {name: 'Provision holiday pay', values: partials.provisionHolidayPayment },
 
-    {name: 'Balance', values: balance, className: 'header', showZeros: true }
+    {name: 'Balance', values: balance, className: 'header' }
   ]
 }
 
@@ -536,7 +536,7 @@ export function calulateCashflow (data) {
 
   return [
     {name: 'Net result', values: partials.netResult },
-    // {name: 'Correction on paid Corporate tax', values: {} }, // TODO: Implement Correction on paid Corporate tax, or remove it?
+
     {name: 'Changes in deferred tax assets', values: partials.changesInDeferredTaxAssets },
     {name: 'NOPLAT', values: partials.NOPLAT },
     
@@ -1030,15 +1030,6 @@ export function calculateTotals (categories, years, revenueTotalsPerCategory) {
   return categories
       .map(category => calculatePrices(category, years, revenueTotalsPerCategory))
       .reduce(addProps, initial)
-}
-
-/**
- * Return an empty string when the input value is '0', else return the value as is.
- * @param {string | number} value
- * @return {string}
- */
-export function clearIfZero (value) {
-  return (value === '0' || value === 0) ? '' : value
 }
 
 export const numberRegExp = /^([+-]?[0-9]+[.]?[0-9]*)([kMBT])?$/

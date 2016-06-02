@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import debugFactory from 'debug/browser'
 
-import { calculateProfitAndLoss, clearIfZero, getYears, parseValue } from '../formulas'
+import { calculateProfitAndLoss, getYears, parseValue } from '../formulas'
 
 const debug = debugFactory('vbi:profit-loss')
 
@@ -45,7 +45,7 @@ export default class ProfitAndLoss extends Component {
           const value = total && (total / magnitude).toFixed(numberOfDecimals)
 
           return <td key={year} >
-            { entry.showZeros ? value : clearIfZero(value) }
+            { value }
           </td>
         })
       }
