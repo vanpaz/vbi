@@ -2,24 +2,22 @@
   "title": "Demo Scenario",
   "data": {
     "parameters": {
-
       "startingYear": "2016",
       "numberOfYears": "5",
       "currency": "\u20ac",
       "currencyMagnitude": "1000",
       "numberOfDecimals": "0",
       "startingCapital": "10k",
+
       "VATRate": "21%",
       "corporateTaxRate": "25%",
+      "incomeTax": "35%",
+      "SSCEmployer": "18%",
+      "SSCEmployee": "17%",
 
       "interestPayableOnOverdraft": "8%",
       "interestPayableOnLoans": "5%",
       "interestReceivableOnCredit": "1%",
-
-      "VATPaidAfter": "3",
-      "corporateTaxPaidAfter": "12",
-      "incomeTaxPaidAfter": "1",
-      "socialSecurityContributionsPaidAfter": "1",
 
       "daysInStockOfInventory": "10",
       "daysAccountsReceivablesOutstanding": "30",
@@ -29,8 +27,13 @@
       "daysAccrualOfCost": "15",
       "daysDeferredIncome": "15",
 
-      "monthOfHolidayPayment": "5"
+      "monthsVATPaidAfter": "3",
+      "monthsCorporateTaxPaidAfter": "12",
+      "monthsIncomeTaxPaidAfter": "1",
+      "monthsSocialSecurityContributionsPaidAfter": "1",
 
+      "holidayProvision": "8.33%",
+      "monthOfHolidayPayment": "5"
     },
     "costs": {
       "direct": [

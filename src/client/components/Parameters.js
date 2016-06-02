@@ -34,15 +34,15 @@ class Parameters extends Component {
             primaryTogglesNestedList={true}
             nestedItems={[ this.renderGeneralParameters() ]} />
         <ListItem
+            primaryText="Tax and social security contributions"
+            initiallyOpen={false}
+            primaryTogglesNestedList={true}
+            nestedItems={[ this.renderTaxParameters() ]} />
+        <ListItem
             primaryText="Interest"
             initiallyOpen={false}
             primaryTogglesNestedList={true}
             nestedItems={[ this.renderInterestParameters() ]} />
-        <ListItem
-            primaryText="Tax"
-            initiallyOpen={false}
-            primaryTogglesNestedList={true}
-            nestedItems={[ this.renderTaxParameters() ]} />
         <ListItem
             primaryText="Working capital"
             initiallyOpen={false}
@@ -80,7 +80,10 @@ class Parameters extends Component {
     return <div key="interest" style={styles.container}>
       { this.renderParameter({ parameter: 'VATRate', text: 'VAT rate (%)', hint: 'percentage' }) }
       { this.renderParameter({ parameter: 'corporateTaxRate', text: 'Corporate tax rate (%)', hint: 'percentage' }) }
-  </div>
+      { this.renderParameter({ parameter: 'incomeTax', text: 'Income tax rate (%)', hint: 'percentage' }) }
+      { this.renderParameter({ parameter: 'SSCEmployer', text: 'Social security contributions employee (%)', hint: 'percentage' }) }
+      { this.renderParameter({ parameter: 'SSCEmployee', text: 'Social security contributions employer (%)', hint: 'percentage' }) }
+    </div>
   }
 
   renderWorkingCapitalParameters () {
@@ -93,15 +96,16 @@ class Parameters extends Component {
       { this.renderParameter({ parameter: 'daysAccrualOfCost', text: 'Days accrual of cost (invoice received)', hint: 'number of days' }) }
       { this.renderParameter({ parameter: 'daysDeferredIncome', text: 'Days deferred income (service delivered)', hint: 'number of days' }) }
 
-      { this.renderParameter({ parameter: 'corporateTaxPaidAfter', text: 'Months corporate tax paid after', hint: 'number of months' }) }
-      { this.renderParameter({ parameter: 'VATPaidAfter', text: 'Months VAT paid after', hint: 'number of months' }) }
-      { this.renderParameter({ parameter: 'incomeTaxPaidAfter', text: 'Months income tax paid after', hint: 'number of months'  }) }
-      { this.renderParameter({ parameter: 'socialSecurityContributionsPaidAfter', text: 'Months social security contributions paid after', hint: 'number of months' }) }
+      { this.renderParameter({ parameter: 'monthsCorporateTaxPaidAfter', text: 'Months corporate tax paid after', hint: 'number of months' }) }
+      { this.renderParameter({ parameter: 'monthsVATPaidAfter', text: 'Months VAT paid after', hint: 'number of months' }) }
+      { this.renderParameter({ parameter: 'monthsIncomeTaxPaidAfter', text: 'Months income tax paid after', hint: 'number of months'  }) }
+      { this.renderParameter({ parameter: 'monthsSocialSecurityContributionsPaidAfter', text: 'Months social security contributions paid after', hint: 'number of months' }) }
     </div>
   }
 
   renderProvisionsParameters () {
     return <div key="provisions" style={styles.container}>
+      { this.renderParameter({ parameter: 'holidayProvision', text: 'Holiday provision (%)', hint: 'percentage' }) }
       { this.renderParameter({ parameter: 'monthOfHolidayPayment', text: 'Month of holiday payment (number)', hint: 'number of month' }) }
     </div>
   }

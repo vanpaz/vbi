@@ -191,8 +191,8 @@ export function calculateBalanceSheetPartials (data) {
 
   // receivable VAT
   const VATRate = parseValue(data.parameters.VATRate)
-  const VATPaidAfter = parseValue(data.parameters.VATPaidAfter)
-  const receivableVAT = multiplyPropsWith(payments, VATRate * VATPaidAfter / 12)
+  const monthsVATPaidAfter = parseValue(data.parameters.monthsVATPaidAfter)
+  const receivableVAT = multiplyPropsWith(payments, VATRate * monthsVATPaidAfter / 12)
 
   // paid in capital
   const startingCapital = parseValue(data.parameters.startingCapital)
@@ -222,15 +222,15 @@ export function calculateBalanceSheetPartials (data) {
   const tradeCreditors = multiplyPropsWith(payments, daysAccountsPayableOutstanding / 365)
   const accruals = multiplyPropsWith(payments, daysAccrualOfCost / 365)
   const deferredIncome = multiplyPropsWith(revenues, daysDeferredIncome / 365)
-  const payableVAT = multiplyPropsWith(revenues, VATRate * VATPaidAfter / 12)
+  const payableVAT = multiplyPropsWith(revenues, VATRate * monthsVATPaidAfter / 12)
 
   // payableCorporateTax
-  const corporateTaxPaidAfter = parseValue(data.parameters.corporateTaxPaidAfter)
+  const monthsCorporateTaxPaidAfter = parseValue(data.parameters.monthsCorporateTaxPaidAfter)
   const payableCorporateTax = {}
   years.forEach(year => {
     const difference = (corporateTaxes[year] || 0) - (deferredTaxAssets[year - 1] || 0)
     if (difference > 0) {
-      payableCorporateTax[year] = (difference * corporateTaxPaidAfter / 12)
+      payableCorporateTax[year] = (difference * monthsCorporateTaxPaidAfter / 12)
     }
     else {
       payableCorporateTax[year] = 0
@@ -645,13 +645,13 @@ export function calculateInvestments(data, years) {
  * @return {Object.<string, number>}
  */
 export function calculatePayableIncomeTax(data, years) {
-  const incomeTaxPaidAfter = parseValue(data.parameters.incomeTaxPaidAfter)
+  const monthsIncomeTaxPaidAfter = parseValue(data.parameters.monthsIncomeTaxPaidAfter)
 
   const incomeTax = data.costs.personnel
       .map(category => types.salary.calculateIncomeTax(category, years))
       .reduce(addProps, initProps(years))
 
-  return multiplyPropsWith(incomeTax, incomeTaxPaidAfter / 12)
+  return multiplyPropsWith(incomeTax, monthsIncomeTaxPaidAfter / 12)
 }
 
 /**
@@ -662,13 +662,13 @@ export function calculatePayableIncomeTax(data, years) {
  * @return {Object.<string, number>}
  */
 export function calculatePayableSSC (data, years) {
-  const socialSecurityContributionsPaidAfter = parseValue(data.parameters.socialSecurityContributionsPaidAfter)
+  const monthsSocialSecurityContributionsPaidAfter = parseValue(data.parameters.monthsSocialSecurityContributionsPaidAfter)
 
   const SSCCosts = data.costs.personnel
       .map(category => types.salary.calculateSSC(category, years))
       .reduce(addProps, initProps(years))
 
-  return multiplyPropsWith(SSCCosts, socialSecurityContributionsPaidAfter / 12)
+  return multiplyPropsWith(SSCCosts, monthsSocialSecurityContributionsPaidAfter / 12)
 }
 
 /**
