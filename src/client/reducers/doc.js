@@ -30,9 +30,6 @@ const doc = (state = Immutable({}), action) => {
     case 'DOC_SET':
       return sanitizeDoc(action.doc)
 
-    case 'DOC_NEW':
-      return newScenario
-
     case 'DOC_RENAME':
       return state.set('title', action.title)
 

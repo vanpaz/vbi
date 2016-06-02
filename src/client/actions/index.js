@@ -24,10 +24,6 @@ export function setDoc (doc) {
   return { type: 'DOC_SET', doc }
 }
 
-export function newDoc () {
-  return { type: 'DOC_NEW' }
-}
-
 export function renameDoc (title) {
   return { type: 'DOC_RENAME', title }
 }
