@@ -40,17 +40,16 @@ export function calculateProfitAndLossPartials (data) {
   const years = getYears(data)
   const corporateTaxRate = parseValue(data.parameters.corporateTaxRate)
 
-  const revenueTotalsPerCategory = calculateTotalsPerCategory(data.revenues.all, years)
   const revenues = calculateTotals(data.revenues.all, years)
 
-  const directCosts = calculateTotals(data.costs.direct, years, revenueTotalsPerCategory)
+  const directCosts = calculateTotals(data.costs.direct, years, revenues)
   const holidayProvision = parseValue(data.parameters.holidayProvision)
   const SSCEmployer = parseValue(data.parameters.SSCEmployer)
   const personnelCosts = multiplyPropsWith(
       calculateTotals(data.costs.personnel, years),
       (1 + holidayProvision) * (1 + SSCEmployer)
   )
-  const indirectCosts = calculateTotals(data.costs.indirect, years, revenueTotalsPerCategory)
+  const indirectCosts = calculateTotals(data.costs.indirect, years, revenues)
 
   const grossMargin = subtractProps(revenues, directCosts)
   const EBITDA = subtractProps(grossMargin, indirectCosts)
@@ -162,9 +161,8 @@ export function calculateBalanceSheetPartials (data) {
 
   // goodsInStock
   const daysInStockOfInventory = parseValue(data.parameters.daysInStockOfInventory)
-  const revenueTotalsPerCategory = calculateTotalsPerCategory(data.revenues.all, years)
   const goodsInStock = multiplyPropsWith(
-      calculateTotals(data.costs.direct, years, revenueTotalsPerCategory),
+      calculateTotals(data.costs.direct, years, profitAndLossPartials.revenues),
       daysInStockOfInventory / 365
   )
   goodsInStock[initialYear] = parseValue(data.initialBalance.goodsInStock)
@@ -703,15 +701,14 @@ export function calculateOtherSourcesOfFinance(data, years) {
  * Calculate actual prices for all years configured for a single item.
  * @param {{price: Object, quantities: Object}} item
  * @param {Array.<number>} years
- * @param {Array.<{category: string, totals: Object.<string, number>}>} [revenueTotalsPerCategory]
- *                                   Totals of the revenues per category,
- *                                   needed to calculate prices based on a
- *                                   percentage of the total revenues or some
- *                                   categories.
+ * @param {Object.<string, number>} revenues
+ *                                   Totals of the revenues, needed to
+ *                                   calculate prices based on a
+ *                                   percentage of the revenues
  * @return {Object.<string, number>} Returns an object with years as key
  *                                   and prices as value
  */
-export function calculatePrices (item, years, revenueTotalsPerCategory) {
+export function calculatePrices (item, years, revenues) {
   var type = types[item.price.type]
 
   if (!type) {
@@ -720,7 +717,7 @@ export function calculatePrices (item, years, revenueTotalsPerCategory) {
         'Choose from: ' + Object.keys(types).join(','))
   }
 
-  return type.calculatePrices(item, years, revenueTotalsPerCategory)
+  return type.calculatePrices(item, years, revenues)
 }
 
 /**
@@ -779,28 +776,23 @@ export let types = {
      * Calculate actual prices for all years configured for a single item.
      * @param item
      * @param {Array.<number>} years
-     * @param {Array.<{category: string, totals: Object.<string, number>}>} revenueTotalsPerCategory
-     *                                   Totals of the revenues per category,
-     *                                   needed to calculate prices based on a
-     *                                   percentage of the total revenues or some
-     *                                   categories.
+     * @param {Object.<string, number>} revenues
+     *                                   Totals of the revenues, needed to
+     *                                   calculate prices based on a
+     *                                   percentage of the revenues
      * @return {Object.<string, number>} Returns an object with years as key
      *                                   and prices as value
      */
-    calculatePrices: function (item, years, revenueTotalsPerCategory) {
-      if (!revenueTotalsPerCategory) {
-        debug(new Error('No revenue totals available in this context'))
+    calculatePrices: function (item, years, revenues) {
+      if (!revenues) {
+        debug(new Error('No revenues available in this context'))
         return {}
       }
 
-      // calculate a percentage of all revenue
-      let totals = revenueTotalsPerCategory
-          .map(category => category.totals)
-          .reduce(addProps, initProps(years))
       let percentage = parseValue(item.price.percentage)
 
       return years.reduce((prices, year) => {
-        prices[year] = percentage * (totals[year] || 0)
+        prices[year] = percentage * (revenues[year] || 0)
 
         return prices
       }, {})
@@ -983,10 +975,13 @@ export function calculateTotalsPerCategory (categories, years) {
  * Calculate totals of an array with categories
  * @param {Array.<{price: Object, quantities: Object}>} categories
  * @param {Array.<number>} years
- * @param {Array} [revenueTotalsPerCategory]
+ * @param {Object.<string, number>} revenues
+ *                                   Totals of the revenues, needed to
+ *                                   calculate prices based on a
+ *                                   percentage of the revenues
  * @return {Object.<string, number>}
  */
-export function calculateTotals (categories, years, revenueTotalsPerCategory) {
+export function calculateTotals (categories, years, revenues) {
   if (!Array.isArray(categories)) {
     throw new TypeError('Array expected for calculateTotals')
   }
@@ -994,7 +989,7 @@ export function calculateTotals (categories, years, revenueTotalsPerCategory) {
   const initial = initProps(years)
 
   return categories
-      .map(category => calculatePrices(category, years, revenueTotalsPerCategory))
+      .map(category => calculatePrices(category, years, revenues))
       .reduce(addProps, initial)
 }
 

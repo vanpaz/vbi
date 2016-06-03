@@ -1,8 +1,5 @@
 import React, { Component } from 'react'
-import debugFactory from 'debug/browser'
 import TextField from 'material-ui/lib/text-field'
-
-const debug = debugFactory('vbi:PriceTypeManual')
 
 const styles = {
   textField: {width: 128}
@@ -46,9 +43,9 @@ export default class PriceTypeManual extends Component {
   }
 
   handleChangeEntry (year, value) {
-    debug('handleChangeEntry', year, value)
-
-    const price = this.props.price.setIn(['values', year], value)
+    const price = this.props.price
+        .set('type', 'manual')
+        .setIn(['values', year], value)
 
     this.props.onChange(price)
   }
