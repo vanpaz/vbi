@@ -93,7 +93,7 @@
  *     profitAndLoss: string | number,
  *
  *     bankLoans: string | number,
- *     otherSourcesOfFinance: string | number,
+ *     otherLongTermInterestBearingDebt: string | number,
  *
  *     tradeCreditors: string | number,
  *     accruals: string | number,

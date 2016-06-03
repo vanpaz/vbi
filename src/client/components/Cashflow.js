@@ -6,8 +6,6 @@ import { setProperty } from '../actions'
 import { getProp } from '../utils/object'
 import { calulateCashflow, parseValue, getYears, numberRegExp } from '../formulas'
 
-import './typedef.js'
-
 const debug = debugFactory('vbi:profit-loss')
 
 class Cashflow extends Component {

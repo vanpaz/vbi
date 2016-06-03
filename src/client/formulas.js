@@ -211,8 +211,10 @@ export function calculateBalanceSheetPartials (data) {
   // long-term debt
   const bankLoans = calculateBankLoans(data, years)
   bankLoans[initialYear] = parseValue(data.initialBalance.bankLoans)
-  const otherSourcesOfFinance = calculateOtherSourcesOfFinance(data, years)
-  otherSourcesOfFinance[initialYear] = parseValue(data.initialBalance.otherSourcesOfFinance)
+
+  const otherSourcesOfFinance = initProps(years, year => parseValue(data.financing.otherSourcesOfFinance[year]))
+  const otherLongTermInterestBearingDebt = accumulateProps(otherSourcesOfFinance)
+  otherLongTermInterestBearingDebt[initialYear] = parseValue(data.initialBalance.otherLongTermInterestBearingDebt)
 
   // short-term debt
   const daysAccountsPayableOutstanding = parseValue(data.parameters.daysAccountsPayableOutstanding)
@@ -288,7 +290,7 @@ export function calculateBalanceSheetPartials (data) {
 
     // long-term debt
     bankLoans,
-    otherSourcesOfFinance,
+    otherLongTermInterestBearingDebt,
 
     // short-term liabilities
     tradeCreditors,
@@ -345,7 +347,7 @@ export function calculateBalanceSheet (data) {
 
   const longTermDebt = sumProps([
     partials.bankLoans,
-    partials.otherSourcesOfFinance
+    partials.otherLongTermInterestBearingDebt
   ])
 
   const shortTermLiabilities = sumProps([
@@ -392,7 +394,7 @@ export function calculateBalanceSheet (data) {
 
     {name: 'Long-term debt', values: longTermDebt, className: 'main top' },
     {name: 'Bank loans', values: partials.bankLoans, initialValuePath: ['initialBalance', 'bankLoans'] },
-    {name: 'other long-term interest bearing debt', values: partials.otherSourcesOfFinance, initialValuePath: ['initialBalance', 'otherSourcesOfFinance'] },
+    {name: 'other long-term interest bearing debt', values: partials.otherLongTermInterestBearingDebt, initialValuePath: ['initialBalance', 'otherLongTermInterestBearingDebt'] },
 
     {name: 'Short-term liabilities', values: shortTermLiabilities, className: 'main top' },
     {name: 'Trade creditors', values: partials.tradeCreditors, initialValuePath: ['initialBalance', 'tradeCreditors'] },
@@ -676,25 +678,6 @@ export function calculateBankLoans(data, years) {
   })
 
   return bankLoans
-}
-
-/**
- * Calculate cumulative other sources of finance
- *
- * @param data
- * @param {Array.<number>} years
- * @return {Object.<string, number>}
- */
-export function calculateOtherSourcesOfFinance(data, years) {
-  const result = initProps(years)
-
-  years.forEach(year => {
-    result[year] +=
-        (result[year - 1] || 0) +
-        parseValue(data.financing.otherSourcesOfFinance[year] || 0)
-  })
-
-  return result
 }
 
 /**
