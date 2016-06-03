@@ -342,8 +342,6 @@ The application supports multiple types of prices:
     "type": "salary",
     "value": "50k",    // monthly salary
     "change": "+2%"    // yearly increase in salary
-    "holidayProvision": "8.3333%"
-    "sscEmployer": "18%"
   }
   ```
 

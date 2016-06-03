@@ -34,7 +34,7 @@ export function parseQuantity (item, year, defaultValue = '0') {
 
 /**
  * Generate partials for profit and loss (including totals)
- * @param data
+ * @param {Scenario} data
  */
 export function calculateProfitAndLossPartials (data) {
   const years = getYears(data)
@@ -91,7 +91,7 @@ export function calculateProfitAndLossPartials (data) {
 
 /**
  * Generate profit and loss data
- * @param {Object} data
+ * @param {Scenario} data
  */
 export function calculateProfitAndLoss (data) {
   const partials = calculateProfitAndLossPartials(data)
@@ -304,7 +304,7 @@ export function calculateBalanceSheetPartials (data) {
 
 /**
  * Generate balance sheet data
- * @param {Object} data
+ * @param {Scenario} data
  * @return {Array.<{name: string, values: {}, className: string}>}
  */
 export function calculateBalanceSheet (data) {
@@ -608,7 +608,7 @@ export function calculateDeferredTaxAssets (profitAndLossPartials, corporateTaxR
 
 /**
  * Calculate totals of a the asset values
- * @param {Object} data
+ * @param {Scenario} data
  * @param {Array.<number>} years
  * @return {Object.<string, number>}
  */
@@ -704,19 +704,19 @@ export let types = {
   constant: {
     /**
      * Calculate actual prices for all years configured for a single item.
-     * @param item
+     * @param category
      * @param {Array.<number>} years
      * @return {Object.<string, number>} Returns an object with years as key
      *                                   and prices as value
      */
-    calculatePxQ: function (item, years) {
-      let initialPrice = parseValue(item.price.value)
-      let change = 1 + parseValue(item.price.change)
+    calculatePxQ: function (category, years) {
+      let initialPrice = parseValue(category.price.value)
+      let change = 1 + parseValue(category.price.change)
 
       return years.reduce((prices, year, yearIndex) => {
-        let quantity = parseQuantity(item, year)
+        let quantity = parseQuantity(category, year)
 
-        if (item.price.value != undefined && item.price.change != undefined) {
+        if (category.price.value != undefined && category.price.change != undefined) {
           prices[year] = initialPrice * quantity * Math.pow(change, yearIndex)
         }
         else {
@@ -731,15 +731,15 @@ export let types = {
   manual: {
     /**
      * Calculate actual prices for all years configured for a single item.
-     * @param item
+     * @param category
      * @param {Array.<number>} years
      * @return {Object.<string, number>} Returns an object with years as key
      *                                   and prices as value
      */
-    calculatePxQ: function (item, years) {
+    calculatePxQ: function (category, years) {
       return years.reduce((prices, year) => {
-        let quantity = parseQuantity(item, year)
-        let value = parseValue(item.price.values && item.price.values[year] || '0')
+        let quantity = parseQuantity(category, year)
+        let value = parseValue(category.price.values && category.price.values[year] || '0')
 
         prices[year] = quantity * value
 
@@ -751,7 +751,7 @@ export let types = {
   revenue: {
     /**
      * Calculate actual prices for all years configured for a single item.
-     * @param item
+     * @param category
      * @param {Array.<number>} years
      * @param {Object.<string, number>} revenues
      *                                   Totals of the revenues, needed to
@@ -760,13 +760,13 @@ export let types = {
      * @return {Object.<string, number>} Returns an object with years as key
      *                                   and prices as value
      */
-    calculatePxQ: function (item, years, revenues) {
+    calculatePxQ: function (category, years, revenues) {
       if (!revenues) {
         debug(new Error('No revenues available in this context'))
         return {}
       }
 
-      let percentage = parseValue(item.price.percentage)
+      let percentage = parseValue(category.price.percentage)
 
       return years.reduce((prices, year) => {
         prices[year] = percentage * (revenues[year] || 0)
@@ -780,20 +780,20 @@ export let types = {
     /**
      * Calculate actual prices for all years configured for a single item.
      * This returns the depreciation of an investment
-     * @param item
+     * @param category
      * @param {Array.<number>} years
      * @return {Object.<string, number>} Returns an object with years as key
      *                                   and prices as value
      */
-    calculatePxQ: function (item, years) {
+    calculatePxQ: function (category, years) {
       const prices = initProps(years)
 
       // we ignore years for which we don't have a quantity,
       // and also ignore quantities not inside the provided series of years
       years.forEach(year => {
-        const price = parseValue(item.price.value)
-        const quantity = parseQuantity(item, year)
-        const depreciationPeriod = parseValue(item.price.depreciationPeriod)
+        const price = parseValue(category.price.value)
+        const quantity = parseQuantity(category, year)
+        const depreciationPeriod = parseValue(category.price.depreciationPeriod)
         const costPerYear = price * quantity / depreciationPeriod
 
         let y = year
@@ -812,20 +812,20 @@ export let types = {
 
     /**
      * Calculate the value of an asset: the initial value minus deprecation till now
-     * @param item
+     * @param category
      * @param {Array.<number>} years
      * @return {Object.<string, number>} Returns an object with years as key
      *                                   and prices as value
      */
-    calculateAssetsValue: function (item, years) {
+    calculateAssetsValue: function (category, years) {
       const assetValues = initProps(years)
 
       // we ignore years for which we don't have a quantity,
       // and also ignore quantities not inside the provided series of years
       years.forEach(year => {
-        const price = parseValue(item.price.value)
-        const quantity = parseQuantity(item, year)
-        const depreciationPeriod = parseValue(item.price.depreciationPeriod)
+        const price = parseValue(category.price.value)
+        const quantity = parseQuantity(category, year)
+        const depreciationPeriod = parseValue(category.price.depreciationPeriod)
         const costPerYear = price * quantity / depreciationPeriod
 
         let y = year
@@ -844,19 +844,19 @@ export let types = {
 
     /**
      * Calculate price times quantity for an asset
-     * @param item
+     * @param category
      * @param {Array.<number>} years
      * @return {Object.<string, number>} Returns an object with years as key
      *                                   and prices as value
      */
-    calculateInvestmentsValue: function (item, years) {
+    calculateInvestmentsValue: function (category, years) {
       const prices = initProps(years)
 
       // we ignore years for which we don't have a quantity,
       // and also ignore quantities not inside the provided series of years
       years.forEach(year => {
-        const price = parseValue(item.price.value)
-        const quantity = parseQuantity(item, year)
+        const price = parseValue(category.price.value)
+        const quantity = parseQuantity(category, year)
         prices[year] = price * quantity
       })
 
