@@ -32,7 +32,7 @@
       "monthsIncomeTaxPaidAfter": "1",
       "monthsSSCPaidAfter": "1",
 
-      "holidayProvision": "8.33%",
+      "holidayProvision": "8.333%",
       "monthOfHolidayPayment": "5"
     },
     "costs": {
@@ -338,6 +338,33 @@
       },
       "bankLoansRedemptionInstallments": {},
       "otherSourcesOfFinance": {}
+    },
+    "initialBalance": {
+      "tangiblesAndIntangibles": "",
+      "financialFixedAssets": "",
+      "deferredTaxAssets": "",
+
+      "goodsInStock": "",
+      "tradeReceivables": "",
+      "prepayments": "",
+      "accruedIncome": "",
+      "receivableVAT": "",
+
+      "agio": "",
+      "reserves": "",
+      "profitAndLoss": "",
+
+      "bankLoans": "",
+      "otherSourcesOfFinance": "",
+
+      "tradeCreditors": "",
+      "accruals": "",
+      "deferredIncome": "",
+      "payableVAT": "",
+      "payableCorporateTax": "",
+      "payableIncomeTax": "",
+      "payableSSC": "",
+      "provisionHolidayPayment": ""
     }
   }
 }

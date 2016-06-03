@@ -199,7 +199,7 @@ export function sumProps (objects) {
   const sum = initProps(props)
 
   objects.forEach(object => {
-    props.forEach(prop => sum[prop] += object[prop])
+    props.forEach(prop => sum[prop] += (object[prop] || 0))
   })
 
   return sum

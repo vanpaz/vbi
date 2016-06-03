@@ -139,8 +139,10 @@ export function calculateBalanceSheetPartials (data) {
 
   const corporateTaxRate = parseValue(data.parameters.corporateTaxRate)
   const years = getYears(data)
+  const initialYear = years[0] - 1
   const revenues = profitAndLossPartials.revenues
-  const netResult = profitAndLossPartials.netResult
+  const profitAndLoss = profitAndLossPartials.netResult
+  profitAndLoss[initialYear] = parseValue(data.initialBalance.profitAndLoss)
   const corporateTaxes = profitAndLossPartials.corporateTaxes
   const investments = calculateInvestments(data, years)
 
@@ -152,8 +154,11 @@ export function calculateBalanceSheetPartials (data) {
 
   // fixedAssets
   const tangiblesAndIntangibles = calculateAssetValues(data, years)
+  tangiblesAndIntangibles[initialYear] = parseValue(data.initialBalance.tangiblesAndIntangibles)
   const financialFixedAssets = calculateFinancialFixedAssets(data, years)
+  financialFixedAssets[initialYear] = parseValue(data.initialBalance.financialFixedAssets)
   const deferredTaxAssets = calculateDeferredTaxAssets(profitAndLossPartials, corporateTaxRate, years)
+  deferredTaxAssets[initialYear] = parseValue(data.initialBalance.deferredTaxAssets)
 
   // goodsInStock
   const daysInStockOfInventory = parseValue(data.parameters.daysInStockOfInventory)
@@ -162,27 +167,33 @@ export function calculateBalanceSheetPartials (data) {
       calculateTotals(data.costs.direct, years, revenueTotalsPerCategory),
       daysInStockOfInventory / 365
   )
+  goodsInStock[initialYear] = parseValue(data.initialBalance.goodsInStock)
 
   // tradeReceivables
   const daysAccountsReceivablesOutstanding = parseValue(data.parameters.daysAccountsReceivablesOutstanding)
   const tradeReceivables = multiplyPropsWith(revenues, daysAccountsReceivablesOutstanding / 365)
+  tradeReceivables[initialYear] = parseValue(data.initialBalance.tradeReceivables)
 
   // prepayments
   const daysPrepaymentOfExpenditure = parseValue(data.parameters.daysPrepaymentOfExpenditure)
   const prepayments = multiplyPropsWith(payments, daysPrepaymentOfExpenditure / 365)
+  prepayments[initialYear] = parseValue(data.initialBalance.prepayments)
 
   // accrued income
   const daysAccrualOfIncome = parseValue(data.parameters.daysAccrualOfIncome)
   const accruedIncome = multiplyPropsWith(revenues, daysAccrualOfIncome / 365)
+  accruedIncome[initialYear] = parseValue(data.initialBalance.accruedIncome)
 
   // receivable VAT
   const VATRate = parseValue(data.parameters.VATRate)
   const monthsVATPaidAfter = parseValue(data.parameters.monthsVATPaidAfter)
   const receivableVAT = multiplyPropsWith(payments, VATRate * monthsVATPaidAfter / 12)
+  receivableVAT[initialYear] = parseValue(data.initialBalance.receivableVAT)
 
   // paid in capital
   const startingCapital = parseValue(data.parameters.startingCapital)
   const paidInCapital = initProps(years, startingCapital)
+  paidInCapital[initialYear] = startingCapital
 
   // agio
   const equityContributions = data.financing.equityContributions
@@ -190,25 +201,33 @@ export function calculateBalanceSheetPartials (data) {
   years.forEach(year => {
     agio[year] = (agio[year - 1] || 0) + parseValue(equityContributions[year] || 0)
   })
+  agio[initialYear] = parseValue(data.initialBalance.agio)
 
   // reserves
   let reserves = {}
   years.forEach(year => {
-    reserves[year] = (reserves[year - 1] || 0) + (netResult[year - 1] || 0)
+    reserves[year] = (reserves[year - 1] || 0) + (profitAndLoss[year - 1] || 0)
   })
+  reserves[initialYear] = parseValue(data.initialBalance.reserves)
 
   // long-term debt
   const bankLoans = calculateBankLoans(data, years)
+  bankLoans[initialYear] = parseValue(data.initialBalance.bankLoans)
   const otherSourcesOfFinance = calculateOtherSourcesOfFinance(data, years)
+  otherSourcesOfFinance[initialYear] = parseValue(data.initialBalance.otherSourcesOfFinance)
 
   // short-term debt
   const daysAccountsPayableOutstanding = parseValue(data.parameters.daysAccountsPayableOutstanding)
   const daysAccrualOfCost = parseValue(data.parameters.daysAccrualOfCost)
   const daysDeferredIncome = parseValue(data.parameters.daysDeferredIncome)
   const tradeCreditors = multiplyPropsWith(payments, daysAccountsPayableOutstanding / 365)
+  tradeCreditors[initialYear] = parseValue(data.initialBalance.tradeCreditors)
   const accruals = multiplyPropsWith(payments, daysAccrualOfCost / 365)
+  accruals[initialYear] = parseValue(data.initialBalance.accruals)
   const deferredIncome = multiplyPropsWith(revenues, daysDeferredIncome / 365)
+  deferredIncome[initialYear] = parseValue(data.initialBalance.deferredIncome)
   const payableVAT = multiplyPropsWith(revenues, VATRate * monthsVATPaidAfter / 12)
+  payableVAT[initialYear] = parseValue(data.initialBalance.payableVAT)
 
   // payableCorporateTax
   const monthsCorporateTaxPaidAfter = parseValue(data.parameters.monthsCorporateTaxPaidAfter)
@@ -222,19 +241,33 @@ export function calculateBalanceSheetPartials (data) {
       payableCorporateTax[year] = 0
     }
   })
+  payableCorporateTax[initialYear] = parseValue(data.initialBalance.payableCorporateTax)
 
   // payableIncomeTax
-  const payableIncomeTax = calculatePayableIncomeTax(data, years)
+  const incomeTax = parseValue(data.parameters.incomeTax)
+  const monthsIncomeTaxPaidAfter = parseValue(data.parameters.monthsIncomeTaxPaidAfter)
+  const payableIncomeTax = multiplyPropsWith(
+      calculateTotals(data.costs.personnel, years),
+      incomeTax * monthsIncomeTaxPaidAfter / 12
+  )
+  payableIncomeTax[initialYear] = parseValue(data.initialBalance.payableIncomeTax)
 
   // payableSSC
-  const payableSSC = calculatePayableSSC(data, years)
+  const SSCEmployer = parseValue(data.parameters.SSCEmployer)
+  const SSCEmployee = parseValue(data.parameters.SSCEmployee)
+  const monthsSSCPaidAfter = parseValue(data.parameters.monthsSSCPaidAfter)
+  const payableSSC = multiplyPropsWith(
+      calculateTotals(data.costs.personnel, years),
+      (SSCEmployer + SSCEmployee) * monthsSSCPaidAfter / 12
+  )
+  payableSSC[initialYear] = parseValue(data.initialBalance.payableSSC)
 
   // provisionHolidayPayment
   const monthOfHolidayPayment = parseValue(data.parameters.monthOfHolidayPayment)
-  const personnelCosts = profitAndLossPartials.personnelCosts
-  const provisionHolidayPayment = multiplyPropsWith(personnelCosts,
-      // (12 / 13) / 12 * ((12 - monthOfHolidayPayment) / 12))
-      (12 - monthOfHolidayPayment) / 12 / 13)
+  const provisionHolidayPayment = multiplyPropsWith(profitAndLossPartials.personnelCosts,
+      // (12 / 13) / 12 * ((12 - monthOfHolidayPayment) / 12))   // unsimplified formula
+      (12 - monthOfHolidayPayment) / 12 / 13)                    // simplified formula
+  provisionHolidayPayment[initialYear] = parseValue(data.initialBalance.provisionHolidayPayment)
 
   return {
     // fixed assets
@@ -253,7 +286,7 @@ export function calculateBalanceSheetPartials (data) {
     paidInCapital,
     agio,
     reserves,
-    netResult,
+    profitAndLoss,
 
     // long-term debt
     bankLoans,
@@ -277,6 +310,8 @@ export function calculateBalanceSheetPartials (data) {
  * @return {Array.<{name: string, values: {}, className: string}>}
  */
 export function calculateBalanceSheet (data) {
+  const years = getYearsWithInitial(data)
+  const initialYear = years[0]
   const partials = calculateBalanceSheetPartials(data)
   const cashflowPartials = calulateCashflowPartials(data)
   
@@ -295,6 +330,7 @@ export function calculateBalanceSheet (data) {
   ])
 
   const cashAndBank = cashflowPartials.totalCashBalanceEoP
+  cashAndBank[initialYear] = parseValue(data.parameters.startingCapital)
 
   const assets = sumProps([
     fixedAssets,
@@ -306,7 +342,7 @@ export function calculateBalanceSheet (data) {
     partials.paidInCapital,
     partials.agio,
     partials.reserves,
-    partials.netResult
+    partials.profitAndLoss
   ])
 
   const longTermDebt = sumProps([
@@ -327,48 +363,50 @@ export function calculateBalanceSheet (data) {
 
   const liabilities = sumProps([equity, longTermDebt, shortTermLiabilities])
 
-  const balance = subtractProps(assets, liabilities)
+  const balance = mapProps(subtractProps(assets, liabilities), value => {
+    return value === -0 ? 0 : value
+  })
 
   return [
     {name: 'Assets', values: assets, className: 'header' },
 
     {name: 'Fixed assets', values: fixedAssets, className: 'main top' },
-    {name: 'Tangibles & intangibles', values: partials.tangiblesAndIntangibles },
-    {name: 'Financial fixed assets', values: partials.financialFixedAssets },
-    {name: 'Deferred tax assets', values: partials.deferredTaxAssets },
+    {name: 'Tangibles & intangibles', values: partials.tangiblesAndIntangibles, initialValuePath: ['initialBalance', 'tangiblesAndIntangibles'] },
+    {name: 'Financial fixed assets', values: partials.financialFixedAssets, initialValuePath:  ['initialBalance', 'financialFixedAssets'] },
+    {name: 'Deferred tax assets', values: partials.deferredTaxAssets, initialValuePath: ['initialBalance', 'deferredTaxAssets'] },
 
     {name: 'Current assets', values: currentAssets, className: 'main top' },
-    {name: 'Goods in stock', values: partials.goodsInStock },
-    {name: 'Trade receivables', values: partials.tradeReceivables },
-    {name: 'Prepayments', values: partials.prepayments },
-    {name: 'Accrued income', values: partials.accruedIncome },
-    {name: 'Receivable VAT', values: partials.receivableVAT },
+    {name: 'Goods in stock', values: partials.goodsInStock, initialValuePath: ['initialBalance', 'goodsInStock'] },
+    {name: 'Trade receivables', values: partials.tradeReceivables, initialValuePath: ['initialBalance', 'tradeReceivables'] },
+    {name: 'Prepayments', values: partials.prepayments, initialValuePath: ['initialBalance', 'prepayments'] },
+    {name: 'Accrued income', values: partials.accruedIncome, initialValuePath: ['initialBalance', 'accruedIncome'] },
+    {name: 'Receivable VAT', values: partials.receivableVAT, initialValuePath: ['initialBalance', 'receivableVAT'] },
 
     {name: 'Cash & bank', values: cashAndBank, className: 'main middle' },
 
     {name: 'Liabilities', values: liabilities, className: 'header' },
 
     {name: 'Equity', values: equity, className: 'main top' },
-    {name: 'Paid-in capital', values: partials.paidInCapital },
-    {name: 'Agio', values: partials.agio },
-    {name: 'Reserves', values: partials.reserves },
-    {name: 'Profit/loss for the year', values: partials.netResult },
+    {name: 'Paid-in capital', values: partials.paidInCapital, initialValuePath: ['parameters', 'startingCapital'] },
+    {name: 'Agio', values: partials.agio, initialValuePath: ['initialBalance', 'agio'] },
+    {name: 'Reserves', values: partials.reserves, initialValuePath: ['initialBalance', 'reserves'] },
+    {name: 'Profit/loss for the year', values: partials.profitAndLoss, initialValuePath: ['initialBalance', 'profitAndLoss'] },
 
     {name: 'Long-term debt', values: longTermDebt, className: 'main top' },
-    {name: 'Bank loans', values: partials.bankLoans },
-    {name: 'other long-term interest bearing debt', values: partials.otherSourcesOfFinance },
+    {name: 'Bank loans', values: partials.bankLoans, initialValuePath: ['initialBalance', 'bankLoans'] },
+    {name: 'other long-term interest bearing debt', values: partials.otherSourcesOfFinance, initialValuePath: ['initialBalance', 'otherSourcesOfFinance'] },
 
     {name: 'Short-term liabilities', values: shortTermLiabilities, className: 'main top' },
-    {name: 'Trade creditors', values: partials.tradeCreditors },
-    {name: 'Accruals', values: partials.accruals },
-    {name: 'Deferred Income', values: partials.deferredIncome },
-    {name: 'Payable VAT', values: partials.payableVAT },
-    {name: 'Payable Corporate tax', values: partials.payableCorporateTax },
-    {name: 'Payable income tax', values: partials.payableIncomeTax },
-    {name: 'Payable Social security contributions', values: partials.payableSSC },
-    {name: 'Provision holiday pay', values: partials.provisionHolidayPayment },
+    {name: 'Trade creditors', values: partials.tradeCreditors, initialValuePath: ['initialBalance', 'tradeCreditors'] },
+    {name: 'Accruals', values: partials.accruals, initialValuePath: ['initialBalance', 'accruals'] },
+    {name: 'Deferred Income', values: partials.deferredIncome, initialValuePath: ['initialBalance', 'deferredIncome'] },
+    {name: 'Payable VAT', values: partials.payableVAT, initialValuePath: ['initialBalance', 'payableVAT'] },
+    {name: 'Payable Corporate tax', values: partials.payableCorporateTax, initialValuePath: ['initialBalance', 'payableCorporateTax'] },
+    {name: 'Payable income tax', values: partials.payableIncomeTax, initialValuePath: ['initialBalance', 'payableIncomeTax'] },
+    {name: 'Payable Social security contributions', values: partials.payableSSC, initialValuePath: ['initialBalance', 'payableSSC'] },
+    {name: 'Provision holiday pay', values: partials.provisionHolidayPayment, initialValuePath: ['initialBalance', 'provisionHolidayPayment'] },
 
-    {name: 'Balance', values: balance, className: 'header' }
+    {name: 'Balance', id: 'balance', values: balance, className: 'header' }
   ]
 }
 
@@ -582,6 +620,7 @@ export function calculateAssetValues (data, years) {
   const allInvestments = data.investments.tangible.concat(data.investments.intangible)
 
   return allInvestments
+      .asMutable()
       .map(investment => types.investment.calculateAssetValue(investment, years))
       .reduce(addProps, initial)
 }
@@ -619,41 +658,6 @@ export function calculateInvestments(data, years) {
   return allInvestments
       .map(category => types.investment.calculatePxQ(category, years))
       .reduce(addProps, initProps(years))
-}
-
-/**
- * Calculate payable income tax
- *
- * @param data
- * @param {Array.<number>} years
- * @return {Object.<string, number>}
- */
-export function calculatePayableIncomeTax(data, years) {
-  const incomeTax = parseValue(data.parameters.incomeTax)
-  const monthsIncomeTaxPaidAfter = parseValue(data.parameters.monthsIncomeTaxPaidAfter)
-
-  return multiplyPropsWith(
-      calculateTotals(data.costs.personnel, years),
-      incomeTax * monthsIncomeTaxPaidAfter / 12
-  )
-}
-
-/**
- * Calculate payable social security contributions
- *
- * @param data
- * @param {Array.<number>} years
- * @return {Object.<string, number>}
- */
-export function calculatePayableSSC (data, years) {
-  const monthsSSCPaidAfter = parseValue(data.parameters.monthsSSCPaidAfter)
-  const SSCEmployer = parseValue(data.parameters.SSCEmployer)
-  const SSCEmployee = parseValue(data.parameters.SSCEmployee)
-
-  return multiplyPropsWith(
-      calculateTotals(data.costs.personnel, years),
-      (SSCEmployer + SSCEmployee) * monthsSSCPaidAfter / 12
-  )
 }
 
 /**

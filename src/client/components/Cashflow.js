@@ -76,9 +76,9 @@ class Cashflow extends Component {
               ? parseValue(values[year]) / magnitude
               : values[year]
 
-          return <td key={year} >
-            <input className={'financing' + (validValue ? '' : ' invalid')}
-                   value={value}
+          return <td key={year} className="input-field" >
+            <input value={value}
+                   className={ validValue ? '' : ' invalid' }
                    onChange={(event) => {
                      const value = numberRegExp.test(event.target.value)  // test whether a valid number
                        ? parseValue(event.target.value) * magnitude

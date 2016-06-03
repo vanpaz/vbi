@@ -241,6 +241,9 @@ A saved scenario has the following structure:
       "bankLoansCapitalCalls": { ... },
       "bankLoansRedemptionInstallments": { ... },
       "otherSourcesOfFinance": { ... }
+    },
+    "initialBalance": {
+      // ...
     }
   },
   "auth": {
@@ -252,7 +255,10 @@ A saved scenario has the following structure:
 }
 ```
 
-The `data` contains three sections: `costs`, `investments`, `revenues`, and a section `parameters` holding generic parameters. Each section contains groups, and every group contains a list with categories. Each category describes a name, price, and category.
+The `data` contains three main sections: `costs`, `investments`, `revenues`, and a section `parameters` holding generic parameters. Each section contains groups, and every group contains a list with categories. Each category describes a name, price, and category. Additionally, the `data` contains
+an object `financing` where financing can be specified per year and category,
+and an object `initialBalance` where all properties for the initial balance
+can be entered. The latter is optional and only applicable for running businesses.
 
 The following roles are available:
 
