@@ -793,37 +793,17 @@ export let types = {
         return {}
       }
 
-      if (item.price.all === true) {
-        // calculate a percentage of all revenue
-        let totals = revenueTotalsPerCategory
-            .map(category => category.totals)
-            .reduce(addProps, initProps(years))
-        let percentage = parseValue(item.price.percentage)
+      // calculate a percentage of all revenue
+      let totals = revenueTotalsPerCategory
+          .map(category => category.totals)
+          .reduce(addProps, initProps(years))
+      let percentage = parseValue(item.price.percentage)
 
-        return years.reduce((prices, year) => {
-          prices[year] = percentage * (totals[year] || 0)
+      return years.reduce((prices, year) => {
+        prices[year] = percentage * (totals[year] || 0)
 
-          return prices
-        }, {})
-      }
-      else {
-        return years.reduce((prices, year) => {
-          prices[year] = 0
-
-          if (item.price.percentages) {
-            item.price.percentages.forEach(p => {
-              let percentage = parseValue(p.percentage)
-              let category = revenueTotalsPerCategory
-                  .find(category => category.id === p.categoryId)
-              let total = category && category.totals[year] || 0
-
-              prices[year] += percentage * total
-            })
-          }
-
-          return prices
-        }, {})
-      }
+        return prices
+      }, {})
     }
   },
 

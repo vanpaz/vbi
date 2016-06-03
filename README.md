@@ -316,32 +316,11 @@ The application supports multiple types of prices:
   }
   ```
 
-- a percentage of one, multiple, or all revenue categories (i.e. 5% of all licencing
-  revenue)
+- a percentage of the revenue:
 
   ```js
   {
     "type": "revenue",
-    "all": false,
-    "percentages": [
-      {
-        "category": "licenses",
-        "percentage": "+3%"
-      },
-      {
-        "category": "projects",
-        "percentage": "+6%"
-      }
-    ]
-  }
-  ```
-
-  to specify a category of all revenue, use the reserved category `'all'`:
-
-  ```js
-  {
-    "type": "revenue",
-    "all": true,
     "percentage": "+3%"
   }
   ```
