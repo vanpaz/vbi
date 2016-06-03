@@ -155,14 +155,14 @@ export function calculateBalanceSheetPartials (data) {
   // fixedAssets
   const tangiblesAndIntangibles = calculateAssetsValues(data, years)
   tangiblesAndIntangibles[initialYear] = parseValue(data.initialBalance.tangiblesAndIntangibles)
-  const investmentsInParticipations = initProps(years, year => parseValue(data.financing.investmentsInParticipations[year]))
+  const investmentsInParticipations = initProps(years, year => -parseValue(data.financing.investmentsInParticipations[year]))
   const financialFixedAssets = accumulateProps(investmentsInParticipations)
   financialFixedAssets[initialYear] = parseValue(data.initialBalance.financialFixedAssets)
   const deferredTaxAssets = mapProps(
       accumulateProps(profitAndLossPartials.EBT),
       value => value < 0 ? -value * corporateTaxRate : 0
   )
-  deferredTaxAssets[initialYear] = parseValue(data.initialBalance.deferredTaxAssets)
+  deferredTaxAssets[initialYear] = -parseValue(data.initialBalance.deferredTaxAssets)
 
   // goodsInStock
   const daysInStockOfInventory = parseValue(data.parameters.daysInStockOfInventory)

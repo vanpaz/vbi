@@ -326,7 +326,9 @@
       ]
     },
     "financing": {
-      "investmentsInParticipations": {},
+      "investmentsInParticipations": {
+        "2017": "-100k"
+      },
       "equityContributions": {
         "2016": "100k",
         "2017": "100k"
