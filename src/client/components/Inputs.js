@@ -122,12 +122,13 @@ class Inputs extends Component {
           <th />
         </tr>
         {
-          categories.map(category => <tr key={category.id}>
+          categories.map((category, index) => <tr key={category.id}>
             <td>
               <ActionMenu
                   section={section}
                   group={group}
                   categoryId={category.id}
+                  index={index} // provide index to enforce a re-render when moving up/down
                   name={category.name}
                   onRename={this.handleRenameCategory }
                   onMoveUp={this.handleMoveCategoryUp}

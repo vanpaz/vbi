@@ -111,7 +111,7 @@ export default class Price extends Component {
   }
 
   showPopover (event) {
-    event.preventDefault(); // prevent from immediately closing on tap
+    event.preventDefault() // prevent from immediately closing on tap
 
     debug('showPopover')
     this.setState({

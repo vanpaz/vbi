@@ -297,48 +297,22 @@ div.price-type p.description {
   width: 256px;
 }
 
-div.action-menu-root {
+div.action-menu-anchor {
   position: relative;
   display: inline-block;
 }
 
-div.action-menu-root div.action-menu {
-  position: absolute;
-  box-sizing: border-box;
-  margin-left: -100%;
-  margin-bottom: -24px;
-  padding-left: 100%;
-  padding-bottom: 24px;
-  bottom: 100%;
-  left: 100%;
-  width: auto;
-  display: none;
-
-  /* FIXME: get transition working */
-  opacity: 0;
-  transition:opacity 1s ease;
-}
-
-div.action-menu-root:hover {
+div.action-menu-anchor:hover {
   color: #f3742c;
+  cursor: pointer;
 }
 
-div.action-menu-root:hover div.action-menu {
-  display: inline-block;
-  opacity: 1;
+div.action-menu-anchor:hover svg {
+  fill: #f3742c !important;
 }
 
-div.action-menu-root div.action-menu  table.action-menu-contents {
-  background: #4d4d4d;
-  color: white;
-  z-index: 999;
-  box-shadow: rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px;
-  border-radius: 3px;
-  padding: 5px;
-}
-
-div.action-menu-root div.action-menu  table.action-menu-contents button {
-  min-width: unset;
+div.action-menu div {
+  overflow: hidden !important;
 }
 
 button.add-category {

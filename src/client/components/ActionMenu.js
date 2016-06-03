@@ -1,10 +1,12 @@
 import React from 'react'
 
+import Popover from 'material-ui/lib/popover/popover'
 import IconButton from 'material-ui/lib/icon-button'
 import EditIcon from 'material-ui/lib/svg-icons/image/edit'
 import ClearIcon from 'material-ui/lib/svg-icons/content/clear'
 import DownIcon from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-down'
 import UpIcon from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-up'
+import SettingsIcon from 'material-ui/lib/svg-icons/action/settings'
 
 import theme from '../theme'
 
@@ -16,6 +18,11 @@ const styles = {
     height: 24,
     padding: 0,
     display: 'inline-block'
+  },
+  actionMenu: {
+    background: '#4d4d4d',
+    color: 'pink',
+    padding: 10
   }
 }
 
@@ -23,14 +30,37 @@ export default class ActionMenu extends React.Component {
   constructor (props) {
     super(props)
 
+    this.state = {
+      open: false,
+      anchorEl: null
+    }
+
+    // bind event handlers to this instance
+    this.handleTouchTap = this.handleTouchTap.bind(this)
+    this.handleRequestClose = this.handleRequestClose.bind(this)
+
     // update only when props or state are changed
     this.shouldComponentUpdate = shouldComponentUpdate
   }
 
   render () {
-    return <div className="action-menu-root">
-      {this.props.name}
-      <div className="action-menu">
+    return <div className="action-menu-anchor">
+      <div onTouchTap={this.handleTouchTap} >
+        {this.props.name} <SettingsIcon
+          style={{width: 12, height: 12}}
+          color='#e5e5e5'
+          hoverColor='#f3742c'
+      />
+      </div>
+      <Popover
+          open={this.state.open}
+          anchorEl={this.state.anchorEl}
+          anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+          targetOrigin={{horizontal: 'left', vertical: 'bottom'}}
+          onRequestClose={this.handleRequestClose}
+          useLayerForClickAway={false}
+          style={styles.actionMenu}
+          className="action-menu" >
         <table className="action-menu-contents">
           <tbody>
           <tr>
@@ -38,7 +68,10 @@ export default class ActionMenu extends React.Component {
               <IconButton
                   key="rename"
                   title="Rename category"
-                  onTouchTap={ (event) => this.props.onRename(this.props.section, this.props.group, this.props.categoryId) }
+                  onTouchTap={ (event) => {
+                    this.handleRequestClose()
+                    this.props.onRename(this.props.section, this.props.group, this.props.categoryId)
+                  }}
                   style={styles.actionButton}>
                 <EditIcon color="white" hoverColor={theme.palette.accent1Color} />
               </IconButton>
@@ -65,7 +98,10 @@ export default class ActionMenu extends React.Component {
               <IconButton
                   key="delete"
                   title="Delete category"
-                  onTouchTap={(event) => this.props.onDelete(this.props.section, this.props.group, this.props.categoryId) }
+                  onTouchTap={(event) => {
+                    this.handleRequestClose()
+                    this.props.onDelete(this.props.section, this.props.group, this.props.categoryId)
+                  }}
                   style={styles.actionButton}>
                 <ClearIcon color="white" hoverColor={theme.palette.accent1Color} />
               </IconButton>
@@ -73,8 +109,24 @@ export default class ActionMenu extends React.Component {
           </tr>
           </tbody>
         </table>
-      </div>
+      </Popover>
     </div>
+  }
+
+  handleTouchTap (event) {
+    // This prevents ghost click.
+    event.preventDefault()
+
+    this.setState({
+      open: true,
+      anchorEl: event.currentTarget
+    })
+  }
+
+  handleRequestClose () {
+    this.setState({
+      open: false
+    })
   }
 
 }

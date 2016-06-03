@@ -12,7 +12,7 @@ export let hash = {
    * @return {Object} query    object containing key/values
    */
   getAll: function () {
-    var str = window.location.hash.substring(1); // skip the # character
+    var str = window.location.hash.substring(1) // skip the # character
     var params = str.split('&')
     var query = {}
     for (var i = 0, iMax = params.length; i < iMax; i++) {
@@ -119,7 +119,7 @@ export let hash = {
           for (var i = 0; i < hash._callbacks.length; i++) {
             var obj = hash._callbacks[i]
             if (obj.key == key) {
-              obj.value = value + ''; // to string
+              obj.value = value + '' // to string
             }
           }
         }

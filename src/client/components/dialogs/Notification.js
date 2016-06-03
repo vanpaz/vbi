@@ -34,7 +34,7 @@ export default class Notification extends React.Component {
   render () {
     let isError = this.state.type === 'error'
     let close = () => this.hide()
-    let ignore = () => null;  // just ignore request to close
+    let ignore = () => null  // just ignore request to close
     let onRequestClose = this.state.closeable ? close : ignore
 
     return <Snackbar
