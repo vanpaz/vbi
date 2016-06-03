@@ -154,9 +154,13 @@ export function calculateBalanceSheetPartials (data) {
   // fixedAssets
   const tangiblesAndIntangibles = calculateAssetsValues(data, years)
   tangiblesAndIntangibles[initialYear] = parseValue(data.initialBalance.tangiblesAndIntangibles)
-  const financialFixedAssets = calculateFinancialFixedAssets(data, years)
+  const investmentsInParticipations = initProps(years, year => parseValue(data.financing.investmentsInParticipations[year]))
+  const financialFixedAssets = accumulateProps(investmentsInParticipations)
   financialFixedAssets[initialYear] = parseValue(data.initialBalance.financialFixedAssets)
-  const deferredTaxAssets = calculateDeferredTaxAssets(profitAndLossPartials, corporateTaxRate, years)
+  const deferredTaxAssets = mapProps(
+      accumulateProps(profitAndLossPartials.EBT),
+      value => value < 0 ? -value * corporateTaxRate : 0
+  )
   deferredTaxAssets[initialYear] = parseValue(data.initialBalance.deferredTaxAssets)
 
   // goodsInStock
@@ -209,7 +213,10 @@ export function calculateBalanceSheetPartials (data) {
   reserves[initialYear] = parseValue(data.initialBalance.reserves)
 
   // long-term debt
-  const bankLoans = calculateBankLoans(data, years)
+  const bankLoans = accumulateProps(initProps(years, year => {
+    return parseValue(data.financing.bankLoansCapitalCalls[year]) +
+        parseValue(data.financing.bankLoansRedemptionInstallments[year])
+  }))
   bankLoans[initialYear] = parseValue(data.initialBalance.bankLoans)
 
   const otherSourcesOfFinance = initProps(years, year => parseValue(data.financing.otherSourcesOfFinance[year]))
@@ -595,19 +602,6 @@ export function calulateCashflow (data) {
   ]
 }
 
-export function calculateDeferredTaxAssets (profitAndLossPartials, corporateTaxRate, years) {
-  const ebt = profitAndLossPartials.EBT
-  const deferredTaxAssets = {}
-
-  let cumulative = 0
-  years.forEach(year => {
-    cumulative += (ebt[year] || 0)
-    deferredTaxAssets[year] = cumulative < 0 ? -cumulative * corporateTaxRate : 0
-  })
-
-  return deferredTaxAssets
-}
-
 /**
  * Calculate totals of a the asset values
  * @param {Scenario} data
@@ -626,26 +620,6 @@ export function calculateAssetsValues (data, years) {
 }
 
 /**
- * Calculate the accumulated financial fixed assets
- * (based on the field data.financing.investmentsInParticipations)
- * @param data
- * @param {Array.<number>} years
- * @return {Object.<string, number>}
- */
-export function calculateFinancialFixedAssets (data, years) {
-  const investments = data.financing.investmentsInParticipations
-  const fixedAssets = {}
-
-  let cumulative = 0
-  years.forEach(year => {
-    cumulative += parseValue(investments[year] || 0)
-    fixedAssets[year] = cumulative
-  })
-
-  return fixedAssets
-}
-
-/**
  * Calculate PxQ for the investments (both tangible and intangible)
  *
  * @param data
@@ -658,26 +632,6 @@ export function calculateInvestments(data, years) {
   return allInvestments
       .map(category => types.investment.calculateInvestmentsValue(category, years))
       .reduce(addProps, initProps(years))
-}
-
-/**
- * Calculate cumulative bank loans
- *
- * @param data
- * @param {Array.<number>} years
- * @return {Object.<string, number>}
- */
-export function calculateBankLoans(data, years) {
-  const bankLoans = initProps(years)
-
-  years.forEach(year => {
-    bankLoans[year] +=
-        (bankLoans[year - 1] || 0) +
-        parseValue(data.financing.bankLoansCapitalCalls[year] || 0) +
-        parseValue(data.financing.bankLoansRedemptionInstallments[year] || 0)
-  })
-
-  return bankLoans
 }
 
 /**
