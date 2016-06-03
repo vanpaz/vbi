@@ -103,6 +103,11 @@ table.output td {
   padding: 2px 10px;
 }
 
+table.output td.input-field {
+  padding: 0 10px;
+}
+
+
 table.output tr.header {
   font-size: 14pt;
   font-weight: normal;
@@ -143,7 +148,7 @@ table.output td.name {
 
 table.category-table td input.quantity,
 table.category-table td button.price,
-table.output td input.financing {
+table.output td input {
   border: none;
   font-family: roboto, sans-serif;
   font-size: 14px;
@@ -155,11 +160,16 @@ input.invalid {
   background: lightpink !important;
 }
 
-table.category-table td input,
-table.output td input {
+table.category-table td input {
   width: 42px;
   padding: 5px;
 }
+
+table.output td input {
+  width: 42px;
+  padding: 2px;
+}
+
 
 table.category-table td input:hover,
 table.output td input:hover {
@@ -263,8 +273,11 @@ a.changed:hover {
 }
 
 div.error {
-  color: #E9573F;
+  color: white;
+  background-color: #E9573F;
   font-weight: bold;
+  border-radius: 3px;
+  padding: 10px;
 }
 
 div.snackbar.error div {
