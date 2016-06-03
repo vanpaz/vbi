@@ -4,8 +4,8 @@ import debugFactory from 'debug/browser'
 
 import { setProperty } from '../actions'
 import { getProp } from '../utils/object'
-import format from '../utils/format'
-import { calculateBalanceSheet, parseValue, getYearsWithInitial, numberRegExp } from '../formulas'
+import { format, parseValue, numberRegExp } from '../utils/number'
+import { calculateBalanceSheet, getYearsWithInitial } from '../formulas'
 
 const debug = debugFactory('vbi:profit-loss')
 
@@ -51,7 +51,7 @@ class BalanceSheet extends Component {
       {
         years.map((year, index) => {
           const total = entry.values[year]
-          const value = format(total && (total / magnitude) || 0, numberOfDecimals)
+          const value = total && format(total / magnitude, numberOfDecimals)
 
           if (index === 0) {
             if (entry.initialValuePath) {
@@ -82,7 +82,7 @@ class BalanceSheet extends Component {
           className={ validValue ? '' : ' invalid' }
           onChange={(event) => {
             const value = numberRegExp.test(event.target.value)  // test whether a valid number
-              ? parseValue(event.target.value) * magnitude
+              ? String(parseValue(event.target.value) * magnitude)
               : event.target.value
 
               this.props.dispatch(setProperty(['data'].concat(path), value))

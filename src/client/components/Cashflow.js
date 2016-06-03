@@ -4,7 +4,8 @@ import debugFactory from 'debug/browser'
 
 import { setProperty } from '../actions'
 import { getProp } from '../utils/object'
-import { calulateCashflow, parseValue, getYears, numberRegExp } from '../formulas'
+import { format, parseValue, numberRegExp } from '../utils/number'
+import { calulateCashflow, getYears } from '../formulas'
 
 const debug = debugFactory('vbi:profit-loss')
 
@@ -52,7 +53,7 @@ class Cashflow extends Component {
       {
         years.map(year => {
           const total = entry.values[year]
-          const value = total && (total / magnitude).toFixed(numberOfDecimals)
+          const value = total && format(total / magnitude, numberOfDecimals)
 
           return <td key={year} >
             { value }
