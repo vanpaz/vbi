@@ -14,7 +14,7 @@ import {
     setParameter, setQuantity, setPrice
 } from '../actions'
 import { findQuantity, getYears } from '../formulas'
-import Price from './Price'
+import Price from './prices/Price'
 import Parameters from './Parameters'
 
 import ActionMenu from './ActionMenu'
