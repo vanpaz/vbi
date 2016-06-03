@@ -23,6 +23,12 @@ const styles = {
     background: '#4d4d4d',
     color: 'pink',
     padding: 10
+  },
+  icon: {
+    color: '#e5e5e5'
+  },
+  selected: {
+    color: '#f3742c'
   }
 }
 
@@ -45,11 +51,13 @@ export default class ActionMenu extends React.Component {
 
   render () {
     return <div className="action-menu-anchor">
-      <div onTouchTap={this.handleTouchTap} >
-        {this.props.name} <SettingsIcon
+      <div onTouchTap={this.handleTouchTap}
+           style={this.state.open ? styles.selected : null}>
+        {this.props.name + ' '}
+        <SettingsIcon
           style={{width: 12, height: 12}}
-          color='#e5e5e5'
-          hoverColor='#f3742c'
+          color={this.state.open ? styles.selected.color : styles.icon.color }
+          hoverColor={styles.selected.color}
       />
       </div>
       <Popover
@@ -114,7 +122,7 @@ export default class ActionMenu extends React.Component {
   }
 
   handleTouchTap (event) {
-    // This prevents ghost click.
+    // prevent ghost click
     event.preventDefault()
 
     this.setState({
