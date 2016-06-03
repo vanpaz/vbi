@@ -40,22 +40,22 @@ export function calculateProfitAndLossPartials (data) {
   const years = getYears(data)
   const corporateTaxRate = parseValue(data.parameters.corporateTaxRate)
 
-  const revenues = calculateTotals(data.revenues.all, years)
+  const revenues = calculatePxQ(data.revenues.all, years)
 
-  const directCosts = calculateTotals(data.costs.direct, years, revenues)
+  const directCosts = calculatePxQ(data.costs.direct, years, revenues)
   const holidayProvision = parseValue(data.parameters.holidayProvision)
   const SSCEmployer = parseValue(data.parameters.SSCEmployer)
   const personnelCosts = multiplyPropsWith(
-      calculateTotals(data.costs.personnel, years),
+      calculatePxQ(data.costs.personnel, years),
       (1 + holidayProvision) * (1 + SSCEmployer)
   )
-  const indirectCosts = calculateTotals(data.costs.indirect, years, revenues)
+  const indirectCosts = calculatePxQ(data.costs.indirect, years, revenues)
 
   const grossMargin = subtractProps(revenues, directCosts)
   const EBITDA = subtractProps(grossMargin, indirectCosts)
 
   const allInvestments = data.investments.tangible.concat(data.investments.intangible)
-  const depreciation = calculateTotals(allInvestments, years)
+  const depreciation = calculatePxQ(allInvestments, years)
 
   const EBIT = subtractProps(EBITDA, depreciation)
 
@@ -95,7 +95,7 @@ export function calculateProfitAndLossPartials (data) {
  */
 export function calculateProfitAndLoss (data) {
   const partials = calculateProfitAndLossPartials(data)
-  
+
   return [
     {name: 'Total revenues', id: 'revenues', values: partials.revenues },
     {name: 'Total direct costs', id: 'directCosts', values: partials.directCosts },
@@ -152,7 +152,7 @@ export function calculateBalanceSheetPartials (data) {
   ])
 
   // fixedAssets
-  const tangiblesAndIntangibles = calculateAssetValues(data, years)
+  const tangiblesAndIntangibles = calculateAssetsValues(data, years)
   tangiblesAndIntangibles[initialYear] = parseValue(data.initialBalance.tangiblesAndIntangibles)
   const financialFixedAssets = calculateFinancialFixedAssets(data, years)
   financialFixedAssets[initialYear] = parseValue(data.initialBalance.financialFixedAssets)
@@ -162,7 +162,7 @@ export function calculateBalanceSheetPartials (data) {
   // goodsInStock
   const daysInStockOfInventory = parseValue(data.parameters.daysInStockOfInventory)
   const goodsInStock = multiplyPropsWith(
-      calculateTotals(data.costs.direct, years, profitAndLossPartials.revenues),
+      calculatePxQ(data.costs.direct, years, profitAndLossPartials.revenues),
       daysInStockOfInventory / 365
   )
   goodsInStock[initialYear] = parseValue(data.initialBalance.goodsInStock)
@@ -245,7 +245,7 @@ export function calculateBalanceSheetPartials (data) {
   const incomeTax = parseValue(data.parameters.incomeTax)
   const monthsIncomeTaxPaidAfter = parseValue(data.parameters.monthsIncomeTaxPaidAfter)
   const payableIncomeTax = multiplyPropsWith(
-      calculateTotals(data.costs.personnel, years),
+      calculatePxQ(data.costs.personnel, years),
       incomeTax * monthsIncomeTaxPaidAfter / 12
   )
   payableIncomeTax[initialYear] = parseValue(data.initialBalance.payableIncomeTax)
@@ -255,7 +255,7 @@ export function calculateBalanceSheetPartials (data) {
   const SSCEmployee = parseValue(data.parameters.SSCEmployee)
   const monthsSSCPaidAfter = parseValue(data.parameters.monthsSSCPaidAfter)
   const payableSSC = multiplyPropsWith(
-      calculateTotals(data.costs.personnel, years),
+      calculatePxQ(data.costs.personnel, years),
       (SSCEmployer + SSCEmployee) * monthsSSCPaidAfter / 12
   )
   payableSSC[initialYear] = parseValue(data.initialBalance.payableSSC)
@@ -312,7 +312,7 @@ export function calculateBalanceSheet (data) {
   const initialYear = years[0]
   const partials = calculateBalanceSheetPartials(data)
   const cashflowPartials = calulateCashflowPartials(data)
-  
+
   const fixedAssets = sumProps([
     partials.tangiblesAndIntangibles,
     partials.financialFixedAssets,
@@ -557,9 +557,9 @@ export function calulateCashflow (data) {
 
     {name: 'Changes in deferred tax assets', values: partials.changesInDeferredTaxAssets },
     {name: 'NOPLAT', values: partials.NOPLAT },
-    
+
     {name: 'Depreciation & amortization', values: partials.depreciation },
-      
+
     {name: 'Changes in working capital', values: partials.changesInWorkingCapital, className: 'main top' },
     {name: 'Changes in stock', values: partials.changesInStock},
     {name: 'Changes in accounts receivables', values: partials.changesInAccountsReceivables},
@@ -588,7 +588,7 @@ export function calulateCashflow (data) {
     {name: 'Bank loans redemption installments', editable: true, path: ['data', 'financing', 'bankLoansRedemptionInstallments']},
     {name: 'Other sources of finance', editable: true, path: ['data', 'financing', 'otherSourcesOfFinance']},
     {name: 'Cashflow from financing', values: partials.cashflowFromFinancing, className: 'header middle' },
-      
+
     {name: 'Total cash balance EoP', values: partials.totalCashBalanceEoP, className: 'header middle' }
   ]
 }
@@ -612,14 +612,14 @@ export function calculateDeferredTaxAssets (profitAndLossPartials, corporateTaxR
  * @param {Array.<number>} years
  * @return {Object.<string, number>}
  */
-export function calculateAssetValues (data, years) {
+export function calculateAssetsValues (data, years) {
   const initial = initProps(years)
 
   const allInvestments = data.investments.tangible.concat(data.investments.intangible)
 
   return allInvestments
       .asMutable()
-      .map(investment => types.investment.calculateAssetValue(investment, years))
+      .map(investment => types.investment.calculateAssetsValue(investment, years))
       .reduce(addProps, initial)
 }
 
@@ -654,7 +654,7 @@ export function calculateInvestments(data, years) {
   const allInvestments = data.investments.tangible.concat(data.investments.intangible)
 
   return allInvestments
-      .map(category => types.investment.calculatePxQ(category, years))
+      .map(category => types.investment.calculateInvestmentsValue(category, years))
       .reduce(addProps, initProps(years))
 }
 
@@ -698,29 +698,6 @@ export function calculateOtherSourcesOfFinance(data, years) {
 }
 
 /**
- * Calculate actual prices for all years configured for a single item.
- * @param {{price: Object, quantities: Object}} item
- * @param {Array.<number>} years
- * @param {Object.<string, number>} revenues
- *                                   Totals of the revenues, needed to
- *                                   calculate prices based on a
- *                                   percentage of the revenues
- * @return {Object.<string, number>} Returns an object with years as key
- *                                   and prices as value
- */
-export function calculatePrices (item, years, revenues) {
-  var type = types[item.price.type]
-
-  if (!type) {
-    throw new Error('Unknown item price type ' + JSON.stringify(item.price.type) + ' ' +
-        'in item ' + JSON.stringify(item) + '. ' +
-        'Choose from: ' + Object.keys(types).join(','))
-  }
-
-  return type.calculatePrices(item, years, revenues)
-}
-
-/**
  * A map with functions to calculate the price for a specific price type
  */
 export let types = {
@@ -732,7 +709,7 @@ export let types = {
      * @return {Object.<string, number>} Returns an object with years as key
      *                                   and prices as value
      */
-    calculatePrices: function (item, years) {
+    calculatePxQ: function (item, years) {
       let initialPrice = parseValue(item.price.value)
       let change = 1 + parseValue(item.price.change)
 
@@ -759,7 +736,7 @@ export let types = {
      * @return {Object.<string, number>} Returns an object with years as key
      *                                   and prices as value
      */
-    calculatePrices: function (item, years) {
+    calculatePxQ: function (item, years) {
       return years.reduce((prices, year) => {
         let quantity = parseQuantity(item, year)
         let value = parseValue(item.price.values && item.price.values[year] || '0')
@@ -783,7 +760,7 @@ export let types = {
      * @return {Object.<string, number>} Returns an object with years as key
      *                                   and prices as value
      */
-    calculatePrices: function (item, years, revenues) {
+    calculatePxQ: function (item, years, revenues) {
       if (!revenues) {
         debug(new Error('No revenues available in this context'))
         return {}
@@ -808,7 +785,7 @@ export let types = {
      * @return {Object.<string, number>} Returns an object with years as key
      *                                   and prices as value
      */
-    calculatePrices: function (item, years) {
+    calculatePxQ: function (item, years) {
       const prices = initProps(years)
 
       // we ignore years for which we don't have a quantity,
@@ -840,7 +817,7 @@ export let types = {
      * @return {Object.<string, number>} Returns an object with years as key
      *                                   and prices as value
      */
-    calculateAssetValue: function (item, years) {
+    calculateAssetsValue: function (item, years) {
       const assetValues = initProps(years)
 
       // we ignore years for which we don't have a quantity,
@@ -872,7 +849,7 @@ export let types = {
      * @return {Object.<string, number>} Returns an object with years as key
      *                                   and prices as value
      */
-    calculatePxQ: function (item, years) {
+    calculateInvestmentsValue: function (item, years) {
       const prices = initProps(years)
 
       // we ignore years for which we don't have a quantity,
@@ -895,7 +872,7 @@ export let types = {
      * @return {Object.<string, number>} Returns an object with years as key
      *                                   and prices as value
      */
-    calculatePrices: function (item, years) {
+    calculatePxQ: function (item, years) {
       const monthlySalary = parseValue(item.price.value)
       const change = 1 + parseValue(item.price.change)
       const prices = initProps(years)
@@ -958,38 +935,34 @@ export function getYearsWithInitial (data) {
 }
 
 /**
- * Calculate totals for all revenues per category
- * @param {Array} categories
- * @param {Array.<number>} years
- * @return {Array.<{category: string, totals: Object.<string, number>}>}
- */
-export function calculateTotalsPerCategory (categories, years) {
-  return categories.map(category => ({
-    id: category.id,
-    category: category.name,
-    totals: calculatePrices(category, years)
-  }))
-}
-
-/**
- * Calculate totals of an array with categories
+ * Calculate PxQ (price times quantity) of an array with categories
  * @param {Array.<{price: Object, quantities: Object}>} categories
  * @param {Array.<number>} years
- * @param {Object.<string, number>} revenues
+ * @param {Object.<string, number>} [revenues]
  *                                   Totals of the revenues, needed to
  *                                   calculate prices based on a
  *                                   percentage of the revenues
  * @return {Object.<string, number>}
  */
-export function calculateTotals (categories, years, revenues) {
+export function calculatePxQ (categories, years, revenues) {
   if (!Array.isArray(categories)) {
-    throw new TypeError('Array expected for calculateTotals')
+    throw new TypeError('Array expected for calculatePxQ')
   }
-  
+
   const initial = initProps(years)
 
   return categories
-      .map(category => calculatePrices(category, years, revenues))
+      .map(category => {
+        var type = types[category.price.type]
+
+        if (!type) {
+          throw new Error('Unknown price type ' + JSON.stringify(category.price.type) + ' ' +
+              'in item ' + JSON.stringify(category) + '. ' +
+              'Choose from: ' + Object.keys(types).join(','))
+        }
+
+        return type.calculatePxQ(category, years, revenues)
+      })
       .reduce(addProps, initial)
 }
 
