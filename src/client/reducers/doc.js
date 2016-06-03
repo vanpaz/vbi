@@ -4,7 +4,7 @@ import debugFactory from 'debug/browser'
 import { merge } from 'lodash'
 
 import { uuid } from '../utils/uuid'
-import { removeItem } from '../utils/immutable'
+import { removeItem, swapItems } from '../utils/immutable'
 
 const debug = debugFactory('vbi:reducers')
 
@@ -22,7 +22,7 @@ function sanitizeDoc (doc) {
 
 
 const doc = (state = Immutable({}), action) => {
-  let path, last, categoryIndex
+  let path, last, index
 
   debug(action.type, action)
 
@@ -59,38 +59,42 @@ const doc = (state = Immutable({}), action) => {
       return state.setIn(path, action.name)
 
     case 'DOC_MOVE_CATEGORY_UP':
-        // TODO: simplify this function
       path = findCategoryPath(state.data, action.section, action.group, action.categoryId)
 
       last = path.length - 1
-      categoryIndex = path[last]
+      index = path[last]
       path = removeItem(path, last)
 
-      if (categoryIndex > 0) {
-        return state.updateIn(path, categories => {
-          return Immutable([].concat(
-              categories.slice(0, categoryIndex - 1),
-              [categories[categoryIndex], categories[categoryIndex - 1]],
-              categories.slice(categoryIndex + 1)
-          ))
-        })
+      if (index > 0) {
+        return state.updateIn(path, categories => swapItems(categories, index, index - 1))
       }
       else {
         return state
       }
 
-    case 'DOC_MOVE_CATEGORY_DOWN': // TODO
-
-
-    case 'DOC_DELETE_CATEGORY':
-      // TODO: simplify this function
+    case 'DOC_MOVE_CATEGORY_DOWN':
       path = findCategoryPath(state.data, action.section, action.group, action.categoryId)
 
       last = path.length - 1
-      categoryIndex = path[last]
+      index = path[last]
       path = removeItem(path, last)
 
-      return state.updateIn(path, categories => removeItem(categories, categoryIndex))
+      const categories = state.data[action.section][action.group]
+      if (index < categories.length - 1) {
+        return state.updateIn(path, categories => swapItems(categories, index, index + 1))
+      }
+      else {
+        return state
+      }
+
+    case 'DOC_DELETE_CATEGORY':
+      path = findCategoryPath(state.data, action.section, action.group, action.categoryId)
+
+      last = path.length - 1
+      index = path[last]
+      path = removeItem(path, last)
+
+      return state.updateIn(path, categories => removeItem(categories, index))
 
     case 'DOC_SET_PRICE':
       path = findCategoryPath(state.data, action.section, action.group, action.categoryId)

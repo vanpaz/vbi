@@ -36,6 +36,14 @@ export function renameCategory (section, group, categoryId, name) {
   return { type: 'DOC_RENAME_CATEGORY', section, group, categoryId, name }
 }
 
+export function moveCategoryUp (section, group, categoryId) {
+  return { type: 'DOC_MOVE_CATEGORY_UP', section, group, categoryId }
+}
+
+export function moveCategoryDown (section, group, categoryId) {
+  return { type: 'DOC_MOVE_CATEGORY_DOWN', section, group, categoryId }
+}
+
 export function deleteCategory (section, group, categoryId) {
   return { type: 'DOC_DELETE_CATEGORY', section, group, categoryId }
 }

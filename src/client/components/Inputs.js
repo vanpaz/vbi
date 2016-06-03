@@ -10,7 +10,7 @@ import Tab from 'material-ui/lib/tabs/tab'
 import Prompt from './dialogs/Prompt'
 import Confirm from './dialogs/Confirm'
 import {
-    addCategory, deleteCategory, renameCategory,
+    addCategory, deleteCategory, renameCategory, moveCategoryUp, moveCategoryDown,
     setParameter, setQuantity, setPrice
 } from '../actions'
 import { findQuantity, getYears } from '../formulas'
@@ -215,11 +215,11 @@ class Inputs extends Component {
   }
 
   handleMoveCategoryUp (section, group, categoryId) {
-    alert('not yet implemented')
+    this.props.dispatch(moveCategoryUp(section, group, categoryId))
   }
 
   handleMoveCategoryDown (section, group, categoryId) {
-    alert('not yet implemented')
+    this.props.dispatch(moveCategoryDown(section, group, categoryId))
   }
 
   handleDeleteCategory (section, group, categoryId) {
