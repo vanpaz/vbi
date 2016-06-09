@@ -1,10 +1,21 @@
 import React, { Component } from 'react'
 import debugFactory from 'debug/browser'
 
+import InfoIcon from 'material-ui/lib/svg-icons/action/help'
+
+import InfoPopover from './InfoPopover'
+
 import { calculateProfitAndLoss, getYears } from '../formulas'
 import { format, parseValue } from '../utils/number'
 
 const debug = debugFactory('vbi:profit-loss')
+
+const styles = {
+  infoIcon: {
+    width: 14,
+    height: 14
+  }
+}
 
 export default class ProfitAndLoss extends Component {
   render () {
@@ -24,10 +35,12 @@ export default class ProfitAndLoss extends Component {
             {years.map(year => <th key={year}>{year}</th>)}
           </tr>
           {
-            profitAndLoss.map(entry => ProfitAndLoss.renderEntry(years, entry, currency, magnitude, numberOfDecimals))
+            profitAndLoss.map(entry => this.renderEntry(years, entry, currency, magnitude, numberOfDecimals))
           }
           </tbody>
         </table>
+
+        <InfoPopover ref="infoPopover" onChanged={() => this.forceUpdate() } />
       </div>
     }
     catch (err) {
@@ -36,9 +49,11 @@ export default class ProfitAndLoss extends Component {
     }
   }
 
-  static renderEntry (years, entry, currency, magnitude, numberOfDecimals) {
+  renderEntry (years, entry, currency, magnitude, numberOfDecimals) {
     return <tr key={entry.name} className={entry.className}>
-      <td className="name">{entry.name}</td>
+      <td className="name" >
+        { this.renderCategoryName(entry) }
+      </td>
       <td className="magnitude">{`${currency}${magnitude !== 1 ? magnitude : ''}`}</td>
       {
         years.map(year => {
@@ -51,5 +66,23 @@ export default class ProfitAndLoss extends Component {
         })
       }
     </tr>
+  }
+
+  renderCategoryName (entry) {
+    if (entry.info) {
+      const isSelected = this.refs.infoPopover && this.refs.infoPopover.isDisplaying(entry.info)
+
+      return <span
+          className={'category' + (isSelected ? ' selected' : '')}
+          onTouchTap={event => {
+            this.refs.infoPopover.show(event.currentTarget, entry.info)
+          }} >
+        {entry.name + ' '}
+        <InfoIcon className="info-icon" style={styles.infoIcon} />
+      </span>
+    }
+    else {
+      return entry.name
+    }
   }
 }

@@ -21,7 +21,7 @@ const styles = {
   },
   actionMenu: {
     background: '#4d4d4d',
-    color: 'pink',
+    color: '#e5e5e5',
     padding: 10
   },
   icon: {

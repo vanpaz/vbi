@@ -2,12 +2,23 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import debugFactory from 'debug/browser'
 
+import InfoIcon from 'material-ui/lib/svg-icons/action/help'
+
+import InfoPopover from './InfoPopover'
+
 import { setProperty } from '../actions'
 import { getProp } from '../utils/object'
 import { format, parseValue, numberRegExp } from '../utils/number'
 import { calculateBalanceSheet, getYearsWithInitial } from '../formulas'
 
 const debug = debugFactory('vbi:profit-loss')
+
+const styles = {
+  infoIcon: {
+    width: 14,
+    height: 14
+  }
+}
 
 class BalanceSheet extends Component {
   render () {
@@ -36,6 +47,8 @@ class BalanceSheet extends Component {
         </table>
         
         { balanceIsZero ? null : <div className="error">Warning: the balance is not zero!</div> }
+
+        <InfoPopover ref="infoPopover" onChanged={() => this.forceUpdate() }  />
       </div>
     }
     catch (err) {
@@ -46,7 +59,9 @@ class BalanceSheet extends Component {
 
   renderEntry (years, entry, currency, magnitude, numberOfDecimals) {
     return <tr key={entry.name} className={entry.className}>
-      <td className="name">{entry.name}</td>
+      <td className="name">
+        { this.renderCategoryName(entry) }
+      </td>
       <td className="magnitude">{`${currency}${magnitude !== 1 ? magnitude : ''}`}</td>
       {
         years.map((year, index) => {
@@ -89,6 +104,24 @@ class BalanceSheet extends Component {
            }}
       />
     </td>
+  }
+
+  renderCategoryName (entry) {
+    if (entry.info) {
+      const isSelected = this.refs.infoPopover && this.refs.infoPopover.isDisplaying(entry.info)
+
+      return <span
+          className={'category' + (isSelected ? ' selected' : '')}
+          onTouchTap={event => {
+            this.refs.infoPopover.show(event.currentTarget, entry.info)
+          }} >
+        {entry.name + ' '}
+        <InfoIcon className="info-icon" style={styles.infoIcon} />
+      </span>
+    }
+    else {
+      return entry.name
+    }
   }
 }
 
