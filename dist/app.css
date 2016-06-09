@@ -303,7 +303,6 @@ div.action-menu-anchor {
 }
 
 div.action-menu-anchor:hover {
-  color: #f3742c;
   cursor: pointer;
 }
 
@@ -331,4 +330,34 @@ button.add-category {
 button.add-category:hover,
 button.add-category:focus {
   opacity: 1;
+}
+
+.info-popover p:first-child {
+  margin-top: 0;
+}
+
+.info-popover p:last-child {
+  margin-bottom: 0;
+}
+
+.category {
+  cursor: pointer;
+}
+
+.category:hover {
+  transition: color 0.2s ease-in-out;
+}
+
+.category:hover,
+.category.selected {
+  color: #f3742c;
+}
+
+.category .info-icon {
+  fill: #e5e5e5 !important;
+}
+
+.category:hover .info-icon,
+.category.selected .info-icon {
+  fill: #f3742c !important;
 }
