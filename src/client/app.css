@@ -222,6 +222,19 @@ a.sign-in:hover {
   opacity: 1;
 }
 
+button.sign-out {
+  font-size: 14px;
+  padding: 10px 0;
+  color: #4d4d4d;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+button.sign-out:hover {
+  color: #f3742c;
+}
+
 div.footer {
   position: fixed;
   left: 0;

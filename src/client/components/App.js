@@ -9,7 +9,6 @@ import debugFactory from 'debug/browser'
 // import Perf from 'react-addons-perf'
 // window.Perf = Perf
 
-import Avatar from 'material-ui/lib/avatar'
 import AppBar from 'material-ui/lib/app-bar'
 import FlatButton from 'material-ui/lib/flat-button'
 import IconButton from 'material-ui/lib/icon-button'
@@ -75,6 +74,7 @@ class App extends Component {
 
         <Menu
             ref="menu"
+            user={this.props.user}
             docs={this.props.docs}
             title={this.props.doc.title}
             id={this.props.doc._id}
@@ -150,30 +150,7 @@ class App extends Component {
           icon={<TimelineIcon />}
           className={this.props.view === 'finance' ? 'selected' : ''}
           onTouchTap={event => this.props.dispatch(setView('finance'))} />
-      { this.renderUser() }
     </div>
-  }
-
-  // render "sign in" or "signed in as"
-  renderUser () {
-    if (this.isSignedIn()) {
-      const source = this.props.user.email || this.props.user.provider
-      const title = `Logged in as ${this.props.user.displayName} (${source})`
-      const userButtonContents = <div title={title} >
-        <span style={{color: '#FFFFFF', marginRight: 10}}>Sign out</span>
-        <Avatar src={this.props.user.photo} style={{verticalAlign: 'bottom'}} />
-      </div>
-
-      return <FlatButton
-          className="user"
-          children={ userButtonContents }
-          onTouchTap={(event) => this.refs.menu.signOut()} />
-    }
-    else {
-      return <FlatButton
-          label="Sign in"
-          onTouchTap={(event) => this.refs.menu.signIn()} />
-    }
   }
 
   renderModel () {
