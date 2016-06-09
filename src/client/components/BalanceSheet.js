@@ -8,7 +8,7 @@ import InfoPopover from './InfoPopover'
 
 import { setProperty } from '../actions'
 import { getProp } from '../utils/object'
-import { format, parseValue, numberRegExp } from '../utils/number'
+import { format, normalize, denormalize, parseValue, numberRegExp } from '../utils/number'
 import { calculateBalanceSheet, getYearsWithInitial } from '../formulas'
 
 const debug = debugFactory('vbi:profit-loss')
@@ -88,7 +88,7 @@ class BalanceSheet extends Component {
     const rawValue = getProp(this.props.data, path)
     const validValue = !rawValue || numberRegExp.test(rawValue)
     const value = rawValue && validValue
-        ? parseValue(rawValue) / magnitude
+        ? denormalize(rawValue, magnitude)
         : rawValue
 
     return <td key="initial" className="input-field">
@@ -97,7 +97,7 @@ class BalanceSheet extends Component {
           className={ validValue ? '' : ' invalid' }
           onChange={(event) => {
             const value = numberRegExp.test(event.target.value)  // test whether a valid number
-              ? String(parseValue(event.target.value) * magnitude)
+              ? normalize(event.target.value, magnitude)
               : event.target.value
 
               this.props.dispatch(setProperty(['data'].concat(path), value))

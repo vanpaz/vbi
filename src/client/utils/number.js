@@ -91,3 +91,45 @@ export function formatValueWithUnit (price) {
 
   return price.toFixed()
 }
+
+/**
+ * Normalize a string containing a value by multiplying it with the magnitude.
+ *
+ * A trailing decimal separator (.) are kept to allow people enter decimal
+ * numbers, where the number is internally normalized and denormalized again
+ * whilst typing.
+ *
+ * For example:
+ *
+ *     normalize('10', 1000)    // returns '10000'
+ *     normalize('10.', 1000)    // returns '10000.'
+ *     normalize('10.2', 1000)    // returns '10200'
+ *
+ * @param {string} valueStr
+ * @param {number} magnitude
+ * @return {string}
+ */
+export function normalize (valueStr, magnitude) {
+  return String(parseValue(valueStr) * magnitude + (/\.$/.test(valueStr) ? '.' : ''))
+}
+
+/**
+ * Normalize a string containing a value by multiplying it with the magnitude
+ *
+ * A trailing decimal separator (.) are kept to allow people enter decimal
+ * numbers, where the number is internally normalized and denormalized again
+ * whilst typing.
+ *
+ * For example:
+ *
+ *     denormalize('10000', 1000)    // returns '10'
+ *     denormalize('10000.', 1000)   // returns '10.'
+ *     denormalize('10200', 1000)    // returns '10.2'
+ *
+ * @param {string} valueStr
+ * @param {number} magnitude
+ * @return {string}
+ */
+export function denormalize (valueStr, magnitude) {
+  return parseValue(valueStr) / magnitude + (/\.$/.test(valueStr) ? '.' : '')
+}

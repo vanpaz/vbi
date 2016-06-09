@@ -5,7 +5,7 @@ import * as formulas from '../src/client/formulas';
 
 test('getYears', t => {
   const years = formulas.getYears({parameters: {startingYear: '2016', numberOfYears: '5'}})
-  t.deepEqual(years, ['2016', '2017', '2018', '2019', '2020'])
+  t.deepEqual(years, [2016, 2017, 2018, 2019, 2020])
 })
 
 test('findQuantity', t => {
