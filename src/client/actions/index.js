@@ -8,6 +8,15 @@ const DEFAULT_PRICE = {
 const DEFAULT_QUANTITIES = {}
 
 /**
+ * Set a view
+ * @param {'finance' | 'model'} view
+ * @return {{type: string, view: string}}
+ */
+export function setView (view) {
+  return { type: 'SET_VIEW', view }
+}
+
+/**
  * Set a user profile
  * @param {{provider:string, id: string, displayName: string, email: string, photo: string}} user
  * @return {{type: string, user: {provider:string, id: string, displayName: string, email: string, photo: string}}}

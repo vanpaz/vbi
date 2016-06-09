@@ -118,7 +118,7 @@ function findCategoryPath (data, section, group, categoryId) {
   const categoryIndex = data[section][group].findIndex(c => c.id === categoryId)
 
   if (categoryIndex === -1) {
-    throw new Error(`Category not found`)
+    throw new Error('Category not found')
   }
 
   return ['data', section, group, categoryIndex]

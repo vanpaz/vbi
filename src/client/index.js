@@ -14,6 +14,8 @@ import reducers from './reducers'
 injectTapEventPlugin()
 
 let initialState = Immutable({
+  view: 'finance',  // 'finance' or 'model'
+
   user: {},
 
   changed: false,  // true when the current document contains unsaved changes

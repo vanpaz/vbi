@@ -46,12 +46,12 @@ div.container:first-child div.card  {
 }
 
 @media screen and (min-width: 1200px) {
-  div.container {
+  div.container.half {
     width: 50%;
   }
 
-  div.container:first-child div.card,
-  div.container div.card  {
+  div.container.half:first-child div.card,
+  div.container.half div.card  {
     margin-top: 20px;
   }
 }
@@ -168,6 +168,7 @@ table.category-table td input {
 table.output td input {
   width: 42px;
   padding: 2px;
+  margin: 0 -2px;
 }
 
 
@@ -332,6 +333,10 @@ button.add-category:focus {
   opacity: 1;
 }
 
+.info-popover {
+  transition: all 0.5s ease-in-out;
+}
+
 .info-popover p:first-child {
   margin-top: 0;
 }
@@ -360,4 +365,32 @@ button.add-category:focus {
 .category:hover .info-icon,
 .category.selected .info-icon {
   fill: #f3742c !important;
+}
+
+.appbar-menu {
+
+}
+
+.appbar-menu span {
+  color: white !important;
+}
+
+.appbar-menu svg {
+  fill: white !important;
+}
+
+.appbar-menu button:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.appbar-menu button {
+  margin-left: 10px !important;
+}
+
+.appbar-menu button.user {
+  padding: 0 10px !important;
+}
+
+.appbar-menu button.selected {
+  background: #f3742c !important;
 }

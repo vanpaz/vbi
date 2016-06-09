@@ -13,13 +13,16 @@ import Avatar from 'material-ui/lib/avatar'
 import AppBar from 'material-ui/lib/app-bar'
 import FlatButton from 'material-ui/lib/flat-button'
 import IconButton from 'material-ui/lib/icon-button'
+import DashboardIcon from 'material-ui/lib/svg-icons/action/dashboard'
+import TimelineIcon from 'material-ui/lib/svg-icons/action/timeline'
 import NavigationMenuIcon from 'material-ui/lib/svg-icons/navigation/menu'
 import ThemeManager from 'material-ui/lib/styles/theme-manager'
 
 import theme from '../theme'
 import Notification from './dialogs/Notification'
-import { setUser, listDocs, renameDoc, setDoc } from '../actions'
+import { setUser, listDocs, renameDoc, setDoc, setView } from '../actions'
 import Menu from './Menu'
+import BusinessModelCanvas from './BusinessModelCanvas'
 import Inputs from './Inputs'
 import Outputs from './Outputs'
 import { request } from '../rest/request'
@@ -87,15 +90,11 @@ class App extends Component {
 
         <Notification ref="notification" />
 
-        <div>
-          <div className="container">
-            <Inputs />
-          </div>
-
-          <div className="container">
-            <Outputs data={this.props.doc.data} />
-          </div>
-        </div>
+        {
+          this.props.view === 'model'
+              ? this.renderModel()
+              : this.renderFinance()
+        }
 
         <div className="footer">
           Copyright &copy; 2016 <a href="http://vanpaz.com">VanPaz</a>
@@ -136,26 +135,65 @@ class App extends Component {
               <IconButton onTouchTap={(event) => this.refs.menu.show() }>
                 <NavigationMenuIcon />
               </IconButton> }
-        iconElementRight={ this.renderUser() } />
+        iconElementRight={ this.renderAppbarMenu() } />
+  }
+
+  renderAppbarMenu () {
+    return <div className="appbar-menu">
+      <FlatButton
+          label="Model"
+          icon={<DashboardIcon />}
+          className={this.props.view === 'model' ? 'selected' : ''}
+          onTouchTap={event => this.props.dispatch(setView('model'))} />
+      <FlatButton
+          label="Finance"
+          icon={<TimelineIcon />}
+          className={this.props.view === 'finance' ? 'selected' : ''}
+          onTouchTap={event => this.props.dispatch(setView('finance'))} />
+      { this.renderUser() }
+    </div>
   }
 
   // render "sign in" or "signed in as"
   renderUser () {
     if (this.isSignedIn()) {
-      let source = this.props.user.email || this.props.user.provider
-      let title = `Logged in as ${this.props.user.displayName} (${source})`
-      let buttonContents = <div title={title} >
+      const source = this.props.user.email || this.props.user.provider
+      const title = `Logged in as ${this.props.user.displayName} (${source})`
+      const userButtonContents = <div title={title} >
         <span style={{color: '#FFFFFF', marginRight: 10}}>Sign out</span>
         <Avatar src={this.props.user.photo} style={{verticalAlign: 'bottom'}} />
       </div>
 
-      return <span>
-        <FlatButton children={ buttonContents } onTouchTap={(event) => this.refs.menu.signOut()} />
-      </span>
+      return <FlatButton
+          className="user"
+          children={ userButtonContents }
+          onTouchTap={(event) => this.refs.menu.signOut()} />
     }
     else {
-      return <FlatButton label="Sign in" onTouchTap={(event) => this.refs.menu.signIn()} />
+      return <FlatButton
+          label="Sign in"
+          onTouchTap={(event) => this.refs.menu.signIn()} />
     }
+  }
+
+  renderModel () {
+    return <div>
+      <div className="container">
+        <BusinessModelCanvas />
+      </div>
+    </div>
+  }
+
+  renderFinance () {
+    return <div>
+      <div className="container half">
+        <Inputs />
+      </div>
+
+      <div className="container half">
+        <Outputs data={this.props.doc.data} />
+      </div>
+    </div>
   }
 
   isSignedIn () {
