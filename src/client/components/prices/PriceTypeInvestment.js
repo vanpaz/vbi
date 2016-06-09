@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import TextField from 'material-ui/lib/text-field'
+import TextField from 'material-ui/TextField'
 
 export default class PriceTypeInvestment extends Component {
   render () {

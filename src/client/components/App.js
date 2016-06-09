@@ -9,12 +9,14 @@ import debugFactory from 'debug/browser'
 // import Perf from 'react-addons-perf'
 // window.Perf = Perf
 
-import Avatar from 'material-ui/lib/avatar'
-import AppBar from 'material-ui/lib/app-bar'
-import FlatButton from 'material-ui/lib/flat-button'
-import IconButton from 'material-ui/lib/icon-button'
-import NavigationMenuIcon from 'material-ui/lib/svg-icons/navigation/menu'
-import ThemeManager from 'material-ui/lib/styles/theme-manager'
+import Avatar from 'material-ui/Avatar'
+import AppBar from 'material-ui/AppBar'
+import FlatButton from 'material-ui/FlatButton'
+import IconButton from 'material-ui/IconButton'
+import NavigationMenuIcon from 'material-ui/svg-icons/navigation/menu'
+import ThemeManager from 'material-ui/styles/themeManager'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import theme from '../theme'
 import Notification from './dialogs/Notification'
@@ -40,6 +42,10 @@ const APP_BAR_STYLE = {
   zIndex: 999
 }
 
+// This replaces the textColor value on the palette
+// and then update the keys for each component that depends on it.
+// More on Colors: http://www.material-ui.com/#/customization/colors
+const muiTheme = getMuiTheme(theme);
 
 // expose the debug library to window, so we can enable and disable it
 if (typeof window !== 'undefined') {
@@ -67,40 +73,42 @@ class App extends Component {
 
   render() {
     return (
-      <div>
-        { this.renderAppBar() }
-
-        <Menu
-            ref="menu"
-            docs={this.props.docs}
-            title={this.props.doc.title}
-            id={this.props.doc._id}
-            signedIn={this.isSignedIn()}
-            onNewDoc={this.handleNewDoc}
-            onDemoDoc={this.handleDemoDoc}
-            onOpenDoc={this.handleOpenDoc}
-            onRenameDoc={this.handleRenameDoc}
-            onSaveDoc={this.handleSaveDoc}
-            onSaveDocAs={this.handleSaveDocAs}
-            onDeleteDoc={this.handleDeleteDoc}
-        />
-
-        <Notification ref="notification" />
-
+      <MuiThemeProvider muiTheme={muiTheme}>
         <div>
-          <div className="container">
-            <Inputs />
+          { this.renderAppBar() }
+
+          <Menu
+              ref="menu"
+              docs={this.props.docs}
+              title={this.props.doc.title}
+              id={this.props.doc._id}
+              signedIn={this.isSignedIn()}
+              onNewDoc={this.handleNewDoc}
+              onDemoDoc={this.handleDemoDoc}
+              onOpenDoc={this.handleOpenDoc}
+              onRenameDoc={this.handleRenameDoc}
+              onSaveDoc={this.handleSaveDoc}
+              onSaveDocAs={this.handleSaveDocAs}
+              onDeleteDoc={this.handleDeleteDoc}
+          />
+
+          <Notification ref="notification" />
+
+          <div>
+            <div className="container">
+              <Inputs />
+            </div>
+
+            <div className="container">
+              <Outputs data={this.props.doc.data} />
+            </div>
           </div>
 
-          <div className="container">
-            <Outputs data={this.props.doc.data} />
+          <div className="footer">
+            Copyright &copy; 2016 <a href="http://vanpaz.com">VanPaz</a>
           </div>
         </div>
-
-        <div className="footer">
-          Copyright &copy; 2016 <a href="http://vanpaz.com">VanPaz</a>
-        </div>
-      </div>
+      </MuiThemeProvider>
     )
   }
 
@@ -362,20 +370,20 @@ class App extends Component {
   compareUpdated (a, b) {
     return a.updated > b.updated ? -1 : a.updated < b.updated ? 1 : 0
   }
-
-  // getChildContext and childContextTypes are needed to set a custom material-ui theme
-  getChildContext() {
-    return {
-      muiTheme: ThemeManager.getMuiTheme(theme)
-    }
-  }
+  //
+  // // getChildContext and childContextTypes are needed to set a custom material-ui theme
+  // getChildContext() {
+  //   return {
+  //     muiTheme: ThemeManager.getMuiTheme(theme)
+  //   }
+  // }
 }
-
-// getChildContext and childContextTypes are needed to set a custom material-ui theme
-// the key passed through context must be called "muiTheme"
-App.childContextTypes = {
-  muiTheme: React.PropTypes.object
-}
+//
+// // getChildContext and childContextTypes are needed to set a custom material-ui theme
+// // the key passed through context must be called "muiTheme"
+// App.childContextTypes = {
+//   muiTheme: React.PropTypes.object
+// }
 
 App = connect((state, ownProps) => {
   return state

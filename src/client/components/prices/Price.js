@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import debugFactory from 'debug/browser'
 
-import Popover from 'material-ui/lib/popover/popover'
-import SelectField from 'material-ui/lib/select-field'
-import MenuItem from 'material-ui/lib/menus/menu-item'
+import Popover from 'material-ui/Popover'
+import SelectField from 'material-ui/SelectField'
+import MenuItem from 'material-ui/MenuItem'
 
 import PriceTypeConstant from './PriceTypeConstant'
 import PriceTypeInvestment from './PriceTypeInvestment'

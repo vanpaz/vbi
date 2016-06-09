@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import debugFactory from 'debug/browser'
 
-import RaisedButton from 'material-ui/lib/raised-button';
+import RaisedButton from 'material-ui/RaisedButton';
 
 import { setProperty } from '../actions'
 import { getProp } from '../utils/object'

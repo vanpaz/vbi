@@ -1,12 +1,12 @@
 import React from 'react'
 
-import Popover from 'material-ui/lib/popover/popover'
-import IconButton from 'material-ui/lib/icon-button'
-import EditIcon from 'material-ui/lib/svg-icons/image/edit'
-import ClearIcon from 'material-ui/lib/svg-icons/content/clear'
-import DownIcon from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-down'
-import UpIcon from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-up'
-import SettingsIcon from 'material-ui/lib/svg-icons/action/settings'
+import Popover from 'material-ui/Popover'
+import IconButton from 'material-ui/IconButton'
+import EditIcon from 'material-ui/svg-icons/image/edit'
+import ClearIcon from 'material-ui/svg-icons/content/clear'
+import DownIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
+import UpIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-up'
+import SettingsIcon from 'material-ui/svg-icons/action/settings'
 
 import theme from '../theme'
 

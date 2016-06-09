@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import debugFactory from 'debug/browser'
 
-import InfoIcon from 'material-ui/lib/svg-icons/action/help'
+import InfoIcon from 'material-ui/svg-icons/action/help'
 
 import InfoPopover from './InfoPopover'
 

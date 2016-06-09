@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import TextField from 'material-ui/lib/text-field'
+import TextField from 'material-ui/TextField'
 
 const styles = {
   textField: {width: 128}

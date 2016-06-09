@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 
-import TextField from 'material-ui/lib/text-field'
-import List from 'material-ui/lib/lists/list'
-import ListItem from 'material-ui/lib/lists/list-item'
+import TextField from 'material-ui/TextField'
+import {List, ListItem} from 'material-ui/List'
 
 import shouldComponentUpdate from '../utils/shouldComponentUpdate'
 

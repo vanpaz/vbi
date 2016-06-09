@@ -1,7 +1,7 @@
 import React from 'react'
 import debugFactory from 'debug/browser'
 
-import Snackbar from 'material-ui/lib/snackbar'
+import Snackbar from 'material-ui/Snackbar'
 
 const debug = debugFactory('vbi:notification')
 

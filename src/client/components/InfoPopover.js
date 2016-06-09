@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import Popover from 'material-ui/lib/popover/popover'
+import Popover from 'material-ui/Popover'
 
 const styles = {
   popover: {

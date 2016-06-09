@@ -1,17 +1,17 @@
 import React from 'react'
 
-import AppBar from 'material-ui/lib/app-bar'
-import IconButton from 'material-ui/lib/icon-button'
-import LeftNav from 'material-ui/lib/left-nav'
-import NavigationMenuIcon from 'material-ui/lib/svg-icons/navigation/menu'
-import List from 'material-ui/lib/lists/list'
-import ListItem from 'material-ui/lib/lists/list-item'
-import EditIcon from 'material-ui/lib/svg-icons/image/edit'
-import OpenIcon from 'material-ui/lib/svg-icons/file/folder-open'
-import SaveIcon from 'material-ui/lib/svg-icons/content/save'
-import CreateIcon from 'material-ui/lib/svg-icons/content/add'
-import ClearIcon from 'material-ui/lib/svg-icons/content/clear'
-import ToggleStarIcon from 'material-ui/lib/svg-icons/toggle/star'
+import AppBar from 'material-ui/AppBar'
+import IconButton from 'material-ui/IconButton'
+import Drawer from 'material-ui/Drawer'
+import {List, ListItem} from 'material-ui/List'
+import Subheader from 'material-ui/Subheader'
+import NavigationMenuIcon from 'material-ui/svg-icons/navigation/menu'
+import EditIcon from 'material-ui/svg-icons/image/edit'
+import OpenIcon from 'material-ui/svg-icons/file/folder-open'
+import SaveIcon from 'material-ui/svg-icons/content/save'
+import CreateIcon from 'material-ui/svg-icons/content/add'
+import ClearIcon from 'material-ui/svg-icons/content/clear'
+import ToggleStarIcon from 'material-ui/svg-icons/toggle/star'
 
 import SignInDialog from './dialogs/SignInDialog'
 import DeleteDialog from './dialogs/DeleteDialog'
@@ -86,7 +86,7 @@ export default class Menu extends React.Component {
     }
 
     return <div>
-      <LeftNav docked={false}
+      <Drawer docked={false}
              open={this.state.open}
              onRequestChange={open => this.setState({open}) } >
         <AppBar title="Menu"
@@ -97,7 +97,8 @@ export default class Menu extends React.Component {
                     </IconButton>
                   } />
 
-        <List subheader="Manage scenarios">
+        <List>
+          <Subheader>Manage scenarios</Subheader>
           <ListItem
               primaryText="New"
               leftIcon={<CreateIcon />}
@@ -141,7 +142,7 @@ export default class Menu extends React.Component {
               }} />
         </List>
 
-      </LeftNav>
+      </Drawer>
 
       <Prompt ref="prompt" />
       <Confirm ref="confirm" />
