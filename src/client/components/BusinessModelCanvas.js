@@ -5,6 +5,8 @@ import CardText from 'material-ui/lib/card/card-text'
 import Tabs from 'material-ui/lib/tabs/tabs'
 import Tab from 'material-ui/lib/tabs/tab'
 
+const categories = require('../data/categories.json')
+
 const styles = {
   container: {
     width: '100%',
@@ -35,9 +37,15 @@ export default class BusinessModelCanvas extends Component {
                 <tbody>
                   <tr>
                     <td colSpan="10">
-                      <div className="outer height1">
-                        <div className="inner">
-                          We make X1, X2, X3 for customers Y and they will like us because of Z
+                      <div className="outer">
+                        <div className="inner main">
+                          We are a <select>
+                          <option>Production and retail</option>
+                          <option>Software</option>
+                          <option>Logistics</option>
+                          <option>Services</option>
+                          <option>???</option>
+                        </select> company. We make <input placeholder="products" /> for <input placeholder="customers" />  and they like us because of <input placeholder="unique selling point" />
                         </div>
                       </div>
                     </td>
@@ -49,6 +57,9 @@ export default class BusinessModelCanvas extends Component {
                           <div className="header">
                             Key partners
                           </div>
+                          <div className="contents">
+                            { this.renderCategories(categories.partnerships) }
+                          </div>
                         </div>
                       </div>
                     </td>
@@ -57,6 +68,9 @@ export default class BusinessModelCanvas extends Component {
                         <div className="inner">
                           <div className="header">
                             Key activities
+                          </div>
+                          <div className="contents">
+                            { this.renderCategories(categories.activities) }
                           </div>
                         </div>
                       </div>
@@ -67,6 +81,9 @@ export default class BusinessModelCanvas extends Component {
                           <div className="header">
                             Value propositions
                           </div>
+                          <div className="contents">
+
+                          </div>
                         </div>
                       </div>
                     </td>
@@ -76,6 +93,9 @@ export default class BusinessModelCanvas extends Component {
                           <div className="header">
                             Customer relations
                           </div>
+                          <div className="contents">
+                            { this.renderCategories(categories.contacts) }
+                          </div>
                         </div>
                       </div>
                     </td>
@@ -84,6 +104,9 @@ export default class BusinessModelCanvas extends Component {
                         <div className="inner">
                           <div className="header">
                             Customer segments
+                          </div>
+                          <div className="contents">
+                            { this.renderCategories(categories.customerSegments) }
                           </div>
                         </div>
                       </div>
@@ -96,6 +119,13 @@ export default class BusinessModelCanvas extends Component {
                           <div className="header">
                             Key resources
                           </div>
+                          <div className="contents">
+                            <b>Resources</b>
+                            { this.renderCategories(categories.resources) }
+                            <br />
+                            <b>Investments</b>
+                            { this.renderCategories(categories.investments) }
+                          </div>
                         </div>
                       </div>
                     </td>
@@ -104,6 +134,9 @@ export default class BusinessModelCanvas extends Component {
                         <div className="inner">
                           <div className="header">
                             Channels
+                          </div>
+                          <div className="contents">
+                            { this.renderCategories(categories.channels) }
                           </div>
                         </div>
                       </div>
@@ -138,5 +171,15 @@ export default class BusinessModelCanvas extends Component {
         </CardText>
       </Card>
     </div>
+  }
+
+  renderCategories (categories) {
+    return categories.map(category => {
+      return <div key={category.id}>
+        <label>
+          <input type="checkbox" /> {category.text}
+        </label>
+      </div>
+    })
   }
 }

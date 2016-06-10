@@ -422,7 +422,6 @@ table.bmc {
 }
 
 table.bmc td {
-  text-align: center;
   vertical-align: top;
   /*border: 1px solid red;*/
 }
@@ -433,7 +432,7 @@ table.bmc td div.outer {
 }
 
 table.bmc td div.outer.height1 {
-  height: 100px;
+  height: 200px;
 }
 table.bmc td div.outer.height2 {
   height: 200px;
@@ -448,7 +447,23 @@ table.bmc td div.inner {
   height: 100%;
   box-shadow: 0 0 3px 1px rgba(0,0,0,0.12);
   border-radius: 2px;
-  overflow: hidden;
+  overflow: auto;
+}
+
+table.bmc td div.inner.main {
+  text-align: center;
+  vertical-align: middle;
+  padding: 10px;
+}
+
+table.bmc td div.inner.main input {
+  border: 1px solid lightgray;
+  background: white;
+  padding: 2px;
+}
+
+table.bmc td div.inner.main input:focus {
+  box-shadow: 0 0 3px 1px #008fd5;
 }
 
 table.bmc td div.header {
@@ -456,4 +471,8 @@ table.bmc td div.header {
   background-color: #6d6d6d;
   padding: 10px;
   text-transform: uppercase;
+  text-align: center;
+}
+table.bmc td div.contents {
+  padding: 10px;
 }

@@ -1,0 +1,54 @@
+{
+  "resources": [
+    {"id": "housing", "text": "Housing costs"},
+    {"id": "transportation", "text": "Cars, transportation"},
+    {"id": "communication", "text": "Communication and network costs"},
+    {"id": "employee", "text": "Other employee benefits"},
+    {"id": "outsourcing", "text": "Outsourced services"},
+    {"id": "materials", "text": "Cost of materials"},
+    {"id": "production", "text": "Other production costs"},
+    {"id": "goods", "text": "Purchased goods"}
+  ],
+  "activities": [
+    {"id": "travel", "text": "Travel costs"},
+    {"id": "office", "text": "Administration and office costs"},
+    {"id": "personnel", "text": "Personnel costs (fixed)"},
+    {"id": "labor", "text": "Cost of labor (personnel variable)"}
+  ],
+  "contacts": [
+    {"id": "marketing", "text": "Marketing costs"},
+    {"id": "customer", "text": "Customer care costs"},
+    {"id": "retention", "text": "Retention costs"},
+    {"id": "maintenance", "text": "Maintenance costs"}
+  ],
+  "channels": [
+    {"id": "sales", "text": "Account management and sales costs"},
+    {"id": "commissions", "text": "Commissions"},
+    {"id": "franchise", "text": "Franchise"},
+    {"id": "shops", "text": "Shops"},
+    {"id": "webshops", "text": "Webshops and 3td party platforms"}
+
+  ],
+  "partnerships": [
+    {"id": "licenses", "text": "Licenses"},
+    {"id": "bundling", "text": "Bundling"}
+  ],
+  "investments": [
+    {"id": "buildings", "text": "Buildings"},
+    {"id": "compupers", "text": "Computer equipment"},
+    {"id": "software", "text": "Computer software"},
+    {"id": "furniture", "text": "Furniture and fixtures"},
+    {"id": "intangibleAssets", "text": "Intangible assets"},
+    {"id": "land", "text": "Land"},
+    {"id": "leaseholdImprovements", "text": "Leasehold improvements"},
+    {"id": "machinery", "text": "Machinery"},
+    {"id": "vehicles", "text": "Vehicles"}
+  ],
+  "customerSegments": [
+    {"id": "?", "text": "?"},
+    {"id": "??", "text": "??"},
+    {"id": "???", "text": "???"},
+    {"id": "????", "text": "????"},
+    {"id": "?????", "text": "?????"}
+  ]
+}
