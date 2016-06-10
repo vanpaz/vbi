@@ -54,6 +54,14 @@ div.container:first-child div.card  {
   div.container.half div.card  {
     margin-top: 20px;
   }
+
+  div.container.whole {
+    display: block;
+    max-width: 100%;
+    width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 
@@ -381,7 +389,7 @@ button.add-category:focus {
 }
 
 .appbar-menu {
-
+  padding: 6px 14px 0 0;
 }
 
 .appbar-menu span {
@@ -406,4 +414,46 @@ button.add-category:focus {
 
 .appbar-menu button.selected {
   background: #f3742c !important;
+}
+
+table.bmc {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table.bmc td {
+  text-align: center;
+  vertical-align: top;
+  /*border: 1px solid red;*/
+}
+
+table.bmc td div.outer {
+  box-sizing: border-box;
+  padding: 10px;
+}
+
+table.bmc td div.outer.height1 {
+  height: 100px;
+}
+table.bmc td div.outer.height2 {
+  height: 200px;
+}
+table.bmc td div.outer.height4 {
+  height: 402px; /* FIXME: we need +2 to compensate for some border, that's ugly */
+}
+
+table.bmc td div.inner {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  box-shadow: 0 0 3px 1px rgba(0,0,0,0.12);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+table.bmc td div.header {
+  color: #e5e5e5;
+  background-color: #6d6d6d;
+  padding: 10px;
+  text-transform: uppercase;
 }

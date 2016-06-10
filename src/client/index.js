@@ -14,7 +14,7 @@ import reducers from './reducers'
 injectTapEventPlugin()
 
 let initialState = Immutable({
-  view: 'finance',  // 'finance' or 'model'
+  view: 'model',  // 'model' or 'finance'
 
   user: {},
 

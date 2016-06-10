@@ -155,7 +155,7 @@ class App extends Component {
 
   renderModel () {
     return <div>
-      <div className="container">
+      <div className="container whole">
         <BusinessModelCanvas />
       </div>
     </div>

@@ -31,7 +31,107 @@ export default class BusinessModelCanvas extends Component {
         <CardText style={styles.cardText}>
           <Tabs inkBarStyle={styles.inkBar} contentContainerStyle={styles.tabContents}>
             <Tab label="Business Model Canvas">
-              Business model canvas comes here...
+              <table className="bmc" width="100%">
+                <tbody>
+                  <tr>
+                    <td colSpan="10">
+                      <div className="outer height1">
+                        <div className="inner">
+                          We make X1, X2, X3 for customers Y and they will like us because of Z
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colSpan="2" rowSpan="2">
+                      <div className="outer height4">
+                        <div className="inner">
+                          <div className="header">
+                            Key partners
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td colSpan="2">
+                      <div className="outer height2">
+                        <div className="inner">
+                          <div className="header">
+                            Key activities
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td colSpan="2" rowSpan="2">
+                      <div className="outer height4">
+                        <div className="inner">
+                          <div className="header">
+                            Value propositions
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td colSpan="2">
+                      <div className="outer height2">
+                        <div className="inner">
+                          <div className="header">
+                            Customer relations
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td colSpan="2" rowSpan="2">
+                      <div className="outer height4">
+                        <div className="inner">
+                          <div className="header">
+                            Customer segments
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colSpan="2">
+                      <div className="outer height2">
+                        <div className="inner">
+                          <div className="header">
+                            Key resources
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td colSpan="2">
+                      <div className="outer height2">
+                        <div className="inner">
+                          <div className="header">
+                            Channels
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colSpan="5">
+                      <div className="outer height1">
+                        <div className="inner">
+                          <div className="header">
+                            Cost structure
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td colSpan="5">
+                      <div className="outer height1">
+                        <div className="inner">
+                          <div className="header">
+                            Revenue streams
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
             </Tab>
           </Tabs>
 
