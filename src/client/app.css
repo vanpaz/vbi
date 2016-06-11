@@ -435,10 +435,10 @@ table.bmc td div.outer.height1 {
   height: 200px;
 }
 table.bmc td div.outer.height2 {
-  height: 200px;
+  height: 300px;
 }
 table.bmc td div.outer.height4 {
-  height: 402px; /* FIXME: we need +2 to compensate for some border, that's ugly */
+  height: 602px; /* FIXME: we need +2 to compensate for some border, that's ugly */
 }
 
 table.bmc td div.inner {
@@ -447,7 +447,8 @@ table.bmc td div.inner {
   height: 100%;
   box-shadow: 0 0 3px 1px rgba(0,0,0,0.12);
   border-radius: 2px;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 table.bmc td div.inner.main {
@@ -456,14 +457,31 @@ table.bmc td div.inner.main {
   padding: 10px;
 }
 
-table.bmc td div.inner.main input {
+table.bmc td div.inner input,
+table.bmc td div.inner textarea {
   border: 1px solid lightgray;
   background: white;
+  color: #4d4d4d;
   padding: 2px;
+  font-family: Roboto, sans-serif;
 }
 
-table.bmc td div.inner.main input:focus {
+table.bmc td div.inner input:focus,
+table.bmc td div.inner textarea:focus {
   box-shadow: 0 0 3px 1px #008fd5;
+}
+
+table.bmc td div.inner div.textarea-container {
+  width: 100%;
+  position: relative;
+  box-sizing: border-box;
+  padding-right: 10px;
+  margin-top: 10px;
+}
+
+table.bmc td div.inner textarea {
+  width: 100%;
+  min-width: 100%;
 }
 
 table.bmc td div.header {

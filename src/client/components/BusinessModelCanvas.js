@@ -40,6 +40,7 @@ export default class BusinessModelCanvas extends Component {
                       <div className="outer">
                         <div className="inner main">
                           We are a <select>
+                          <option></option>
                           <option>Production and retail</option>
                           <option>Software</option>
                           <option>Logistics</option>
@@ -59,6 +60,7 @@ export default class BusinessModelCanvas extends Component {
                           </div>
                           <div className="contents">
                             { this.renderCategories(categories.partnerships) }
+                            { this.renderOther() }
                           </div>
                         </div>
                       </div>
@@ -71,6 +73,7 @@ export default class BusinessModelCanvas extends Component {
                           </div>
                           <div className="contents">
                             { this.renderCategories(categories.activities) }
+                            { this.renderOther() }
                           </div>
                         </div>
                       </div>
@@ -82,7 +85,7 @@ export default class BusinessModelCanvas extends Component {
                             Value propositions
                           </div>
                           <div className="contents">
-
+                            { this.renderOther() }
                           </div>
                         </div>
                       </div>
@@ -95,6 +98,7 @@ export default class BusinessModelCanvas extends Component {
                           </div>
                           <div className="contents">
                             { this.renderCategories(categories.contacts) }
+                            { this.renderOther() }
                           </div>
                         </div>
                       </div>
@@ -107,6 +111,7 @@ export default class BusinessModelCanvas extends Component {
                           </div>
                           <div className="contents">
                             { this.renderCategories(categories.customerSegments) }
+                            { this.renderOther() }
                           </div>
                         </div>
                       </div>
@@ -125,6 +130,7 @@ export default class BusinessModelCanvas extends Component {
                             <br />
                             <b>Investments</b>
                             { this.renderCategories(categories.investments) }
+                            { this.renderOther() }
                           </div>
                         </div>
                       </div>
@@ -137,6 +143,7 @@ export default class BusinessModelCanvas extends Component {
                           </div>
                           <div className="contents">
                             { this.renderCategories(categories.channels) }
+                            { this.renderOther() }
                           </div>
                         </div>
                       </div>
@@ -181,5 +188,11 @@ export default class BusinessModelCanvas extends Component {
         </label>
       </div>
     })
+  }
+
+  renderOther () {
+    return <div className="textarea-container">
+      <textarea placeholder="other" rows="2" />
+    </div>
   }
 }
