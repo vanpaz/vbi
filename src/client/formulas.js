@@ -840,6 +840,12 @@ export let types = {
 
         return prices
       }, {})
+    },
+
+    defaultPrice: {
+      type: 'constant',
+      value: '10k',
+      change: '+3%'
     }
   },
 
@@ -860,6 +866,10 @@ export let types = {
 
         return prices
       }, {})
+    },
+
+    defaultPrice: {
+      type: 'manual'
     }
   },
 
@@ -888,6 +898,11 @@ export let types = {
 
         return prices
       }, {})
+    },
+
+    defaultPrice: {
+      type: 'revenue',
+      percentage: '5%'
     }
   },
 
@@ -976,6 +991,12 @@ export let types = {
       })
 
       return prices
+    },
+
+    defaultPrice: {
+      type: 'investment',
+      value: '10k',
+      depreciationPeriod: 10
     }
   },
 
@@ -1004,6 +1025,12 @@ export let types = {
       })
 
       return prices
+    },
+
+    defaultPrice: {
+      type: 'salary',
+      value: '3k',
+      change: '+2%'
     }
   }
 

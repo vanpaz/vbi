@@ -13,7 +13,7 @@ import {
     addCategory, deleteCategory, renameCategory, moveCategoryUp, moveCategoryDown,
     setParameter, setQuantity, setPrice
 } from '../actions'
-import { findQuantity, getYears } from '../formulas'
+import { types, findQuantity, getYears } from '../formulas'
 import Price from './prices/Price'
 import Parameters from './Parameters'
 
@@ -158,7 +158,7 @@ class Inputs extends Component {
           <button
               className="add-category"
               title="Add a new category"
-              onTouchTap={ (event) => this.handleAddCategory(section, group) }>
+              onTouchTap={ (event) => this.handleAddCategory(section, group, priceTypes) }>
             +
           </button>
         </td>
@@ -183,7 +183,7 @@ class Inputs extends Component {
     this.props.dispatch(setParameter(parameter, value))
   }
 
-  handleAddCategory (section, group) {
+  handleAddCategory (section, group, priceTypes) {
     const options = {
       title: 'New category',
       description: 'Enter a name for the new category:',
@@ -191,9 +191,11 @@ class Inputs extends Component {
       value: 'New category'
     }
 
+    const price = types[priceTypes[0]].defaultPrice
+
     this.refs.prompt.show(options).then(name => {
       if (name !== null) {
-        this.props.dispatch(addCategory(section, group, name))
+        this.props.dispatch(addCategory(section, group, name, price))
       }
     })
   }
