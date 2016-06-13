@@ -16,7 +16,15 @@ For development, we will start two servers: the backend server serving a REST AP
 - Start the backend server and pass configuration (replace `###` with the actual variables):
 
   ```
-  $ PORT=8080 SERVER_URL=http://localhost:8081 COUCH_DB=### GOOGLE_CLIENT_ID=### GOOGLE_CLIENT_SECRET=### FACEBOOK_APP_ID=### FACEBOOK_APP_SECRET=### DEBUG=vbi* node server
+  $ export PORT=8080
+  $ export SERVER_URL=http://localhost:8081
+  $ export COUCH_DB=###
+  $ export GOOGLE_CLIENT_ID=###
+  $ export GOOGLE_CLIENT_SECRET=###
+  $ export FACEBOOK_APP_ID=###
+  $ export FACEBOOK_APP_SECRET=###
+  $ export DEBUG=vbi*
+  $ node ./server.js
   ```
 
   The backend server will listen on port 8080 by default. The front-end development server has a proxy to the REST API of the backend server.
@@ -28,7 +36,9 @@ For development, we will start two servers: the backend server serving a REST AP
 - Start the front-end server with hot reloading. This server is purely for development.
 
   ```
-  $ PORT=8081 BACKEND_SERVER_URL=http://localhost:8080 node dev-server
+  $ export PORT=8081
+  $ export BACKEND_SERVER_URL=http://localhost:8080
+  $ node ./dev-server.js
   ```
 
 - Open [http://localhost:8081](http://localhost:8081) in your browser.
@@ -136,11 +146,21 @@ This generates files in the folder `./dist`.
 
 ### Run server
 
-To start the backend server locally, specify config variables on the command line and run `node server` (replace `###` with the actual variables):
+To start the backend server locally, specify environment variables on the command line and run `node ./server.js` (replace `###` with the actual variables).
 
 ```
-$ PORT=8080 SERVER_URL=http://localhost:8080 COUCH_DB=### GOOGLE_CLIENT_ID=### GOOGLE_CLIENT_SECRET=### FACEBOOK_APP_ID=### FACEBOOK_APP_SECRET=### DEBUG=vbi* node server
+$ PORT=8080
+$ SERVER_URL=https://vanpaz-business-intelligence.herokuapp.com
+$ COUCH_DB=###
+$ GOOGLE_CLIENT_ID=###
+$ GOOGLE_CLIENT_SECRET=###
+$ FACEBOOK_APP_ID=###
+$ FACEBOOK_APP_SECRET=###
+$ DEBUG=vbi*
+$ node ./server.js
 ```
+
+> Note that now we let `SERVER_URL` point to the public url of the server itself, not to a front-end development server.
 
 Then open [http://localhost:8080](http://localhost:8080) in your browser.
 
