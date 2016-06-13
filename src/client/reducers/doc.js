@@ -37,7 +37,7 @@ const doc = (state = Immutable({}), action) => {
       return state.setIn(['data', 'parameters', action.parameter], action.value)
 
     case 'DOC_SET_PROPERTY':
-      return state.setIn(action.path, action.value)
+      return state.setIn(['data'].concat(action.path), action.value)
 
     case 'DOC_ADD_CATEGORY':
       path = ['data', action.section, action.group]

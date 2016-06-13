@@ -83,7 +83,7 @@ class Cashflow extends Component {
   }
 
   renderEditableEntry (years, entry, currency, magnitude) {
-    const values = getProp(this.props, entry.path)
+    const values = getProp(this.props.data, entry.path)
 
     return <tr key={entry.name} className={entry.className}>
       <td className="name">{entry.name}</td>

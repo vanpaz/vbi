@@ -367,6 +367,47 @@
       "payableIncomeTax": "",
       "payableSSC": "",
       "provisionHolidayPayment": ""
+    },
+    "bmc": {
+      "description": {
+        "type": "productionAndRetail",
+        "products": "cookies, cakes",
+        "customers": "rich people",
+        "uniqueSellingPoint": "the quality"
+      },
+      "valuePropositions": {
+        "values": {},
+        "other": ""
+      },
+      "resources": {
+        "values": {
+          "housing": {
+            "value": true,
+            "isDefault": true
+          }
+        }
+      },
+      "activities": {
+        "values": {
+          "office": {
+            "value": true,
+            "isDefault": true
+          },
+          "personnel": {
+            "value": true,
+            "isDefault": true
+          },
+          "labor": {
+            "value": true,
+            "isDefault": true
+          }
+        }
+      },
+      "contacts": {},
+      "channels": {},
+      "partnerships": {},
+      "investments": {},
+      "customerSegments": {}
     }
   }
 }

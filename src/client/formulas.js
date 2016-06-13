@@ -767,13 +767,13 @@ export function calulateCashflow (data) {
     {name: 'Cashflow from operations', values: partials.cashflowFromOperations, className: 'header middle' },
 
     {name: 'Investments in fixed assets', values: partials.investmentsInFixedAssets },
-    {name: 'Investments in participations', editable: true, path: ['data', 'financing', 'investmentsInParticipations']},
+    {name: 'Investments in participations', editable: true, path: ['financing', 'investmentsInParticipations']},
     {name: 'Cashflow from investments', values: partials.cashflowFromInvestments, className: 'header middle' },
 
-    {name: 'Equity contributions', editable: true, path: ['data', 'financing', 'equityContributions'] },
-    {name: 'Bank loans capital calls', editable: true, path: ['data', 'financing', 'bankLoansCapitalCalls'] },
-    {name: 'Bank loans redemption installments', editable: true, path: ['data', 'financing', 'bankLoansRedemptionInstallments']},
-    {name: 'Other sources of finance', editable: true, path: ['data', 'financing', 'otherSourcesOfFinance']},
+    {name: 'Equity contributions', editable: true, path: ['financing', 'equityContributions'] },
+    {name: 'Bank loans capital calls', editable: true, path: ['financing', 'bankLoansCapitalCalls'] },
+    {name: 'Bank loans redemption installments', editable: true, path: ['financing', 'bankLoansRedemptionInstallments']},
+    {name: 'Other sources of finance', editable: true, path: ['financing', 'otherSourcesOfFinance']},
     {name: 'Cashflow from financing', values: partials.cashflowFromFinancing, className: 'header middle' },
 
     {name: 'Total cash balance EoP', values: partials.totalCashBalanceEoP, className: 'header middle' }

@@ -100,7 +100,7 @@ class BalanceSheet extends Component {
               ? normalize(event.target.value, magnitude)
               : event.target.value
 
-              this.props.dispatch(setProperty(['data'].concat(path), value))
+              this.props.dispatch(setProperty(path, value))
            }}
       />
     </td>

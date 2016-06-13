@@ -19,7 +19,7 @@ import ThemeManager from 'material-ui/lib/styles/theme-manager'
 
 import theme from '../theme'
 import Notification from './dialogs/Notification'
-import { setUser, listDocs, renameDoc, setDoc, setView } from '../actions'
+import { setUser, listDocs, renameDoc, setDoc, setView, setProperty } from '../actions'
 import Menu from './Menu'
 import BusinessModelCanvas from './BusinessModelCanvas'
 import Inputs from './Inputs'
@@ -63,6 +63,7 @@ class App extends Component {
     this.handleSaveDoc = this.handleSaveDoc.bind(this)
     this.handleSaveDocAs = this.handleSaveDocAs.bind(this)
     this.handleDeleteDoc = this.handleDeleteDoc.bind(this)
+    this.handleSetProperty = this.handleSetProperty.bind(this)
 
     this.handleAutoSave = debounce(this.handleSaveDoc, AUTO_SAVE_DELAY)
   }
@@ -156,7 +157,10 @@ class App extends Component {
   renderModel () {
     return <div>
       <div className="container whole">
-        <BusinessModelCanvas />
+        <BusinessModelCanvas
+            bmc={this.props.doc.data.bmc}
+            onSetProperty={this.handleSetProperty}
+        />
       </div>
     </div>
   }
@@ -335,6 +339,16 @@ class App extends Component {
           this.fetchDocs()
         })
         .catch(err => this.handleError(err))
+  }
+
+  /**
+   * Set a property in the document
+   * @param {Array} path
+   * @param {*} value
+   */
+  handleSetProperty (path, value) {
+    debug('setProperty', path, value)
+    this.props.dispatch(setProperty(path, value))
   }
 
   handleError (err) {

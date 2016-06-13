@@ -57,6 +57,23 @@
  * }} Category
  *
  * @typedef {{
+ *   description: {
+ *     type: string,
+ *     products: string,
+ *     customers: string,
+ *     uniqueSellingPoint: string
+ *   },
+ *   valuePropositions: {values: Object.<string, {value: boolean, isDefault: boolean}>, other: string}
+ *   resources:         {values: Object.<string, {value: boolean, isDefault: boolean}>, other: string}
+ *   activities:        {values: Object.<string, {value: boolean, isDefault: boolean}>, other: string}
+ *   contacts:          {values: Object.<string, {value: boolean, isDefault: boolean}>, other: string}
+ *   channels:          {values: Object.<string, {value: boolean, isDefault: boolean}>, other: string}
+ *   partnerships:      {values: Object.<string, {value: boolean, isDefault: boolean}>, other: string}
+ *   investments:       {values: Object.<string, {value: boolean, isDefault: boolean}>, other: string}
+ *   customerSegments:  {values: Object.<string, {value: boolean, isDefault: boolean}>, other: string}
+ * }} BMC
+ *
+ * @typedef {{
  *   parameters: Parameters,
  *   costs: {
  *     direct: Array.<Category>,
@@ -103,7 +120,8 @@
  *     payableIncomeTax: string | number,
  *     payableSSC: string | number,
  *     provisionHolidayPayment: string | number,
- *   }
+ *   },
+ *   bmc: BMC
  * }} Scenario
  *
  **/

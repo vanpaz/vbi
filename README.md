@@ -264,6 +264,9 @@ A saved scenario has the following structure:
     },
     "initialBalance": {
       // ...
+    },
+    "bmc": {
+      // ...
     }
   },
   "auth": {

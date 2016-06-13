@@ -445,7 +445,7 @@ table.bmc td div.inner {
   box-sizing: border-box;
   width: 100%;
   height: 100%;
-  box-shadow: 0 0 3px 1px rgba(0,0,0,0.12);
+  border: 1px solid rgba(0,0,0,0.12);
   border-radius: 2px;
   overflow-y: auto;
   overflow-x: hidden;
@@ -455,6 +455,7 @@ table.bmc td div.inner.main {
   text-align: center;
   vertical-align: middle;
   padding: 10px;
+  line-height: 2em;
 }
 
 table.bmc td div.inner input,
@@ -464,6 +465,7 @@ table.bmc td div.inner textarea {
   color: #4d4d4d;
   padding: 2px;
   font-family: Roboto, sans-serif;
+  font-size: 14px;
 }
 
 table.bmc td div.inner input:focus,

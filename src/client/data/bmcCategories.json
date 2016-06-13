@@ -1,9 +1,16 @@
 {
+  "types": [
+    {"id": "productionAndRetail", "text": "Production and retail"},
+    {"id": "software", "text": "Software"},
+    {"id": "logistics", "text": "Logistics"},
+    {"id": "services", "text": "Services"},
+    {"id": "other", "text": "Other"}
+  ],
   "resources": [
     {"id": "housing", "text": "Housing costs"},
     {"id": "transportation", "text": "Cars, transportation"},
     {"id": "communication", "text": "Communication and network costs"},
-    {"id": "employee", "text": "Other employee benefits"},
+    {"id": "employeeBenefits", "text": "Other employee benefits"},
     {"id": "outsourcing", "text": "Outsourced services"},
     {"id": "materials", "text": "Cost of materials"},
     {"id": "production", "text": "Other production costs"},
@@ -35,7 +42,7 @@
   ],
   "investments": [
     {"id": "buildings", "text": "Buildings"},
-    {"id": "compupers", "text": "Computer equipment"},
+    {"id": "computers", "text": "Computer equipment"},
     {"id": "software", "text": "Computer software"},
     {"id": "furniture", "text": "Furniture and fixtures"},
     {"id": "intangibleAssets", "text": "Intangible assets"},
