@@ -7,8 +7,8 @@ import Tab from 'material-ui/lib/tabs/tab'
 
 import { getOptionalProp } from '../utils/object'
 
-const bmcCategories = require('../data/bmcCategories.json')
-const bmcDefaults = require('../data/bmcDefaults.json')
+import * as bmcCategories from '../data/bmcCategories.json'
+import * as bmcDefaults  from'../data/bmcDefaults.json'
 
 const styles = {
   container: {
@@ -67,15 +67,18 @@ export default class BusinessModelCanvas extends Component {
                               ))
                           }
                         </select> company. We make <input
+                            type="text"
                             placeholder="products" 
                             value={bmc.description && bmc.description.products}
                             onChange={onChangeProducts}
-                        /> for <input 
-                            placeholder="customers" 
+                        /> for <input
+                            type="text"
+                            placeholder="customers"
                             value={bmc.description && bmc.description.customers}
                             onChange={onChangeCustomers }
                         />  and they like us because of <input
-                            placeholder="unique selling point"  
+                            type="text"
+                            placeholder="unique selling point"
                             value={bmc.description && bmc.description.uniqueSellingPoint}
                             onChange={onChangeUniqueSellingPoint }
                         />

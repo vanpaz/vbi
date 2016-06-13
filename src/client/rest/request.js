@@ -1,7 +1,7 @@
 import debugFactory from 'debug/browser'
 
 // load HTML5 fetch polyfill
-require('isomorphic-fetch')
+import 'isomorphic-fetch'
 
 const debug = debugFactory('vbi:rest')
 

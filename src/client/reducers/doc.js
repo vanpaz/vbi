@@ -8,7 +8,9 @@ import { removeItem, swapItems } from '../utils/immutable'
 
 const debug = debugFactory('vbi:reducers')
 
-const newScenario = Immutable(require('../data/newScenario.json'))
+import * as newScenarioJSON from '../data/newScenario.json'
+
+const newScenario = Immutable(newScenarioJSON)
 
 /**
  * Ensure that all required fields are available in the document.

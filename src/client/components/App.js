@@ -28,8 +28,11 @@ import { request } from '../rest/request'
 import { list, open, save, del } from '../rest/docs'
 import { hash } from '../utils/hash'
 
-const newScenario  = Immutable(require('../data/newScenario.json'))
-const demoScenario = Immutable(require('../data/demoScenario.json'))
+import * as newScenarioJSON from '../data/newScenario.json'
+import * as demoScenarioJSON from '../data/demoScenario.json'
+
+const newScenario  = Immutable(newScenarioJSON)
+const demoScenario = Immutable(demoScenarioJSON)
 
 const debug = debugFactory('vbi:app')
 
