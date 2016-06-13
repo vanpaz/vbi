@@ -104,7 +104,7 @@ class Inputs extends Component {
     const categories = this.props.data[section][group]
     const revenueCategories = this.props.data.revenues.all
 
-    return <table className="category-table" >
+    return <table className="input" >
       <colgroup>
         <col width='120px'/>
       </colgroup>
