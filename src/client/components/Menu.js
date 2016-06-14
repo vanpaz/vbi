@@ -2,6 +2,7 @@ import React from 'react'
 
 import AppBar from 'material-ui/AppBar'
 import IconButton from 'material-ui/IconButton'
+import RaisedButton from 'material-ui/RaisedButton'
 import Drawer from 'material-ui/Drawer'
 import {List, ListItem} from 'material-ui/List'
 import Subheader from 'material-ui/Subheader'
@@ -111,11 +112,13 @@ export default class Menu extends React.Component {
                     </IconButton>
                   } />
 
-        <List subheader="User">
+        <List>
+          <Subheader>User</Subheader>
           { this.renderUser() }
         </List>
 
-        <List subheader="Manage scenarios">
+        <List>
+          <Subheader>Manage scenarios</Subheader>
           <ListItem
               primaryText="New"
               leftIcon={<CreateIcon />}

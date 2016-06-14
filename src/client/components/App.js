@@ -13,6 +13,8 @@ import Avatar from 'material-ui/Avatar'
 import AppBar from 'material-ui/AppBar'
 import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
+import DashboardIcon from 'material-ui/svg-icons/action/dashboard'
+import TimelineIcon from 'material-ui/svg-icons/action/timeline'
 import NavigationMenuIcon from 'material-ui/svg-icons/navigation/menu'
 import ThemeManager from 'material-ui/styles/themeManager'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -46,6 +48,11 @@ const APP_BAR_STYLE = {
   zIndex: 999
 }
 
+// This replaces the textColor value on the palette
+// and then update the keys for each component that depends on it.
+// More on Colors: http://www.material-ui.com/#/customization/colors
+const muiTheme = getMuiTheme(theme);
+
 
 // expose the debug library to window, so we can enable and disable it
 if (typeof window !== 'undefined') {
@@ -67,44 +74,45 @@ class App extends Component {
     this.handleSaveDoc = this.handleSaveDoc.bind(this)
     this.handleSaveDocAs = this.handleSaveDocAs.bind(this)
     this.handleDeleteDoc = this.handleDeleteDoc.bind(this)
-    this.handleSetProperty = this.handleSetProperty.bind(this)
 
     this.handleAutoSave = debounce(this.handleSaveDoc, AUTO_SAVE_DELAY)
   }
 
   render() {
     return (
-      <div>
-        { this.renderAppBar() }
+      <MuiThemeProvider muiTheme={muiTheme}>
+        <div>
+          { this.renderAppBar() }
 
-        <Menu
-            ref="menu"
-            user={this.props.user}
-            docs={this.props.docs}
-            title={this.props.doc.title}
-            id={this.props.doc._id}
-            signedIn={this.isSignedIn()}
-            onNewDoc={this.handleNewDoc}
-            onDemoDoc={this.handleDemoDoc}
-            onOpenDoc={this.handleOpenDoc}
-            onRenameDoc={this.handleRenameDoc}
-            onSaveDoc={this.handleSaveDoc}
-            onSaveDocAs={this.handleSaveDocAs}
-            onDeleteDoc={this.handleDeleteDoc}
-        />
+          <Menu
+              ref="menu"
+              user={this.props.user}
+              docs={this.props.docs}
+              title={this.props.doc.title}
+              id={this.props.doc._id}
+              signedIn={this.isSignedIn()}
+              onNewDoc={this.handleNewDoc}
+              onDemoDoc={this.handleDemoDoc}
+              onOpenDoc={this.handleOpenDoc}
+              onRenameDoc={this.handleRenameDoc}
+              onSaveDoc={this.handleSaveDoc}
+              onSaveDocAs={this.handleSaveDocAs}
+              onDeleteDoc={this.handleDeleteDoc}
+          />
 
-        <Notification ref="notification" />
+          <Notification ref="notification" />
 
-        {
-          this.props.view === 'model'
-              ? this.renderModel()
-              : this.renderFinance()
-        }
+          {
+            this.props.view === 'model'
+                ? this.renderModel()
+                : this.renderFinance()
+          }
 
-        <div className="footer">
-          Copyright &copy; 2016 <a href="http://vanpaz.com">VanPaz</a>
+          <div className="footer">
+            Copyright &copy; 2016 <a href="http://vanpaz.com">VanPaz</a>
+          </div>
         </div>
-      </div>
+      </MuiThemeProvider>
     )
   }
 
@@ -403,7 +411,7 @@ class App extends Component {
   //   }
   // }
 }
-//
+
 // // getChildContext and childContextTypes are needed to set a custom material-ui theme
 // // the key passed through context must be called "muiTheme"
 // App.childContextTypes = {
