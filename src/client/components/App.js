@@ -74,6 +74,7 @@ class App extends Component {
     this.handleSaveDoc = this.handleSaveDoc.bind(this)
     this.handleSaveDocAs = this.handleSaveDocAs.bind(this)
     this.handleDeleteDoc = this.handleDeleteDoc.bind(this)
+    this.handleSetProperty = this.handleSetProperty.bind(this)
 
     this.handleAutoSave = debounce(this.handleSaveDoc, AUTO_SAVE_DELAY)
   }
