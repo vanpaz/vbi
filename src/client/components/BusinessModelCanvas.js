@@ -14,6 +14,8 @@ import { getOptionalProp } from '../utils/object'
 import * as bmcCategories from '../data/bmcCategories.json'
 import * as bmcDefaults  from'../data/bmcDefaults.json'
 
+import shouldComponentUpdate from '../utils/shouldComponentUpdate'
+
 const styles = {
   container: {
     width: '100%',
@@ -34,6 +36,13 @@ const styles = {
 }
 
 export default class BusinessModelCanvas extends Component {
+  constructor (props) {
+    super(props)
+
+    // update only when props or state are changed
+    this.shouldComponentUpdate = shouldComponentUpdate
+  }
+
   render () {
     const { bmc, onSetProperty } = this.props
 
@@ -68,7 +77,7 @@ export default class BusinessModelCanvas extends Component {
                                   <MenuItem key={c.id} index={i} value={c.id} primaryText={c.text} />
                               ))
                             }
-                          </SelectField> company.
+                          </SelectField> company
                         </div>
                       </div>
                     </td>
@@ -102,24 +111,28 @@ export default class BusinessModelCanvas extends Component {
                     </td>
                     <td colSpan="2" rowSpan="2">
                       <div className="outer height4">
-                        <div className="inner value-propositions">
+                        <div className="inner value-proposition">
                           <div className="header">
-                            Value propositions
+                            Value proposition
                           </div>
                           <div className="contents">
-                            We make
-
+                            <p>
+                              We make:
+                            </p>
                             <ItemList
                                 items={bmc.description && bmc.description.products}
                                 onChange={onChangeProducts} />
 
-                            for
-
+                            <p>
+                              for:
+                            </p>
                             <ItemList
                                 items={bmc.description && bmc.description.customers}
                                 onChange={onChangeCustomers} />
 
-                            and they like us because of<br/>
+                            <p>
+                              and they like us because of:
+                            </p>
                             <input
                                 type="text"
                                 placeholder="unique selling point"
