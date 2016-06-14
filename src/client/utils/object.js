@@ -217,6 +217,8 @@ export function avgProps (objects) {
 
 /**
  * Find a nested property value from an object
+ * Throws an error "cannot read key from undefined" when the path does not exist
+ * on the object.
  * @param {Object} object
  * @param {string[]} path
  * @return {*}
@@ -225,6 +227,24 @@ export function getProp (object, path) {
   let prop = object
 
   path.forEach(key => prop = prop[key])
+
+  return prop
+}
+
+/**
+ * Find a nested property value from an object.
+ * Stops traversing and returns undefined when the path does not exist on the
+ * object.
+ * @param {Object} object
+ * @param {string[]} path
+ * @return {*}
+ */
+export function getOptionalProp (object, path) {
+  let prop = object
+
+  path.forEach(key => {
+    prop = (typeof prop === 'object') ? prop[key] : undefined
+  })
 
   return prop
 }

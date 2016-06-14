@@ -23,11 +23,25 @@ import shouldComponentUpdate from '../utils/shouldComponentUpdate'
 
 const MAX_DOCS = 10  // maximum number of visible docs in the left navigation menu
 
-const APP_BAR_STYLE = {
-  position: 'fixed',
-  top: 0,
-  left: 0,
-  zIndex: 999
+const styles = {
+  appBar: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    zIndex: 999
+  },
+  user: {
+    width: '100%',
+    padding: 10,
+    boxSizing: 'border-box'
+  },
+  avatar: {
+    verticalAlign: 'middle',
+    textAlign: 'center'
+  },
+  signInButton: {
+    width: '100%'
+  }
 }
 
 
@@ -90,15 +104,18 @@ export default class Menu extends React.Component {
              open={this.state.open}
              onRequestChange={open => this.setState({open}) } >
         <AppBar title="Menu"
-                style={{background: APP_BAR_STYLE.background}}
+                style={{background: styles.appBar.background}}
                 iconElementLeft={
                     <IconButton onTouchTap={(event) => this.hide() }>
                       <NavigationMenuIcon />
                     </IconButton>
                   } />
 
-        <List>
-          <Subheader>Manage scenarios</Subheader>
+        <List subheader="User">
+          { this.renderUser() }
+        </List>
+
+        <List subheader="Manage scenarios">
           <ListItem
               primaryText="New"
               leftIcon={<CreateIcon />}
@@ -150,6 +167,30 @@ export default class Menu extends React.Component {
       <DeleteDialog ref="deleteDialog" />
 
     </div>
+  }
+
+  renderUser () {
+    if (this.isSignedIn()) {
+      return <div style={styles.user}>
+        <Avatar src={this.props.user.photo} style={styles.avatar} />
+        { ' ' + (this.props.user.displayName || this.props.user.email) + ' '}
+        <div style={{display: 'inline-block'}}>
+          [<button className="sign-out" onTouchTap={(event) => this.signOut()}>sign out</button>]
+        </div>
+      </div>
+    }
+    else {
+      return <div style={styles.user}>
+        <RaisedButton
+            label="Sign in"
+            style={styles.signInButton}
+            onTouchTap={(event) => this.signIn()} />
+      </div>
+    }
+  }
+
+  isSignedIn () {
+    return this.props.user && this.props.user.id
   }
 
   show () {

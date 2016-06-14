@@ -2,7 +2,6 @@
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
 if (!Array.prototype.includes) {
   Array.prototype.includes = function(searchElement /*, fromIndex*/ ) {
-    'use strict'
     var O = Object(this)
     var len = parseInt(O.length) || 0
     if (len === 0) {

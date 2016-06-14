@@ -9,15 +9,21 @@ import './utils/polyfills'
 import App from './components/App'
 import reducers from './reducers'
 
+import * as demoScenarioJSON from './data/demoScenario.json'
+
+import '!style!css!less!./style.less'
+
 // required for support for mouse and touch events
 // see https://github.com/callemall/material-ui#react-tap-event-plugin
 injectTapEventPlugin()
 
 let initialState = Immutable({
+  view: 'model',  // 'model' or 'finance'
+
   user: {},
 
   changed: false,  // true when the current document contains unsaved changes
-  doc: require('./data/demoScenario.json'),   // The current doc
+  doc: demoScenarioJSON,   // The current doc
   docs: [] // list with all docs of the user
 })
 

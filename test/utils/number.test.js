@@ -1,6 +1,6 @@
 import test from 'ava';
 
-import { parseValue, formatValueWithUnit } from '../../src/client/utils/number';
+import { parseValue, formatValueWithUnit, normalize, denormalize } from '../../src/client/utils/number';
 
 test('parseValue', t => {
   t.is(parseValue('23'), 23);
@@ -33,3 +33,15 @@ test('formatValueWithUnit', t => {
   t.is(formatValueWithUnit(600000000000), '600B');
   t.is(formatValueWithUnit(600000000000000), '600T');
 });
+
+test('normalize', t => {
+  t.is(normalize('10', 1000), '10000')
+  t.is(normalize('10.', 1000), '10000.')
+  t.is(normalize('10.2', 1000), '10200')
+})
+
+test('denormalize', t => {
+  t.is(denormalize('10000', 1000), '10')
+  t.is(denormalize('10000.', 1000), '10.')
+  t.is(denormalize('10200', 1000), '10.2')
+})

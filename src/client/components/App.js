@@ -20,16 +20,20 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import theme from '../theme'
 import Notification from './dialogs/Notification'
-import { setUser, listDocs, renameDoc, setDoc } from '../actions'
+import { setUser, listDocs, renameDoc, setDoc, setView, setProperty } from '../actions'
 import Menu from './Menu'
+import BusinessModelCanvas from './BusinessModelCanvas'
 import Inputs from './Inputs'
 import Outputs from './Outputs'
 import { request } from '../rest/request'
 import { list, open, save, del } from '../rest/docs'
 import { hash } from '../utils/hash'
 
-const newScenario  = Immutable(require('../data/newScenario.json'))
-const demoScenario = Immutable(require('../data/demoScenario.json'))
+import * as newScenarioJSON from '../data/newScenario.json'
+import * as demoScenarioJSON from '../data/demoScenario.json'
+
+const newScenario  = Immutable(newScenarioJSON)
+const demoScenario = Immutable(demoScenarioJSON)
 
 const debug = debugFactory('vbi:app')
 
@@ -42,10 +46,6 @@ const APP_BAR_STYLE = {
   zIndex: 999
 }
 
-// This replaces the textColor value on the palette
-// and then update the keys for each component that depends on it.
-// More on Colors: http://www.material-ui.com/#/customization/colors
-const muiTheme = getMuiTheme(theme);
 
 // expose the debug library to window, so we can enable and disable it
 if (typeof window !== 'undefined') {
@@ -67,48 +67,44 @@ class App extends Component {
     this.handleSaveDoc = this.handleSaveDoc.bind(this)
     this.handleSaveDocAs = this.handleSaveDocAs.bind(this)
     this.handleDeleteDoc = this.handleDeleteDoc.bind(this)
+    this.handleSetProperty = this.handleSetProperty.bind(this)
 
     this.handleAutoSave = debounce(this.handleSaveDoc, AUTO_SAVE_DELAY)
   }
 
   render() {
     return (
-      <MuiThemeProvider muiTheme={muiTheme}>
-        <div>
-          { this.renderAppBar() }
+      <div>
+        { this.renderAppBar() }
 
-          <Menu
-              ref="menu"
-              docs={this.props.docs}
-              title={this.props.doc.title}
-              id={this.props.doc._id}
-              signedIn={this.isSignedIn()}
-              onNewDoc={this.handleNewDoc}
-              onDemoDoc={this.handleDemoDoc}
-              onOpenDoc={this.handleOpenDoc}
-              onRenameDoc={this.handleRenameDoc}
-              onSaveDoc={this.handleSaveDoc}
-              onSaveDocAs={this.handleSaveDocAs}
-              onDeleteDoc={this.handleDeleteDoc}
-          />
+        <Menu
+            ref="menu"
+            user={this.props.user}
+            docs={this.props.docs}
+            title={this.props.doc.title}
+            id={this.props.doc._id}
+            signedIn={this.isSignedIn()}
+            onNewDoc={this.handleNewDoc}
+            onDemoDoc={this.handleDemoDoc}
+            onOpenDoc={this.handleOpenDoc}
+            onRenameDoc={this.handleRenameDoc}
+            onSaveDoc={this.handleSaveDoc}
+            onSaveDocAs={this.handleSaveDocAs}
+            onDeleteDoc={this.handleDeleteDoc}
+        />
 
-          <Notification ref="notification" />
+        <Notification ref="notification" />
 
-          <div>
-            <div className="container">
-              <Inputs />
-            </div>
+        {
+          this.props.view === 'model'
+              ? this.renderModel()
+              : this.renderFinance()
+        }
 
-            <div className="container">
-              <Outputs data={this.props.doc.data} />
-            </div>
-          </div>
-
-          <div className="footer">
-            Copyright &copy; 2016 <a href="http://vanpaz.com">VanPaz</a>
-          </div>
+        <div className="footer">
+          Copyright &copy; 2016 <a href="http://vanpaz.com">VanPaz</a>
         </div>
-      </MuiThemeProvider>
+      </div>
     )
   }
 
@@ -144,26 +140,45 @@ class App extends Component {
               <IconButton onTouchTap={(event) => this.refs.menu.show() }>
                 <NavigationMenuIcon />
               </IconButton> }
-        iconElementRight={ this.renderUser() } />
+        iconElementRight={ this.renderAppbarMenu() } />
   }
 
-  // render "sign in" or "signed in as"
-  renderUser () {
-    if (this.isSignedIn()) {
-      let source = this.props.user.email || this.props.user.provider
-      let title = `Logged in as ${this.props.user.displayName} (${source})`
-      let buttonContents = <div title={title} >
-        <span style={{color: '#FFFFFF', marginRight: 10}}>Sign out</span>
-        <Avatar src={this.props.user.photo} style={{verticalAlign: 'bottom'}} />
+  renderAppbarMenu () {
+    return <div className="appbar-menu">
+      <FlatButton
+          label="Model"
+          icon={<DashboardIcon />}
+          className={this.props.view === 'model' ? 'selected' : ''}
+          onTouchTap={event => this.props.dispatch(setView('model'))} />
+      <FlatButton
+          label="Finance"
+          icon={<TimelineIcon />}
+          className={this.props.view === 'finance' ? 'selected' : ''}
+          onTouchTap={event => this.props.dispatch(setView('finance'))} />
+    </div>
+  }
+
+  renderModel () {
+    return <div>
+      <div className="container whole">
+        <BusinessModelCanvas
+            bmc={this.props.doc.data.bmc}
+            onSetProperty={this.handleSetProperty}
+        />
+      </div>
+    </div>
+  }
+
+  renderFinance () {
+    return <div>
+      <div className="container half">
+        <Inputs />
       </div>
 
-      return <span>
-        <FlatButton children={ buttonContents } onTouchTap={(event) => this.refs.menu.signOut()} />
-      </span>
-    }
-    else {
-      return <FlatButton label="Sign in" onTouchTap={(event) => this.refs.menu.signIn()} />
-    }
+      <div className="container half">
+        <Outputs data={this.props.doc.data} />
+      </div>
+    </div>
   }
 
   isSignedIn () {
@@ -328,6 +343,16 @@ class App extends Component {
           this.fetchDocs()
         })
         .catch(err => this.handleError(err))
+  }
+
+  /**
+   * Set a property in the document
+   * @param {Array} path
+   * @param {*} value
+   */
+  handleSetProperty (path, value) {
+    debug('setProperty', path, value)
+    this.props.dispatch(setProperty(path, value))
   }
 
   handleError (err) {

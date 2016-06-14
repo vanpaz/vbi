@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Immutable from 'seamless-immutable'
 import debugFactory from 'debug/browser'
 
 import Popover from 'material-ui/Popover'
@@ -10,6 +11,8 @@ import PriceTypeInvestment from './PriceTypeInvestment'
 import PriceTypeManual from './PriceTypeManual'
 import PriceTypeRevenue from './PriceTypeRevenue'
 import PriceTypeSalary from './PriceTypeSalary'
+
+import { types } from '../../formulas'
 
 const debug = debugFactory('vbi:Price')
 
@@ -130,8 +133,12 @@ export default class Price extends Component {
     this.props.onChange(price)
   }
 
-  handleChangeType (event, index, value) {
-    let price = this.props.price.set('type', value)
+  handleChangeType (event, index, type) {
+    const defaultPrice = Immutable(types[type].defaultPrice)
+
+    let price = defaultPrice
+        .merge(this.props.price)
+        .set('type', type)
 
     debug('handleChangeType', price)
 

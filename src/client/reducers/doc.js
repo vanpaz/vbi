@@ -8,7 +8,9 @@ import { removeItem, swapItems } from '../utils/immutable'
 
 const debug = debugFactory('vbi:reducers')
 
-const newScenario = Immutable(require('../data/newScenario.json'))
+import * as newScenarioJSON from '../data/newScenario.json'
+
+const newScenario = Immutable(newScenarioJSON)
 
 /**
  * Ensure that all required fields are available in the document.
@@ -37,7 +39,7 @@ const doc = (state = Immutable({}), action) => {
       return state.setIn(['data', 'parameters', action.parameter], action.value)
 
     case 'DOC_SET_PROPERTY':
-      return state.setIn(action.path, action.value)
+      return state.setIn(['data'].concat(action.path), action.value)
 
     case 'DOC_ADD_CATEGORY':
       path = ['data', action.section, action.group]
@@ -118,7 +120,7 @@ function findCategoryPath (data, section, group, categoryId) {
   const categoryIndex = data[section][group].findIndex(c => c.id === categoryId)
 
   if (categoryIndex === -1) {
-    throw new Error(`Category not found`)
+    throw new Error('Category not found')
   }
 
   return ['data', section, group, categoryIndex]

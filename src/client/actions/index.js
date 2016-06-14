@@ -1,11 +1,21 @@
 
+// TODO: different default prices based on the section and group
 const DEFAULT_PRICE = {
-  type: 'constant',
-  value: '10k',
-  change: '+3%'
+  // type: 'constant',
+  // value: '10k',
+  // change: '+3%'
 }
 
 const DEFAULT_QUANTITIES = {}
+
+/**
+ * Set a view
+ * @param {'model' | 'finance'} view
+ * @return {{type: string, view: string}}
+ */
+export function setView (view) {
+  return { type: 'SET_VIEW', view }
+}
 
 /**
  * Set a user profile
@@ -28,7 +38,7 @@ export function renameDoc (title) {
   return { type: 'DOC_RENAME', title }
 }
 
-export function addCategory (section, group, name, price = DEFAULT_PRICE, quantities = DEFAULT_QUANTITIES) {
+export function addCategory (section, group, name, price = {}, quantities = DEFAULT_QUANTITIES) {
   return { type: 'DOC_ADD_CATEGORY', section, group, name, price, quantities }
 }
 
