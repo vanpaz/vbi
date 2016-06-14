@@ -4,7 +4,11 @@ import Card from 'material-ui/lib/card/card'
 import CardText from 'material-ui/lib/card/card-text'
 import Tabs from 'material-ui/lib/tabs/tabs'
 import Tab from 'material-ui/lib/tabs/tab'
+import CheckBox from 'material-ui/lib/checkbox'
+import SelectField from 'material-ui/lib/select-field'
+import MenuItem from 'material-ui/lib/menus/menu-item'
 
+import ItemList from './ItemList'
 import { getOptionalProp } from '../utils/object'
 
 import * as bmcCategories from '../data/bmcCategories.json'
@@ -33,14 +37,14 @@ export default class BusinessModelCanvas extends Component {
   render () {
     const { bmc, onSetProperty } = this.props
 
-    const onChangeType = event => {
-      onSetProperty(['bmc', 'description', 'type'], event.target.value)
+    const onChangeType = (event, index, value) => {
+      onSetProperty(['bmc', 'description', 'type'], value)
     }
-    const onChangeProducts = event => {
-      onSetProperty(['bmc', 'description', 'products'], event.target.value)
+    const onChangeProducts = value => {
+      onSetProperty(['bmc', 'description', 'products'], value)
     }
-    const onChangeCustomers = event => {
-      onSetProperty(['bmc', 'description', 'customers'], event.target.value)
+    const onChangeCustomers = value => {
+      onSetProperty(['bmc', 'description', 'customers'], value)
     }
     const onChangeUniqueSellingPoint = event => {
       onSetProperty(['bmc', 'description', 'uniqueSellingPoint'], event.target.value)
@@ -57,31 +61,14 @@ export default class BusinessModelCanvas extends Component {
                     <td colSpan="10">
                       <div className="outer">
                         <div className="inner main">
-                          We are a <select
-                            value={bmc.description && bmc.description.type}
-                            onChange={onChangeType}>
-                          <option value=""/>
-                          {
-                              bmcCategories.types.map(c => (
-                                  <option key={c.id} value={c.id}>{c.text}</option>
+                          We are a <SelectField style={{fontSize: 14}} value={bmc.description && bmc.description.type} onChange={onChangeType}>
+                            <MenuItem index={-1} value="" primaryText=""/>
+                            {
+                              bmcCategories.types.map((c, i) => (
+                                  <MenuItem key={c.id} index={i} value={c.id} primaryText={c.text} />
                               ))
-                          }
-                        </select> company. We make <input
-                            type="text"
-                            placeholder="products" 
-                            value={bmc.description && bmc.description.products}
-                            onChange={onChangeProducts}
-                        /> for <input
-                            type="text"
-                            placeholder="customers"
-                            value={bmc.description && bmc.description.customers}
-                            onChange={onChangeCustomers }
-                        />  and they like us because of <input
-                            type="text"
-                            placeholder="unique selling point"
-                            value={bmc.description && bmc.description.uniqueSellingPoint}
-                            onChange={onChangeUniqueSellingPoint }
-                        />
+                            }
+                          </SelectField> company.
                         </div>
                       </div>
                     </td>
@@ -115,12 +102,30 @@ export default class BusinessModelCanvas extends Component {
                     </td>
                     <td colSpan="2" rowSpan="2">
                       <div className="outer height4">
-                        <div className="inner">
+                        <div className="inner value-propositions">
                           <div className="header">
                             Value propositions
                           </div>
                           <div className="contents">
-                            { this.renderOther('valuePropositions', bmc, onSetProperty) }
+                            We make
+
+                            <ItemList
+                                items={bmc.description && bmc.description.products}
+                                onChange={onChangeProducts} />
+
+                            for
+
+                            <ItemList
+                                items={bmc.description && bmc.description.customers}
+                                onChange={onChangeCustomers} />
+
+                            and they like us because of<br/>
+                            <input
+                                type="text"
+                                placeholder="unique selling point"
+                                value={bmc.description && bmc.description.uniqueSellingPoint}
+                                onChange={onChangeUniqueSellingPoint }
+                            />
                           </div>
                         </div>
                       </div>
@@ -227,11 +232,9 @@ export default class BusinessModelCanvas extends Component {
       }
 
       const props = {
-        type: 'checkbox',
-
+        label: entry.text,
         checked,
-
-        onChange: (event) => {
+        onCheck: (event) => {
           const newValue = {
             value: event.target.checked,
             isDefault: false
@@ -241,22 +244,21 @@ export default class BusinessModelCanvas extends Component {
       }
 
       return <div key={entry.id}>
-        <label>
-          <input {...props} /> {entry.text}
-        </label>
+        <CheckBox {...props} />
       </div>
     })
   }
 
   renderOther (category, bmc, onSetProperty) {
-    const value = bmc[category] && bmc[category].other || ''
+    const items = bmc[category] && bmc[category].other || ''
 
-    const onChange = (event) => {
-      onSetProperty(['bmc', category, 'other'], event.target.value)
+    const onChange = items => {
+      onSetProperty(['bmc', category, 'other'], items)
     }
 
-    return <div className="textarea-container">
-      <textarea placeholder="other" rows="2" value={value} onChange={onChange} />
+    return <div>
+      <div className="sub-header">Other</div>
+      <ItemList items={items} onChange={onChange} />
     </div>
   }
 }

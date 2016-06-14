@@ -371,8 +371,8 @@
     "bmc": {
       "description": {
         "type": "productionAndRetail",
-        "products": "cookies, cakes",
-        "customers": "wealthy people",
+        "products": ["cookies", "cakes"],
+        "customers": ["wealthy people"],
         "uniqueSellingPoint": "the quality"
       },
       "valuePropositions": {

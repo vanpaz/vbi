@@ -4,32 +4,32 @@
     {"id": "software", "text": "Software"},
     {"id": "logistics", "text": "Logistics"},
     {"id": "services", "text": "Services"},
-    {"id": "other", "text": "Other"}
+    {"id": "other", "text": "Other type of"}
   ],
   "resources": [
-    {"id": "housing", "text": "Housing costs"},
+    {"id": "housing", "text": "Housing"},
     {"id": "transportation", "text": "Cars, transportation"},
-    {"id": "communication", "text": "Communication and network costs"},
+    {"id": "communication", "text": "Communication and network"},
     {"id": "employeeBenefits", "text": "Other employee benefits"},
     {"id": "outsourcing", "text": "Outsourced services"},
-    {"id": "materials", "text": "Cost of materials"},
-    {"id": "production", "text": "Other production costs"},
+    {"id": "materials", "text": "Materials"},
+    {"id": "production", "text": "Other production resources"},
     {"id": "goods", "text": "Purchased goods"}
   ],
   "activities": [
-    {"id": "travel", "text": "Travel costs"},
-    {"id": "office", "text": "Administration and office costs"},
-    {"id": "personnel", "text": "Personnel costs (fixed)"},
-    {"id": "labor", "text": "Cost of labor (personnel variable)"}
+    {"id": "travel", "text": "Travel"},
+    {"id": "office", "text": "Administration and office"},
+    {"id": "personnel", "text": "Personnel (fixed)"},
+    {"id": "labor", "text": "Labor (personnel variable)"}
   ],
   "contacts": [
-    {"id": "marketing", "text": "Marketing costs"},
-    {"id": "customer", "text": "Customer care costs"},
-    {"id": "retention", "text": "Retention costs"},
-    {"id": "maintenance", "text": "Maintenance costs"}
+    {"id": "marketing", "text": "Marketing"},
+    {"id": "customer", "text": "Customer care"},
+    {"id": "retention", "text": "Retention"},
+    {"id": "maintenance", "text": "Maintenance"}
   ],
   "channels": [
-    {"id": "sales", "text": "Account management and sales costs"},
+    {"id": "sales", "text": "Account management and sales"},
     {"id": "commissions", "text": "Commissions"},
     {"id": "franchise", "text": "Franchise"},
     {"id": "shops", "text": "Shops"},
