@@ -58,15 +58,6 @@
         "machinery":              { "value": true, "isDefault": true },
         "vehicles":               { "value": true, "isDefault": true }
       }
-    },
-    "customerSegments": {
-      "values": {
-        "?":      { "value": false, "isDefault": true },
-        "??":     { "value": false, "isDefault": true },
-        "???":    { "value": false, "isDefault": true },
-        "????":   { "value": false, "isDefault": true },
-        "?????":  { "value": false, "isDefault": true }
-      }
     }
   }
 }

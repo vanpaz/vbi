@@ -50,12 +50,5 @@
     {"id": "leaseholdImprovements", "text": "Leasehold improvements"},
     {"id": "machinery", "text": "Machinery"},
     {"id": "vehicles", "text": "Vehicles"}
-  ],
-  "customerSegments": [
-    {"id": "?", "text": "?"},
-    {"id": "??", "text": "??"},
-    {"id": "???", "text": "???"},
-    {"id": "????", "text": "????"},
-    {"id": "?????", "text": "?????"}
   ]
 }

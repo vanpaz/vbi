@@ -150,8 +150,9 @@ export default class BusinessModelCanvas extends Component {
                             Customer segments
                           </div>
                           <div className="contents">
-                            { this.renderCategories('customerSegments', bmc, onSetProperty) }
-                            { this.renderOther('customerSegments', bmc, onSetProperty) }
+                            <ItemList
+                                items={bmc.description && bmc.description.customers}
+                                onChange={onChangeCustomers} />
                           </div>
                         </div>
                       </div>
