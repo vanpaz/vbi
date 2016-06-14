@@ -70,7 +70,7 @@ div.container {
   div.container.whole {
     display: block;
     max-width: 100%;
-    width: 1400px;
+    width: 1800px;
     margin-left: auto;
     margin-right: auto;
   }
@@ -443,11 +443,12 @@ table.bmc {
     width: 100%;
     box-sizing : border-box;
     border-radius: 1px;
+    font-size: 14px;
   }
 
   td {
     vertical-align: top;
-    /*border: 1px solid red;*/
+    position: relative;
 
     div.outer {
       box-sizing: border-box;
@@ -455,36 +456,66 @@ table.bmc {
     }
 
     div.outer.height1 {
-      height: 200px;
+      height: 290px;
     }
     div.outer.height2 {
-      height: 310px;
+      height: 290px;
     }
     div.outer.height4 {
-      height: 622px; /* FIXME: we need +2 to compensate for some border, that's ugly */
+      height: 582px; /* FIXME: we need +2 to compensate for some border, that's ugly */
     }
 
     div.inner {
+      position: relative;
       box-sizing: border-box;
       width: 100%;
       height: 100%;
       border: 1px solid @lightGray;
       border-radius: 2px;
-      overflow: auto;
+      overflow: hidden;
 
-      input[type=text],
-      textarea {
-        border: 1px solid @midGray;
-        background: white;
-        color: @almostBlack;
-        padding: 2px;
-        font-family: Roboto, sans-serif;
-        font-size: 14px;
+      div.header {
+        color: @white;
+        background-color: @anthracite;
+        padding: 0 10px;
+        text-transform: uppercase;
+        text-align: center;
+        height: 40px;
+        line-height: 40px;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
-      input[type=text]:focus,
-      textarea:focus {
-        box-shadow: 0 0 3px 1px @blue;
+      div.contents {
+        position: absolute;
+        box-sizing: border-box;
+        padding: 10px;
+        top: 40px;
+        bottom: 0;
+        width: 100%;
+        overflow: auto;
+
+        input[type=text],
+        textarea {
+          border: 1px solid @midGray;
+          background: white;
+          padding: 4px;
+          font-family: Roboto, sans-serif;
+          font-size: 14px;
+        }
+
+        label {
+          line-height: inherit !important;
+          margin: 0 0 4px 0 !important;
+        }
+
+        input[type=text]:focus,
+        textarea:focus {
+          border-color: @blue;
+          box-shadow: 0 0 3px 1px @blue;
+        }
       }
     }
 
@@ -509,20 +540,17 @@ table.bmc {
       }
     }
 
-    div.header {
-      color: @white;
-      background-color: @anthracite;
-      padding: 10px;
-      text-transform: uppercase;
-      text-align: center;
-    }
-
-    div.contents {
-      padding: 10px;
-    }
   }
 }
 
+.category-header {
+  font-weight: bold;
+  margin: 1em 0 0.5em 0;
+}
+
+.category-header:first-child {
+  margin-top: 0;
+}
 
 .sub-header {
   color: @gray;
@@ -554,12 +582,13 @@ table.bmc {
 
       input {
         border: 1px solid @midGray;
-        padding: 2px;
+        padding: 4px;
         background: @white;
         width: 100%;
       }
 
       input:focus {
+        border-color: @blue;
         box-shadow: 0 0 3px 1px @blue;
       }
 

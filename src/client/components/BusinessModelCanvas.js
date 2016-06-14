@@ -66,6 +66,18 @@ export default class BusinessModelCanvas extends Component {
           <Tabs inkBarStyle={styles.inkBar} contentContainerStyle={styles.tabContents}>
             <Tab label="Business Model Canvas">
               <table className="bmc" width="100%">
+                <colGroup>
+                  <col width="10%" />
+                  <col width="10%" />
+                  <col width="10%" />
+                  <col width="10%" />
+                  <col width="10%" />
+                  <col width="10%" />
+                  <col width="10%" />
+                  <col width="10%" />
+                  <col width="10%" />
+                  <col width="10%" />
+                </colGroup>
                 <tbody>
                   <tr>
                     <td colSpan="10">
@@ -182,10 +194,11 @@ export default class BusinessModelCanvas extends Component {
                             Key resources
                           </div>
                           <div className="contents">
-                            <b>Resources</b>
+                            <div className="category-header">Resources</div>
                             { this.renderCategories('resources', bmc, onSetProperty) }
-                            <br />
-                            <b>Investments</b>
+                            { this.renderOther('resources', bmc, onSetProperty) }
+
+                            <div className="category-header">Investments</div>
                             { this.renderCategories('investments', bmc, onSetProperty) }
                             { this.renderOther('investments', bmc, onSetProperty) }
                           </div>
@@ -212,6 +225,9 @@ export default class BusinessModelCanvas extends Component {
                         <div className="inner">
                           <div className="header">
                             Cost structure
+                          </div>
+                          <div className="contents">
+                            { this.renderCostStructure(bmc, onSetProperty) }
                           </div>
                         </div>
                       </div>
@@ -243,17 +259,9 @@ export default class BusinessModelCanvas extends Component {
   renderCategories (category, bmc, onSetProperty) {
     return bmcCategories[category].map(entry => {
 
-      let checked = getOptionalProp(bmc, [category, 'values', entry.id, 'value'])
-      if (typeof checked !== 'boolean') {
-        checked = getOptionalProp(bmcDefaults, [bmc.description.type, category, 'values', entry.id, 'value'])
-        if (typeof checked !== 'boolean') {
-          checked = false
-        }
-      }
-
       const props = {
         label: entry.text,
-        checked,
+        checked: this.isCategoryChecked(category, bmc, entry.id),
         onCheck: (event) => {
           const newValue = {
             value: event.target.checked,
@@ -263,10 +271,37 @@ export default class BusinessModelCanvas extends Component {
         }
       }
 
-      return <div key={entry.id}>
+      return <div key={entry.id} style={{marginRight: -10}}>
         <CheckBox {...props} />
       </div>
     })
+  }
+
+  isCategoryChecked (category, bmc, entryId) {
+    let checked = getOptionalProp(bmc, [category, 'values', entryId, 'value'])
+    if (typeof checked !== 'boolean') {
+      checked = getOptionalProp(bmcDefaults, [bmc.description.type, category, 'values', entryId, 'value'])
+      if (typeof checked !== 'boolean') {
+        checked = false
+      }
+    }
+    return checked
+  }
+
+  renderCostStructure (bmc, onSetProperty) {
+    const groups = Immutable([ 'activities', 'resources', 'investments', 'contacts', 'channels' ])
+
+    return groups
+        .flatMap(group => {
+          const groups = bmcCategories[group]
+              .filter(entry => this.isCategoryChecked (group, bmc, entry.id))
+
+          const otherGroups = (bmc[group] && bmc[group].other || [])
+              .map((text, i) => ({id: group + i, text})) // TODO: make this mapping redundant
+
+          return groups.concat(otherGroups)
+        })
+        .map(category => <div key={category.id}>{category.text}</div>)
   }
 
   renderRevenueStreams (bmc, onSetProperty) {
