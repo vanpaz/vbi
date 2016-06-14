@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Immutable from 'seamless-immutable'
 
 import Card from 'material-ui/lib/card/card'
 import CardText from 'material-ui/lib/card/card-text'
@@ -120,6 +121,7 @@ export default class BusinessModelCanvas extends Component {
                               We make:
                             </p>
                             <ItemList
+                                placeholder="product"
                                 items={bmc.description && bmc.description.products}
                                 onChange={onChangeProducts} />
 
@@ -127,6 +129,7 @@ export default class BusinessModelCanvas extends Component {
                               for:
                             </p>
                             <ItemList
+                                placeholder="customers"
                                 items={bmc.description && bmc.description.customers}
                                 onChange={onChangeCustomers} />
 
@@ -219,6 +222,9 @@ export default class BusinessModelCanvas extends Component {
                           <div className="header">
                             Revenue streams
                           </div>
+                          <div className="contents">
+                            { this.renderRevenueStreams(bmc, onSetProperty) }
+                          </div>
                         </div>
                       </div>
                     </td>
@@ -259,6 +265,37 @@ export default class BusinessModelCanvas extends Component {
 
       return <div key={entry.id}>
         <CheckBox {...props} />
+      </div>
+    })
+  }
+
+  renderRevenueStreams (bmc, onSetProperty) {
+    const products = bmc.description.products || []
+    const customers = bmc.description.customers || []
+    const revenueStreams = []
+    products.forEach(product => {
+      customers.forEach(customer => {
+        revenueStreams.push(product + ' for ' + customer)
+      })
+    })
+
+    return revenueStreams.map(name => {
+      let checked = getOptionalProp(bmc, ['revenueStreams', 'values', name, 'value'])
+      if (checked === undefined) {
+        checked = true
+      }
+
+      const onCheck = (event) => {
+        const newValue = {
+          value: event.target.checked,
+          isDefault: false
+        }
+
+        onSetProperty(['bmc', 'revenueStreams', 'values', name], newValue)
+      }
+
+      return <div key={name} className="revenue-stream">
+        <CheckBox checked={checked} label={name} onCheck={onCheck} />
       </div>
     })
   }

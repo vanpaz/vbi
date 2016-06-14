@@ -458,10 +458,10 @@ table.bmc {
       height: 200px;
     }
     div.outer.height2 {
-      height: 300px;
+      height: 310px;
     }
     div.outer.height4 {
-      height: 602px; /* FIXME: we need +2 to compensate for some border, that's ugly */
+      height: 622px; /* FIXME: we need +2 to compensate for some border, that's ugly */
     }
 
     div.inner {
@@ -470,8 +470,7 @@ table.bmc {
       height: 100%;
       border: 1px solid @lightGray;
       border-radius: 2px;
-      overflow-y: auto;
-      overflow-x: hidden;
+      overflow: auto;
 
       input[type=text],
       textarea {

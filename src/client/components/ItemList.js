@@ -29,6 +29,7 @@ export default class ItemList extends Component {
     return <div className="list-item" key={index} >
       <div className="item-value" >
         <input ref={'item' + index}
+               placeholder={this.props.placeholder}
                value={value}
                onChange={event => this.changeItem(event.target.value, index)} />
       </div>
