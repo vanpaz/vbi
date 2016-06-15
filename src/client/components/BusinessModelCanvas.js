@@ -103,8 +103,8 @@ export default class BusinessModelCanvas extends Component {
                             Key partners
                           </div>
                           <div className="contents">
-                            { this.renderCategories('partnerships', bmc, onSetProperty) }
-                            { this.renderOther('partnerships', bmc, onSetProperty) }
+                            { renderCategories('partnerships', bmc, onSetProperty) }
+                            { renderOther('partnerships', bmc, onSetProperty) }
                           </div>
                         </div>
                       </div>
@@ -116,8 +116,8 @@ export default class BusinessModelCanvas extends Component {
                             Key activities
                           </div>
                           <div className="contents">
-                            { this.renderCategories('activities', bmc, onSetProperty) }
-                            { this.renderOther('activities', bmc, onSetProperty) }
+                            { renderCategories('activities', bmc, onSetProperty) }
+                            { renderOther('activities', bmc, onSetProperty) }
                           </div>
                         </div>
                       </div>
@@ -165,8 +165,8 @@ export default class BusinessModelCanvas extends Component {
                             Customer relations
                           </div>
                           <div className="contents">
-                            { this.renderCategories('contacts', bmc, onSetProperty) }
-                            { this.renderOther('contacts', bmc, onSetProperty) }
+                            { renderCategories('contacts', bmc, onSetProperty) }
+                            { renderOther('contacts', bmc, onSetProperty) }
                           </div>
                         </div>
                       </div>
@@ -195,12 +195,12 @@ export default class BusinessModelCanvas extends Component {
                           </div>
                           <div className="contents">
                             <div className="group-header">Resources</div>
-                            { this.renderCategories('resources', bmc, onSetProperty) }
-                            { this.renderOther('resources', bmc, onSetProperty) }
+                            { renderCategories('resources', bmc, onSetProperty) }
+                            { renderOther('resources', bmc, onSetProperty) }
 
                             <div className="group-header">Investments</div>
-                            { this.renderCategories('investments', bmc, onSetProperty) }
-                            { this.renderOther('investments', bmc, onSetProperty) }
+                            { renderCategories('investments', bmc, onSetProperty) }
+                            { renderOther('investments', bmc, onSetProperty) }
                           </div>
                         </div>
                       </div>
@@ -212,8 +212,8 @@ export default class BusinessModelCanvas extends Component {
                             Channels
                           </div>
                           <div className="contents">
-                            { this.renderCategories('channels', bmc, onSetProperty) }
-                            { this.renderOther('channels', bmc, onSetProperty) }
+                            { renderCategories('channels', bmc, onSetProperty) }
+                            { renderOther('channels', bmc, onSetProperty) }
                           </div>
                         </div>
                       </div>
@@ -227,7 +227,7 @@ export default class BusinessModelCanvas extends Component {
                             Cost structure
                           </div>
                           <div className="contents">
-                            { this.renderCostStructure(bmc, onSetProperty) }
+                            { renderCostStructure(bmc, onSetProperty) }
                           </div>
                         </div>
                       </div>
@@ -239,7 +239,7 @@ export default class BusinessModelCanvas extends Component {
                             Revenue streams
                           </div>
                           <div className="contents">
-                            { this.renderRevenueStreams(bmc, onSetProperty) }
+                            { renderRevenueStreams(bmc, onSetProperty) }
                           </div>
                         </div>
                       </div>
@@ -255,108 +255,115 @@ export default class BusinessModelCanvas extends Component {
       </Card>
     </div>
   }
+}
 
-  renderCategories (group, bmc, onSetProperty) {
-    return bmcCategories[group].map(category => {
 
-      const props = {
-        label: category.text,
-        checked: this.isCategoryChecked(group, bmc, category.id),
-        onCheck: (event) => {
-          const newValue = {
-            value: event.target.checked,
-            isDefault: false
-          }
-          onSetProperty(['bmc', group, 'values', category.id], newValue)
-        }
-      }
+function renderCategories (group, bmc, onSetProperty) {
+  return bmcCategories[group].map(category => {
 
-      return <div key={category.id} style={{marginRight: -10}}>
-        <CheckBox {...props} />
-      </div>
-    })
-  }
-
-  isCategoryChecked (group, bmc, categoryId) {
-    let checked = getOptionalProp(bmc, [group, 'values', categoryId, 'value'])
-    if (typeof checked !== 'boolean') {
-      checked = getOptionalProp(bmcDefaults, [bmc.description.type, group, 'values', categoryId, 'value'])
-      if (typeof checked !== 'boolean') {
-        checked = false
-      }
-    }
-    return checked
-  }
-
-  renderCostStructure (bmc, onSetProperty) {
-    const groups = Immutable([ 'activities', 'resources', 'investments', 'contacts', 'channels' ])
-
-    return groups
-        .flatMap(group => {
-          const groups = bmcCategories[group]
-              .filter(category => this.isCategoryChecked (group, bmc, category.id))
-
-          const otherGroups = (bmc[group] && bmc[group].other || [])
-              .map(({id, value}) => ({id, text: value}))
-
-          return groups.concat(otherGroups)
-        })
-        .map(category => <div key={category.id}>{category.text}</div>)
-  }
-
-  renderRevenueStreams (bmc, onSetProperty) {
-    const revenueStreams = this.generateRevenueStreams(bmc.description.products, bmc.description.customers)
-
-    return revenueStreams.map(category => {
-      let checked = getOptionalProp(bmc, ['revenueStreams', 'values', category.id, 'value'])
-      if (checked === undefined) {
-        checked = true
-      }
-
-      const onCheck = (event) => {
+    const props = {
+      label: category.text,
+      checked: isCategoryChecked(group, bmc, category.id),
+      onCheck: (event) => {
         const newValue = {
           value: event.target.checked,
           isDefault: false
         }
-
-        onSetProperty(['bmc', 'revenueStreams', 'values', category.id], newValue)
+        onSetProperty(['bmc', group, 'values', category.id], newValue)
       }
-
-      return <div key={category.id} className="revenue-stream">
-        <CheckBox checked={checked} label={category.value} onCheck={onCheck} />
-      </div>
-    })
-  }
-
-  /**
-   * Create a category for every combination of product and customer
-   * @param {Array.<{id: string, value: string}>} products
-   * @param {Array.<{id: string, value: string}>} customers
-   * @return {Array.<{id: string, value: string}>}
-   *   Array with entries having a compound key as id, which is a concatenation
-   *   of the id's of the product and customer.
-   */
-  generateRevenueStreams (products = [], customers = []) {
-    return Immutable(products).flatMap(product => {
-      return customers.map(customer => {
-        return {
-          id: product.id + ':' + customer.id,
-          value: product.value + ' for ' + customer.value
-        }
-      })
-    })
-  }
-
-  renderOther (group, bmc, onSetProperty) {
-    const items = bmc[group] && bmc[group].other || []
-
-    const onChange = items => {
-      onSetProperty(['bmc', group, 'other'], items)
     }
 
-    return <div>
-      <div className="sub-header">Other</div>
-      <TextItemList items={items} onChange={onChange} />
+    return <div key={category.id} style={{marginRight: -10}}>
+      <CheckBox {...props} />
     </div>
+  })
+}
+
+function isCategoryChecked (group, bmc, categoryId) {
+  let checked = getOptionalProp(bmc, [group, 'values', categoryId, 'value'])
+  if (typeof checked !== 'boolean') {
+    checked = getOptionalProp(bmcDefaults, [bmc.description.type, group, 'values', categoryId, 'value'])
+    if (typeof checked !== 'boolean') {
+      checked = false
+    }
   }
+  return checked
+}
+
+function renderCostStructure (bmc, onSetProperty) {
+  const groups = Immutable([ 'activities', 'resources', 'investments', 'contacts', 'channels' ])
+
+  return generateCostCategories(bmc)
+      .map(category => <div key={category.id}>{category.text}</div>)
+}
+
+function generateCostCategories (bmc) {
+  const groups = Immutable([ 'activities', 'resources', 'investments', 'contacts', 'channels' ])
+
+  return groups
+      .flatMap(group => {
+        const groups = bmcCategories[group]
+            .filter(category => isCategoryChecked (group, bmc, category.id))
+
+        const otherGroups = (bmc[group] && bmc[group].other || [])
+            .map(({id, value}) => ({id, text: value}))
+
+        return groups.concat(otherGroups)
+      })
+}
+
+function renderRevenueStreams (bmc, onSetProperty) {
+  const revenueStreams = generateRevenueStreams(bmc.description.products, bmc.description.customers)
+
+  return revenueStreams.map(category => {
+    let checked = getOptionalProp(bmc, ['revenueStreams', 'values', category.id, 'value'])
+    if (checked === undefined) {
+      checked = true
+    }
+
+    const onCheck = (event) => {
+      const newValue = {
+        value: event.target.checked,
+        isDefault: false
+      }
+
+      onSetProperty(['bmc', 'revenueStreams', 'values', category.id], newValue)
+    }
+
+    return <div key={category.id} className="revenue-stream">
+      <CheckBox checked={checked} label={category.value} onCheck={onCheck} />
+    </div>
+  })
+}
+
+/**
+ * Create a category for every combination of product and customer
+ * @param {Array.<{id: string, value: string}>} products
+ * @param {Array.<{id: string, value: string}>} customers
+ * @return {Array.<{id: string, value: string}>}
+ *   Array with entries having a compound key as id, which is a concatenation
+ *   of the id's of the product and customer.
+ */
+function generateRevenueStreams (products = [], customers = []) {
+  return Immutable(products).flatMap(product => {
+    return customers.map(customer => {
+      return {
+        id: product.id + ':' + customer.id,
+        value: product.value + ' for ' + customer.value
+      }
+    })
+  })
+}
+
+function renderOther (group, bmc, onSetProperty) {
+  const items = bmc[group] && bmc[group].other || []
+
+  const onChange = items => {
+    onSetProperty(['bmc', group, 'other'], items)
+  }
+
+  return <div>
+    <div className="sub-header">Other</div>
+    <TextItemList items={items} onChange={onChange} />
+  </div>
 }
