@@ -56,21 +56,24 @@
  *   quantities: Object<string, string>
  * }} Category
  *
+ * @typedef {{value: boolean, isDefault: boolean}} Option
+ * @typedef {{id: string, value: string}} TextItem
+ *
  * @typedef {{
  *   description: {
  *     type: string,
- *     products: string,
- *     customers: string,
+ *     products: Array.<TextItem>,
+ *     customers: Array.<TextItem>,
  *     uniqueSellingPoint: string
  *   },
- *   valuePropositions: {values: Object.<string, {value: boolean, isDefault: boolean}>, other: string}
- *   resources:         {values: Object.<string, {value: boolean, isDefault: boolean}>, other: string}
- *   activities:        {values: Object.<string, {value: boolean, isDefault: boolean}>, other: string}
- *   contacts:          {values: Object.<string, {value: boolean, isDefault: boolean}>, other: string}
- *   channels:          {values: Object.<string, {value: boolean, isDefault: boolean}>, other: string}
- *   partnerships:      {values: Object.<string, {value: boolean, isDefault: boolean}>, other: string}
- *   investments:       {values: Object.<string, {value: boolean, isDefault: boolean}>, other: string}
- *   customerSegments:  {values: Object.<string, {value: boolean, isDefault: boolean}>, other: string}
+ *   valuePropositions: {values: Object.<string, Option>, other: Array.<TextItem>}
+ *   resources:         {values: Object.<string, Option>, other: Array.<TextItem>}
+ *   activities:        {values: Object.<string, Option>, other: Array.<TextItem>}
+ *   contacts:          {values: Object.<string, Option>, other: Array.<TextItem>}
+ *   channels:          {values: Object.<string, Option>, other: Array.<TextItem>}
+ *   partnerships:      {values: Object.<string, Option>, other: Array.<TextItem>}
+ *   investments:       {values: Object.<string, Option>, other: Array.<TextItem>}
+ *   customerSegments:  {values: Object.<string, Option>, other: Array.<TextItem>}
  * }} BMC
  *
  * @typedef {{

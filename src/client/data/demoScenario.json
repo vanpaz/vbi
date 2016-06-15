@@ -371,13 +371,14 @@
     "bmc": {
       "description": {
         "type": "productionAndRetail",
-        "products": ["cookies", "cakes"],
-        "customers": ["wealthy people"],
+        "products": [
+          {"id": "b7e669ad-c695-4125-a59b-4b0f81f0c370", "value": "cookies"},
+          {"id": "76bfec0d-044a-4bbb-bce3-1913aec1ea15", "value": "cakes"}
+        ],
+        "customers": [
+          {"id": "8a3efa6f-e3cd-4592-8c0b-4df5336d89f3", "value": "wealthy people"}
+        ],
         "uniqueSellingPoint": "the quality"
-      },
-      "valuePropositions": {
-        "values": {},
-        "other": ""
       },
       "resources": {
         "values": {

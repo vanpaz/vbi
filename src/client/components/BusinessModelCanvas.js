@@ -9,7 +9,7 @@ import CheckBox from 'material-ui/lib/checkbox'
 import SelectField from 'material-ui/lib/select-field'
 import MenuItem from 'material-ui/lib/menus/menu-item'
 
-import ItemList from './ItemList'
+import TextItemList from './TextItemList'
 import { getOptionalProp } from '../utils/object'
 
 import * as bmcCategories from '../data/bmcCategories.json'
@@ -132,7 +132,7 @@ export default class BusinessModelCanvas extends Component {
                             <p>
                               We make:
                             </p>
-                            <ItemList
+                            <TextItemList
                                 placeholder="product"
                                 items={bmc.description && bmc.description.products}
                                 onChange={onChangeProducts} />
@@ -140,7 +140,7 @@ export default class BusinessModelCanvas extends Component {
                             <p>
                               for:
                             </p>
-                            <ItemList
+                            <TextItemList
                                 placeholder="customers"
                                 items={bmc.description && bmc.description.customers}
                                 onChange={onChangeCustomers} />
@@ -178,7 +178,7 @@ export default class BusinessModelCanvas extends Component {
                             Customer segments
                           </div>
                           <div className="contents">
-                            <ItemList
+                            <TextItemList
                                 items={bmc.description && bmc.description.customers}
                                 onChange={onChangeCustomers} />
                           </div>
@@ -297,7 +297,7 @@ export default class BusinessModelCanvas extends Component {
               .filter(entry => this.isCategoryChecked (group, bmc, entry.id))
 
           const otherGroups = (bmc[group] && bmc[group].other || [])
-              .map((text, i) => ({id: group + i, text})) // TODO: make this mapping redundant
+              .map(({id, value}) => ({id, text: value}))
 
           return groups.concat(otherGroups)
         })
@@ -305,17 +305,10 @@ export default class BusinessModelCanvas extends Component {
   }
 
   renderRevenueStreams (bmc, onSetProperty) {
-    const products = bmc.description.products || []
-    const customers = bmc.description.customers || []
-    const revenueStreams = []
-    products.forEach(product => {
-      customers.forEach(customer => {
-        revenueStreams.push(product + ' for ' + customer)
-      })
-    })
+    const revenueStreams = this.generateRevenueStreams(bmc.description.products, bmc.description.customers)
 
-    return revenueStreams.map(name => {
-      let checked = getOptionalProp(bmc, ['revenueStreams', 'values', name, 'value'])
+    return revenueStreams.map(entry => {
+      let checked = getOptionalProp(bmc, ['revenueStreams', 'values', entry.id, 'value'])
       if (checked === undefined) {
         checked = true
       }
@@ -326,17 +319,36 @@ export default class BusinessModelCanvas extends Component {
           isDefault: false
         }
 
-        onSetProperty(['bmc', 'revenueStreams', 'values', name], newValue)
+        onSetProperty(['bmc', 'revenueStreams', 'values', entry.id], newValue)
       }
 
-      return <div key={name} className="revenue-stream">
-        <CheckBox checked={checked} label={name} onCheck={onCheck} />
+      return <div key={entry.id} className="revenue-stream">
+        <CheckBox checked={checked} label={entry.value} onCheck={onCheck} />
       </div>
     })
   }
 
+  /**
+   * Create an entry for every combination of product and customer
+   * @param {Array.<{id: string, value: string}>} products
+   * @param {Array.<{id: string, value: string}>} customers
+   * @return {Array.<{id: string, value: string}>}
+   *   Array with entries having a compound key as id, which is a concatenation
+   *   of the id's of the product and customer.
+   */
+  generateRevenueStreams (products = [], customers = []) {
+    return Immutable(products).flatMap(product => {
+      return customers.map(customer => {
+        return {
+          id: product.id + ':' + customer.id,
+          value: product.value + ' for ' + customer.value
+        }
+      })
+    })
+  }
+
   renderOther (category, bmc, onSetProperty) {
-    const items = bmc[category] && bmc[category].other || ''
+    const items = bmc[category] && bmc[category].other || []
 
     const onChange = items => {
       onSetProperty(['bmc', category, 'other'], items)
@@ -344,7 +356,7 @@ export default class BusinessModelCanvas extends Component {
 
     return <div>
       <div className="sub-header">Other</div>
-      <ItemList items={items} onChange={onChange} />
+      <TextItemList items={items} onChange={onChange} />
     </div>
   }
 }
