@@ -19,7 +19,7 @@
   "activities": [
     {"id": "travel", "text": "Travel"},
     {"id": "office", "text": "Administration and office"},
-    {"id": "personnel", "text": "Personnel (fixed)"},
+    {"id": "personnel", "text": "Personnel (fixed)", "group": "personnel"},
     {"id": "labor", "text": "Labor (personnel variable)"}
   ],
   "contacts": [

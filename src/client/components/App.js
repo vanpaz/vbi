@@ -306,8 +306,6 @@ class App extends Component {
         .without(['_id', '_rev'])
         .set('title', newTitle)
 
-    console.log('copyOfDoc', copyOfDoc)
-
     save(copyOfDoc, n => this.handleNotification(n))
         .then((response) => {
 

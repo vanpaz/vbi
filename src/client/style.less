@@ -1,3 +1,5 @@
+@import url('../../node_modules/dragula/dist/dragula.min.css');
+
 @almostBlack: #4d4d4d;
 @anthracite: #6d6d6d;
 @gray: #9e9e9e;
@@ -9,6 +11,8 @@
 @blue: #008fd5;
 @orange: #f3742c;
 @red: #E9573F;
+@yellow: #ffff8e;
+@lightYellow: #fffddf;
 
 @transparentGray: rgba(0, 0, 0, 0.12);
 @transparentWhite: rgba(255, 255, 255, 0.1);
@@ -557,13 +561,67 @@ table.bmc {
   }
 }
 
-.category-header {
+.group-header {
   font-weight: bold;
   margin: 1em 0 0.5em 0;
 }
 
-.category-header:first-child {
+.group-header:first-child {
   margin-top: 0;
+}
+
+.cost-structure {
+  .cost-group {
+    display: inline-block;
+    vertical-align: top;
+    width: 33%;
+  }
+
+  .cost-group-contents {
+    min-height: 100px;
+    min-width: 100px;
+
+    margin-right: 10px;
+
+    padding-bottom: 2em;
+
+    background: @white;
+    transition: background .4s ease-in-out;
+
+    div.cost-group-item {
+      cursor: move;
+
+      padding-bottom: 0.5em;
+      padding-left: 1.2em;
+      text-indent:-1.2em;
+
+      span.ellipsis {
+        color: @gray;
+        font-weight: bold;
+      }
+    }
+
+  }
+}
+
+/* dragula styling */
+
+.gu-unselectable .cost-group-contents {
+  background: @almostWhite;
+  transition: background .2s ease-in-out;
+}
+
+.gu-unselectable {
+}
+.gu-transit {
+  //background: @yellow;
+}
+.gu-mirror {
+  //background: @yellow;
+  background: @transparentGray;
+  opacity: 1;
+}
+.gu-hide {
 }
 
 .sub-header {

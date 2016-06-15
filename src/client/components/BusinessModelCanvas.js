@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Immutable from 'seamless-immutable'
+import Dragula from 'react-dragula'
 
 import Card from 'material-ui/lib/card/card'
 import CardText from 'material-ui/lib/card/card-text'
@@ -227,7 +228,7 @@ export default class BusinessModelCanvas extends Component {
                             Cost structure
                           </div>
                           <div className="contents">
-                            { renderCostStructure(bmc, onSetProperty) }
+                            { this.renderCostStructure(bmc, onSetProperty) }
                           </div>
                         </div>
                       </div>
@@ -255,8 +256,90 @@ export default class BusinessModelCanvas extends Component {
       </Card>
     </div>
   }
-}
 
+  renderCostStructure (bmc, onSetProperty) {
+    const categories = generateCostCategories(bmc)
+
+    function getGroupId (category) {
+      if (bmc.costStructure && bmc.costStructure[category.id]) {
+        return bmc.costStructure[category.id].groupId
+      }
+      else if (category.group) {
+        return category.group
+      }
+      else {
+        return 'indirect'
+      }
+    }
+
+    const isDirect    = category => getGroupId(category) === 'direct'
+    const isPersonnel = category => getGroupId(category) === 'personnel'
+    const isIndirect  = category => !isDirect(category) && !isPersonnel(category)
+
+    const direct    = categories.filter(isDirect)
+    const personnel = categories.filter(isPersonnel)
+    const indirect  = categories.filter(isIndirect)
+
+    const renderCategory = category => {
+      return <div className="cost-group-item" key={category.id} data-category-id={category.id}>
+        <span className="ellipsis">{'\u22ee'}</span>&nbsp;{category.text}
+      </div>
+    }
+
+    return <div className="cost-structure">
+      <div className="cost-group">
+        <div className="group-header">Direct</div>
+        <div className="cost-group-contents" ref="groupDirect" data-group-id="direct">
+          { direct.map(renderCategory) }
+        </div>
+      </div>
+      <div className="cost-group">
+        <div className="group-header">Personnel</div>
+        <div className="cost-group-contents" ref="groupPersonnel" data-group-id="personnel">
+          { personnel.map(renderCategory) }
+        </div>
+      </div>
+      <div className="cost-group">
+        <div className="group-header">Indirect</div>
+        <div className="cost-group-contents" ref="groupIndirect" data-group-id="indirect">
+          { indirect.map(renderCategory) }
+        </div>
+      </div>
+    </div>
+  }
+
+  componentDidMount () {
+    const containers = [
+      this.refs.groupDirect,
+      this.refs.groupPersonnel,
+      this.refs.groupIndirect
+    ]
+
+    // we create copies of the dragged elements, which are cleaned up again
+    // when dropped so React can create the element itself.
+    this.drake = Dragula(containers, {
+      copy: true
+    })
+
+    this.drake.on('drop', (element) => {
+      const parent = element.parentNode
+      if (parent) {
+        const groupId = parent.getAttribute('data-group-id')
+        const categoryId = element.getAttribute('data-category-id')
+        const index = toArray(parent.childNodes).indexOf(element)
+
+        // remove the copied element, it will be generated again via React
+        parent.removeChild(element)
+
+        this.props.onSetProperty(['bmc', 'costStructure', categoryId], { groupId, index })
+      }
+    })
+  }
+
+  componentWillUnmount () {
+    this.drake.destroy()
+  }
+}
 
 function renderCategories (group, bmc, onSetProperty) {
   return bmcCategories[group].map(category => {
@@ -290,13 +373,6 @@ function isCategoryChecked (group, bmc, categoryId) {
   return checked
 }
 
-function renderCostStructure (bmc, onSetProperty) {
-  const groups = Immutable([ 'activities', 'resources', 'investments', 'contacts', 'channels' ])
-
-  return generateCostCategories(bmc)
-      .map(category => <div key={category.id}>{category.text}</div>)
-}
-
 function generateCostCategories (bmc) {
   const groups = Immutable([ 'activities', 'resources', 'investments', 'contacts', 'channels' ])
 
@@ -313,7 +389,7 @@ function generateCostCategories (bmc) {
 }
 
 function renderRevenueStreams (bmc, onSetProperty) {
-  const revenueStreams = generateRevenueStreams(bmc.description.products, bmc.description.customers)
+  const revenueStreams = generateRevenueCategories(bmc.description.products, bmc.description.customers)
 
   return revenueStreams.map(category => {
     let checked = getOptionalProp(bmc, ['revenueStreams', 'values', category.id, 'value'])
@@ -344,7 +420,7 @@ function renderRevenueStreams (bmc, onSetProperty) {
  *   Array with entries having a compound key as id, which is a concatenation
  *   of the id's of the product and customer.
  */
-function generateRevenueStreams (products = [], customers = []) {
+function generateRevenueCategories (products = [], customers = []) {
   return Immutable(products).flatMap(product => {
     return customers.map(customer => {
       return {
@@ -366,4 +442,19 @@ function renderOther (group, bmc, onSetProperty) {
     <div className="sub-header">Other</div>
     <TextItemList items={items} onChange={onChange} />
   </div>
+}
+
+/**
+ * Convert a DOM Node List or Arguments into a regular Array
+ * @param nodes
+ * @return {Array}
+ */
+function toArray (nodes) {
+  const array = [];
+
+  for (var i = 0; i < nodes.length; i++) {
+    array[i] = nodes[i]
+  }
+
+  return array
 }

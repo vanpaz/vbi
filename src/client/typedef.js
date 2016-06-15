@@ -66,14 +66,14 @@
  *     customers: Array.<TextItem>,
  *     uniqueSellingPoint: string
  *   },
- *   valuePropositions: {values: Object.<string, Option>, other: Array.<TextItem>}
- *   resources:         {values: Object.<string, Option>, other: Array.<TextItem>}
- *   activities:        {values: Object.<string, Option>, other: Array.<TextItem>}
- *   contacts:          {values: Object.<string, Option>, other: Array.<TextItem>}
- *   channels:          {values: Object.<string, Option>, other: Array.<TextItem>}
- *   partnerships:      {values: Object.<string, Option>, other: Array.<TextItem>}
- *   investments:       {values: Object.<string, Option>, other: Array.<TextItem>}
- *   customerSegments:  {values: Object.<string, Option>, other: Array.<TextItem>}
+ *   resources:         {values: Object.<string, Option>, other: Array.<TextItem>},
+ *   activities:        {values: Object.<string, Option>, other: Array.<TextItem>},
+ *   contacts:          {values: Object.<string, Option>, other: Array.<TextItem>},
+ *   channels:          {values: Object.<string, Option>, other: Array.<TextItem>},
+ *   partnerships:      {values: Object.<string, Option>, other: Array.<TextItem>},
+ *   investments:       {values: Object.<string, Option>, other: Array.<TextItem>},
+ *   customerSegments:  {values: Object.<string, Option>, other: Array.<TextItem>},
+ *   costStructure:     Object.<string, {categoryId: string, groupId: string, index: string}>
  * }} BMC
  *
  * @typedef {{
