@@ -194,11 +194,11 @@ export default class BusinessModelCanvas extends Component {
                             Key resources
                           </div>
                           <div className="contents">
-                            <div className="category-header">Resources</div>
+                            <div className="group-header">Resources</div>
                             { this.renderCategories('resources', bmc, onSetProperty) }
                             { this.renderOther('resources', bmc, onSetProperty) }
 
-                            <div className="category-header">Investments</div>
+                            <div className="group-header">Investments</div>
                             { this.renderCategories('investments', bmc, onSetProperty) }
                             { this.renderOther('investments', bmc, onSetProperty) }
                           </div>
@@ -256,31 +256,31 @@ export default class BusinessModelCanvas extends Component {
     </div>
   }
 
-  renderCategories (category, bmc, onSetProperty) {
-    return bmcCategories[category].map(entry => {
+  renderCategories (group, bmc, onSetProperty) {
+    return bmcCategories[group].map(category => {
 
       const props = {
-        label: entry.text,
-        checked: this.isCategoryChecked(category, bmc, entry.id),
+        label: category.text,
+        checked: this.isCategoryChecked(group, bmc, category.id),
         onCheck: (event) => {
           const newValue = {
             value: event.target.checked,
             isDefault: false
           }
-          onSetProperty(['bmc', category, 'values', entry.id], newValue)
+          onSetProperty(['bmc', group, 'values', category.id], newValue)
         }
       }
 
-      return <div key={entry.id} style={{marginRight: -10}}>
+      return <div key={category.id} style={{marginRight: -10}}>
         <CheckBox {...props} />
       </div>
     })
   }
 
-  isCategoryChecked (category, bmc, entryId) {
-    let checked = getOptionalProp(bmc, [category, 'values', entryId, 'value'])
+  isCategoryChecked (group, bmc, categoryId) {
+    let checked = getOptionalProp(bmc, [group, 'values', categoryId, 'value'])
     if (typeof checked !== 'boolean') {
-      checked = getOptionalProp(bmcDefaults, [bmc.description.type, category, 'values', entryId, 'value'])
+      checked = getOptionalProp(bmcDefaults, [bmc.description.type, group, 'values', categoryId, 'value'])
       if (typeof checked !== 'boolean') {
         checked = false
       }
@@ -294,7 +294,7 @@ export default class BusinessModelCanvas extends Component {
     return groups
         .flatMap(group => {
           const groups = bmcCategories[group]
-              .filter(entry => this.isCategoryChecked (group, bmc, entry.id))
+              .filter(category => this.isCategoryChecked (group, bmc, category.id))
 
           const otherGroups = (bmc[group] && bmc[group].other || [])
               .map(({id, value}) => ({id, text: value}))
@@ -307,8 +307,8 @@ export default class BusinessModelCanvas extends Component {
   renderRevenueStreams (bmc, onSetProperty) {
     const revenueStreams = this.generateRevenueStreams(bmc.description.products, bmc.description.customers)
 
-    return revenueStreams.map(entry => {
-      let checked = getOptionalProp(bmc, ['revenueStreams', 'values', entry.id, 'value'])
+    return revenueStreams.map(category => {
+      let checked = getOptionalProp(bmc, ['revenueStreams', 'values', category.id, 'value'])
       if (checked === undefined) {
         checked = true
       }
@@ -319,17 +319,17 @@ export default class BusinessModelCanvas extends Component {
           isDefault: false
         }
 
-        onSetProperty(['bmc', 'revenueStreams', 'values', entry.id], newValue)
+        onSetProperty(['bmc', 'revenueStreams', 'values', category.id], newValue)
       }
 
-      return <div key={entry.id} className="revenue-stream">
-        <CheckBox checked={checked} label={entry.value} onCheck={onCheck} />
+      return <div key={category.id} className="revenue-stream">
+        <CheckBox checked={checked} label={category.value} onCheck={onCheck} />
       </div>
     })
   }
 
   /**
-   * Create an entry for every combination of product and customer
+   * Create a category for every combination of product and customer
    * @param {Array.<{id: string, value: string}>} products
    * @param {Array.<{id: string, value: string}>} customers
    * @return {Array.<{id: string, value: string}>}
@@ -347,11 +347,11 @@ export default class BusinessModelCanvas extends Component {
     })
   }
 
-  renderOther (category, bmc, onSetProperty) {
-    const items = bmc[category] && bmc[category].other || []
+  renderOther (group, bmc, onSetProperty) {
+    const items = bmc[group] && bmc[group].other || []
 
     const onChange = items => {
-      onSetProperty(['bmc', category, 'other'], items)
+      onSetProperty(['bmc', group, 'other'], items)
     }
 
     return <div>
