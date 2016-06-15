@@ -195,11 +195,11 @@ export default class BusinessModelCanvas extends Component {
                             Key resources
                           </div>
                           <div className="contents">
-                            <div className="group-header">Resources</div>
+                            <div className="sub-header">Resources</div>
                             { renderCategories('resources', bmc, onSetProperty) }
                             { renderOther('resources', bmc, onSetProperty) }
 
-                            <div className="group-header">Investments</div>
+                            <div className="sub-header">Investments</div>
                             { renderCategories('investments', bmc, onSetProperty) }
                             { renderOther('investments', bmc, onSetProperty) }
                           </div>
@@ -286,26 +286,26 @@ export default class BusinessModelCanvas extends Component {
       </div>
     }
 
-    return <div className="cost-structure">
-      <div className="cost-group">
-        <div className="group-header">Direct</div>
-        <div className="cost-group-contents" ref="groupDirect" data-group-id="direct">
-          { direct.map(renderCategory) }
-        </div>
-      </div>
-      <div className="cost-group">
-        <div className="group-header">Personnel</div>
-        <div className="cost-group-contents" ref="groupPersonnel" data-group-id="personnel">
-          { personnel.map(renderCategory) }
-        </div>
-      </div>
-      <div className="cost-group">
-        <div className="group-header">Indirect</div>
-        <div className="cost-group-contents" ref="groupIndirect" data-group-id="indirect">
-          { indirect.map(renderCategory) }
-        </div>
-      </div>
-    </div>
+    return <table className="cost-structure">
+      <tbody>
+        <tr>
+          <th>Direct</th>
+          <th>Personnel</th>
+          <th>Indirect</th>
+        </tr>
+        <tr>
+          <td className="cost-group" ref="groupDirect" data-group-id="direct">
+            { direct.map(renderCategory) }
+          </td>
+          <td className="cost-group" ref="groupPersonnel" data-group-id="personnel">
+            { personnel.map(renderCategory) }
+          </td>
+          <td className="cost-group" ref="groupIndirect" data-group-id="indirect">
+            { indirect.map(renderCategory) }
+          </td>
+        </tr>
+      </tbody>
+    </table>
   }
 
   componentDidMount () {

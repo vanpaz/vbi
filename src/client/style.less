@@ -561,31 +561,24 @@ table.bmc {
   }
 }
 
-.group-header {
-  font-weight: bold;
-  margin: 1em 0 0.5em 0;
-}
+table.cost-structure {
+  border-collapse:separate;
+  border-spacing: 10px;
 
-.group-header:first-child {
-  margin-top: 0;
-}
-
-.cost-structure {
-  .cost-group {
-    display: inline-block;
-    vertical-align: top;
-    width: 33%;
+  th {
+    color: @gray;
+    font-size: 80%;
+    font-weight: normal;
+    text-align: left;
+    margin: 1em 0 0.5em 0;
   }
 
-  .cost-group-contents {
-    min-height: 100px;
-    min-width: 100px;
-
-    margin-right: 10px;
+  td.cost-group {
+    width: 33%;
+    background: @white;
 
     padding-bottom: 2em;
 
-    background: @white;
     transition: background .4s ease-in-out;
 
     div.cost-group-item {
@@ -606,18 +599,15 @@ table.bmc {
 
 /* dragula styling */
 
-.gu-unselectable .cost-group-contents {
+.gu-unselectable table.cost-structure td.cost-group {
   background: @almostWhite;
   transition: background .2s ease-in-out;
 }
-
 .gu-unselectable {
 }
 .gu-transit {
-  //background: @yellow;
 }
 .gu-mirror {
-  //background: @yellow;
   background: @transparentGray;
   opacity: 1;
 }
@@ -626,7 +616,7 @@ table.bmc {
 
 .sub-header {
   color: @gray;
-  padding: 8px 0 0 0;
+  padding: 8px 0 4px 0;
   font-size: 80%;
 }
 
