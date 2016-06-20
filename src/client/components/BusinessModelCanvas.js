@@ -228,7 +228,7 @@ export default class BusinessModelCanvas extends Component {
                             Cost structure
                           </div>
                           <div className="contents">
-                            { this.renderCostStructure(bmc, onSetProperty) }
+                            { this.renderCostStructure(bmc) }
                           </div>
                         </div>
                       </div>
@@ -257,7 +257,7 @@ export default class BusinessModelCanvas extends Component {
     </div>
   }
 
-  renderCostStructure (bmc, onSetProperty) {
+  renderCostStructure (bmc) {
     const categories = generateCostCategories(bmc)
 
     function getGroupId (category) {
@@ -276,7 +276,7 @@ export default class BusinessModelCanvas extends Component {
     const isInvestment = category => getGroupId(category) === 'investment'
     const isIndirect = category => {
       const groupId = getGroupId(category)
-      return groupId === 'direct' && groupId !== 'investment'
+      return groupId !== 'direct' && groupId !== 'investment'
     }
 
     const direct    = categories.filter(isDirect)
