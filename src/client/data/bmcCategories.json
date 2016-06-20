@@ -1,10 +1,10 @@
 {
   "types": [
-    {"id": "productionAndRetail", "text": "Production and retail"},
-    {"id": "software", "text": "Software"},
-    {"id": "logistics", "text": "Logistics"},
-    {"id": "services", "text": "Services"},
-    {"id": "other", "text": "Other type of"}
+    {"id": "productionAndRetail", "text": "production and retail"},
+    {"id": "software", "text": "software"},
+    {"id": "logistics", "text": "logistics"},
+    {"id": "services", "text": "services"},
+    {"id": "other", "text": "other type of"}
   ],
   "resources": [
     {"id": "housing", "text": "Housing"},
@@ -19,7 +19,7 @@
   "activities": [
     {"id": "travel", "text": "Travel"},
     {"id": "office", "text": "Administration and office"},
-    {"id": "personnel", "text": "Personnel (fixed)", "group": "personnel"},
+    {"id": "personnel", "text": "Personnel (fixed)"},
     {"id": "labor", "text": "Labor (personnel variable)"}
   ],
   "contacts": [
@@ -41,14 +41,14 @@
     {"id": "bundling", "text": "Bundling"}
   ],
   "investments": [
-    {"id": "buildings", "text": "Buildings"},
-    {"id": "computers", "text": "Computer equipment"},
-    {"id": "software", "text": "Computer software"},
-    {"id": "furniture", "text": "Furniture and fixtures"},
-    {"id": "intangibleAssets", "text": "Intangible assets"},
-    {"id": "land", "text": "Land"},
-    {"id": "leaseholdImprovements", "text": "Leasehold improvements"},
-    {"id": "machinery", "text": "Machinery"},
-    {"id": "vehicles", "text": "Vehicles"}
+    {"id": "buildings", "text": "Buildings", "group": "investment"},
+    {"id": "computers", "text": "Computer equipment", "group": "investment"},
+    {"id": "software", "text": "Computer software", "group": "investment"},
+    {"id": "furniture", "text": "Furniture and fixtures", "group": "investment"},
+    {"id": "intangibleAssets", "text": "Intangible assets", "group": "investment"},
+    {"id": "land", "text": "Land", "group": "investment"},
+    {"id": "leaseholdImprovements", "text": "Leasehold improvements", "group": "investment"},
+    {"id": "machinery", "text": "Machinery", "group": "investment"},
+    {"id": "vehicles", "text": "Vehicles", "group": "investment"}
   ]
 }

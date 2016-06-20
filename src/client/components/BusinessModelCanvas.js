@@ -272,13 +272,16 @@ export default class BusinessModelCanvas extends Component {
       }
     }
 
-    const isDirect    = category => getGroupId(category) === 'direct'
-    const isPersonnel = category => getGroupId(category) === 'personnel'
-    const isIndirect  = category => !isDirect(category) && !isPersonnel(category)
+    const isDirect = category => getGroupId(category) === 'direct'
+    const isInvestment = category => getGroupId(category) === 'investment'
+    const isIndirect = category => {
+      const groupId = getGroupId(category)
+      return groupId === 'direct' && groupId !== 'investment'
+    }
 
     const direct    = categories.filter(isDirect)
-    const personnel = categories.filter(isPersonnel)
     const indirect  = categories.filter(isIndirect)
+    const investment = categories.filter(isInvestment)
 
     const renderCategory = category => {
       return <div className="cost-group-item" key={category.id} data-category-id={category.id}>
@@ -290,18 +293,18 @@ export default class BusinessModelCanvas extends Component {
       <tbody>
         <tr>
           <th>Direct</th>
-          <th>Personnel</th>
           <th>Indirect</th>
+          <th>Investment</th>
         </tr>
         <tr>
           <td className="cost-group" ref="groupDirect" data-group-id="direct">
             { direct.map(renderCategory) }
           </td>
-          <td className="cost-group" ref="groupPersonnel" data-group-id="personnel">
-            { personnel.map(renderCategory) }
-          </td>
           <td className="cost-group" ref="groupIndirect" data-group-id="indirect">
             { indirect.map(renderCategory) }
+          </td>
+          <td className="cost-group" ref="groupInvestment" data-group-id="investment">
+            { investment.map(renderCategory) }
           </td>
         </tr>
       </tbody>
@@ -311,8 +314,8 @@ export default class BusinessModelCanvas extends Component {
   componentDidMount () {
     const containers = [
       this.refs.groupDirect,
-      this.refs.groupPersonnel,
-      this.refs.groupIndirect
+      this.refs.groupIndirect,
+      this.refs.groupInvestment
     ]
 
     // we create copies of the dragged elements, which are cleaned up again
@@ -382,7 +385,11 @@ function generateCostCategories (bmc) {
             .filter(category => isCategoryChecked (group, bmc, category.id))
 
         const otherGroups = (bmc[group] && bmc[group].other || [])
-            .map(({id, value}) => ({id, text: value}))
+            .map(({id, value}) => ({
+              id,
+              text: value,
+              group: (group === 'investments') ? 'investment' : null
+            }))
 
         return groups.concat(otherGroups)
       })
