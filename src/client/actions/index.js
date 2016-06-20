@@ -9,12 +9,30 @@ const DEFAULT_PRICE = {
 const DEFAULT_QUANTITIES = {}
 
 /**
- * Set a view
- * @param {'model' | 'finance'} view
- * @return {{type: string, view: string}}
+ * Set active page
+ * @param {'model' | 'finance'} page
+ * @return {{type: string, page: string}}
  */
-export function setView (view) {
-  return { type: 'SET_VIEW', view }
+export function viewPage (page) {
+  return { type: 'VIEW_PAGE', page}
+}
+
+/**
+ * Set an active inputs tab
+ * @param {'parameters' | 'costs' | 'investments' | 'revenues'} tab   Tab name
+ * @return {{type: string, tab: string}}
+ */
+export function viewInputs (tab) {
+  return { type: 'VIEW_INPUTS', tab}
+}
+
+/**
+ * Set an active outputs tab
+ * @param {'profitAndLoss' | 'balanceSheet' | 'cashFlow'} tab   Tab name
+ * @return {{type: string, tab: string}}
+ */
+export function viewOutputs (tab) {
+  return { type: 'VIEW_OUTPUTS', tab}
 }
 
 /**

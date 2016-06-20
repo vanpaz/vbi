@@ -33,14 +33,18 @@ export default class Outputs extends Component {
     return <div style={styles.container} >
       <Card className="card">
         <CardText style={styles.cardText}>
-          <Tabs inkBarStyle={styles.inkBar} contentContainerStyle={styles.tabContents}>
-            <Tab label="Profit & Loss">
+          <Tabs
+              value={this.props.tab}
+              onChange={this.props.onChangeTab}
+              inkBarStyle={styles.inkBar}
+              contentContainerStyle={styles.tabContents}>
+            <Tab value="profitAndLoss" label="Profit & Loss">
               <ProfitAndLoss data={this.props.data} />
             </Tab>
-            <Tab label="Balance sheet">
+            <Tab value="balanceSheet" label="Balance sheet">
               <BalanceSheet data={this.props.data} />
             </Tab>
-            <Tab label="Cashflow">
+            <Tab value="cashFlow" label="Cashflow">
               <Cashflow data={this.props.data} />
             </Tab>
           </Tabs>

@@ -60,14 +60,18 @@ class Inputs extends Component {
     return <div style={styles.container}>
       <Card className="card">
         <CardText style={styles.cardText}>
-          <Tabs inkBarStyle={styles.inkBar} contentContainerStyle={styles.tabContents}>
-            <Tab label="Parameters">
+          <Tabs
+              value={this.props.tab}
+              onChange={this.props.onChangeTab}
+              inkBarStyle={styles.inkBar}
+              contentContainerStyle={styles.tabContents} >
+            <Tab value="parameters" label="Parameters">
               <Parameters
                   parameters={this.props.data.parameters}
                   onChange={this.handleSetParameter} />
             </Tab>
 
-            <Tab label="Costs" >
+            <Tab value="costs" label="Costs" >
               <h1>Direct</h1>
               {this.renderCategory('costs', 'direct', ['constant', 'manual', 'revenue'])}
 
@@ -78,7 +82,7 @@ class Inputs extends Component {
               {this.renderCategory('costs', 'indirect', ['constant', 'manual', 'revenue'])}
             </Tab>
 
-            <Tab label="Investments">
+            <Tab value="investments" label="Investments">
               <h1>Tangible fixed assets</h1>
               {this.renderCategory('investments', 'tangible', ['investment'])}
 
@@ -86,7 +90,7 @@ class Inputs extends Component {
               {this.renderCategory('investments', 'intangible', ['investment'])}
             </Tab>
 
-            <Tab label="Revenues">
+            <Tab value="revenues" label="Revenues">
               <h1>&nbsp;</h1>
               {this.renderCategory('revenues', 'all', ['constant', 'manual'])}
             </Tab>

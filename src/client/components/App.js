@@ -19,7 +19,10 @@ import ThemeManager from 'material-ui/lib/styles/theme-manager'
 
 import theme from '../theme'
 import Notification from './dialogs/Notification'
-import { setUser, listDocs, renameDoc, setDoc, setView, setProperty } from '../actions'
+import {
+    setUser, listDocs, renameDoc, setDoc, viewPage, setProperty,
+    viewInputs, viewOutputs
+} from '../actions'
 import Menu from './Menu'
 import BusinessModelCanvas from './BusinessModelCanvas'
 import Inputs from './Inputs'
@@ -27,6 +30,7 @@ import Outputs from './Outputs'
 import { request } from '../rest/request'
 import { list, open, save, del } from '../rest/docs'
 import { hash } from '../utils/hash'
+import * as constants from '../constants'
 
 import * as newScenarioJSON from '../data/newScenario.json'
 import * as demoScenarioJSON from '../data/demoScenario.json'
@@ -66,7 +70,11 @@ class App extends Component {
     this.handleSaveDoc = this.handleSaveDoc.bind(this)
     this.handleSaveDocAs = this.handleSaveDocAs.bind(this)
     this.handleDeleteDoc = this.handleDeleteDoc.bind(this)
+
     this.handleSetProperty = this.handleSetProperty.bind(this)
+    this.handleSetPage = this.handleSetPage.bind(this)
+    this.handleSetOutputsTab = this.handleSetOutputsTab.bind(this)
+    this.handleSetInputsTab = this.handleSetInputsTab.bind(this)
 
     this.handleAutoSave = debounce(this.handleSaveDoc, AUTO_SAVE_DELAY)
   }
@@ -95,7 +103,7 @@ class App extends Component {
         <Notification ref="notification" />
 
         {
-          this.props.view === 'model'
+          this.props.view.page === 'model'
               ? this.renderModel()
               : this.renderFinance()
         }
@@ -147,13 +155,13 @@ class App extends Component {
       <FlatButton
           label="Model"
           icon={<DashboardIcon />}
-          className={this.props.view === 'model' ? 'selected' : ''}
-          onTouchTap={event => this.props.dispatch(setView('model'))} />
+          className={this.props.view.page === 'model' ? 'selected' : ''}
+          onTouchTap={(event) => this.handleSetPage('model')} />
       <FlatButton
           label="Finance"
           icon={<TimelineIcon />}
-          className={this.props.view === 'finance' ? 'selected' : ''}
-          onTouchTap={event => this.props.dispatch(setView('finance'))} />
+          className={this.props.view.page === 'finance' ? 'selected' : ''}
+          onTouchTap={(event) => this.handleSetPage('finance')} />
     </div>
   }
 
@@ -171,11 +179,17 @@ class App extends Component {
   renderFinance () {
     return <div>
       <div className="container half">
-        <Inputs />
+        <Inputs
+            tab={this.props.view.inputs}
+            onChangeTab={this.handleSetInputsTab}
+        />
       </div>
 
       <div className="container half">
-        <Outputs data={this.props.doc.data} />
+        <Outputs
+            tab={this.props.view.outputs}
+            onChangeTab={this.handleSetOutputsTab}
+            data={this.props.doc.data} />
       </div>
     </div>
   }
@@ -205,6 +219,10 @@ class App extends Component {
       }
     })
 
+    hash.onChange('page', (page) => this.props.dispatch(viewPage(page || constants.defaultPage)))
+    hash.onChange('inputs', (tab) => this.props.dispatch(viewInputs(tab || constants.defaultInputs)))
+    hash.onChange('outputs', (tab) => this.props.dispatch(viewOutputs(tab || constants.defaultOutputs)))
+
     // listen for the unload event, check whether there are unsaved changes
     window.addEventListener('beforeunload', (event) => {
       if (this.saveNeeded()) {
@@ -225,6 +243,21 @@ class App extends Component {
     if (this.saveNeeded()) {
       this.handleAutoSave()
     }
+  }
+
+  handleSetPage (page) {
+    this.props.dispatch(viewPage(page))
+    hash.set('page', page)
+  }
+
+  handleSetOutputsTab (tab) {
+    this.props.dispatch(viewOutputs(tab))
+    hash.set('outputs', tab)
+  }
+
+  handleSetInputsTab (tab) {
+    this.props.dispatch(viewInputs(tab))
+    hash.set('inputs', tab)
   }
 
   handleNotification (notification) {

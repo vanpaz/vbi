@@ -5,6 +5,8 @@ import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 import Immutable from 'seamless-immutable'
 
+import * as constants from './constants'
+import { hash } from './utils/hash'
 import './utils/polyfills'
 import App from './components/App'
 import reducers from './reducers'
@@ -18,8 +20,17 @@ import '!style!css!less!./style.less'
 injectTapEventPlugin()
 
 let initialState = Immutable({
-  view: 'model',  // 'model' or 'finance'
+  view: {
+    // visible page: 'model', 'finance'
+    page: hash.get('page') || constants.defaultPage,
 
+    // visible tab: 'parameters', 'costs', 'investments', 'revenues'
+    inputs: hash.get('inputs') || constants.defaultInputs,
+
+    // visible tab: 'profitAndLoss', 'balanceSheet', 'cashFlow'
+    outputs: hash.get('outputs').toLowerCase() || constants.defaultOutputs
+  },  
+  
   user: {},
 
   changed: false,  // true when the current document contains unsaved changes
