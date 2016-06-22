@@ -564,6 +564,7 @@ table.bmc {
 table.cost-structure {
   border-collapse:separate;
   border-spacing: 10px;
+  width: 100%;
 
   th {
     color: @gray;
@@ -583,6 +584,11 @@ table.cost-structure {
 
     div.cost-group-item {
       padding-bottom: 0.5em;
+    }
+
+    &.draggable div.cost-group-item {
+      cursor: move;
+
       padding-left: 1.2em;
       text-indent: -1.2em;
 
@@ -590,10 +596,6 @@ table.cost-structure {
         color: @gray;
         font-weight: bold;
       }
-    }
-
-    &.draggable div.cost-group-item {
-      cursor: move;
     }
   }
 }

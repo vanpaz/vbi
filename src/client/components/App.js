@@ -169,7 +169,7 @@ class App extends Component {
     return <div>
       <div className="container whole">
         <BusinessModelCanvas
-            bmc={this.props.doc.data.bmc}
+            data={this.props.doc.data}
             onSetProperty={this.handleSetProperty}
         />
       </div>

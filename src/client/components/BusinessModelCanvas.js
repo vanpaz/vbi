@@ -46,7 +46,8 @@ export default class BusinessModelCanvas extends Component {
   }
 
   render () {
-    const { bmc, onSetProperty } = this.props
+    const { data, onSetProperty } = this.props
+    const bmc = data.bmc
 
     const onChangeType = (event, index, value) => {
       onSetProperty(['bmc', 'description', 'type'], value)
@@ -228,7 +229,7 @@ export default class BusinessModelCanvas extends Component {
                             Cost structure
                           </div>
                           <div className="contents">
-                            { this.renderCostStructure(bmc) }
+                            { this.renderCostStructure(data) }
                           </div>
                         </div>
                       </div>
@@ -240,7 +241,7 @@ export default class BusinessModelCanvas extends Component {
                             Revenue streams
                           </div>
                           <div className="contents">
-                            { renderRevenueStreams(bmc, onSetProperty) }
+                            { this.renderRevenueStreams(data) }
                           </div>
                         </div>
                       </div>
@@ -257,41 +258,21 @@ export default class BusinessModelCanvas extends Component {
     </div>
   }
 
-  renderCostStructure (bmc) {
-    const categories = generateCostCategories(bmc)
+  renderCostStructure (data) {
 
-    function getGroupId (category) {
-      if (bmc.costStructure && bmc.costStructure[category.id]) {
-        return bmc.costStructure[category.id].groupId
-      }
-      else if (category.group) {
-        return category.group
-      }
-      else {
-        return 'indirect'
-      }
-    }
-
-    const isDirect = category => getGroupId(category) === 'direct'
-    const isInvestment = category => getGroupId(category) === 'investment'
-    const isIndirect = category => {
-      const groupId = getGroupId(category)
-      return groupId !== 'direct' && groupId !== 'investment'
-    }
-
-    const direct    = categories.filter(isDirect)
-    const indirect  = categories.filter(isIndirect)
-    const investment = categories.filter(isInvestment)
+    const direct = data.categories.filter(category => category.section === 'costs' && category.group === 'direct')
+    const investments = data.categories.filter(category => category.section === 'investments')
+    const indirect = data.categories.filter(category => category.section === 'costs' && category.group !== 'direct' && category.group !== 'personnel')
 
     const renderCategory = category => {
       return <div className="cost-group-item" key={category.id} >
-        {category.text}
+        {category.name}
       </div>
     }
 
     const renderDraggableCategory = category => {
       return <div className="cost-group-item" key={category.id} data-category-id={category.id}>
-        <span className="ellipsis">{'\u22ee'}</span>&nbsp;{category.text}
+        <span className="ellipsis">{'\u22ee'}</span>&nbsp;{category.name}
       </div>
     }
 
@@ -310,11 +291,21 @@ export default class BusinessModelCanvas extends Component {
             { indirect.map(renderDraggableCategory) }
           </td>
           <td className="cost-group">
-            { investment.map(renderCategory) }
+            { investments.map(renderCategory) }
           </td>
         </tr>
       </tbody>
     </table>
+  }
+
+  renderRevenueStreams (data) {
+    return data.categories
+        .filter(category => category.section === 'revenues')
+        .map(category => {
+          return <div key={category.id} className="revenue-stream">
+            {category.name}
+          </div>
+        })
   }
 
   componentDidMount () {
@@ -332,14 +323,17 @@ export default class BusinessModelCanvas extends Component {
     this.drake.on('drop', (element) => {
       const parent = element.parentNode
       if (parent) {
-        const groupId = parent.getAttribute('data-group-id')
-        const categoryId = element.getAttribute('data-category-id')
-        const index = toArray(parent.childNodes).indexOf(element)
-
         // remove the copied element, it will be generated again via React
         parent.removeChild(element)
 
-        this.props.onSetProperty(['bmc', 'costStructure', categoryId], { groupId, index })
+        const groupId = parent.getAttribute('data-group-id')
+        const categoryId = element.getAttribute('data-category-id')
+        const categoryIndex = this.props.data.categories
+            .findIndex(category => category.id === categoryId)
+
+        if (categoryIndex !== -1) {
+          this.props.onSetProperty(['categories', categoryIndex, 'group'], groupId)
+        }
       }
     })
   }
@@ -398,30 +392,6 @@ function generateCostCategories (bmc) {
 
         return groups.concat(otherGroups)
       })
-}
-
-function renderRevenueStreams (bmc, onSetProperty) {
-  const revenueStreams = generateRevenueCategories(bmc.description.products, bmc.description.customers)
-
-  return revenueStreams.map(category => {
-    let checked = getOptionalProp(bmc, ['revenueStreams', 'values', category.id, 'value'])
-    if (checked === undefined) {
-      checked = true
-    }
-
-    const onCheck = (event) => {
-      const newValue = {
-        value: event.target.checked,
-        isDefault: false
-      }
-
-      onSetProperty(['bmc', 'revenueStreams', 'values', category.id], newValue)
-    }
-
-    return <div key={category.id} className="revenue-stream">
-      <CheckBox checked={checked} label={category.value} onCheck={onCheck} />
-    </div>
-  })
 }
 
 /**
