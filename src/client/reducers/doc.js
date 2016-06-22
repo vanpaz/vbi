@@ -24,7 +24,7 @@ function sanitizeDoc (doc) {
 
 
 const doc = (state = Immutable({}), action) => {
-  let path, last, index
+  let index, filteredIndex, categories
 
   debug(action.type, action)
 
@@ -42,90 +42,98 @@ const doc = (state = Immutable({}), action) => {
       return state.setIn(['data'].concat(action.path), action.value)
 
     case 'DOC_ADD_CATEGORY':
-      path = ['data', action.section, action.group]
 
       const category = Immutable({
         id: uuid(),
+        section: action.section,
+        group: action.group,
         name: action.name,
         price: action.price,
         quantities: action.quantities
       })
 
-      return state.updateIn(path,
-          categories => categories.concat([category]))
+      return state.setIn(['data', 'categories'], state.data.categories.concat([category]))
 
     case 'DOC_RENAME_CATEGORY':
-      path = findCategoryPath(state.data, action.section, action.group, action.categoryId)
-          .concat(['name'])
+      index = findCategoryIndex(state.data, action.section, action.group, action.categoryId)
 
-      return state.setIn(path, action.name)
+      return state.setIn(['data', 'categories', index, 'name'], action.name)
 
     case 'DOC_MOVE_CATEGORY_UP':
-      path = findCategoryPath(state.data, action.section, action.group, action.categoryId)
+      categories = filterCategories(state.data, action.section, action.group)
 
-      last = path.length - 1
-      index = path[last]
-      path = removeItem(path, last)
+      filteredIndex = categories.findIndex(category => category.id === action.categoryId)
+      if (filteredIndex > 0) {
+        const prevCategory = categories[filteredIndex - 1]
+        const index     = findCategoryIndex(state.data, action.section, action.group, action.categoryId)
+        const prevIndex = findCategoryIndex(state.data, action.section, action.group, prevCategory.id)
 
-      if (index > 0) {
-        return state.updateIn(path, categories => swapItems(categories, index, index - 1))
+        return state.setIn(['data', 'categories'], swapItems(state.data.categories, index, prevIndex))
       }
       else {
         return state
       }
 
     case 'DOC_MOVE_CATEGORY_DOWN':
-      path = findCategoryPath(state.data, action.section, action.group, action.categoryId)
+      categories = filterCategories(state.data, action.section, action.group)
 
-      last = path.length - 1
-      index = path[last]
-      path = removeItem(path, last)
+      filteredIndex = categories.findIndex(category => category.id === action.categoryId)
+      if (filteredIndex < categories.length - 1) {
+        const nextCategory = categories[filteredIndex + 1]
+        const index     = findCategoryIndex(state.data, action.section, action.group, action.categoryId)
+        const nextIndex = findCategoryIndex(state.data, action.section, action.group, nextCategory.id)
 
-      const categories = state.data[action.section][action.group]
-      if (index < categories.length - 1) {
-        return state.updateIn(path, categories => swapItems(categories, index, index + 1))
+        return state.setIn(['data', 'categories'], swapItems(state.data.categories, index, nextIndex))
       }
       else {
         return state
       }
 
     case 'DOC_DELETE_CATEGORY':
-      path = findCategoryPath(state.data, action.section, action.group, action.categoryId)
-
-      last = path.length - 1
-      index = path[last]
-      path = removeItem(path, last)
-
-      return state.updateIn(path, categories => removeItem(categories, index))
+      index = findCategoryIndex(state.data, action.section, action.group, action.categoryId)
+      return state.setIn(['data', 'categories'], removeItem(state.data.categories, index))
 
     case 'DOC_SET_PRICE':
-      path = findCategoryPath(state.data, action.section, action.group, action.categoryId)
-          .concat(['price'])
-
-      return state.setIn(path, action.price)
+      index = findCategoryIndex(state.data, action.section, action.group, action.categoryId)
+      return state.setIn(['data', 'categories', index, 'price'], action.price)
 
     case 'DOC_SET_QUANTITY':
-      path = findCategoryPath(state.data, action.section, action.group, action.categoryId)
-          .concat(['quantities', action.year])
-
-      return state.setIn(path, action.quantity)
+      index = findCategoryIndex(state.data, action.section, action.group, action.categoryId)
+      return state.setIn(['data', 'categories', index, 'quantities', action.year], action.quantity)
 
     default:
       return state
   }
 }
 
-
-function findCategoryPath (data, section, group, categoryId) {
-  const categoryIndex = data[section][group].findIndex(c => c.id === categoryId)
+/**
+ * Find the index of a category
+ * @param data
+ * @param section
+ * @param group
+ * @param categoryId
+ * @return {number|*}
+ */
+function findCategoryIndex (data, section, group, categoryId) {
+  const categoryIndex = data.categories
+      .findIndex(c => c.section === section && c.group === group && c.id === categoryId)
 
   if (categoryIndex === -1) {
     throw new Error('Category not found')
   }
 
-  return ['data', section, group, categoryIndex]
+  return categoryIndex
 }
 
-
+/**
+ * Find all categories of one section and group
+ * @param data
+ * @param section
+ * @param group
+ * @return {Array}
+ */
+function filterCategories (data, section, group) {
+  return data.categories.filter(category => category.section === section && category.group === group)
+}
 
 export default doc

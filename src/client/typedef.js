@@ -51,6 +51,8 @@
  *
  * @typedef {{
  *   id: string,
+ *   section: string,
+ *   group: string,
  *   name: string,
  *   price: Price,
  *   quantities: Object<string, string>
@@ -78,24 +80,13 @@
  *
  * @typedef {{
  *   parameters: Parameters,
- *   costs: {
- *     direct: Array.<Category>,
- *     personnel: Array.<Category>,
- *     indirect: Array.<Category>
- *   },
- *   investments: {
- *     tangible: Array.<Category>,
- *     intangible: Array.<Category>
- *   },
- *   revenues: {
- *     all: Array.<Category>
- *   },
+ *   categories: Array.<Category>,
  *   financing: {
- *     investmentsInParticipations: Object
- *     equityContributions: Object
- *     bankLoansCapitalCalls: Object
- *     bankLoansRedemptionInstallments: Object
- *     otherSourcesOfFinance: Object
+ *     investmentsInParticipations: Object<string, string>
+ *     equityContributions: Object<string, string>
+ *     bankLoansCapitalCalls: Object<string, string>
+ *     bankLoansRedemptionInstallments: Object<string, string>
+ *     otherSourcesOfFinance: Object<string, string>
  *   },
  *   initialBalance: {
  *     tangiblesAndIntangibles: string | number,

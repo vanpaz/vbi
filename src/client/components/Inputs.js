@@ -62,7 +62,11 @@ class Inputs extends Component {
         <CardText style={styles.cardText}>
           <Tabs
               value={this.props.tab}
-              onChange={this.props.onChangeTab}
+              onChange={tab => {
+                if (typeof tab === 'string') { // filter events triggered by input fields in the tabs
+                  this.props.onChangeTab(tab)
+                }
+              }}
               inkBarStyle={styles.inkBar}
               contentContainerStyle={styles.tabContents} >
             <Tab value="parameters" label="Parameters">
@@ -105,8 +109,12 @@ class Inputs extends Component {
 
   renderCategory (section, group, priceTypes) {
     const years = getYears(this.props.data)
-    const categories = this.props.data[section][group]
-    const revenueCategories = this.props.data.revenues.all
+
+    const categories = this.props.data.categories
+        .filter(category => category.section === section && category.group === group)
+
+    const revenueCategories = this.props.data.categories
+        .filter(category => category.section === 'revenues' && category.group === 'all')
 
     return <table className="input" >
       <colgroup>
@@ -246,8 +254,8 @@ class Inputs extends Component {
   }
 
   findCategory (section, group, categoryId) {
-    return this.props.data[section][group]
-        .find(category => category.id === categoryId)
+    return this.props.data.categories
+        .find(category => category.section === section && category.group === group && category.id === categoryId)
   }
 
 }

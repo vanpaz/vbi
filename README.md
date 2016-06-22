@@ -229,29 +229,20 @@ A saved scenario has the following structure:
     "parameters": {
       // ...
     },
-    "costs": {
-      "direct": [
-        {
-          "id": "<uuid>",
-          "name": "<category name>",
-          "price": { ... },
-          "quantities": {
-             "<YEAR>": "<AMOUNT>",
-             ...
-          }
-        },
-        ...
-      ],
-      "personnel": [...],
-      "indirect": [...]
-    }
-    "investments": {
-      "tangible": [...],
-      "intangible": [...]
-    }
-    "revenues": {
-      "all": [...]
-    },
+    "categories": [
+      {
+        "id": "<uuid>",
+        "section": "<section id>",   // "costs", "investments", or "revenues"
+        "group": "<group id>",       // "direct", "indirect", "tangible", ...
+        "name": "<category name>",
+        "price": { ... },
+        "quantities": {
+           "<YEAR>": "<AMOUNT>",
+           ...
+        }
+      },
+      ...
+    ],
     "financing": {
       "investmentsInParticipations": {
         "<YEAR>": "<AMOUNT>",
@@ -263,6 +254,9 @@ A saved scenario has the following structure:
       "otherSourcesOfFinance": { ... }
     },
     "initialBalance": {
+      "tangiblesAndIntangibles": string | number,
+      "financialFixedAssets": string | number,
+      "deferredTaxAssets": string | number,
       // ...
     },
     "bmc": {
@@ -278,10 +272,14 @@ A saved scenario has the following structure:
 }
 ```
 
-The `data` contains three main sections: `costs`, `investments`, `revenues`, and a section `parameters` holding generic parameters. Each section contains groups, and every group contains a list with categories. Each category describes a name, price, and category. Additionally, the `data` contains
-an object `financing` where financing can be specified per year and category,
-and an object `initialBalance` where all properties for the initial balance
-can be entered. The latter is optional and only applicable for running businesses.
+The categories in `data` contains three main sections: `costs`, `investments`,
+`revenues`, and a section `parameters` holding generic parameters. Each section
+contains groups, for example the section `costs` contains groups `direct`,
+`indirect`, and `personnel`. Each category describes a name, price, and category.
+Additionally, the `data` contains an object `financing` where financing can be
+specified per year and category, and an object `initialBalance` where all
+properties for the initial balance can be entered. The latter is optional and
+only applicable for running businesses.
 
 The following roles are available:
 

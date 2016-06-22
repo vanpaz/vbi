@@ -35,18 +35,7 @@
       "holidayProvision": "8.333%",
       "monthOfHolidayPayment": "5"
     },
-    "costs": {
-      "direct": [],
-      "personnel": [],
-      "indirect": []
-    },
-    "investments": {
-      "tangible": [],
-      "intangible": []
-    },
-    "revenues": {
-      "all": []
-    },
+    "categories": [],
     "financing": {
       "investmentsInParticipations": {},
       "equityContributions": {},

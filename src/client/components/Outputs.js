@@ -35,7 +35,11 @@ export default class Outputs extends Component {
         <CardText style={styles.cardText}>
           <Tabs
               value={this.props.tab}
-              onChange={this.props.onChangeTab}
+              onChange={tab => {
+                if (typeof tab === 'string') { // filter events triggered by input fields in the tabs
+                  this.props.onChangeTab(tab)
+                }
+              }}
               inkBarStyle={styles.inkBar}
               contentContainerStyle={styles.tabContents}>
             <Tab value="profitAndLoss" label="Profit & Loss">

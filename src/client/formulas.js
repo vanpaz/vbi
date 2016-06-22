@@ -41,21 +41,21 @@ export function calculateProfitAndLossPartials (data) {
   const years = getYears(data)
   const corporateTaxRate = parseValue(data.parameters.corporateTaxRate)
 
-  const revenues = calculatePxQ(data.revenues.all, years)
+  const revenues = calculatePxQ(filterGroup(data, 'revenues', 'all'), years)
 
-  const directCosts = calculatePxQ(data.costs.direct, years, revenues)
+  const directCosts = calculatePxQ(filterGroup(data, 'costs', 'direct'), years, revenues)
   const holidayProvision = parseValue(data.parameters.holidayProvision)
   const SSCEmployer = parseValue(data.parameters.SSCEmployer)
   const personnelCosts = multiplyPropsWith(
-      calculatePxQ(data.costs.personnel, years),
+      calculatePxQ(filterGroup(data, 'costs', 'personnel'), years),
       (1 + holidayProvision) * (1 + SSCEmployer)
   )
-  const indirectCosts = calculatePxQ(data.costs.indirect, years, revenues)
+  const indirectCosts = calculatePxQ(filterGroup(data, 'costs', 'indirect'), years, revenues)
 
   const grossMargin = subtractProps(revenues, directCosts)
   const EBITDA = subtractProps(grossMargin, indirectCosts)
 
-  const allInvestments = data.investments.tangible.concat(data.investments.intangible)
+  const allInvestments = filterSection(data, 'investments') // both tangible and intangible
   const depreciation = calculatePxQ(allInvestments, years)
 
   const EBIT = subtractProps(EBITDA, depreciation)
@@ -212,7 +212,7 @@ export function calculateBalanceSheetPartials (data) {
   // goodsInStock
   const daysInStockOfInventory = parseValue(data.parameters.daysInStockOfInventory)
   const goodsInStock = multiplyPropsWith(
-      calculatePxQ(data.costs.direct, years, profitAndLossPartials.revenues),
+      calculatePxQ(filterGroup(data, 'costs', 'direct'), years, profitAndLossPartials.revenues),
       daysInStockOfInventory / 365
   )
   goodsInStock[initialYear] = parseValue(data.initialBalance.goodsInStock)
@@ -297,10 +297,11 @@ export function calculateBalanceSheetPartials (data) {
   payableCorporateTax[initialYear] = parseValue(data.initialBalance.payableCorporateTax)
 
   // payableIncomeTax
+  const personnel = filterGroup(data, 'costs', 'personnel')
   const incomeTax = parseValue(data.parameters.incomeTax)
   const monthsIncomeTaxPaidAfter = parseValue(data.parameters.monthsIncomeTaxPaidAfter)
   const payableIncomeTax = multiplyPropsWith(
-      calculatePxQ(data.costs.personnel, years),
+      calculatePxQ(personnel, years),
       incomeTax * monthsIncomeTaxPaidAfter / 12
   )
   payableIncomeTax[initialYear] = parseValue(data.initialBalance.payableIncomeTax)
@@ -310,7 +311,7 @@ export function calculateBalanceSheetPartials (data) {
   const SSCEmployee = parseValue(data.parameters.SSCEmployee)
   const monthsSSCPaidAfter = parseValue(data.parameters.monthsSSCPaidAfter)
   const payableSSC = multiplyPropsWith(
-      calculatePxQ(data.costs.personnel, years),
+      calculatePxQ(personnel, years),
       (SSCEmployer + SSCEmployee) * monthsSSCPaidAfter / 12
   )
   payableSSC[initialYear] = parseValue(data.initialBalance.payableSSC)
@@ -789,7 +790,7 @@ export function calulateCashflow (data) {
 export function calculateAssetsValues (data, years) {
   const initial = initProps(years)
 
-  const allInvestments = data.investments.tangible.concat(data.investments.intangible)
+  const allInvestments = filterSection(data, 'investments') // tangible and intangible
 
   return allInvestments
       .asMutable()
@@ -805,7 +806,7 @@ export function calculateAssetsValues (data, years) {
  * @return {Object.<string, number>}
  */
 export function calculateInvestments(data, years) {
-  const allInvestments = data.investments.tangible.concat(data.investments.intangible)
+  const allInvestments = filterSection(data, 'investments') // tangible and intangible
 
   return allInvestments
       .map(category => types.investment.calculateInvestmentsValue(category, years))
@@ -1034,6 +1035,27 @@ export let types = {
     }
   }
 
+}
+
+/**
+ * Find all categories of a section
+ * @param data
+ * @param section
+ * @return {Array}
+ */
+export function filterSection (data, section) {
+  return data.categories.filter(category => category.section === section)
+}
+
+/**
+ * Find all categories of one section and group
+ * @param data
+ * @param section
+ * @param group
+ * @return {Array}
+ */
+export function filterGroup (data, section, group) {
+  return data.categories.filter(category => category.section === section && category.group === group)
 }
 
 /**
