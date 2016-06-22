@@ -284,6 +284,12 @@ export default class BusinessModelCanvas extends Component {
     const investment = categories.filter(isInvestment)
 
     const renderCategory = category => {
+      return <div className="cost-group-item" key={category.id} >
+        {category.text}
+      </div>
+    }
+
+    const renderDraggableCategory = category => {
       return <div className="cost-group-item" key={category.id} data-category-id={category.id}>
         <span className="ellipsis">{'\u22ee'}</span>&nbsp;{category.text}
       </div>
@@ -297,13 +303,13 @@ export default class BusinessModelCanvas extends Component {
           <th>Investment</th>
         </tr>
         <tr>
-          <td className="cost-group" ref="groupDirect" data-group-id="direct">
-            { direct.map(renderCategory) }
+          <td className="cost-group draggable" ref="groupDirect" data-group-id="direct">
+            { direct.map(renderDraggableCategory) }
           </td>
-          <td className="cost-group" ref="groupIndirect" data-group-id="indirect">
-            { indirect.map(renderCategory) }
+          <td className="cost-group draggable" ref="groupIndirect" data-group-id="indirect">
+            { indirect.map(renderDraggableCategory) }
           </td>
-          <td className="cost-group" ref="groupInvestment" data-group-id="investment">
+          <td className="cost-group">
             { investment.map(renderCategory) }
           </td>
         </tr>
@@ -314,8 +320,7 @@ export default class BusinessModelCanvas extends Component {
   componentDidMount () {
     const containers = [
       this.refs.groupDirect,
-      this.refs.groupIndirect,
-      this.refs.groupInvestment
+      this.refs.groupIndirect
     ]
 
     // we create copies of the dragged elements, which are cleaned up again
