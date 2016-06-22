@@ -53,16 +53,14 @@ export default class Price extends Component {
   }
 
   render () {
-    const type = Price.PRICE_TYPES[this.props.price.type] && this.props.priceTypes.includes(this.props.price.type)
-        ? this.props.price.type
-        : this.props.priceTypes[0]
+    const type = findPriceType(this.props.priceTypes, this.props.price)
     const PriceType = Price.PRICE_TYPES[type]
 
     return <div className="price">
       <button
           className={this.state.showPopover ? 'price expanded' : 'price'}
           onTouchTap={this.showPopover.bind(this)} >
-        {PriceType && PriceType.format(this.props.price)}
+        {PriceType && this.props.price && PriceType.format(this.props.price)}
         {' \u25BE'}
       </button>
 
@@ -80,7 +78,7 @@ export default class Price extends Component {
           {
             PriceType
                 ? <PriceType 
-                      price={this.props.price} 
+                      price={this.props.price || Immutable({})}
                       categories={this.props.categories}
                       years={this.props.years}
                       onChange={this.handleChangePrice.bind(this)} />
@@ -107,7 +105,9 @@ export default class Price extends Component {
               primaryText={Price.PRICE_TYPES[type].label} />
         })
 
-    return <SelectField value={this.props.price.type} onChange={this.handleChangeType.bind(this)} >
+    return <SelectField
+        value={this.props.price && this.props.price.type}
+        onChange={this.handleChangeType.bind(this)} >
       {priceTypes}
     </SelectField>
 
@@ -137,7 +137,7 @@ export default class Price extends Component {
     const defaultPrice = Immutable(types[type].defaultPrice)
 
     let price = defaultPrice
-        .merge(this.props.price)
+        .merge(this.props.price || Immutable({}))
         .set('type', type)
 
     debug('handleChangeType', price)
@@ -154,5 +154,15 @@ export default class Price extends Component {
     manual: PriceTypeManual,
     revenue: PriceTypeRevenue,
     salary: PriceTypeSalary
+  }
+}
+
+
+function findPriceType (priceTypes, price) {
+  if(price && Price.PRICE_TYPES[price.type] && priceTypes.includes(price.type)) {
+    return price.type
+  }
+  else {
+    return priceTypes[0]
   }
 }

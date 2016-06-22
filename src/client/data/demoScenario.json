@@ -1,6 +1,17 @@
 {
   "title": "Demo Scenario",
   "data": {
+    "description": {
+      "type": "productionAndRetail",
+      "products": [
+        {"id": "b7e669ad-c695-4125-a59b-4b0f81f0c370", "value": "cookies"},
+        {"id": "76bfec0d-044a-4bbb-bce3-1913aec1ea15", "value": "cakes"}
+      ],
+      "customers": [
+        {"id": "8a3efa6f-e3cd-4592-8c0b-4df5336d89f3", "value": "wealthy people"}
+      ],
+      "uniqueSellingPoint": "the quality"
+    },
     "parameters": {
       "startingYear": "2016",
       "numberOfYears": "5",
@@ -36,6 +47,28 @@
       "monthOfHolidayPayment": "5"
     },
     "categories": [
+      {
+        "id": "2a1a90b4-5b6a-41f3-8e9e-766a946900e3",
+        "section": "costs",
+        "group": "indirect",
+        "name": "Travel",
+        "bmcGroup": "activities",
+        "bmcId": "travel",
+        "bmcChecked": true,
+        "price": {},
+        "quantities": {}
+      },
+      {
+        "id": "6ff6bfd2-8d2f-49d8-a0f5-1222366870a0",
+        "section": "costs",
+        "group": "indirect",
+        "name": "Administration and office",
+        "bmcGroup": "activities",
+        "bmcId": "office",
+        "bmcChecked": true,
+        "price": {},
+        "quantities": {}
+      },
       {
         "id": "fcf8d479-1393-d675-931e-69301c866284",
         "section": "costs",
@@ -386,49 +419,6 @@
       "payableIncomeTax": "",
       "payableSSC": "",
       "provisionHolidayPayment": ""
-    },
-    "bmc": {
-      "description": {
-        "type": "productionAndRetail",
-        "products": [
-          {"id": "b7e669ad-c695-4125-a59b-4b0f81f0c370", "value": "cookies"},
-          {"id": "76bfec0d-044a-4bbb-bce3-1913aec1ea15", "value": "cakes"}
-        ],
-        "customers": [
-          {"id": "8a3efa6f-e3cd-4592-8c0b-4df5336d89f3", "value": "wealthy people"}
-        ],
-        "uniqueSellingPoint": "the quality"
-      },
-      "expenses": {
-        "values": {
-          "housing": {
-            "value": true,
-            "isDefault": true
-          }
-        }
-      },
-      "activities": {
-        "values": {
-          "office": {
-            "value": true,
-            "isDefault": true
-          },
-          "personnel": {
-            "value": true,
-            "isDefault": true
-          },
-          "labor": {
-            "value": true,
-            "isDefault": true
-          }
-        }
-      },
-      "contacts": {},
-      "channels": {},
-      "partnerships": {},
-      "investments": {},
-      "costStructure": {},
-      "revenueStreams": {}
     }
   }
 }

@@ -13,8 +13,9 @@ import MenuItem from 'material-ui/lib/menus/menu-item'
 import TextItemList from './TextItemList'
 import { getOptionalProp } from '../utils/object'
 
+import { uuid } from '../utils/uuid'
 import * as bmcCategories from '../data/bmcCategories.json'
-import * as bmcDefaults  from'../data/bmcDefaults.json'
+import * as bmcDefaults  from'../data/bmcDefaults.json' // TODO: re-implement using bmcDefaults
 
 import shouldComponentUpdate from '../utils/shouldComponentUpdate'
 
@@ -47,19 +48,47 @@ export default class BusinessModelCanvas extends Component {
 
   render () {
     const { data, onSetProperty } = this.props
-    const bmc = data.bmc
+
+    const checkedCategories = {}
+    data.categories.forEach(category => {
+      if (category.bmcId) {
+        checkedCategories[category.bmcId] = category.bmcChecked === true
+      }
+    })
 
     const onChangeType = (event, index, value) => {
-      onSetProperty(['bmc', 'description', 'type'], value)
+      onSetProperty(['description', 'type'], value)
     }
     const onChangeProducts = value => {
-      onSetProperty(['bmc', 'description', 'products'], value)
+      onSetProperty(['description', 'products'], value)
     }
     const onChangeCustomers = value => {
-      onSetProperty(['bmc', 'description', 'customers'], value)
+      onSetProperty(['description', 'customers'], value)
     }
     const onChangeUniqueSellingPoint = event => {
-      onSetProperty(['bmc', 'description', 'uniqueSellingPoint'], event.target.value)
+      onSetProperty(['description', 'uniqueSellingPoint'], event.target.value)
+    }
+
+    const onCheckCategory = (group, bmc, checked) => {
+      const categoryIndex = data.categories.findIndex(category => category.bmcId === bmc.id)
+      if (categoryIndex !== -1) {
+        // TODO: create a special action for this
+        onSetProperty(['categories', categoryIndex, 'bmcChecked'], checked)
+      }
+      else {
+        // add a new category
+        // TODO: create a special action for this
+        const newCategory = {
+          id: uuid(),
+          section: 'costs', // TODO: section depending on current bmc group
+          group: 'indirect',
+          bmcGroup: group,
+          bmcId: bmc.id,
+          bmcChecked: checked,
+          name: bmc.text
+        }
+        onSetProperty(['categories'], data.categories.concat([newCategory]))
+      }
     }
 
     return <div style={styles.container} >
@@ -85,7 +114,7 @@ export default class BusinessModelCanvas extends Component {
                     <td colSpan="10">
                       <div className="outer">
                         <div className="inner main">
-                          We are a <SelectField style={{fontSize: 14}} value={bmc.description && bmc.description.type} onChange={onChangeType}>
+                          We are a <SelectField style={{fontSize: 14}} value={data.description && data.description.type} onChange={onChangeType}>
                             <MenuItem index={-1} value="" primaryText=""/>
                             {
                               bmcCategories.types.map((c, i) => (
@@ -105,8 +134,8 @@ export default class BusinessModelCanvas extends Component {
                             Key partners
                           </div>
                           <div className="contents">
-                            { renderCategories('partnerships', bmc, onSetProperty) }
-                            { renderOther('partnerships', bmc, onSetProperty) }
+                            { renderCategories('partnerships', checkedCategories, onCheckCategory) }
+                            { renderOther('partnerships', data, onSetProperty) }
                           </div>
                         </div>
                       </div>
@@ -118,8 +147,8 @@ export default class BusinessModelCanvas extends Component {
                             Key activities
                           </div>
                           <div className="contents">
-                            { renderCategories('activities', bmc, onSetProperty) }
-                            { renderOther('activities', bmc, onSetProperty) }
+                            { renderCategories('activities', checkedCategories, onCheckCategory) }
+                            { renderOther('activities', data, onSetProperty) }
                           </div>
                         </div>
                       </div>
@@ -136,7 +165,7 @@ export default class BusinessModelCanvas extends Component {
                             </p>
                             <TextItemList
                                 placeholder="product"
-                                items={bmc.description && bmc.description.products}
+                                items={data.description && data.description.products}
                                 onChange={onChangeProducts} />
 
                             <p>
@@ -144,7 +173,7 @@ export default class BusinessModelCanvas extends Component {
                             </p>
                             <TextItemList
                                 placeholder="customers"
-                                items={bmc.description && bmc.description.customers}
+                                items={data.description && data.description.customers}
                                 onChange={onChangeCustomers} />
 
                             <p>
@@ -153,7 +182,7 @@ export default class BusinessModelCanvas extends Component {
                             <input
                                 type="text"
                                 placeholder="unique selling point"
-                                value={bmc.description && bmc.description.uniqueSellingPoint}
+                                value={data.description && data.description.uniqueSellingPoint}
                                 onChange={onChangeUniqueSellingPoint }
                             />
                           </div>
@@ -167,8 +196,8 @@ export default class BusinessModelCanvas extends Component {
                             Customer relations
                           </div>
                           <div className="contents">
-                            { renderCategories('contacts', bmc, onSetProperty) }
-                            { renderOther('contacts', bmc, onSetProperty) }
+                            { renderCategories('contacts', checkedCategories, onCheckCategory) }
+                            { renderOther('contacts', data, onSetProperty) }
                           </div>
                         </div>
                       </div>
@@ -181,7 +210,7 @@ export default class BusinessModelCanvas extends Component {
                           </div>
                           <div className="contents">
                             <TextItemList
-                                items={bmc.description && bmc.description.customers}
+                                items={data.description && data.description.customers}
                                 onChange={onChangeCustomers} />
                           </div>
                         </div>
@@ -197,12 +226,12 @@ export default class BusinessModelCanvas extends Component {
                           </div>
                           <div className="contents">
                             <div className="sub-header">Expenses</div>
-                            { renderCategories('expenses', bmc, onSetProperty) }
-                            { renderOther('expenses', bmc, onSetProperty) }
+                            { renderCategories('expenses', checkedCategories, onCheckCategory) }
+                            { renderOther('expenses', data, onSetProperty) }
 
                             <div className="sub-header">Investments</div>
-                            { renderCategories('investments', bmc, onSetProperty) }
-                            { renderOther('investments', bmc, onSetProperty) }
+                            { renderCategories('investments', checkedCategories, onCheckCategory) }
+                            { renderOther('investments', data, onSetProperty) }
                           </div>
                         </div>
                       </div>
@@ -214,8 +243,8 @@ export default class BusinessModelCanvas extends Component {
                             Channels
                           </div>
                           <div className="contents">
-                            { renderCategories('channels', bmc, onSetProperty) }
-                            { renderOther('channels', bmc, onSetProperty) }
+                            { renderCategories('channels', checkedCategories, onCheckCategory) }
+                            { renderOther('channels', data, onSetProperty) }
                           </div>
                         </div>
                       </div>
@@ -281,7 +310,7 @@ export default class BusinessModelCanvas extends Component {
         <tr>
           <th>Direct</th>
           <th>Indirect</th>
-          <th>Investment</th>
+          <th>Investments</th>
         </tr>
         <tr>
           <td className="cost-group draggable" ref="groupDirect" data-group-id="direct">
@@ -343,55 +372,21 @@ export default class BusinessModelCanvas extends Component {
   }
 }
 
-function renderCategories (group, bmc, onSetProperty) {
-  return bmcCategories[group].map(category => {
+function renderCategories (group, checkedCategories, onCheckCategory) {
+  return bmcCategories[group].map(bmcCategory => {
 
     const props = {
-      label: category.text,
-      checked: isCategoryChecked(group, bmc, category.id),
+      label: bmcCategory.text,
+      checked: checkedCategories[bmcCategory.id],
       onCheck: (event) => {
-        const newValue = {
-          value: event.target.checked,
-          isDefault: false
-        }
-        onSetProperty(['bmc', group, 'values', category.id], newValue)
+        onCheckCategory(group, bmcCategory, event.target.checked)
       }
     }
 
-    return <div key={category.id} style={{marginRight: -10}}>
+    return <div key={bmcCategory.id} style={{marginRight: -10}}>
       <CheckBox {...props} />
     </div>
   })
-}
-
-function isCategoryChecked (group, bmc, categoryId) {
-  let checked = getOptionalProp(bmc, [group, 'values', categoryId, 'value'])
-  if (typeof checked !== 'boolean') {
-    checked = getOptionalProp(bmcDefaults, [bmc.description.type, group, 'values', categoryId, 'value'])
-    if (typeof checked !== 'boolean') {
-      checked = false
-    }
-  }
-  return checked
-}
-
-function generateCostCategories (bmc) {
-  const groups = Immutable([ 'activities', 'expenses', 'investments', 'contacts', 'channels' ])
-
-  return groups
-      .flatMap(group => {
-        const groups = bmcCategories[group]
-            .filter(category => isCategoryChecked (group, bmc, category.id))
-
-        const otherGroups = (bmc[group] && bmc[group].other || [])
-            .map(({id, value}) => ({
-              id,
-              text: value,
-              group: (group === 'investments') ? 'investment' : null
-            }))
-
-        return groups.concat(otherGroups)
-      })
 }
 
 /**
@@ -413,17 +408,20 @@ function generateRevenueCategories (products = [], customers = []) {
   })
 }
 
-function renderOther (group, bmc, onSetProperty) {
-  const items = bmc[group] && bmc[group].other || []
+function renderOther (group, data, onSetProperty) {
+  // TODO: re-implement renderOther
+  return null
 
-  const onChange = items => {
-    onSetProperty(['bmc', group, 'other'], items)
-  }
-
-  return <div>
-    <div className="sub-header">Other</div>
-    <TextItemList items={items} onChange={onChange} />
-  </div>
+  // const items = bmc[group] && bmc[group].other || []
+  //
+  // const onChange = items => {
+  //   onSetProperty(['bmc', group, 'other'], items)
+  // }
+  //
+  // return <div>
+  //   <div className="sub-header">Other</div>
+  //   <TextItemList items={items} onChange={onChange} />
+  // </div>
 }
 
 /**
@@ -432,7 +430,7 @@ function renderOther (group, bmc, onSetProperty) {
  * @return {Array}
  */
 function toArray (nodes) {
-  const array = [];
+  const array = []
 
   for (var i = 0; i < nodes.length; i++) {
     array[i] = nodes[i]

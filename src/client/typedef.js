@@ -54,6 +54,9 @@
  *   section: string,
  *   group: string,
  *   name: string,
+ *   bmcGroup: string,
+ *   bmcId: string,
+ *   bmcChecked: boolean,
  *   price: Price,
  *   quantities: Object<string, string>
  * }} Category
@@ -62,12 +65,6 @@
  * @typedef {{id: string, value: string}} TextItem
  *
  * @typedef {{
- *   description: {
- *     type: string,
- *     products: Array.<TextItem>,
- *     customers: Array.<TextItem>,
- *     uniqueSellingPoint: string
- *   },
  *   expenses:          {values: Object.<string, Option>, other: Array.<TextItem>},
  *   activities:        {values: Object.<string, Option>, other: Array.<TextItem>},
  *   contacts:          {values: Object.<string, Option>, other: Array.<TextItem>},
@@ -79,6 +76,12 @@
  * }} BMC
  *
  * @typedef {{
+ *   description: {
+ *     type: string,
+ *     products: Array.<TextItem>,
+ *     customers: Array.<TextItem>,
+ *     uniqueSellingPoint: string
+ *   },
  *   parameters: Parameters,
  *   categories: Array.<Category>,
  *   financing: {

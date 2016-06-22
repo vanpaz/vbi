@@ -17,7 +17,7 @@ const MAX_NUMBER_OF_YEARS = 100
  * @return {string} Returns the quantity
  */
 export function findQuantity (item, year, defaultValue = '0') {
-  return (item.quantities[year] !== undefined)
+  return (item.quantities && item.quantities[year] !== undefined)
       ? item.quantities[year]
       : defaultValue
 }
@@ -1117,15 +1117,10 @@ export function calculatePxQ (categories, years, revenues) {
 
   return categories
       .map(category => {
-        var type = types[category.price.type]
-
-        if (!type) {
-          throw new Error('Unknown price type ' + JSON.stringify(category.price.type) + ' ' +
-              'in item ' + JSON.stringify(category) + '. ' +
-              'Choose from: ' + Object.keys(types).join(','))
-        }
-
-        return type.calculatePxQ(category, years, revenues)
+        const type = types[category.price && category.price.type]
+        return (type)
+            ? type.calculatePxQ(category, years, revenues)
+            : initial
       })
       .reduce(addProps, initial)
 }

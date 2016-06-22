@@ -148,7 +148,7 @@ class Inputs extends Component {
                   onDelete={this.handleDeleteCategory } />
             </td>
             {
-                category.price.type !== 'revenue'
+              (!category.price || category.price.type !== 'revenue')
                     ? this.renderQuantities(section, group, category, years)
                     : <td className="info"
                           colSpan={years.length}
@@ -165,16 +165,16 @@ class Inputs extends Component {
             </td>
           </tr>)
         }
-      <tr>
-        <td className="read-only">
-          <button
-              className="add-category"
-              title="Add a new category"
-              onTouchTap={ (event) => this.handleAddCategory(section, group, priceTypes) }>
-            +
-          </button>
-        </td>
-      </tr>
+        <tr>
+          <td className="read-only">
+            <button
+                className="add-category"
+                title="Add a new category"
+                onTouchTap={ (event) => this.handleAddCategory(section, group, priceTypes) }>
+              +
+            </button>
+          </td>
+        </tr>
       </tbody>
     </table>
   }
