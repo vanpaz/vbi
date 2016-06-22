@@ -100,6 +100,7 @@ class Cashflow extends Component {
             <input value={value}
                    className={ validValue ? '' : ' invalid' }
                    onChange={(event) => {
+                     event.stopPropagation()
                      const value = numberRegExp.test(event.target.value)  // test whether a valid number
                        ? parseValue(event.target.value) * magnitude
                        : event.target.value

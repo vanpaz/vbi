@@ -176,6 +176,7 @@ class Inputs extends Component {
       <input className="quantity"
              value={findQuantity(category, year, '')}
              onChange={(event) => {
+                         event.stopPropagation()
                          const quantity = event.target.value
                          this.props.dispatch(setQuantity(section, group, category.id, year, quantity))
                        }}
