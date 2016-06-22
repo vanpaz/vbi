@@ -380,7 +380,7 @@
         ],
         "uniqueSellingPoint": "the quality"
       },
-      "resources": {
+      "expenses": {
         "values": {
           "housing": {
             "value": true,

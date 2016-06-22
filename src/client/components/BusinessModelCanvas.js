@@ -195,9 +195,9 @@ export default class BusinessModelCanvas extends Component {
                             Key resources
                           </div>
                           <div className="contents">
-                            <div className="sub-header">Resources</div>
-                            { renderCategories('resources', bmc, onSetProperty) }
-                            { renderOther('resources', bmc, onSetProperty) }
+                            <div className="sub-header">Expenses</div>
+                            { renderCategories('expenses', bmc, onSetProperty) }
+                            { renderOther('expenses', bmc, onSetProperty) }
 
                             <div className="sub-header">Investments</div>
                             { renderCategories('investments', bmc, onSetProperty) }
@@ -377,7 +377,7 @@ function isCategoryChecked (group, bmc, categoryId) {
 }
 
 function generateCostCategories (bmc) {
-  const groups = Immutable([ 'activities', 'resources', 'investments', 'contacts', 'channels' ])
+  const groups = Immutable([ 'activities', 'expenses', 'investments', 'contacts', 'channels' ])
 
   return groups
       .flatMap(group => {

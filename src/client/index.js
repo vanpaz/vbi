@@ -28,7 +28,7 @@ let initialState = Immutable({
     inputs: hash.get('inputs') || constants.defaultInputs,
 
     // visible tab: 'profitAndLoss', 'balanceSheet', 'cashFlow'
-    outputs: hash.get('outputs').toLowerCase() || constants.defaultOutputs
+    outputs: hash.get('outputs') || constants.defaultOutputs
   },  
   
   user: {},

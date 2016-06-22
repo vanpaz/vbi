@@ -3,7 +3,7 @@
     "valuePropositions": {
       "values": {}
     },
-    "resources": {
+    "expenses": {
       "values": {
         "housing":          { "value": true, "isDefault": true },
         "transportation":   { "value": true, "isDefault": true },

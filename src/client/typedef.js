@@ -66,7 +66,7 @@
  *     customers: Array.<TextItem>,
  *     uniqueSellingPoint: string
  *   },
- *   resources:         {values: Object.<string, Option>, other: Array.<TextItem>},
+ *   expenses:          {values: Object.<string, Option>, other: Array.<TextItem>},
  *   activities:        {values: Object.<string, Option>, other: Array.<TextItem>},
  *   contacts:          {values: Object.<string, Option>, other: Array.<TextItem>},
  *   channels:          {values: Object.<string, Option>, other: Array.<TextItem>},

@@ -6,7 +6,7 @@
     {"id": "services", "text": "services"},
     {"id": "other", "text": "other type of"}
   ],
-  "resources": [
+  "expenses": [
     {"id": "housing", "text": "Housing"},
     {"id": "transportation", "text": "Cars, transportation"},
     {"id": "communication", "text": "Communication and network"},
@@ -46,6 +46,7 @@
     {"id": "software", "text": "Computer software", "group": "investment"},
     {"id": "furniture", "text": "Furniture and fixtures", "group": "investment"},
     {"id": "intangibleAssets", "text": "Intangible assets", "group": "investment"},
+    {"id": "intellectualProperty", "text": "Intellectual property", "group": "investment"},
     {"id": "land", "text": "Land", "group": "investment"},
     {"id": "leaseholdImprovements", "text": "Leasehold improvements", "group": "investment"},
     {"id": "machinery", "text": "Machinery", "group": "investment"},
