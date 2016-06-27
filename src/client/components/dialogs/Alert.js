@@ -6,27 +6,24 @@ import FlatButton from 'material-ui/lib/flat-button'
 /**
  * Usage:
  *
- *     <Confirm ref="confirmDialog" />
+ *     <Alert ref="alertDialog" />
  *
- *     this.refs.confirmDialog.show({
- *       title: 'Sign in',
+ *     this.refs.alertDialog.show({
+ *       title: 'Rename category',
  *       description: <div>
  *         <p>
- *           To open, save, or delete scenarios you have to sign in first.
- *         </p>
- *         <p>
- *          Do you want to sign in now?
+ *           Built-in categories cannot be renamed.
  *         </p>
  *       </div>
  *     })
- *        .then(ok => {
- *          console.log('ok?', ok)  // ok is true or false
+ *        .then(() => {
+ *          console.log('alert closed...')
  *        })
  *
- *     this.refs.confirmDialog.hide()
+ *     this.refs.alertDialog.hide()
  *
  */
-export default class Confirm extends React.Component {
+export default class Alert extends React.Component {
   constructor (props) {
     super (props)
 
@@ -41,15 +38,10 @@ export default class Confirm extends React.Component {
   render () {
     const actions = [
       <FlatButton
-          label="No"
-          secondary={true}
-          onTouchTap={event => this.hide() }
-      />,
-      <FlatButton
-          label="Yes"
+          label="Ok"
           primary={true}
           keyboardFocused={true}
-          onTouchTap={event => this._handle(true) }
+          onTouchTap={event => this.hide() }
       />
     ]
 
@@ -75,11 +67,7 @@ export default class Confirm extends React.Component {
   }
 
   hide () {
-    this._handle(false)
-  }
-
-  _handle (ok) {
-    this.state.handler(ok)
+    this.state.handler()
     this.setState({
       open: false,
       handler: function () {}

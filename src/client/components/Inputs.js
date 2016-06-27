@@ -7,6 +7,7 @@ import CardText from 'material-ui/lib/card/card-text'
 import Tabs from 'material-ui/lib/tabs/tabs'
 import Tab from 'material-ui/lib/tabs/tab'
 
+import Alert from './dialogs/Alert'
 import Prompt from './dialogs/Prompt'
 import Confirm from './dialogs/Confirm'
 import {
@@ -102,6 +103,7 @@ class Inputs extends Component {
         </CardText>
       </Card>
 
+      <Alert ref="alert" />
       <Prompt ref="prompt" />
       <Confirm ref="confirm" />
     </div>
@@ -217,18 +219,27 @@ class Inputs extends Component {
   handleRenameCategory (section, group, categoryId) {
     const category = this.findCategory(section, group, categoryId)
 
-    const options = {
-      title: 'Rename category',
-      description: 'Enter a new name for the category:',
-      hintText: 'New category',
-      value: category.name
+    if (category.bmcId) {
+      // this is a built-in category which can't be renamed
+      this.refs.alert.show({
+        title: 'Cannot rename category',
+        description: 'Bummer: this is a built-in category which cannot be renamed...'
+      })
     }
-
-    this.refs.prompt.show(options).then(newName => {
-      if (newName !== null) {
-        this.props.dispatch(renameCategory(section, group, categoryId, newName))
+    else {
+      const options = {
+        title: 'Rename category',
+        description: 'Enter a new name for the category:',
+        hintText: 'New category',
+        value: category.name
       }
-    })
+
+      this.refs.prompt.show(options).then(newName => {
+        if (newName !== null) {
+          this.props.dispatch(renameCategory(section, group, categoryId, newName))
+        }
+      })
+    }
   }
 
   handleMoveCategoryUp (section, group, categoryId) {
