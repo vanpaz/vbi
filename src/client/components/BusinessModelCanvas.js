@@ -400,11 +400,12 @@ function renderOther (data, bmcGroup, onSetCustomCategories) {
       }
       else {
         // it's a new category
+        const bmcGroupObj = bmcCategories.groups[bmcGroup]
+
         return Immutable({
           id: item.id,
-          // TODO: read the right section and group from bmcCategories
-          section: 'costs',
-          group: 'indirect',
+          section: bmcGroupObj && bmcGroupObj.section,
+          group: bmcGroupObj && bmcGroupObj.group,
           name: item.value,
           bmcGroup,
           bmcChecked: true

@@ -84,10 +84,12 @@ const doc = (state = Immutable({}), action) => {
           throw new Error('BMC category not found (id=' + action.bmcId + ')')
         }
 
+        const bmcGroup = bmcCategories.groups[bmcCategory.group]
+
         const newCategory = {
           id: uuid(),
-          section: bmcCategory.costSection,
-          group: bmcCategory.costGroup,
+          section: bmcGroup && bmcGroup.section,
+          group: bmcGroup && bmcGroup.group,
           bmcGroup: bmcCategory.group,
           bmcId: bmcCategory.id,
           bmcChecked: action.checked,
