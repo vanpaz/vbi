@@ -54,12 +54,12 @@
  *   section: string,
  *   group: string,
  *   name: string,
- *   deleted: boolean,
- *   bmcGroup: string,
- *   bmcId: string,
- *   bmcChecked: boolean,
- *   price: Price,
- *   quantities: Object<string, string>
+ *   deleted: ?boolean,
+ *   bmcGroup: ?string,
+ *   bmcId: ?string,
+ *   bmcChecked: ?boolean,
+ *   price: ?Price,
+ *   quantities: ?Object<string, string>
  * }} Category
  *
  * @typedef {{value: boolean, isDefault: boolean}} Option
