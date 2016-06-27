@@ -396,7 +396,6 @@ function renderOther (data, bmcGroup, onSetCustomCategories) {
         // update existing category
         return category
             .set('name', item.value)
-            .set('deleted', false)   // un-delete when deleted
             .set('bmcChecked', true) // custom items have no checkbox and are always checked
       }
       else {
@@ -408,8 +407,7 @@ function renderOther (data, bmcGroup, onSetCustomCategories) {
           group: 'indirect',
           name: item.value,
           bmcGroup,
-          bmcChecked: true,
-          deleted: false
+          bmcChecked: true
         })
       }
     })

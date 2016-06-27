@@ -72,9 +72,7 @@ const doc = (state = Immutable({}), action) => {
         debug('check existing category', action)
 
         const category = state.data.categories[index]
-        const updatedCategory = category
-            .set('bmcChecked', action.checked)
-            .set('deleted', action.checked ? false : (category.deleted || false))  // un-delete the category when checked again
+        const updatedCategory = category.set('bmcChecked', action.checked)
 
         return state.setIn(['data', 'categories', index], updatedCategory)
       }
@@ -93,7 +91,6 @@ const doc = (state = Immutable({}), action) => {
           bmcGroup: bmcCategory.group,
           bmcId: bmcCategory.id,
           bmcChecked: action.checked,
-          deleted: false,
           name: bmcCategory.text
         }
 
