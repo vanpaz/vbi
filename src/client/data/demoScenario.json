@@ -143,6 +143,9 @@
         "section": "costs",
         "group": "indirect",
         "name": "Marketing",
+        "bmcGroup": "contacts",
+        "bmcId": "marketing",
+        "bmcChecked": true,
         "price": {
           "type": "constant",
           "value": "10k",

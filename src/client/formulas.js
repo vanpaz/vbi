@@ -1061,7 +1061,8 @@ export function filterActiveCategories (data) {
  * @return {Array}
  */
 export function filterSection (data, section) {
-  return data.categories.filter(category => category.section === section)
+  return filterActiveCategories(data)
+      .filter(category => category.section === section)
 }
 
 /**
@@ -1072,7 +1073,8 @@ export function filterSection (data, section) {
  * @return {Array}
  */
 export function filterGroup (data, section, group) {
-  return data.categories.filter(category => category.section === section && category.group === group)
+  return filterActiveCategories(data)
+      .filter(category => category.section === section && category.group === group)
 }
 
 /**
