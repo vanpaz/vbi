@@ -149,14 +149,14 @@ This generates files in the folder `./dist`.
 To start the backend server locally, specify environment variables on the command line and run `node ./server.js` (replace `###` with the actual variables).
 
 ```
-$ PORT=8080
-$ SERVER_URL=https://vanpaz-business-intelligence.herokuapp.com
-$ COUCH_DB=###
-$ GOOGLE_CLIENT_ID=###
-$ GOOGLE_CLIENT_SECRET=###
-$ FACEBOOK_APP_ID=###
-$ FACEBOOK_APP_SECRET=###
-$ DEBUG=vbi*
+$ export PORT=8080
+$ export SERVER_URL=https://vanpaz-business-intelligence.herokuapp.com
+$ export COUCH_DB=###
+$ export GOOGLE_CLIENT_ID=###
+$ export GOOGLE_CLIENT_SECRET=###
+$ export FACEBOOK_APP_ID=###
+$ export FACEBOOK_APP_SECRET=###
+$ export DEBUG=vbi*
 $ node ./server.js
 ```
 
@@ -226,6 +226,24 @@ A saved scenario has the following structure:
 {
   "title": "",
   "data": {
+    "description": {
+      "type": "<type of company>",
+      "products": [
+        {
+          "id": "<uuid>",
+          "value": string
+        },
+        // ...
+      ],
+      "customers": [
+        {
+          "id": "<uuid>",
+          "value": string
+        },
+        // ...
+      ],
+      "uniqueSellingPoint": string
+    },
     "parameters": {
       // ...
     },
@@ -257,9 +275,6 @@ A saved scenario has the following structure:
       "tangiblesAndIntangibles": string | number,
       "financialFixedAssets": string | number,
       "deferredTaxAssets": string | number,
-      // ...
-    },
-    "bmc": {
       // ...
     }
   },
