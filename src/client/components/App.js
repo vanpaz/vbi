@@ -394,11 +394,11 @@ class App extends Component {
   /**
    * Check or uncheck a BMC category
    * @param {String} bmcId
-   * @param {boolean} checked
+   * @param {boolean} bmcChecked
    */
-  handleCheckCategory (bmcId, checked) {
-    debug('checkCategory', bmcId, checked)
-    this.props.dispatch(checkCategory(bmcId, checked))
+  handleCheckCategory (bmcId, bmcChecked) {
+    debug('checkCategory', bmcId, bmcChecked)
+    this.props.dispatch(checkCategory(bmcId, bmcChecked))
   }
 
   /**

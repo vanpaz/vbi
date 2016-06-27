@@ -72,28 +72,28 @@ const doc = (state = Immutable({}), action) => {
         debug('check existing category', action)
 
         const category = state.data.categories[index]
-        const updatedCategory = category.set('bmcChecked', action.checked)
+        const updatedCategory = category.set('bmcChecked', action.bmcChecked)
 
         return state.setIn(['data', 'categories', index], updatedCategory)
       }
       else {
         // add a new category
-        const bmcCategory = bmcCategories.categories.find(bmcCategory => bmcCategory.id === action.bmcId)
+        const bmcCategory = bmcCategories.categories.find(bmcCategory => bmcCategory.bmcId === action.bmcId)
 
         if (!bmcCategory) {
           throw new Error('BMC category not found (id=' + action.bmcId + ')')
         }
 
-        const bmcGroup = bmcCategories.groups[bmcCategory.group]
+        const bmcGroupObj = bmcCategories.groups[bmcCategory.bmcGroup]
 
         const newCategory = {
           id: uuid(),
-          section: bmcGroup && bmcGroup.section,
-          group: bmcGroup && bmcGroup.group,
-          bmcGroup: bmcCategory.group,
-          bmcId: bmcCategory.id,
-          bmcChecked: action.checked,
-          name: bmcCategory.text
+          name: bmcCategory.name,
+          section: bmcGroupObj && bmcGroupObj.section,
+          group: bmcGroupObj && bmcGroupObj.group,
+          bmcGroup: bmcCategory.bmcGroup,
+          bmcId: bmcCategory.bmcId,
+          bmcChecked: action.bmcChecked
         }
 
         debug('check new category', action, bmcCategory, newCategory)

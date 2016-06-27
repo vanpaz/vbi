@@ -91,8 +91,8 @@ export default class BusinessModelCanvas extends Component {
                       We are a <SelectField style={{fontSize: 14}} value={data.description && data.description.type} onChange={onChangeType}>
                         <MenuItem index={-1} value="" primaryText=""/>
                         {
-                          bmcCategories.types.map((c, i) => (
-                              <MenuItem key={c.id} index={i} value={c.id} primaryText={c.text} />
+                          bmcCategories.types.map((c, index) => (
+                              <MenuItem key={c.id} index={index} value={c.id} primaryText={c.name} />
                           ))
                         }
                       </SelectField> company
@@ -345,19 +345,19 @@ export default class BusinessModelCanvas extends Component {
   }
 }
 
-function renderCategories (group, checkedCategories, onCheckCategory) {
+function renderCategories (bmcGroup, checkedCategories, onCheckCategory) {
   return bmcCategories.categories
-      .filter(bmcCategory => bmcCategory.group === group)
+      .filter(bmcCategory => bmcCategory.bmcGroup === bmcGroup)
       .map(bmcCategory => {
         const props = {
-          label: bmcCategory.text,
-          checked: checkedCategories[bmcCategory.id],
+          label: bmcCategory.name,
+          checked: checkedCategories[bmcCategory.bmcId],
           onCheck: (event) => {
-            onCheckCategory(bmcCategory.id, event.target.checked)
+            onCheckCategory(bmcCategory.bmcId, event.target.checked)
           }
         }
     
-        return <div key={bmcCategory.id} style={{marginRight: -10}}>
+        return <div key={bmcCategory.bmcId} style={{marginRight: -10}}>
           <CheckBox {...props} />
         </div>
   })

@@ -69,8 +69,8 @@ export function setCustomCategories (bmcGroup, categories) {
  * @param {String} bmcId
  * @param {boolean} checked
  */
-export function checkCategory (bmcId, checked) {
-  return { type: 'DOC_CHECK_CATEGORY', bmcId, checked }
+export function checkCategory (bmcId, bmcChecked) {
+  return { type: 'DOC_CHECK_CATEGORY', bmcId, bmcChecked }
 }
 
 export function renameCategory (section, group, categoryId, name) {
