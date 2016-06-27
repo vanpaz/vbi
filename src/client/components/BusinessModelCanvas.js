@@ -4,14 +4,11 @@ import Dragula from 'react-dragula'
 
 import Card from 'material-ui/lib/card/card'
 import CardText from 'material-ui/lib/card/card-text'
-import Tabs from 'material-ui/lib/tabs/tabs'
-import Tab from 'material-ui/lib/tabs/tab'
 import CheckBox from 'material-ui/lib/checkbox'
 import SelectField from 'material-ui/lib/select-field'
 import MenuItem from 'material-ui/lib/menus/menu-item'
 
 import TextItemList from './TextItemList'
-import { getOptionalProp } from '../utils/object'
 
 import { uuid } from '../utils/uuid'
 import * as bmcCategories from '../data/bmcCategories.json'
@@ -94,194 +91,189 @@ export default class BusinessModelCanvas extends Component {
     return <div style={styles.container} >
       <Card className="card">
         <CardText style={styles.cardText}>
-          <Tabs inkBarStyle={styles.inkBar} contentContainerStyle={styles.tabContents}>
-            <Tab label="Business Model Canvas">
-              <table className="bmc" width="100%">
-                <colGroup>
-                  <col width="10%" />
-                  <col width="10%" />
-                  <col width="10%" />
-                  <col width="10%" />
-                  <col width="10%" />
-                  <col width="10%" />
-                  <col width="10%" />
-                  <col width="10%" />
-                  <col width="10%" />
-                  <col width="10%" />
-                </colGroup>
-                <tbody>
-                  <tr>
-                    <td colSpan="10">
-                      <div className="outer">
-                        <div className="inner main">
-                          We are a <SelectField style={{fontSize: 14}} value={data.description && data.description.type} onChange={onChangeType}>
-                            <MenuItem index={-1} value="" primaryText=""/>
-                            {
-                              bmcCategories.types.map((c, i) => (
-                                  <MenuItem key={c.id} index={i} value={c.id} primaryText={c.text} />
-                              ))
-                            }
-                          </SelectField> company
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colSpan="2" rowSpan="2">
-                      <div className="outer height4">
-                        <div className="inner">
-                          <div className="header">
-                            Key partners
-                          </div>
-                          <div className="contents">
-                            { renderCategories('partnerships', checkedCategories, onCheckCategory) }
-                            { renderOther('partnerships', data, onSetProperty) }
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td colSpan="2">
-                      <div className="outer height2">
-                        <div className="inner">
-                          <div className="header">
-                            Key activities
-                          </div>
-                          <div className="contents">
-                            { renderCategories('activities', checkedCategories, onCheckCategory) }
-                            { renderOther('activities', data, onSetProperty) }
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td colSpan="2" rowSpan="2">
-                      <div className="outer height4">
-                        <div className="inner value-proposition">
-                          <div className="header">
-                            Value proposition
-                          </div>
-                          <div className="contents">
-                            <p>
-                              We make:
-                            </p>
-                            <TextItemList
-                                placeholder="product"
-                                items={data.description && data.description.products}
-                                onChange={onChangeProducts} />
 
-                            <p>
-                              for:
-                            </p>
-                            <TextItemList
-                                placeholder="customers"
-                                items={data.description && data.description.customers}
-                                onChange={onChangeCustomers} />
+          <table className="bmc" width="100%">
+            <colGroup>
+              <col width="10%" />
+              <col width="10%" />
+              <col width="10%" />
+              <col width="10%" />
+              <col width="10%" />
+              <col width="10%" />
+              <col width="10%" />
+              <col width="10%" />
+              <col width="10%" />
+              <col width="10%" />
+            </colGroup>
+            <tbody>
+              <tr>
+                <td colSpan="10">
+                  <div className="outer">
+                    <div className="inner main">
+                      We are a <SelectField style={{fontSize: 14}} value={data.description && data.description.type} onChange={onChangeType}>
+                        <MenuItem index={-1} value="" primaryText=""/>
+                        {
+                          bmcCategories.types.map((c, i) => (
+                              <MenuItem key={c.id} index={i} value={c.id} primaryText={c.text} />
+                          ))
+                        }
+                      </SelectField> company
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td colSpan="2" rowSpan="2">
+                  <div className="outer height4">
+                    <div className="inner">
+                      <div className="header">
+                        Key partners
+                      </div>
+                      <div className="contents">
+                        { renderCategories('partnerships', checkedCategories, onCheckCategory) }
+                        { renderOther('partnerships', data, onSetProperty) }
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td colSpan="2">
+                  <div className="outer height2">
+                    <div className="inner">
+                      <div className="header">
+                        Key activities
+                      </div>
+                      <div className="contents">
+                        { renderCategories('activities', checkedCategories, onCheckCategory) }
+                        { renderOther('activities', data, onSetProperty) }
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td colSpan="2" rowSpan="2">
+                  <div className="outer height4">
+                    <div className="inner value-proposition">
+                      <div className="header">
+                        Value proposition
+                      </div>
+                      <div className="contents">
+                        <p>
+                          We make:
+                        </p>
+                        <TextItemList
+                            placeholder="product"
+                            items={data.description && data.description.products}
+                            onChange={onChangeProducts} />
 
-                            <p>
-                              and they like us because of:
-                            </p>
-                            <input
-                                type="text"
-                                placeholder="unique selling point"
-                                value={data.description && data.description.uniqueSellingPoint}
-                                onChange={onChangeUniqueSellingPoint }
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td colSpan="2">
-                      <div className="outer height2">
-                        <div className="inner">
-                          <div className="header">
-                            Customer relations
-                          </div>
-                          <div className="contents">
-                            { renderCategories('contacts', checkedCategories, onCheckCategory) }
-                            { renderOther('contacts', data, onSetProperty) }
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td colSpan="2" rowSpan="2">
-                      <div className="outer height4">
-                        <div className="inner">
-                          <div className="header">
-                            Customer segments
-                          </div>
-                          <div className="contents">
-                            <TextItemList
-                                items={data.description && data.description.customers}
-                                onChange={onChangeCustomers} />
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colSpan="2">
-                      <div className="outer height2">
-                        <div className="inner">
-                          <div className="header">
-                            Key resources
-                          </div>
-                          <div className="contents">
-                            <div className="sub-header">Expenses</div>
-                            { renderCategories('expenses', checkedCategories, onCheckCategory) }
-                            { renderOther('expenses', data, onSetProperty) }
+                        <p>
+                          for:
+                        </p>
+                        <TextItemList
+                            placeholder="customers"
+                            items={data.description && data.description.customers}
+                            onChange={onChangeCustomers} />
 
-                            <div className="sub-header">Investments</div>
-                            { renderCategories('investments', checkedCategories, onCheckCategory) }
-                            { renderOther('investments', data, onSetProperty) }
-                          </div>
-                        </div>
+                        <p>
+                          and they like us because of:
+                        </p>
+                        <input
+                            type="text"
+                            placeholder="unique selling point"
+                            value={data.description && data.description.uniqueSellingPoint}
+                            onChange={onChangeUniqueSellingPoint }
+                        />
                       </div>
-                    </td>
-                    <td colSpan="2">
-                      <div className="outer height2">
-                        <div className="inner">
-                          <div className="header">
-                            Channels
-                          </div>
-                          <div className="contents">
-                            { renderCategories('channels', checkedCategories, onCheckCategory) }
-                            { renderOther('channels', data, onSetProperty) }
-                          </div>
-                        </div>
+                    </div>
+                  </div>
+                </td>
+                <td colSpan="2">
+                  <div className="outer height2">
+                    <div className="inner">
+                      <div className="header">
+                        Customer relations
                       </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colSpan="5">
-                      <div className="outer height1">
-                        <div className="inner">
-                          <div className="header">
-                            Cost structure
-                          </div>
-                          <div className="contents">
-                            { this.renderCostStructure(data) }
-                          </div>
-                        </div>
+                      <div className="contents">
+                        { renderCategories('contacts', checkedCategories, onCheckCategory) }
+                        { renderOther('contacts', data, onSetProperty) }
                       </div>
-                    </td>
-                    <td colSpan="5">
-                      <div className="outer height1">
-                        <div className="inner">
-                          <div className="header">
-                            Revenue streams
-                          </div>
-                          <div className="contents">
-                            { this.renderRevenueStreams(data) }
-                          </div>
-                        </div>
+                    </div>
+                  </div>
+                </td>
+                <td colSpan="2" rowSpan="2">
+                  <div className="outer height4">
+                    <div className="inner">
+                      <div className="header">
+                        Customer segments
                       </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                      <div className="contents">
+                        <TextItemList
+                            items={data.description && data.description.customers}
+                            onChange={onChangeCustomers} />
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td colSpan="2">
+                  <div className="outer height2">
+                    <div className="inner">
+                      <div className="header">
+                        Key resources
+                      </div>
+                      <div className="contents">
+                        <div className="sub-header">Expenses</div>
+                        { renderCategories('expenses', checkedCategories, onCheckCategory) }
+                        { renderOther('expenses', data, onSetProperty) }
 
-            </Tab>
-          </Tabs>
-
+                        <div className="sub-header">Investments</div>
+                        { renderCategories('investments', checkedCategories, onCheckCategory) }
+                        { renderOther('investments', data, onSetProperty) }
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td colSpan="2">
+                  <div className="outer height2">
+                    <div className="inner">
+                      <div className="header">
+                        Channels
+                      </div>
+                      <div className="contents">
+                        { renderCategories('channels', checkedCategories, onCheckCategory) }
+                        { renderOther('channels', data, onSetProperty) }
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td colSpan="5">
+                  <div className="outer height1">
+                    <div className="inner">
+                      <div className="header">
+                        Cost structure
+                      </div>
+                      <div className="contents">
+                        { this.renderCostStructure(data) }
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td colSpan="5">
+                  <div className="outer height1">
+                    <div className="inner">
+                      <div className="header">
+                        Revenue streams
+                      </div>
+                      <div className="contents">
+                        { this.renderRevenueStreams(data) }
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </CardText>
       </Card>
     </div>

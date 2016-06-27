@@ -232,24 +232,6 @@ export function getProp (object, path) {
 }
 
 /**
- * Find a nested property value from an object.
- * Stops traversing and returns undefined when the path does not exist on the
- * object.
- * @param {Object} object
- * @param {string[]} path
- * @return {*}
- */
-export function getOptionalProp (object, path) {
-  let prop = object
-
-  path.forEach(key => {
-    prop = (typeof prop === 'object') ? prop[key] : undefined
-  })
-
-  return prop
-}
-
-/**
  * Calculate the average of all objects property values
  * @param {Object} object
  * @return {number}
