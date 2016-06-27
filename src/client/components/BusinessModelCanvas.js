@@ -10,7 +10,7 @@ import MenuItem from 'material-ui/lib/menus/menu-item'
 
 import TextItemList from './TextItemList'
 
-import { filterActiveCategories } from '../formulas'
+import { filterActiveCategories, isCustomCategory } from '../formulas'
 import * as bmcCategories from '../data/bmcCategories.json'
 import * as bmcDefaults  from'../data/bmcDefaults.json' // TODO: re-implement using bmcDefaults
 
@@ -44,7 +44,7 @@ export default class BusinessModelCanvas extends Component {
   }
 
   render () {
-    const { data, onSetProperty, onCheckCategory } = this.props
+    const { data, onSetProperty, onCheckCategory, onSetCustomCategories } = this.props
 
     const checkedCategories = {}
     data.categories.forEach(category => {
@@ -109,7 +109,7 @@ export default class BusinessModelCanvas extends Component {
                       </div>
                       <div className="contents">
                         { renderCategories('partnerships', checkedCategories, onCheckCategory) }
-                        { renderOther('partnerships', data, onSetProperty) }
+                        { renderOther(data, 'partnerships', onSetCustomCategories) }
                       </div>
                     </div>
                   </div>
@@ -122,7 +122,7 @@ export default class BusinessModelCanvas extends Component {
                       </div>
                       <div className="contents">
                         { renderCategories('activities', checkedCategories, onCheckCategory) }
-                        { renderOther('activities', data, onSetProperty) }
+                        { renderOther(data, 'activities', onSetCustomCategories) }
                       </div>
                     </div>
                   </div>
@@ -171,7 +171,7 @@ export default class BusinessModelCanvas extends Component {
                       </div>
                       <div className="contents">
                         { renderCategories('contacts', checkedCategories, onCheckCategory) }
-                        { renderOther('contacts', data, onSetProperty) }
+                        { renderOther(data, 'contacts', onSetCustomCategories) }
                       </div>
                     </div>
                   </div>
@@ -201,11 +201,11 @@ export default class BusinessModelCanvas extends Component {
                       <div className="contents">
                         <div className="sub-header">Expenses</div>
                         { renderCategories('expenses', checkedCategories, onCheckCategory) }
-                        { renderOther('expenses', data, onSetProperty) }
+                        { renderOther(data, 'expenses', onSetCustomCategories) }
 
                         <div className="sub-header">Investments</div>
                         { renderCategories('investments', checkedCategories, onCheckCategory) }
-                        { renderOther('investments', data, onSetProperty) }
+                        { renderOther(data, 'investments', onSetCustomCategories) }
                       </div>
                     </div>
                   </div>
@@ -218,7 +218,7 @@ export default class BusinessModelCanvas extends Component {
                       </div>
                       <div className="contents">
                         { renderCategories('channels', checkedCategories, onCheckCategory) }
-                        { renderOther('channels', data, onSetProperty) }
+                        { renderOther(data, 'channels', onSetProperty) }
                       </div>
                     </div>
                   </div>
@@ -371,6 +371,7 @@ function renderCategories (group, checkedCategories, onCheckCategory) {
  *   Array with entries having a compound key as id, which is a concatenation
  *   of the id's of the product and customer.
  */
+// TODO: reuse or remove generateRevenueCategories
 function generateRevenueCategories (products = [], customers = []) {
   return Immutable(products).flatMap(product => {
     return customers.map(customer => {
@@ -382,33 +383,42 @@ function generateRevenueCategories (products = [], customers = []) {
   })
 }
 
-function renderOther (group, data, onSetProperty) {
-  // TODO: re-implement renderOther
-  return null
+function renderOther (data, bmcGroup, onSetCustomCategories) {
+  const categories = data.categories.filter(category => isCustomCategory(category, bmcGroup))
+  const items = categories.map(category => ({id: category.id, value: category.name}))
 
-  // const items = bmc[group] && bmc[group].other || []
-  //
-  // const onChange = items => {
-  //   onSetProperty(['bmc', group, 'other'], items)
-  // }
-  //
-  // return <div>
-  //   <div className="sub-header">Other</div>
-  //   <TextItemList items={items} onChange={onChange} />
-  // </div>
-}
+  const onChange = items => {
+    // TODO: move this logic to the corresponding reducer?
+    const newCategories = items.map(item => {
+      const category = categories.find(category => category.id === item.id)
 
-/**
- * Convert a DOM Node List or Arguments into a regular Array
- * @param nodes
- * @return {Array}
- */
-function toArray (nodes) {
-  const array = []
+      if (category) {
+        // update existing category
+        return category
+            .set('name', item.value)
+            .set('deleted', false)   // un-delete when deleted
+            .set('bmcChecked', true) // custom items have no checkbox and are always checked
+      }
+      else {
+        // it's a new category
+        return Immutable({
+          id: item.id,
+          // TODO: read the right section and group from bmcCategories
+          section: 'costs',
+          group: 'indirect',
+          name: item.value,
+          bmcGroup,
+          bmcChecked: true,
+          deleted: false
+        })
+      }
+    })
 
-  for (var i = 0; i < nodes.length; i++) {
-    array[i] = nodes[i]
+    onSetCustomCategories(bmcGroup, newCategories)
   }
 
-  return array
+  return <div>
+    <div className="sub-header">Other</div>
+    <TextItemList items={items} onChange={onChange} />
+  </div>
 }

@@ -5,6 +5,7 @@ import { merge } from 'lodash'
 
 import { uuid } from '../utils/uuid'
 import { removeItem, swapItems, replaceItem } from '../utils/immutable'
+import { isCustomCategory } from '../formulas'
 
 const debug = debugFactory('vbi:reducers')
 
@@ -55,6 +56,11 @@ const doc = (state = Immutable({}), action) => {
 
       return state.setIn(['data', 'categories'], state.data.categories.concat([category]))
     }
+
+    case 'DOC_SET_CUSTOM_CATEGORIES':
+      return state.setIn(['data', 'categories'], state.data.categories
+          .filter(category => !isCustomCategory(category, action.bmcGroup))  // remove the old custom categories
+          .concat(action.categories))          // append the new custom categories
 
     case 'DOC_CHECK_CATEGORY':
       // check a BMC category
@@ -135,7 +141,7 @@ const doc = (state = Immutable({}), action) => {
       {
         index = findCategoryIndex(state.data, action.section, action.group, action.categoryId)
         const category = state.data.categories[index]
-        if (category.bmcId) {
+        if (category.bmcGroup) {
           // this is a built-in BMC category, mark it as deleted but keep it in the doc
           return state.updateIn(['data', 'categories'],
               categories => replaceItem(categories, index, category.set('deleted', true)))

@@ -60,6 +60,10 @@ export function addCategory (section, group, name, price = {}, quantities = DEFA
   return { type: 'DOC_ADD_CATEGORY', section, group, name, price, quantities }
 }
 
+export function setCustomCategories (bmcGroup, categories) {
+  return { type: 'DOC_SET_CUSTOM_CATEGORIES', bmcGroup, categories }
+}
+
 /**
  * Check or uncheck a BMC category
  * @param {String} bmcId

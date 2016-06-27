@@ -1038,20 +1038,39 @@ export let types = {
 }
 
 /**
- * Filter categories who are:
- * - a built-in BMC category which is checked
- * - a custom category
- * - not marked as deleted (on de finance page)
+ * Filter all active categories (@see isActiveCategory)
  * @param {{categories: Array.<Category>}} data
  * @return {Array.<Category>}} Returns filtered data
  */
 export function filterActiveCategories (data) {
-  return data.categories
-      .filter(category => {
-        return !category.deleted &&                     // filter deleted categories
-            (!category.bmcId || category.bmcChecked)    // filter items not having a BMC id (custom items)
-                                                        // and items having a BMC id and being checked
-      })
+  return data.categories.filter(isActiveCategory)
+}
+
+/**
+ * Test whether a category is an active category.
+ * 
+ * A category is active when:
+ * - it is a built-in BMC category which is checked
+ * - a custom category
+ * - not marked as deleted (on de finance page)
+ * @param {Category} category
+ * @return {boolean}
+ */
+export function isActiveCategory (category) {
+  return !category.deleted &&                     // filter deleted categories
+      (!category.bmcGroup || category.bmcChecked) // filter items not having a BMC id (custom items)
+                                                  // and items having a BMC id and being checked
+}
+
+/**
+ * Test whether a category is a custom category
+ * Such a category has a `bmcGroup` but no `bmcId`
+ * @param {Category} category
+ * @param {string} bmcGroup
+ * @return {boolean}
+ */
+export function isCustomCategory (category, bmcGroup) {
+  return category.bmcGroup === bmcGroup && !category.bmcId
 }
 
 /**

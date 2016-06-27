@@ -20,7 +20,8 @@ import ThemeManager from 'material-ui/lib/styles/theme-manager'
 import theme from '../theme'
 import Notification from './dialogs/Notification'
 import {
-    setUser, listDocs, renameDoc, setDoc, viewPage, setProperty, checkCategory,
+    setUser, listDocs, renameDoc, setDoc, viewPage, 
+    setProperty, checkCategory, setCustomCategories,
     viewInputs, viewOutputs
 } from '../actions'
 import Menu from './Menu'
@@ -63,6 +64,7 @@ class App extends Component {
     super(props)
 
     // bind all methods to current instance so we don't have to create wrapper functions to use them
+    // TODO: write a helper function to bind all methods automatically
     this.handleNewDoc = this.handleNewDoc.bind(this)
     this.handleDemoDoc = this.handleDemoDoc.bind(this)
     this.handleOpenDoc = this.handleOpenDoc.bind(this)
@@ -72,6 +74,7 @@ class App extends Component {
     this.handleDeleteDoc = this.handleDeleteDoc.bind(this)
 
     this.handleSetProperty = this.handleSetProperty.bind(this)
+    this.handleSetCustomCategories = this.handleSetCustomCategories.bind(this)
     this.handleCheckCategory = this.handleCheckCategory.bind(this)
     this.handleSetPage = this.handleSetPage.bind(this)
     this.handleSetOutputsTab = this.handleSetOutputsTab.bind(this)
@@ -173,6 +176,7 @@ class App extends Component {
             data={this.props.doc.data}
             onSetProperty={this.handleSetProperty}
             onCheckCategory={this.handleCheckCategory}
+            onSetCustomCategories={this.handleSetCustomCategories}
         />
       </div>
     </div>
@@ -395,6 +399,16 @@ class App extends Component {
   handleCheckCategory (bmcId, checked) {
     debug('checkCategory', bmcId, checked)
     this.props.dispatch(checkCategory(bmcId, checked))
+  }
+
+  /**
+   * Set custom categories
+   * @param {String} bmcGroup
+   * @param {Array.<Category>} categories
+   */
+  handleSetCustomCategories (bmcGroup, categories) {
+    debug('setCustomCategories', bmcGroup, categories)
+    this.props.dispatch(setCustomCategories(bmcGroup, categories))
   }
 
   handleError (err) {
