@@ -74,23 +74,7 @@ const doc = (state = Immutable({}), action) => {
       }
       else {
         // add a new category
-
-        // TODO: simplify finding category when bmcCategories is restructured
-        let bmcCategory = null
-        Object.keys(bmcCategories).forEach(groupName => {
-          const group = bmcCategories[groupName]
-          const category = Array.isArray(group)
-              ? group.find(category => category.id === action.bmcId)
-              : null
-
-          if (category) {
-            bmcCategory = {
-              id: category.id,
-              groupName,
-              text: category.text
-            }
-          }
-        })
+        const bmcCategory = bmcCategories.categories.find(bmcCategory => bmcCategory.id === action.bmcId)
 
         if (!bmcCategory) {
           throw new Error('BMC category not found (id=' + action.bmcId + ')')
@@ -98,8 +82,8 @@ const doc = (state = Immutable({}), action) => {
 
         const newCategory = {
           id: uuid(),
-          section: 'costs', // TODO: set initial section and group depending on the bmc group
-          group: 'indirect',
+          section: bmcCategory.costSection,
+          group: bmcCategory.costGroup,
           bmcGroup: bmcCategory.group,
           bmcId: bmcCategory.id,
           bmcChecked: action.checked,

@@ -10,7 +10,6 @@ import MenuItem from 'material-ui/lib/menus/menu-item'
 
 import TextItemList from './TextItemList'
 
-import { uuid } from '../utils/uuid'
 import { filterActiveCategories } from '../formulas'
 import * as bmcCategories from '../data/bmcCategories.json'
 import * as bmcDefaults  from'../data/bmcDefaults.json' // TODO: re-implement using bmcDefaults
@@ -347,19 +346,20 @@ export default class BusinessModelCanvas extends Component {
 }
 
 function renderCategories (group, checkedCategories, onCheckCategory) {
-  return bmcCategories[group].map(bmcCategory => {
-
-    const props = {
-      label: bmcCategory.text,
-      checked: checkedCategories[bmcCategory.id],
-      onCheck: (event) => {
-        onCheckCategory(bmcCategory.id, event.target.checked)
-      }
-    }
-
-    return <div key={bmcCategory.id} style={{marginRight: -10}}>
-      <CheckBox {...props} />
-    </div>
+  return bmcCategories.categories
+      .filter(bmcCategory => bmcCategory.group === group)
+      .map(bmcCategory => {
+        const props = {
+          label: bmcCategory.text,
+          checked: checkedCategories[bmcCategory.id],
+          onCheck: (event) => {
+            onCheckCategory(bmcCategory.id, event.target.checked)
+          }
+        }
+    
+        return <div key={bmcCategory.id} style={{marginRight: -10}}>
+          <CheckBox {...props} />
+        </div>
   })
 }
 

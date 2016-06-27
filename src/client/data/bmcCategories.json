@@ -6,50 +6,44 @@
     {"id": "services", "text": "services"},
     {"id": "other", "text": "other type of"}
   ],
-  "expenses": [
-    {"id": "housing", "text": "Housing"},
-    {"id": "transportation", "text": "Cars, transportation"},
-    {"id": "communication", "text": "Communication and network"},
-    {"id": "employeeBenefits", "text": "Other employee benefits"},
-    {"id": "outsourcing", "text": "Outsourced services"},
-    {"id": "materials", "text": "Materials"},
-    {"id": "production", "text": "Other production resources"},
-    {"id": "goods", "text": "Purchased goods"}
-  ],
-  "activities": [
-    {"id": "travel", "text": "Travel"},
-    {"id": "office", "text": "Administration and office"},
-    {"id": "personnel", "text": "Personnel (fixed)"},
-    {"id": "labor", "text": "Labor (personnel variable)"}
-  ],
-  "contacts": [
-    {"id": "marketing", "text": "Marketing"},
-    {"id": "customer", "text": "Customer care"},
-    {"id": "retention", "text": "Retention"},
-    {"id": "maintenance", "text": "Maintenance"}
-  ],
-  "channels": [
-    {"id": "sales", "text": "Account management and sales"},
-    {"id": "commissions", "text": "Commissions"},
-    {"id": "franchise", "text": "Franchise"},
-    {"id": "shops", "text": "Shops"},
-    {"id": "webshops", "text": "Webshops and 3rd party platforms"}
+  "categories": [
+    {"group": "expenses", "id": "housing", "text": "Housing", "costSection": "costs", "costGroup": "indirect"},
+    {"group": "expenses", "id": "transportation", "text": "Cars, transportation", "costSection": "costs", "costGroup": "indirect"},
+    {"group": "expenses", "id": "communication", "text": "Communication and network", "costSection": "costs", "costGroup": "indirect"},
+    {"group": "expenses", "id": "employeeBenefits", "text": "Other employee benefits", "costSection": "costs", "costGroup": "indirect"},
+    {"group": "expenses", "id": "outsourcing", "text": "Outsourced services", "costSection": "costs", "costGroup": "indirect"},
+    {"group": "expenses", "id": "materials", "text": "Materials", "costSection": "costs", "costGroup": "indirect"},
+    {"group": "expenses", "id": "production", "text": "Other production resources", "costSection": "costs", "costGroup": "indirect"},
+    {"group": "expenses", "id": "goods", "text": "Purchased goods", "costSection": "costs", "costGroup": "indirect"},
 
-  ],
-  "partnerships": [
-    {"id": "licenses", "text": "Licenses"},
-    {"id": "bundling", "text": "Bundling"}
-  ],
-  "investments": [
-    {"id": "buildings", "text": "Buildings", "group": "investment"},
-    {"id": "computers", "text": "Computer equipment", "group": "investment"},
-    {"id": "software", "text": "Computer software", "group": "investment"},
-    {"id": "furniture", "text": "Furniture and fixtures", "group": "investment"},
-    {"id": "intangibleAssets", "text": "Intangible assets", "group": "investment"},
-    {"id": "intellectualProperty", "text": "Intellectual property", "group": "investment"},
-    {"id": "land", "text": "Land", "group": "investment"},
-    {"id": "leaseholdImprovements", "text": "Leasehold improvements", "group": "investment"},
-    {"id": "machinery", "text": "Machinery", "group": "investment"},
-    {"id": "vehicles", "text": "Vehicles", "group": "investment"}
+    {"group": "activities", "id": "travel", "text": "Travel", "costSection": "costs", "costGroup": "indirect"},
+    {"group": "activities", "id": "office", "text": "Administration and office", "costSection": "costs", "costGroup": "indirect"},
+    {"group": "activities", "id": "personnel", "text": "Personnel (fixed)", "costSection": "costs", "costGroup": "indirect"},
+    {"group": "activities", "id": "labor", "text": "Labor (personnel variable)", "costSection": "costs", "costGroup": "indirect"},
+
+    {"group": "contacts", "id": "marketing", "text": "Marketing", "costSection": "costs", "costGroup": "indirect"},
+    {"group": "contacts", "id": "customer", "text": "Customer care", "costSection": "costs", "costGroup": "indirect"},
+    {"group": "contacts", "id": "retention", "text": "Retention", "costSection": "costs", "costGroup": "indirect"},
+    {"group": "contacts", "id": "maintenance", "text": "Maintenance", "costSection": "costs", "costGroup": "indirect"},
+
+    {"group": "channels", "id": "sales", "text": "Account management and sales", "costSection": "costs", "costGroup": "indirect"},
+    {"group": "channels", "id": "commissions", "text": "Commissions", "costSection": "costs", "costGroup": "indirect"},
+    {"group": "channels", "id": "franchise", "text": "Franchise", "costSection": "costs", "costGroup": "indirect"},
+    {"group": "channels", "id": "shops", "text": "Shops", "costSection": "costs", "costGroup": "indirect"},
+    {"group": "channels", "id": "webshops", "text": "Webshops and 3rd party platforms", "costSection": "costs", "costGroup": "indirect"},
+
+    {"group": "partnerships", "id": "licenses", "text": "Licenses", "costSection": "costs", "costGroup": "indirect"},
+    {"group": "partnerships", "id": "bundling", "text": "Bundling", "costSection": "costs", "costGroup": "indirect"},
+
+    {"group": "investments", "id": "buildings", "text": "Buildings", "costSection": "investments", "costGroup": "tangible"},
+    {"group": "investments", "id": "computers", "text": "Computer equipment", "costSection": "investments", "costGroup": "tangible"},
+    {"group": "investments", "id": "software", "text": "Computer software", "costSection": "investments", "costGroup": "tangible"},
+    {"group": "investments", "id": "furniture", "text": "Furniture and fixtures", "costSection": "investments", "costGroup": "intangible"},
+    {"group": "investments", "id": "intangibleAssets", "text": "Intangible assets", "costSection": "investments", "costGroup": "tangible"},
+    {"group": "investments", "id": "intellectualProperty", "text": "Intellectual property", "costSection": "investments", "costGroup": "intangible"},
+    {"group": "investments", "id": "land", "text": "Land", "costSection": "investments", "costGroup": "tangible"},
+    {"group": "investments", "id": "leaseholdImprovements", "text": "Leasehold improvements", "costSection": "investments", "costGroup": "tangible"},
+    {"group": "investments", "id": "machinery", "text": "Machinery", "costSection": "investments", "costGroup": "tangible"},
+    {"group": "investments", "id": "vehicles", "text": "Vehicles", "costSection": "investments", "costGroup": "tangible"}
   ]
 }
