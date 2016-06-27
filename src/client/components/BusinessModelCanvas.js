@@ -92,7 +92,7 @@ export default class BusinessModelCanvas extends Component {
                         <MenuItem index={-1} value="" primaryText=""/>
                         {
                           bmcCategories.types.map((c, index) => (
-                              <MenuItem key={c.id} index={index} value={c.id} primaryText={c.name} />
+                              <MenuItem key={c.id} index={index} value={c.id} primaryText={c.label} />
                           ))
                         }
                       </SelectField> company
@@ -267,13 +267,13 @@ export default class BusinessModelCanvas extends Component {
 
     const renderCategory = category => {
       return <div className="cost-group-item" key={category.id} >
-        {category.name}
+        {category.label}
       </div>
     }
 
     const renderDraggableCategory = category => {
       return <div className="cost-group-item" key={category.id} data-category-id={category.id}>
-        <span className="ellipsis">{'\u22ee'}</span>&nbsp;{category.name}
+        <span className="ellipsis">{'\u22ee'}</span>&nbsp;{category.label}
       </div>
     }
 
@@ -305,7 +305,7 @@ export default class BusinessModelCanvas extends Component {
         .filter(category => category.section === 'revenues')
         .map(category => {
           return <div key={category.id} className="revenue-stream">
-            {category.name}
+            {category.label}
           </div>
         })
   }
@@ -350,7 +350,7 @@ function renderCategories (bmcGroup, checkedCategories, onCheckCategory) {
       .filter(bmcCategory => bmcCategory.bmcGroup === bmcGroup)
       .map(bmcCategory => {
         const props = {
-          label: bmcCategory.name,
+          label: bmcCategory.label,
           checked: checkedCategories[bmcCategory.bmcId],
           onCheck: (event) => {
             onCheckCategory(bmcCategory.bmcId, event.target.checked)
@@ -385,7 +385,7 @@ function generateRevenueCategories (products = [], customers = []) {
 
 function renderOther (data, bmcGroup, onSetCustomCategories) {
   const categories = data.categories.filter(category => isCustomCategory(category, bmcGroup))
-  const items = categories.map(category => ({id: category.id, value: category.name}))
+  const items = categories.map(category => ({id: category.id, value: category.label}))
 
   const onChange = items => {
     // TODO: move this logic to the corresponding reducer?
@@ -395,7 +395,7 @@ function renderOther (data, bmcGroup, onSetCustomCategories) {
       if (category) {
         // update existing category
         return category
-            .set('name', item.value)
+            .set('label', item.value)
             .set('bmcChecked', true) // custom items have no checkbox and are always checked
       }
       else {
@@ -406,7 +406,7 @@ function renderOther (data, bmcGroup, onSetCustomCategories) {
           id: item.id,
           section: bmcGroupObj && bmcGroupObj.section,
           group: bmcGroupObj && bmcGroupObj.group,
-          name: item.value,
+          label: item.value,
           bmcGroup,
           bmcChecked: true
         })

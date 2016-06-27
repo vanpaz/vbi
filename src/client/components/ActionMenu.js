@@ -53,7 +53,7 @@ export default class ActionMenu extends React.Component {
     return <div className="action-menu-anchor">
       <div onTouchTap={this.handleTouchTap}
            style={this.state.open ? styles.selected : null}>
-        {this.props.name + ' '}
+        {this.props.label + ' '}
         <SettingsIcon
           style={{width: 12, height: 12}}
           color={this.state.open ? styles.selected.color : styles.icon.color }

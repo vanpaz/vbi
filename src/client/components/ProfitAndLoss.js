@@ -50,8 +50,8 @@ export default class ProfitAndLoss extends Component {
   }
 
   renderEntry (years, entry, currency, magnitude, numberOfDecimals) {
-    return <tr key={entry.name} className={entry.className}>
-      <td className="name" >
+    return <tr key={entry.label} className={entry.className}>
+      <td className="label" >
         { this.renderCategoryName(entry) }
       </td>
       <td className="magnitude">{`${currency}${magnitude !== 1 ? magnitude : ''}`}</td>
@@ -77,12 +77,12 @@ export default class ProfitAndLoss extends Component {
           onTouchTap={event => {
             this.refs.infoPopover.show(event.currentTarget, entry.info)
           }} >
-        {entry.name + ' '}
+        {entry.label + ' '}
         <InfoIcon className="info-icon" style={styles.infoIcon} />
       </span>
     }
     else {
-      return entry.name
+      return entry.label
     }
   }
 }

@@ -99,60 +99,60 @@ export function calculateProfitAndLoss (data) {
 
   return [
     {
-      name: 'Total revenues',
+      label: 'Total revenues',
       values: partials.revenues,
       info: 'Revenues: can be initial or one-time sales and recurring revenues. It can also include incidental non-core business revenues such as book gains on the sale of assets or participation (you sold it for more than you bought it for), but you do not plan for those so they are not in the category.'
     },
     {
-      name: 'Total direct costs',
+      label: 'Total direct costs',
       values: partials.directCosts,
       info: 'Direct costs: these are the "purchase cost" of the revenue you generate. The most important property they have is that they are NOT scalable. So the more you sell, the higher this is, and fully linear with the sales. In many cases planners simply know that this is a certain percentage of their sales so simply model it like this. This has been decoupled to offer a bit more flexibility.'
     },
     {
-      name: 'Gross margin', 
+      label: 'Gross margin', 
       values: partials.grossMargin 
     },
     {
-      name: 'Total personnel costs',
+      label: 'Total personnel costs',
       values: partials.personnelCosts 
     },
     {
-      name: 'Total other direct costs', // TODO: rename to "Total indirect costs" ?
+      label: 'Total other direct costs', // TODO: rename to "Total indirect costs" ?
       values: partials.indirectCosts,
       info: 'Indirect costs. Also referred to as "overhead" . These costs develop more or less independent of the revenue development. Personnel is the most important part here. But in certain business models rarely, you may argue that some of it is part of direct costs. Especially in consultancy when the external tariff is ties to the salary of the consultant. Basically Almende should strictly treat it as such, as the subsidies they receive are 100% tied to the individual salary costs of the researcher involved. This category also includes all other stuff such as housing, transport, communications, travel, and also marketing costs.'
     },
     {
-      name: 'EBITDA', 
+      label: 'EBITDA', 
       values: partials.EBITDA,
       info: 'EBITDA: Earnings before Interest, tax, depreciation and amortization. Often used as "quick and dirty" cashflow from operations indicator.'
     },
     {
-      name: 'Depreciation and amortization',
+      label: 'Depreciation and amortization',
       values: partials.depreciation,
       info: 'Depreciation and amortization. The annual portion of the purchase price of an asset (which is basically the cost of something that you use for more than one year).  The mechanism it that you bring the purchase price of such an "asset" to the balance sheet, under "asset" (duh) which can be tangible (you can touch it) or intangible such as IPR, rights of use, licenses which are called intangible.\nFor each asset there is a reasonable usage period which should be determined by your business. So for example if you determine that something you bought can be used in your company for 5 years, you bring 1/5 of the purchase price to D&A in the P&L, and decrease the value of the asset in the balance sheet with the same amount. So after 5 years the whole purchase cost has been run through the P&L and the value on the balance sheet is brought back to 0.\nAmortization strictly would be depreciation of intangibles, but is also used for exceptional depreciation out of the above described linear method. So for example you have determined that developments go so quickly that you can use the asset for only 3 years instead of 5. IF you are sure about this you can/ should do additional depreciation. Again here, this is not something you "plan" obviously.'
     },
     {
-      name: 'EBIT',
+      label: 'EBIT',
       values: partials.EBIT,
       className: 'main middle',
       info: 'EBIT: Earnings before Interest and Taxes, also referred to as "result from operations"'
     },
     {
-      name: 'Interest',
+      label: 'Interest',
       values: partials.interest,
       info: 'Interest: interest has been discarded on current accounts as it creates a nasty circular reference that is really hard to get rid of, and interest on current account is negligible anyway. Amounts here are tied to the long-term financing on the Balance sheet, which in turn runs on the manual input in the cashflow, where you asses the operational deficit and plan for bank or equity financing (or redemption or dividends in case of cash surplus)'
     },
     {
-      name: 'EBT',
+      label: 'EBT',
       values: partials.EBT
     },
     {
-      name: 'Corporate taxes',
+      label: 'Corporate taxes',
       values: partials.corporateTaxes,
       info: 'Tax: this is the pro-forma amount based on the tax rate. As explained negative amounts can be accumulated for 9 years and offset against future positive amounts until the stash of accumulated negative mounts is exhausted. This is called "loss carry forward" and the tax part of it (so the amount that can be offset) is brought to the balance sheet as an asset (which it is of course, if you plan to make a profit in the near future)'
     },
     {
-      name: 'Net result',
+      label: 'Net result',
       values: partials.netResult
     }
   ]
@@ -361,7 +361,7 @@ export function calculateBalanceSheetPartials (data) {
 /**
  * Generate balance sheet data
  * @param {Scenario} data
- * @return {Array.<{name: string, values: {}, className: string}>}
+ * @return {Array.<{label: string, values: {}, className: string}>}
  */
 export function calculateBalanceSheet (data) {
   const years = getYearsWithInitial(data)
@@ -425,169 +425,169 @@ export function calculateBalanceSheet (data) {
 
   return [
     {
-      name: 'Assets',
+      label: 'Assets',
       values: assets,
       className: 'header'
     },
 
     {
-      name: 'Fixed assets',
+      label: 'Fixed assets',
       values: fixedAssets,
       className: 'main top',
       info: 'Assets : The whole planning and purchasing process is not different form regular costs that are in the P&L directly, it is just the fact that you can use them more than 1 year that necessitates the route via the asset and depreciation. So in terms of planning they are in the PxQ model, and in the cashflow they go into "cashflow from investments"  instead of operations. But that is just a category.\nFinancial fixed assets are different in that they in principle do not concern the core business of the company. They can be loans that you give out to other companies (why?) so in banks this is a very large category. However, it also includes investments in equity, so shares of other companies. That is why I included it here, so that you may plan to invest in or outright buy another company. This is a manual input in the sheet for cashflow.'
     },
     {
-      name: 'Tangibles & intangibles',
+      label: 'Tangibles & intangibles',
       values: partials.tangiblesAndIntangibles,
       initialValuePath: ['initialBalance', 'tangiblesAndIntangibles']
     },
     {
-      name: 'Financial fixed assets',
+      label: 'Financial fixed assets',
       values: partials.financialFixedAssets,
       initialValuePath:  ['initialBalance', 'financialFixedAssets']
     },
     {
-      name: 'Deferred tax assets',
+      label: 'Deferred tax assets',
       values: partials.deferredTaxAssets,
       initialValuePath: ['initialBalance', 'deferredTaxAssets']
     },
 
     {
-      name: 'Current assets',
+      label: 'Current assets',
       values: currentAssets,
       className: 'main top',
       info: 'Current assets (part of the working capital). In the asset side you have 3 main situations that go into the categories: accounts receivable, accrued income, and prepayments.'
     },
     {
-      name: 'Goods in stock',
+      label: 'Goods in stock',
       values: partials.goodsInStock,
       initialValuePath: ['initialBalance', 'goodsInStock'],
       info: 'Goods in stock: A somewhat special category of working capital is the inventory. This is relevant in retail models, not so much in others. Cost and revenue tied to stuff you buy and sell are tied to the moment of the sale. But obviously, for working capital you have to buy and pay this stuff before you do that. The game is of course to shorten the period in stock as much as you can. A lot of large retailer (like AH) put the risk with having large inventories with their suppliers.'
     },
     {
-      name: 'Trade receivables',
+      label: 'Trade receivables',
       values: partials.tradeReceivables,
       initialValuePath: ['initialBalance', 'tradeReceivables'],
       info: 'Accounts receivable: this is by far the largest (but you want to keep this one as small as possible obviously: you have already booked the revenue (so you did the work/delivered the goods), sent the invoice, but are waiting for the money.'
     },
     {
-      name: 'Prepayments',
+      label: 'Prepayments',
       values: partials.prepayments,
       initialValuePath: ['initialBalance', 'prepayments'],
       info: 'Prepayments: you have already received the invoice and paid it, but you still have to receive the goods/services - so you still have to book the costs/ investments.'
     },
     {
-      name: 'Accrued income',
+      label: 'Accrued income',
       values: partials.accruedIncome,
       initialValuePath: ['initialBalance', 'accruedIncome'],
       info: 'Accrued income: you have already booked the revenue (so you did the work/delivered the goods), but you still have to send the invoice'
     },
     {
-      name: 'Receivable VAT',
+      label: 'Receivable VAT',
       values: partials.receivableVAT,
       initialValuePath: ['initialBalance', 'receivableVAT'],
       info: 'VAT receivable: this is simply a special category of the accounts receivable, but it runs differently in the model as it simply takes the VAT amount of the incoming invoices (cost and investments) and calculates the VAT that you can reclaim, based on the intervals that you do the VAT declaration (3 months for an SME mostly in NL, for example)'
     },
 
     {
-      name: 'Cash & bank',
+      label: 'Cash & bank',
       values: cashAndBank,
       className: 'main middle',
       info: 'Cash & bank: usually is just bank. Actually this is the main check in the model, because it is calculated from the cashflow and inserted here, and if you did everything right the balance sheet should tie.'
     },
 
     {
-      name: 'Liabilities',
+      label: 'Liabilities',
       values: liabilities,
       className: 'header'
     },
 
     {
-      name: 'Equity',
+      label: 'Equity',
       values: equity,
       className: 'main top',
       info: 'Equity: This is the initial paid-in capital (which does not change), possible later contributed amounts (agio), or amounts taken out (dividends) and the accumulated net profits and losses over the years.'
     },
-    {name: 'Paid-in capital', values: partials.paidInCapital, initialValuePath: ['parameters', 'startingCapital'] },
-    {name: 'Agio', values: partials.agio, initialValuePath: ['initialBalance', 'agio'] },
-    {name: 'Reserves', values: partials.reserves, initialValuePath: ['initialBalance', 'reserves'] },
-    {name: 'Profit/loss for the year', values: partials.profitAndLoss, initialValuePath: ['initialBalance', 'profitAndLoss'] },
+    {label: 'Paid-in capital', values: partials.paidInCapital, initialValuePath: ['parameters', 'startingCapital'] },
+    {label: 'Agio', values: partials.agio, initialValuePath: ['initialBalance', 'agio'] },
+    {label: 'Reserves', values: partials.reserves, initialValuePath: ['initialBalance', 'reserves'] },
+    {label: 'Profit/loss for the year', values: partials.profitAndLoss, initialValuePath: ['initialBalance', 'profitAndLoss'] },
 
     {
-      name: 'Long-term debt',
+      label: 'Long-term debt',
       values: longTermDebt,
       className: 'main top',
       info: 'Long term loans: this is bank financing. It changes with manual input in the cashflow sheet. Otherwise it does not change.'
     },
     {
-      name: 'Bank loans',
+      label: 'Bank loans',
       values: partials.bankLoans,
       initialValuePath: ['initialBalance', 'bankLoans']
     },
     {
-      name: 'Other long-term interest bearing debt',
+      label: 'Other long-term interest bearing debt',
       values: partials.otherLongTermInterestBearingDebt,
       initialValuePath: ['initialBalance', 'otherLongTermInterestBearingDebt']
     },
 
     {
-      name: 'Short-term liabilities',
+      label: 'Short-term liabilities',
       values: shortTermLiabilities,
       className: 'main top',
       info: 'The working capital on the liability side. Basically you have the 3 categories that mirror the 3 on the asset side: accounts payable, accruals, and deferred income.'
     },
     {
-      name: 'Trade creditors',
+      label: 'Trade creditors',
       values: partials.tradeCreditors,
       initialValuePath: ['initialBalance', 'tradeCreditors'],
       // TODO: is this info correct here under Trade creditors?
       info: 'Accounts payable: this is the largest category, and some organisations make it their mission to make this as large as possible because that means that part of their operations is financed by their suppliers effectively. You have booked the costs/investments, received the invoice, but did not pay yet.'
     },
     {
-      name: 'Accruals',
+      label: 'Accruals',
       values: partials.accruals,
       initialValuePath: ['initialBalance', 'accruals'],
       info: 'Accruals: you have booked the costs/investments, but have still to receive the invoice.'
     },
     {
-      name: 'Deferred Income',
+      label: 'Deferred Income',
       values: partials.deferredIncome,
       initialValuePath: ['initialBalance', 'deferredIncome'],
       info: 'Deferred income: you have received the money, but still have to deliver the goods/ services and book the revenues accordingly.'
     },
     {
-      name: 'Payable VAT',
+      label: 'Payable VAT',
       values: partials.payableVAT,
       initialValuePath: ['initialBalance', 'payableVAT'],
       info: taxInfo
     },
     {
-      name: 'Payable Corporate tax',
+      label: 'Payable Corporate tax',
       values: partials.payableCorporateTax,
       initialValuePath: ['initialBalance', 'payableCorporateTax'],
       info: taxInfo
     },
     {
-      name: 'Payable income tax',
+      label: 'Payable income tax',
       values: partials.payableIncomeTax,
       initialValuePath: ['initialBalance', 'payableIncomeTax'],
       info: taxInfo
     },
     {
-      name: 'Payable Social security contributions',
+      label: 'Payable Social security contributions',
       values: partials.payableSSC,
       initialValuePath: ['initialBalance', 'payableSSC'],
       info: taxInfo
     },
     {
-      name: 'Provision holiday pay',
+      label: 'Provision holiday pay',
       values: partials.provisionHolidayPayment,
       initialValuePath: ['initialBalance', 'provisionHolidayPayment'],
       info: 'Provision holiday pay: the only provision that you would be able to plan, which concerns the accumulated holiday pay that you have to pay to your employees. In the Netherlands, where you have the payment in May, you will have 7 months (June-December) build-up on balance sheet date 31/12, which is usually 1 extra month, so 7/12 of the salary costs of 1 month will be on the balance sheet as payable one time or another on 31/12.'
     },
 
     {
-      name: 'Balance',
+      label: 'Balance',
       id: 'balance',
       values: balance,
       className: 'header',
@@ -741,43 +741,43 @@ export function calulateCashflow (data) {
   const partials = calulateCashflowPartials(data)
 
   return [
-    {name: 'Net result', values: partials.netResult },
+    {label: 'Net result', values: partials.netResult },
 
-    {name: 'Changes in deferred tax assets', values: partials.changesInDeferredTaxAssets },
-    {name: 'NOPLAT', values: partials.NOPLAT },
+    {label: 'Changes in deferred tax assets', values: partials.changesInDeferredTaxAssets },
+    {label: 'NOPLAT', values: partials.NOPLAT },
 
-    {name: 'Depreciation & amortization', values: partials.depreciation },
+    {label: 'Depreciation & amortization', values: partials.depreciation },
 
-    {name: 'Changes in working capital', values: partials.changesInWorkingCapital, className: 'main top' },
-    {name: 'Changes in stock', values: partials.changesInStock},
-    {name: 'Changes in accounts receivables', values: partials.changesInAccountsReceivables},
-    {name: 'Changes in prepayments', values: partials.changesInPrepayments},
-    {name: 'Changes in accrued income', values: partials.changesInAccruedIncome},
-    {name: 'Changes in accounts payables', values: partials.changesInAccountsPayables},
-    {name: 'Changes in accruals', values: partials.changesInAccruals},
-    {name: 'Changes in deferred income', values: partials.changesInDeferredIncome},
+    {label: 'Changes in working capital', values: partials.changesInWorkingCapital, className: 'main top' },
+    {label: 'Changes in stock', values: partials.changesInStock},
+    {label: 'Changes in accounts receivables', values: partials.changesInAccountsReceivables},
+    {label: 'Changes in prepayments', values: partials.changesInPrepayments},
+    {label: 'Changes in accrued income', values: partials.changesInAccruedIncome},
+    {label: 'Changes in accounts payables', values: partials.changesInAccountsPayables},
+    {label: 'Changes in accruals', values: partials.changesInAccruals},
+    {label: 'Changes in deferred income', values: partials.changesInDeferredIncome},
 
-    {name: 'Changes in taxes & social security contributions', values: partials.changesInTaxesAndSSC, className: 'main top'},
-    {name: 'Changes in receivable VAT', values: partials.changesInReceivableVAT },
-    {name: 'Changes in payable VAT', values: partials.changesInPayableVAT },
-    {name: 'Changes in payable corporate tax', values: partials.changesInPayableCorporateTax },
-    {name: 'Changes in payable income tax', values: partials.changesInPayableIncomeTax },
-    {name: 'Changes in payable social security contributions ', values: partials.changesInPayableSSC },
-    {name: 'Holiday payment', values: partials.changesInHolidayPayment },
+    {label: 'Changes in taxes & social security contributions', values: partials.changesInTaxesAndSSC, className: 'main top'},
+    {label: 'Changes in receivable VAT', values: partials.changesInReceivableVAT },
+    {label: 'Changes in payable VAT', values: partials.changesInPayableVAT },
+    {label: 'Changes in payable corporate tax', values: partials.changesInPayableCorporateTax },
+    {label: 'Changes in payable income tax', values: partials.changesInPayableIncomeTax },
+    {label: 'Changes in payable social security contributions ', values: partials.changesInPayableSSC },
+    {label: 'Holiday payment', values: partials.changesInHolidayPayment },
 
-    {name: 'Cashflow from operations', values: partials.cashflowFromOperations, className: 'header middle' },
+    {label: 'Cashflow from operations', values: partials.cashflowFromOperations, className: 'header middle' },
 
-    {name: 'Investments in fixed assets', values: partials.investmentsInFixedAssets },
-    {name: 'Investments in participations', editable: true, path: ['financing', 'investmentsInParticipations']},
-    {name: 'Cashflow from investments', values: partials.cashflowFromInvestments, className: 'header middle' },
+    {label: 'Investments in fixed assets', values: partials.investmentsInFixedAssets },
+    {label: 'Investments in participations', editable: true, path: ['financing', 'investmentsInParticipations']},
+    {label: 'Cashflow from investments', values: partials.cashflowFromInvestments, className: 'header middle' },
 
-    {name: 'Equity contributions', editable: true, path: ['financing', 'equityContributions'] },
-    {name: 'Bank loans capital calls', editable: true, path: ['financing', 'bankLoansCapitalCalls'] },
-    {name: 'Bank loans redemption installments', editable: true, path: ['financing', 'bankLoansRedemptionInstallments']},
-    {name: 'Other sources of finance', editable: true, path: ['financing', 'otherSourcesOfFinance']},
-    {name: 'Cashflow from financing', values: partials.cashflowFromFinancing, className: 'header middle' },
+    {label: 'Equity contributions', editable: true, path: ['financing', 'equityContributions'] },
+    {label: 'Bank loans capital calls', editable: true, path: ['financing', 'bankLoansCapitalCalls'] },
+    {label: 'Bank loans redemption installments', editable: true, path: ['financing', 'bankLoansRedemptionInstallments']},
+    {label: 'Other sources of finance', editable: true, path: ['financing', 'otherSourcesOfFinance']},
+    {label: 'Cashflow from financing', values: partials.cashflowFromFinancing, className: 'header middle' },
 
-    {name: 'Total cash balance EoP', values: partials.totalCashBalanceEoP, className: 'header middle' }
+    {label: 'Total cash balance EoP', values: partials.totalCashBalanceEoP, className: 'header middle' }
   ]
 }
 

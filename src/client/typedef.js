@@ -53,7 +53,7 @@
  *   id: string,
  *   section: string,
  *   group: string,
- *   name: string,
+ *   label: string,
  *   deleted: ?boolean,
  *   bmcGroup: ?string,
  *   bmcId: ?string,

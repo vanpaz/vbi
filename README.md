@@ -234,7 +234,7 @@ A saved scenario has the following structure:
         "id": "<uuid>",
         "section": "<section id>",   // "costs", "investments", or "revenues"
         "group": "<group id>",       // "direct", "indirect", "tangible", ...
-        "name": "<category name>",
+        "label": "<category name>",
         "price": { ... },
         "quantities": {
            "<YEAR>": "<AMOUNT>",
@@ -275,7 +275,7 @@ A saved scenario has the following structure:
 The categories in `data` contains three main sections: `costs`, `investments`,
 `revenues`, and a section `parameters` holding generic parameters. Each section
 contains groups, for example the section `costs` contains groups `direct`,
-`indirect`, and `personnel`. Each category describes a name, price, and category.
+`indirect`, and `personnel`. Each category describes a label, price, and category.
 Additionally, the `data` contains an object `financing` where financing can be
 specified per year and category, and an object `initialBalance` where all
 properties for the initial balance can be entered. The latter is optional and

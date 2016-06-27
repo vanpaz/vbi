@@ -1,10 +1,10 @@
 {
   "types": [
-    {"id": "productionAndRetail", "name": "production and retail"},
-    {"id": "software", "name": "software"},
-    {"id": "logistics", "name": "logistics"},
-    {"id": "services", "name": "services"},
-    {"id": "other", "name": "other type of"}
+    {"id": "productionAndRetail", "label": "production and retail"},
+    {"id": "software", "label": "software"},
+    {"id": "logistics", "label": "logistics"},
+    {"id": "services", "label": "services"},
+    {"id": "other", "label": "other type of"}
   ],
 
   "groups": {
@@ -17,43 +17,43 @@
   },
 
   "categories": [
-    {"bmcGroup": "expenses", "bmcId": "housing", "name": "Housing"},
-    {"bmcGroup": "expenses", "bmcId": "transportation", "name": "Cars, transportation"},
-    {"bmcGroup": "expenses", "bmcId": "communication", "name": "Communication and network"},
-    {"bmcGroup": "expenses", "bmcId": "employeeBenefits", "name": "Other employee benefits"},
-    {"bmcGroup": "expenses", "bmcId": "outsourcing", "name": "Outsourced services"},
-    {"bmcGroup": "expenses", "bmcId": "materials", "name": "Materials"},
-    {"bmcGroup": "expenses", "bmcId": "production", "name": "Other production resources"},
-    {"bmcGroup": "expenses", "bmcId": "goods", "name": "Purchased goods"},
+    {"bmcGroup": "expenses", "bmcId": "housing", "label": "Housing"},
+    {"bmcGroup": "expenses", "bmcId": "transportation", "label": "Cars, transportation"},
+    {"bmcGroup": "expenses", "bmcId": "communication", "label": "Communication and network"},
+    {"bmcGroup": "expenses", "bmcId": "employeeBenefits", "label": "Other employee benefits"},
+    {"bmcGroup": "expenses", "bmcId": "outsourcing", "label": "Outsourced services"},
+    {"bmcGroup": "expenses", "bmcId": "materials", "label": "Materials"},
+    {"bmcGroup": "expenses", "bmcId": "production", "label": "Other production resources"},
+    {"bmcGroup": "expenses", "bmcId": "goods", "label": "Purchased goods"},
 
-    {"bmcGroup": "activities", "bmcId": "travel", "name": "Travel"},
-    {"bmcGroup": "activities", "bmcId": "office", "name": "Administration and office"},
-    {"bmcGroup": "activities", "bmcId": "personnel", "name": "Personnel (fixed)"},
-    {"bmcGroup": "activities", "bmcId": "labor", "name": "Labor (personnel variable)"},
+    {"bmcGroup": "activities", "bmcId": "travel", "label": "Travel"},
+    {"bmcGroup": "activities", "bmcId": "office", "label": "Administration and office"},
+    {"bmcGroup": "activities", "bmcId": "personnel", "label": "Personnel (fixed)"},
+    {"bmcGroup": "activities", "bmcId": "labor", "label": "Labor (personnel variable)"},
 
-    {"bmcGroup": "contacts", "bmcId": "marketing", "name": "Marketing"},
-    {"bmcGroup": "contacts", "bmcId": "customer", "name": "Customer care"},
-    {"bmcGroup": "contacts", "bmcId": "retention", "name": "Retention"},
-    {"bmcGroup": "contacts", "bmcId": "maintenance", "name": "Maintenance"},
+    {"bmcGroup": "contacts", "bmcId": "marketing", "label": "Marketing"},
+    {"bmcGroup": "contacts", "bmcId": "customer", "label": "Customer care"},
+    {"bmcGroup": "contacts", "bmcId": "retention", "label": "Retention"},
+    {"bmcGroup": "contacts", "bmcId": "maintenance", "label": "Maintenance"},
 
-    {"bmcGroup": "channels", "bmcId": "sales", "name": "Account management and sales"},
-    {"bmcGroup": "channels", "bmcId": "commissions", "name": "Commissions"},
-    {"bmcGroup": "channels", "bmcId": "franchise", "name": "Franchise"},
-    {"bmcGroup": "channels", "bmcId": "shops", "name": "Shops"},
-    {"bmcGroup": "channels", "bmcId": "webshops", "name": "Webshops and 3rd party platforms"},
+    {"bmcGroup": "channels", "bmcId": "sales", "label": "Account management and sales"},
+    {"bmcGroup": "channels", "bmcId": "commissions", "label": "Commissions"},
+    {"bmcGroup": "channels", "bmcId": "franchise", "label": "Franchise"},
+    {"bmcGroup": "channels", "bmcId": "shops", "label": "Shops"},
+    {"bmcGroup": "channels", "bmcId": "webshops", "label": "Webshops and 3rd party platforms"},
 
-    {"bmcGroup": "partnerships", "bmcId": "licenses", "name": "Licenses"},
-    {"bmcGroup": "partnerships", "bmcId": "bundling", "name": "Bundling"},
+    {"bmcGroup": "partnerships", "bmcId": "licenses", "label": "Licenses"},
+    {"bmcGroup": "partnerships", "bmcId": "bundling", "label": "Bundling"},
 
-    {"bmcGroup": "investments", "bmcId": "buildings", "name": "Buildings"},
-    {"bmcGroup": "investments", "bmcId": "computers", "name": "Computer equipment"},
-    {"bmcGroup": "investments", "bmcId": "software", "name": "Computer software"},
-    {"bmcGroup": "investments", "bmcId": "furniture", "name": "Furniture and fixtures", "costSection": "investments", "costGroup": "intangible"},
-    {"bmcGroup": "investments", "bmcId": "intangibleAssets", "name": "Intangible assets"},
-    {"bmcGroup": "investments", "bmcId": "intellectualProperty", "name": "Intellectual property", "costSection": "investments", "costGroup": "intangible"},
-    {"bmcGroup": "investments", "bmcId": "land", "name": "Land"},
-    {"bmcGroup": "investments", "bmcId": "leaseholdImprovements", "name": "Leasehold improvements"},
-    {"bmcGroup": "investments", "bmcId": "machinery", "name": "Machinery"},
-    {"bmcGroup": "investments", "bmcId": "vehicles", "name": "Vehicles"}
+    {"bmcGroup": "investments", "bmcId": "buildings", "label": "Buildings"},
+    {"bmcGroup": "investments", "bmcId": "computers", "label": "Computer equipment"},
+    {"bmcGroup": "investments", "bmcId": "software", "label": "Computer software"},
+    {"bmcGroup": "investments", "bmcId": "furniture", "label": "Furniture and fixtures", "costSection": "investments", "costGroup": "intangible"},
+    {"bmcGroup": "investments", "bmcId": "intangibleAssets", "label": "Intangible assets"},
+    {"bmcGroup": "investments", "bmcId": "intellectualProperty", "label": "Intellectual property", "costSection": "investments", "costGroup": "intangible"},
+    {"bmcGroup": "investments", "bmcId": "land", "label": "Land"},
+    {"bmcGroup": "investments", "bmcId": "leaseholdImprovements", "label": "Leasehold improvements"},
+    {"bmcGroup": "investments", "bmcId": "machinery", "label": "Machinery"},
+    {"bmcGroup": "investments", "bmcId": "vehicles", "label": "Vehicles"}
   ]
 }

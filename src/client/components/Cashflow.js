@@ -66,8 +66,8 @@ class Cashflow extends Component {
   }
 
   renderEntry (years, entry, currency, magnitude, numberOfDecimals) {
-    return <tr key={entry.name} className={entry.className}>
-      <td className="name">{entry.name}</td>
+    return <tr key={entry.label} className={entry.className}>
+      <td className="label">{entry.label}</td>
       <td className="magnitude">{`${currency}${magnitude !== 1 ? magnitude : ''}`}</td>
       {
         years.map(year => {
@@ -85,8 +85,8 @@ class Cashflow extends Component {
   renderEditableEntry (years, entry, currency, magnitude) {
     const values = getProp(this.props.data, entry.path)
 
-    return <tr key={entry.name} className={entry.className}>
-      <td className="name">{entry.name}</td>
+    return <tr key={entry.label} className={entry.className}>
+      <td className="label">{entry.label}</td>
       <td className="magnitude">{`${currency}${magnitude !== 1 ? magnitude : ''}`}</td>
       {
         years.map(year => {

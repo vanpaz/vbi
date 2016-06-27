@@ -56,8 +56,8 @@ export function renameDoc (title) {
   return { type: 'DOC_RENAME', title }
 }
 
-export function addCategory (section, group, name, price = {}, quantities = DEFAULT_QUANTITIES) {
-  return { type: 'DOC_ADD_CATEGORY', section, group, name, price, quantities }
+export function addCategory (section, group, label, price = {}, quantities = DEFAULT_QUANTITIES) {
+  return { type: 'DOC_ADD_CATEGORY', section, group, label, price, quantities }
 }
 
 export function setCustomCategories (bmcGroup, categories) {
@@ -73,8 +73,8 @@ export function checkCategory (bmcId, bmcChecked) {
   return { type: 'DOC_CHECK_CATEGORY', bmcId, bmcChecked }
 }
 
-export function renameCategory (section, group, categoryId, name) {
-  return { type: 'DOC_RENAME_CATEGORY', section, group, categoryId, name }
+export function renameCategory (section, group, categoryId, label) {
+  return { type: 'DOC_RENAME_CATEGORY', section, group, categoryId, label }
 }
 
 export function moveCategoryUp (section, group, categoryId) {

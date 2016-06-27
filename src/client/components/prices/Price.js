@@ -31,7 +31,7 @@ const debug = debugFactory('vbi:Price')
  *       change: '+3%'
  *     }
  *
- *     var categories = [{id: 1, name: 'licenses'}, {id: 2, name: 'projects'}]
+ *     var categories = [{id: 1, label: 'licenses'}, {id: 2, label: 'projects'}]
  *
  *     var years = ['2015', '2016', '2017', '2018']
  *

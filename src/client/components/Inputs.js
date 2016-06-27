@@ -144,7 +144,7 @@ class Inputs extends Component {
                   group={group}
                   categoryId={category.id}
                   index={index} // provide index to enforce a re-render when moving up/down
-                  name={category.name}
+                  label={category.label}
                   onRename={this.handleRenameCategory }
                   onMoveUp={this.handleMoveCategoryUp}
                   onMoveDown={this.handleMoveCategoryDown }
@@ -209,9 +209,9 @@ class Inputs extends Component {
 
     const price = types[priceTypes[0]].defaultPrice
 
-    this.refs.prompt.show(options).then(name => {
-      if (name !== null) {
-        this.props.dispatch(addCategory(section, group, name, price))
+    this.refs.prompt.show(options).then(label => {
+      if (label !== null) {
+        this.props.dispatch(addCategory(section, group, label, price))
       }
     })
   }
@@ -231,12 +231,12 @@ class Inputs extends Component {
         title: 'Rename category',
         description: 'Enter a new name for the category:',
         hintText: 'New category',
-        value: category.name
+        value: category.label
       }
 
-      this.refs.prompt.show(options).then(newName => {
-        if (newName !== null) {
-          this.props.dispatch(renameCategory(section, group, categoryId, newName))
+      this.refs.prompt.show(options).then(newLabel => {
+        if (newLabel !== null) {
+          this.props.dispatch(renameCategory(section, group, categoryId, newLabel))
         }
       })
     }
@@ -255,7 +255,7 @@ class Inputs extends Component {
 
     const options = {
       title: 'Delete category',
-      description: <p>Are you sure you want to delete category "{category.name}"?</p>
+      description: <p>Are you sure you want to delete category "{category.label}"?</p>
     }
 
     this.refs.confirm.show(options).then(ok => {

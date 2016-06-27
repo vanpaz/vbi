@@ -49,7 +49,7 @@ const doc = (state = Immutable({}), action) => {
         id: uuid(),
         section: action.section,
         group: action.group,
-        name: action.name,
+        label: action.label,
         price: action.price,
         quantities: action.quantities
       })
@@ -88,7 +88,7 @@ const doc = (state = Immutable({}), action) => {
 
         const newCategory = {
           id: uuid(),
-          name: bmcCategory.name,
+          label: bmcCategory.label,
           section: bmcGroupObj && bmcGroupObj.section,
           group: bmcGroupObj && bmcGroupObj.group,
           bmcGroup: bmcCategory.bmcGroup,
@@ -104,7 +104,7 @@ const doc = (state = Immutable({}), action) => {
     case 'DOC_RENAME_CATEGORY':
       index = findCategoryIndex(state.data, action.section, action.group, action.categoryId)
 
-      return state.setIn(['data', 'categories', index, 'name'], action.name)
+      return state.setIn(['data', 'categories', index, 'label'], action.label)
 
     case 'DOC_MOVE_CATEGORY_UP':
       categories = filterCategories(state.data, action.section, action.group)

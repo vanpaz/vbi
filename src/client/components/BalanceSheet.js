@@ -58,7 +58,7 @@ class BalanceSheet extends Component {
   }
 
   renderEntry (years, entry, currency, magnitude, numberOfDecimals) {
-    return <tr key={entry.name} className={entry.className}>
+    return <tr key={entry.label} className={entry.className}>
       <td className="name">
         { this.renderCategoryName(entry) }
       </td>
@@ -116,12 +116,12 @@ class BalanceSheet extends Component {
           onTouchTap={event => {
             this.refs.infoPopover.show(event.currentTarget, entry.info)
           }} >
-        {entry.name + ' '}
+        {entry.label + ' '}
         <InfoIcon className="info-icon" style={styles.infoIcon} />
       </span>
     }
     else {
-      return entry.name
+      return entry.label
     }
   }
 }
