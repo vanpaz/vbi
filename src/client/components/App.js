@@ -20,7 +20,7 @@ import ThemeManager from 'material-ui/lib/styles/theme-manager'
 import theme from '../theme'
 import Notification from './dialogs/Notification'
 import {
-    setUser, listDocs, renameDoc, setDoc, viewPage, setProperty,
+    setUser, listDocs, renameDoc, setDoc, viewPage, setProperty, checkCategory,
     viewInputs, viewOutputs
 } from '../actions'
 import Menu from './Menu'
@@ -72,6 +72,7 @@ class App extends Component {
     this.handleDeleteDoc = this.handleDeleteDoc.bind(this)
 
     this.handleSetProperty = this.handleSetProperty.bind(this)
+    this.handleCheckCategory = this.handleCheckCategory.bind(this)
     this.handleSetPage = this.handleSetPage.bind(this)
     this.handleSetOutputsTab = this.handleSetOutputsTab.bind(this)
     this.handleSetInputsTab = this.handleSetInputsTab.bind(this)
@@ -171,6 +172,7 @@ class App extends Component {
         <BusinessModelCanvas
             data={this.props.doc.data}
             onSetProperty={this.handleSetProperty}
+            onCheckCategory={this.handleCheckCategory}
         />
       </div>
     </div>
@@ -383,6 +385,16 @@ class App extends Component {
   handleSetProperty (path, value) {
     debug('setProperty', path, value)
     this.props.dispatch(setProperty(path, value))
+  }
+
+  /**
+   * Check or uncheck a BMC category
+   * @param {String} bmcId
+   * @param {boolean} checked
+   */
+  handleCheckCategory (bmcId, checked) {
+    debug('checkCategory', bmcId, checked)
+    this.props.dispatch(checkCategory(bmcId, checked))
   }
 
   handleError (err) {

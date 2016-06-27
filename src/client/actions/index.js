@@ -60,6 +60,15 @@ export function addCategory (section, group, name, price = {}, quantities = DEFA
   return { type: 'DOC_ADD_CATEGORY', section, group, name, price, quantities }
 }
 
+/**
+ * Check or uncheck a BMC category
+ * @param {String} bmcId
+ * @param {boolean} checked
+ */
+export function checkCategory (bmcId, checked) {
+  return { type: 'DOC_CHECK_CATEGORY', bmcId, checked }
+}
+
 export function renameCategory (section, group, categoryId, name) {
   return { type: 'DOC_RENAME_CATEGORY', section, group, categoryId, name }
 }

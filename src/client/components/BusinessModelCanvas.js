@@ -45,7 +45,7 @@ export default class BusinessModelCanvas extends Component {
   }
 
   render () {
-    const { data, onSetProperty } = this.props
+    const { data, onSetProperty, onCheckCategory } = this.props
 
     const checkedCategories = {}
     data.categories.forEach(category => {
@@ -65,33 +65,6 @@ export default class BusinessModelCanvas extends Component {
     }
     const onChangeUniqueSellingPoint = event => {
       onSetProperty(['description', 'uniqueSellingPoint'], event.target.value)
-    }
-
-    const onCheckCategory = (group, bmc, checked) => {
-      const categoryIndex = data.categories.findIndex(category => category.bmcId === bmc.id)
-      if (categoryIndex !== -1) {
-        // TODO: create a special action for this
-        const category = data.categories[categoryIndex]
-        onSetProperty(['categories', categoryIndex], category
-            .set('bmcChecked', checked)
-            .set('deleted', checked ? false : (category.deleted || false)) // un-delete the category when checked again
-        )
-      }
-      else {
-        // add a new category
-        // TODO: create a special action for this
-        const newCategory = {
-          id: uuid(),
-          section: 'costs', // TODO: section depending on current bmc group
-          group: 'indirect',
-          bmcGroup: group,
-          bmcId: bmc.id,
-          bmcChecked: checked,
-          deleted: false,
-          name: bmc.text
-        }
-        onSetProperty(['categories'], data.categories.concat([newCategory]))
-      }
     }
 
     return <div style={styles.container} >
@@ -380,7 +353,7 @@ function renderCategories (group, checkedCategories, onCheckCategory) {
       label: bmcCategory.text,
       checked: checkedCategories[bmcCategory.id],
       onCheck: (event) => {
-        onCheckCategory(group, bmcCategory, event.target.checked)
+        onCheckCategory(bmcCategory.id, event.target.checked)
       }
     }
 

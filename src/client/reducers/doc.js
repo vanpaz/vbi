@@ -8,6 +8,7 @@ import { removeItem, swapItems, replaceItem } from '../utils/immutable'
 
 const debug = debugFactory('vbi:reducers')
 
+import * as bmcCategories from '../data/bmcCategories.json'
 import * as newScenarioJSON from '../data/newScenario.json'
 
 const newScenario = Immutable(newScenarioJSON)
@@ -54,6 +55,62 @@ const doc = (state = Immutable({}), action) => {
 
       return state.setIn(['data', 'categories'], state.data.categories.concat([category]))
     }
+
+    case 'DOC_CHECK_CATEGORY':
+      // check a BMC category
+      index = state.data.categories
+          .findIndex(category => category.bmcId === action.bmcId)
+
+      if (index !== -1) {
+        // the category exists in the document, update it
+        debug('check existing category', action)
+
+        const category = state.data.categories[index]
+        const updatedCategory = category
+            .set('bmcChecked', action.checked)
+            .set('deleted', action.checked ? false : (category.deleted || false))  // un-delete the category when checked again
+
+        return state.setIn(['data', 'categories', index], updatedCategory)
+      }
+      else {
+        // add a new category
+
+        // TODO: simplify finding category when bmcCategories is restructured
+        let bmcCategory = null
+        Object.keys(bmcCategories).forEach(groupName => {
+          const group = bmcCategories[groupName]
+          const category = Array.isArray(group)
+              ? group.find(category => category.id === action.bmcId)
+              : null
+
+          if (category) {
+            bmcCategory = {
+              id: category.id,
+              groupName,
+              text: category.text
+            }
+          }
+        })
+
+        if (!bmcCategory) {
+          throw new Error('BMC category not found (id=' + action.bmcId + ')')
+        }
+
+        const newCategory = {
+          id: uuid(),
+          section: 'costs', // TODO: set initial section and group depending on the bmc group
+          group: 'indirect',
+          bmcGroup: bmcCategory.group,
+          bmcId: bmcCategory.id,
+          bmcChecked: action.checked,
+          deleted: false,
+          name: bmcCategory.text
+        }
+
+        debug('check new category', action, bmcCategory, newCategory)
+
+        return state.setIn(['data', 'categories'], state.data.categories.concat([newCategory]))
+      }
 
     case 'DOC_RENAME_CATEGORY':
       index = findCategoryIndex(state.data, action.section, action.group, action.categoryId)
