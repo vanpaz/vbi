@@ -4,7 +4,7 @@ import debugFactory from 'debug/browser'
 import { merge } from 'lodash'
 
 import { uuid } from '../utils/uuid'
-import { removeItem, swapItems } from '../utils/immutable'
+import { removeItem, swapItems, replaceItem } from '../utils/immutable'
 
 const debug = debugFactory('vbi:reducers')
 
@@ -42,7 +42,7 @@ const doc = (state = Immutable({}), action) => {
       return state.setIn(['data'].concat(action.path), action.value)
 
     case 'DOC_ADD_CATEGORY':
-
+    {
       const category = Immutable({
         id: uuid(),
         section: action.section,
@@ -53,6 +53,7 @@ const doc = (state = Immutable({}), action) => {
       })
 
       return state.setIn(['data', 'categories'], state.data.categories.concat([category]))
+    }
 
     case 'DOC_RENAME_CATEGORY':
       index = findCategoryIndex(state.data, action.section, action.group, action.categoryId)
@@ -90,8 +91,19 @@ const doc = (state = Immutable({}), action) => {
       }
 
     case 'DOC_DELETE_CATEGORY':
-      index = findCategoryIndex(state.data, action.section, action.group, action.categoryId)
-      return state.setIn(['data', 'categories'], removeItem(state.data.categories, index))
+      {
+        index = findCategoryIndex(state.data, action.section, action.group, action.categoryId)
+        const category = state.data.categories[index]
+        if (category.bmcId) {
+          // this is a built-in BMC category, mark it as deleted but keep it in the doc
+          return state.updateIn(['data', 'categories'],
+              categories => replaceItem(categories, index, category.set('deleted', true)))
+        }
+        else {
+          // this is a custom category, delete it for real
+          return state.setIn(['data', 'categories'], removeItem(state.data.categories, index))
+        }
+      }
 
     case 'DOC_SET_PRICE':
       index = findCategoryIndex(state.data, action.section, action.group, action.categoryId)

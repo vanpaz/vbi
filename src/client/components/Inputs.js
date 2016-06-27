@@ -13,7 +13,7 @@ import {
     addCategory, deleteCategory, renameCategory, moveCategoryUp, moveCategoryDown,
     setParameter, setQuantity, setPrice
 } from '../actions'
-import { types, findQuantity, getYears } from '../formulas'
+import { types, findQuantity, getYears, filterActiveCategories } from '../formulas'
 import Price from './prices/Price'
 import Parameters from './Parameters'
 
@@ -109,11 +109,12 @@ class Inputs extends Component {
 
   renderCategory (section, group, priceTypes) {
     const years = getYears(this.props.data)
+    const activeCategories = filterActiveCategories(this.props.data)
 
-    const categories = this.props.data.categories
+    const categories = activeCategories
         .filter(category => category.section === section && category.group === group)
 
-    const revenueCategories = this.props.data.categories
+    const revenueCategories = activeCategories
         .filter(category => category.section === 'revenues' && category.group === 'all')
 
     return <table className="input" >

@@ -1038,6 +1038,23 @@ export let types = {
 }
 
 /**
+ * Filter categories who are:
+ * - a built-in BMC category which is checked
+ * - a custom category
+ * - not marked as deleted (on de finance page)
+ * @param {{categories: Array.<Category>}} data
+ * @return {Array.<Category>}} Returns filtered data
+ */
+export function filterActiveCategories (data) {
+  return data.categories
+      .filter(category => {
+        return !category.deleted &&                     // filter deleted categories
+            (!category.bmcId || category.bmcChecked)    // filter items not having a BMC id (custom items)
+                                                        // and items having a BMC id and being checked
+      })
+}
+
+/**
  * Find all categories of a section
  * @param data
  * @param section

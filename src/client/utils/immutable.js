@@ -21,6 +21,17 @@ export function removeItem(array, index) {
 }
 
 /**
+ * Replace an item in an immutable Array
+ * @param array
+ * @param {number} index
+ * @param {*} newItem
+ * @return
+ */
+export function replaceItem(array, index, newItem) {
+  return array.slice(0, index).concat([newItem], array.slice(index + 1))
+}
+
+/**
  * Swap two items in an immutable Array
  * @param array
  * @param {number} index1

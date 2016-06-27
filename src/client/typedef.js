@@ -54,6 +54,7 @@
  *   section: string,
  *   group: string,
  *   name: string,
+ *   deleted: boolean,
  *   bmcGroup: string,
  *   bmcId: string,
  *   bmcChecked: boolean,

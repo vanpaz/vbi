@@ -11,6 +11,7 @@ import MenuItem from 'material-ui/lib/menus/menu-item'
 import TextItemList from './TextItemList'
 
 import { uuid } from '../utils/uuid'
+import { filterActiveCategories } from '../formulas'
 import * as bmcCategories from '../data/bmcCategories.json'
 import * as bmcDefaults  from'../data/bmcDefaults.json' // TODO: re-implement using bmcDefaults
 
@@ -70,7 +71,11 @@ export default class BusinessModelCanvas extends Component {
       const categoryIndex = data.categories.findIndex(category => category.bmcId === bmc.id)
       if (categoryIndex !== -1) {
         // TODO: create a special action for this
-        onSetProperty(['categories', categoryIndex, 'bmcChecked'], checked)
+        const category = data.categories[categoryIndex]
+        onSetProperty(['categories', categoryIndex], category
+            .set('bmcChecked', checked)
+            .set('deleted', checked ? false : (category.deleted || false)) // un-delete the category when checked again
+        )
       }
       else {
         // add a new category
@@ -82,6 +87,7 @@ export default class BusinessModelCanvas extends Component {
           bmcGroup: group,
           bmcId: bmc.id,
           bmcChecked: checked,
+          deleted: false,
           name: bmc.text
         }
         onSetProperty(['categories'], data.categories.concat([newCategory]))
@@ -280,10 +286,12 @@ export default class BusinessModelCanvas extends Component {
   }
 
   renderCostStructure (data) {
+    // filter categories marked as deleted
+    const activeCategories = filterActiveCategories(data)
 
-    const direct = data.categories.filter(category => category.section === 'costs' && category.group === 'direct')
-    const investments = data.categories.filter(category => category.section === 'investments')
-    const indirect = data.categories.filter(category => category.section === 'costs' && category.group !== 'direct' && category.group !== 'personnel')
+    const direct      = activeCategories.filter(category => category.section === 'costs' && category.group === 'direct')
+    const investments = activeCategories.filter(category => category.section === 'investments')
+    const indirect    = activeCategories.filter(category => category.section === 'costs' && category.group !== 'direct' && category.group !== 'personnel')
 
     const renderCategory = category => {
       return <div className="cost-group-item" key={category.id} >
@@ -320,7 +328,8 @@ export default class BusinessModelCanvas extends Component {
   }
 
   renderRevenueStreams (data) {
-    return data.categories
+    return filterActiveCategories(data)
+        .filter(category => category.deleted !== true) // filter deleted categories
         .filter(category => category.section === 'revenues')
         .map(category => {
           return <div key={category.id} className="revenue-stream">
