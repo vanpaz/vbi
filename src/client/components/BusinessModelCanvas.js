@@ -351,7 +351,7 @@ function renderCategories (bmcGroup, checkedCategories, onCheckCategory) {
       .map(bmcCategory => {
         const props = {
           label: bmcCategory.label,
-          checked: checkedCategories[bmcCategory.bmcId],
+          checked: checkedCategories[bmcCategory.bmcId] || false,
           onCheck: (event) => {
             onCheckCategory(bmcCategory.bmcId, event.target.checked)
           }
