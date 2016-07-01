@@ -60,14 +60,19 @@ export function addCategory (section, group, label, price = {}, quantities = DEF
   return { type: 'DOC_ADD_CATEGORY', section, group, label, price, quantities }
 }
 
-export function setCustomCategories (bmcGroup, categories) {
-  return { type: 'DOC_SET_CUSTOM_CATEGORIES', bmcGroup, categories }
+/**
+ * @param {string} bmcGroup
+ * @param {Array.<{id: string, label: string}>} categories
+ * @return {{type: string, bmcGroup: *, categories: *}}
+ */
+export function updateCustomCategories (bmcGroup, categories) {
+  return { type: 'DOC_UPDATE_CUSTOM_CATEGORIES', bmcGroup, categories }
 }
 
 /**
  * Check or uncheck a BMC category
  * @param {String} bmcId
- * @param {boolean} checked
+ * @param {boolean} bmcChecked
  */
 export function checkCategory (bmcId, bmcChecked) {
   return { type: 'DOC_CHECK_CATEGORY', bmcId, bmcChecked }

@@ -21,7 +21,7 @@ import theme from '../theme'
 import Notification from './dialogs/Notification'
 import {
     setUser, listDocs, renameDoc, setDoc, viewPage, 
-    setProperty, checkCategory, setCustomCategories,
+    setProperty, checkCategory, updateCustomCategories,
     viewInputs, viewOutputs
 } from '../actions'
 import Menu from './Menu'
@@ -74,7 +74,7 @@ class App extends Component {
     this.handleDeleteDoc = this.handleDeleteDoc.bind(this)
 
     this.handleSetProperty = this.handleSetProperty.bind(this)
-    this.handleSetCustomCategories = this.handleSetCustomCategories.bind(this)
+    this.handleUpdateCustomCategories = this.handleUpdateCustomCategories.bind(this)
     this.handleCheckCategory = this.handleCheckCategory.bind(this)
     this.handleSetPage = this.handleSetPage.bind(this)
     this.handleSetOutputsTab = this.handleSetOutputsTab.bind(this)
@@ -176,7 +176,7 @@ class App extends Component {
             data={this.props.doc.data}
             onSetProperty={this.handleSetProperty}
             onCheckCategory={this.handleCheckCategory}
-            onSetCustomCategories={this.handleSetCustomCategories}
+            onUpdateCustomCategories={this.handleUpdateCustomCategories}
         />
       </div>
     </div>
@@ -406,9 +406,9 @@ class App extends Component {
    * @param {String} bmcGroup
    * @param {Array.<Category>} categories
    */
-  handleSetCustomCategories (bmcGroup, categories) {
-    debug('setCustomCategories', bmcGroup, categories)
-    this.props.dispatch(setCustomCategories(bmcGroup, categories))
+  handleUpdateCustomCategories (bmcGroup, categories) {
+    debug('updateCustomCategories', bmcGroup, categories)
+    this.props.dispatch(updateCustomCategories(bmcGroup, categories))
   }
 
   handleError (err) {

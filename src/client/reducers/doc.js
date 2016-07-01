@@ -57,10 +57,36 @@ const doc = (state = Immutable({}), action) => {
       return state.setIn(['data', 'categories'], state.data.categories.concat([category]))
     }
 
-    case 'DOC_SET_CUSTOM_CATEGORIES':
+    case 'DOC_UPDATE_CUSTOM_CATEGORIES':
+      const oldCategories = state.data.categories.filter(category => isCustomCategory(category, action.bmcGroup))
+      const newCategories = action.categories.map(category => {
+        // merge the properties of the new categories into the old ones
+        // create new categories when not yet existing
+        const oldCategory = oldCategories.find(oldCategory => oldCategory.id === category.id)
+
+        if (oldCategory) {
+          // update existing category
+          return oldCategory
+              .set('bmcChecked', true)  // keep custom category always checked
+              .merge(category)          // merge id and value
+        }
+        else {
+          // it's a new category
+          const bmcGroupObj = bmcCategories.groups[action.bmcGroup]
+
+          return Immutable({
+                section: bmcGroupObj && bmcGroupObj.section,
+                group: bmcGroupObj && bmcGroupObj.group,
+                bmcGroup: action.bmcGroup,
+                bmcChecked: true
+              })
+              .merge(category) // merge id and value
+        }
+      })
+
       return state.setIn(['data', 'categories'], state.data.categories
           .filter(category => !isCustomCategory(category, action.bmcGroup))  // remove the old custom categories
-          .concat(action.categories))          // append the new custom categories
+          .concat(newCategories))          // append the new custom categories
 
     case 'DOC_CHECK_CATEGORY':
       // check a BMC category

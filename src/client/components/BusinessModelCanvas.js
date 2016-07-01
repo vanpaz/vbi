@@ -44,7 +44,7 @@ export default class BusinessModelCanvas extends Component {
   }
 
   render () {
-    const { data, onSetProperty, onCheckCategory, onSetCustomCategories } = this.props
+    const { data, onSetProperty, onCheckCategory, onUpdateCustomCategories } = this.props
 
     const checkedCategories = {}
     data.categories.forEach(category => {
@@ -109,7 +109,7 @@ export default class BusinessModelCanvas extends Component {
                       </div>
                       <div className="contents">
                         { renderCategories('partnerships', checkedCategories, onCheckCategory) }
-                        { renderOther(data, 'partnerships', onSetCustomCategories) }
+                        { renderOther(data, 'partnerships', onUpdateCustomCategories) }
                       </div>
                     </div>
                   </div>
@@ -122,7 +122,7 @@ export default class BusinessModelCanvas extends Component {
                       </div>
                       <div className="contents">
                         { renderCategories('activities', checkedCategories, onCheckCategory) }
-                        { renderOther(data, 'activities', onSetCustomCategories) }
+                        { renderOther(data, 'activities', onUpdateCustomCategories) }
                       </div>
                     </div>
                   </div>
@@ -171,7 +171,7 @@ export default class BusinessModelCanvas extends Component {
                       </div>
                       <div className="contents">
                         { renderCategories('contacts', checkedCategories, onCheckCategory) }
-                        { renderOther(data, 'contacts', onSetCustomCategories) }
+                        { renderOther(data, 'contacts', onUpdateCustomCategories) }
                       </div>
                     </div>
                   </div>
@@ -201,11 +201,11 @@ export default class BusinessModelCanvas extends Component {
                       <div className="contents">
                         <div className="sub-header">Expenses</div>
                         { renderCategories('expenses', checkedCategories, onCheckCategory) }
-                        { renderOther(data, 'expenses', onSetCustomCategories) }
+                        { renderOther(data, 'expenses', onUpdateCustomCategories) }
 
                         <div className="sub-header">Investments</div>
                         { renderCategories('investments', checkedCategories, onCheckCategory) }
-                        { renderOther(data, 'investments', onSetCustomCategories) }
+                        { renderOther(data, 'investments', onUpdateCustomCategories) }
                       </div>
                     </div>
                   </div>
@@ -383,37 +383,19 @@ function generateRevenueCategories (products = [], customers = []) {
   })
 }
 
-function renderOther (data, bmcGroup, onSetCustomCategories) {
+function renderOther (data, bmcGroup, onUpdateCustomCategories) {
   const categories = data.categories.filter(category => isCustomCategory(category, bmcGroup))
   const items = categories.map(category => ({id: category.id, value: category.label}))
 
   const onChange = items => {
-    // TODO: move this logic to the corresponding reducer?
     const newCategories = items.map(item => {
-      const category = categories.find(category => category.id === item.id)
-
-      if (category) {
-        // update existing category
-        return category
-            .set('label', item.value)
-            .set('bmcChecked', true) // custom items have no checkbox and are always checked
-      }
-      else {
-        // it's a new category
-        const bmcGroupObj = bmcCategories.groups[bmcGroup]
-
-        return Immutable({
-          id: item.id,
-          section: bmcGroupObj && bmcGroupObj.section,
-          group: bmcGroupObj && bmcGroupObj.group,
-          label: item.value,
-          bmcGroup,
-          bmcChecked: true
-        })
+      return {
+        id: item.id,
+        label: item.value
       }
     })
 
-    onSetCustomCategories(bmcGroup, newCategories)
+    onUpdateCustomCategories(bmcGroup, newCategories)
   }
 
   return <div>
