@@ -117,9 +117,9 @@ export function calculateProfitAndLoss (data) {
       values: partials.personnelCosts 
     },
     {
-      label: 'Total other direct costs', // TODO: rename to "Total indirect costs" ?
+      label: 'Total other indirect costs',
       values: partials.indirectCosts,
-      info: 'Indirect costs. Also referred to as "overhead" . These costs develop more or less independent of the revenue development. Personnel is the most important part here. But in certain business models rarely, you may argue that some of it is part of direct costs. Especially in consultancy when the external tariff is ties to the salary of the consultant. Basically Almende should strictly treat it as such, as the subsidies they receive are 100% tied to the individual salary costs of the researcher involved. This category also includes all other stuff such as housing, transport, communications, travel, and also marketing costs.'
+      info: 'Indirect costs. Also referred to as "overhead". These costs develop more or less independent of the revenue development. Personnel is the most important part here. But in certain business models rarely, you may argue that some of it is part of direct costs. Especially in consultancy when the external tariff is ties to the salary of the consultant. This category also includes all other stuff such as housing, transport, communications, travel, and also marketing costs.'
     },
     {
       label: 'EBITDA', 
@@ -534,14 +534,13 @@ export function calculateBalanceSheet (data) {
       label: 'Short-term liabilities',
       values: shortTermLiabilities,
       className: 'main top',
-      info: 'The working capital on the liability side. Basically you have the 3 categories that mirror the 3 on the asset side: accounts payable, accruals, and deferred income.'
+      info: 'The working capital on the liability side. Basically you have the 3 categories that mirror the 3 on the asset side: accounts payable, accruals, and deferred income.\n\nAccounts payable is the largest category, and some organisations make it their mission to make this as large as possible because that means that part of their operations is financed by their suppliers effectively. You have booked the costs/investments, received the invoice, but did not pay yet.'
     },
     {
       label: 'Trade creditors',
       values: partials.tradeCreditors,
       initialValuePath: ['initialBalance', 'tradeCreditors'],
-      // TODO: is this info correct here under Trade creditors?
-      info: 'Accounts payable: this is the largest category, and some organisations make it their mission to make this as large as possible because that means that part of their operations is financed by their suppliers effectively. You have booked the costs/investments, received the invoice, but did not pay yet.'
+      info: 'Suppliers who are owed payment for raw materials or a product\'s component parts by the manufacturer.'
     },
     {
       label: 'Accruals',

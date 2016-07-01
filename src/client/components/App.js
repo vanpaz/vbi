@@ -28,10 +28,11 @@ import Menu from './Menu'
 import BusinessModelCanvas from './BusinessModelCanvas'
 import Inputs from './Inputs'
 import Outputs from './Outputs'
+import * as constants from '../constants'
 import { request } from '../rest/request'
 import { list, open, save, del } from '../rest/docs'
 import { hash } from '../utils/hash'
-import * as constants from '../constants'
+import { bindMethods } from '../utils/bindMethods'
 
 import * as newScenarioJSON from '../data/newScenario.json'
 import * as demoScenarioJSON from '../data/demoScenario.json'
@@ -64,24 +65,9 @@ class App extends Component {
     super(props)
 
     // bind all methods to current instance so we don't have to create wrapper functions to use them
-    // TODO: write a helper function to bind all methods automatically
-    this.handleNewDoc = this.handleNewDoc.bind(this)
-    this.handleDemoDoc = this.handleDemoDoc.bind(this)
-    this.handleOpenDoc = this.handleOpenDoc.bind(this)
-    this.handleRenameDoc = this.handleRenameDoc.bind(this)
-    this.handleSaveDoc = this.handleSaveDoc.bind(this)
-    this.handleSaveDocAs = this.handleSaveDocAs.bind(this)
-    this.handleDeleteDoc = this.handleDeleteDoc.bind(this)
+    bindMethods(this)
 
-    this.handleSetProperty = this.handleSetProperty.bind(this)
-    this.handleSetProducts = this.handleSetProducts.bind(this)
-    this.handleSetCustomers = this.handleSetCustomers.bind(this)
-    this.handleUpdateCustomCategories = this.handleUpdateCustomCategories.bind(this)
-    this.handleCheckCategory = this.handleCheckCategory.bind(this)
-    this.handleSetPage = this.handleSetPage.bind(this)
-    this.handleSetOutputsTab = this.handleSetOutputsTab.bind(this)
-    this.handleSetInputsTab = this.handleSetInputsTab.bind(this)
-
+    // debounce auto saving
     this.handleAutoSave = debounce(this.handleSaveDoc, AUTO_SAVE_DELAY)
   }
 
@@ -210,8 +196,6 @@ class App extends Component {
   }
 
   componentDidMount () {
-    // TODO: use react-router-redux instead of handling hash changes ourselves
-
     // read the hash
     let id = hash.get('id')
     if (id) {
@@ -243,7 +227,6 @@ class App extends Component {
     })
 
     this.fetchUser()
-    // FIXME: setUser should throw an error when setting a regular JSON object instead of immutable, test this
         .then(user => this.props.dispatch(setUser(user)))
         .catch(err => this.handleError(err))
 

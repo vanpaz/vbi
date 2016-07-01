@@ -17,6 +17,7 @@ import {
 import { types, findQuantity, getYears, filterActiveCategories } from '../formulas'
 import Price from './prices/Price'
 import Parameters from './Parameters'
+import { bindMethods } from '../utils/bindMethods'
 
 import ActionMenu from './ActionMenu'
 
@@ -42,19 +43,12 @@ const styles = {
   }
 }
 
-// TODO: refactor Inputs, split renderCategory into a separate component
-
 class Inputs extends Component {
   constructor (props) {
     super(props)
 
     // bind all methods to current instance so we don't have to create wrapper functions to use them
-    this.handleSetParameter = this.handleSetParameter.bind(this)
-    this.handleRenameCategory = this.handleRenameCategory.bind(this)
-    this.handleMoveCategoryUp = this.handleMoveCategoryUp.bind(this)
-    this.handleMoveCategoryDown = this.handleMoveCategoryDown.bind(this)
-    this.handleDeleteCategory = this.handleDeleteCategory.bind(this)
-    this.handleAddCategory = this.handleAddCategory.bind(this)
+    bindMethods(this)
   }
 
   render () {

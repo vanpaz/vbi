@@ -33,8 +33,6 @@ export let hash = {
    * @param {function} callback   Will be called with the new value as parameter
    */
   onChange: function (key, callback) {
-    // TODO: make key optional
-
     hash._prevHash = ''
     if (!hash._callbacks) {
       hash._callbacks = []

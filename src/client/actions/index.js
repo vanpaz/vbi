@@ -1,11 +1,3 @@
-
-// TODO: different default prices based on the section and group
-const DEFAULT_PRICE = {
-  // type: 'constant',
-  // value: '10k',
-  // change: '+3%'
-}
-
 const DEFAULT_QUANTITIES = {}
 
 /**
