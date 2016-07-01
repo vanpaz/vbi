@@ -1,11 +1,10 @@
 import Immutable from 'seamless-immutable'
 import debugFactory from 'debug/browser'
 
-import { merge } from 'lodash'
-
 import { uuid } from '../utils/uuid'
 import { removeItem, swapItems, replaceItem } from '../utils/immutable'
 import { isCustomCategory } from '../formulas'
+import { sanitizeDoc, updateRevenueCategories } from './docUtils'
 
 const debug = debugFactory('vbi:reducers')
 
@@ -13,16 +12,21 @@ import * as bmcCategories from '../data/bmcCategories.json'
 import * as newScenarioJSON from '../data/newScenario.json'
 
 const newScenario = Immutable(newScenarioJSON)
-
-/**
- * Ensure that all required fields are available in the document.
- * Missing fields will be added
- * @param {Object} doc
- * @return {Object}
- */
-function sanitizeDoc (doc) {
-  return Immutable(merge({}, newScenario, doc))
-}
+//
+// /**
+//  * Ensure that all required fields are available in the document.
+//  * Missing fields will be added
+//  * @param {Object} doc
+//  * @return {Object}
+//  */
+// function sanitizeDoc (doc) {
+//   const _doc = Immutable(merge({}, newScenario, doc))
+//
+//   return _doc.setIn(['data', 'categories'], updateRevenueCategories(
+//       _doc.data.categories,
+//       _doc.data.description.products,
+//       _doc.data.description.customers))
+// }
 
 
 const doc = (state = Immutable({}), action) => {
@@ -37,11 +41,23 @@ const doc = (state = Immutable({}), action) => {
     case 'DOC_RENAME':
       return state.set('title', action.title)
 
+    case 'DOC_SET_PROPERTY':
+      return state.setIn(['data'].concat(action.path), action.value)
+
     case 'DOC_SET_PARAMETER':
       return state.setIn(['data', 'parameters', action.parameter], action.value)
 
-    case 'DOC_SET_PROPERTY':
-      return state.setIn(['data'].concat(action.path), action.value)
+    case 'DOC_SET_PRODUCTS':
+      return state
+          .setIn(['data', 'description', 'products'], action.products)
+          .setIn(['data', 'categories'],
+              updateRevenueCategories(state.data.categories, action.products, state.data.description.customers))
+
+    case 'DOC_SET_CUSTOMERS':
+      return state
+          .setIn(['data', 'description', 'customers'], action.customers)
+          .setIn(['data', 'categories'],
+              updateRevenueCategories(state.data.categories, state.data.description.products, action.customers))
 
     case 'DOC_ADD_CATEGORY':
     {
@@ -51,7 +67,8 @@ const doc = (state = Immutable({}), action) => {
         group: action.group,
         label: action.label,
         price: action.price,
-        quantities: action.quantities
+        quantities: action.quantities,
+        custom: true
       })
 
       return state.setIn(['data', 'categories'], state.data.categories.concat([category]))
@@ -65,20 +82,21 @@ const doc = (state = Immutable({}), action) => {
         const oldCategory = oldCategories.find(oldCategory => oldCategory.id === category.id)
 
         if (oldCategory) {
-          // update existing category
+          // update existing custom category
           return oldCategory
               .set('bmcChecked', true)  // keep custom category always checked
               .merge(category)          // merge id and value
         }
         else {
-          // it's a new category
+          // it's a new custom category
           const bmcGroupObj = bmcCategories.groups[action.bmcGroup]
 
           return Immutable({
                 section: bmcGroupObj && bmcGroupObj.section,
                 group: bmcGroupObj && bmcGroupObj.group,
                 bmcGroup: action.bmcGroup,
-                bmcChecked: true
+                bmcChecked: true,
+                custom: true
               })
               .merge(category) // merge id and value
         }
@@ -119,7 +137,8 @@ const doc = (state = Immutable({}), action) => {
           group: bmcGroupObj && bmcGroupObj.group,
           bmcGroup: bmcCategory.bmcGroup,
           bmcId: bmcCategory.bmcId,
-          bmcChecked: action.bmcChecked
+          bmcChecked: action.bmcChecked,
+          custom: false
         }
 
         debug('check new category', action, bmcCategory, newCategory)
@@ -219,5 +238,64 @@ function findCategoryIndex (data, section, group, categoryId) {
 function filterCategories (data, section, group) {
   return data.categories.filter(category => category.section === section && category.group === group)
 }
+//
+// /**
+//  * Create a category for every combination of product and customer
+//  * @param {Array.<{id: string, value: string}>} products
+//  * @param {Array.<{id: string, value: string}>} customers
+//  * @return {Array.<{id: string, value: string}>}
+//  *   Array with entries having a compound key as id, which is a concatenation
+//  *   of the id's of the product and customer.
+//  */
+// function generateRevenueCategories (products = [], customers = []) {
+//   return Immutable(products).flatMap(product => {
+//     return customers.map(customer => {
+//       return {
+//         id: product.id + ':' + customer.id,
+//         label: product.value + ' for ' + customer.value
+//       }
+//     })
+//   })
+// }
+//
+// /**
+//  * Update the revenue categories: generate and update revenue categories
+//  * @param categories
+//  * @param products
+//  * @param customers
+//  * @return {Array} Returns updated categories
+//  */
+// function updateRevenueCategories(categories, products, customers) {
+//   const revenueCategories = generateRevenueCategories(products, customers)
+//
+//   const newRevenueCategories = revenueCategories
+//       .filter(category => !categories.find(c => c.id === category.id))
+//       .map(category => {
+//         return {
+//           id: category.id, // TODO: uuid here?
+//           section: 'revenues',
+//           group: 'all',
+//           label: category.label,
+//           price: types.constant.defaultPrice,
+//           quantities: {},
+//           bmcGroup: 'revenues',
+//           bmcChecked: true,
+//           bmcId: category.id
+//         }
+//       })
+//
+//   const labels = {}
+//   revenueCategories.forEach(category => labels[category.id] = category.label)
+//
+//   return categories
+//       .filter(category => category.bmcGroup === 'revenues' ? labels[category.id] : true) // filter categories that no longer exist
+//       .map(category => { // update label of existing categories
+//         return category.bmcGroup === 'revenues'
+//             ? category.set('label', labels[category.id])
+//             : category
+//       })
+//       .concat(newRevenueCategories)  // add new categories
+// }
+
 
 export default doc

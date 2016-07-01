@@ -1058,8 +1058,7 @@ export function filterActiveCategories (data) {
  */
 export function isActiveCategory (category) {
   return !category.deleted &&                     // filter deleted categories
-      (!category.bmcGroup || category.bmcChecked) // filter items not having a BMC id (custom items)
-                                                  // and items having a BMC id and being checked
+      (!category.bmcGroup || category.bmcChecked) // filter unchecked BMC items
 }
 
 /**

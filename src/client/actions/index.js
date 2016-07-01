@@ -109,3 +109,21 @@ export function setPrice (section, group, categoryId, price) {
 export function setQuantity (section, group, categoryId, year, quantity) {
   return { type: 'DOC_SET_QUANTITY', section, group, categoryId, year, quantity }
 }
+
+/**
+ * Replace the list with products
+ * @param {Array.<TextItem>} products
+ * @return {{type: string, products: Array.<TextItem>}}
+ */
+export function setProducts (products) {
+  return { type: 'DOC_SET_PRODUCTS', products }
+}
+
+/**
+ * Replace the list with customers
+ * @param {Array.<TextItem>} customers
+ * @return {{type: string, customers: Array.<TextItem>}}
+ */
+export function setCustomers (customers) {
+  return { type: 'DOC_SET_CUSTOMERS', customers}
+}

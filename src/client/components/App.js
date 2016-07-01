@@ -21,7 +21,7 @@ import theme from '../theme'
 import Notification from './dialogs/Notification'
 import {
     setUser, listDocs, renameDoc, setDoc, viewPage, 
-    setProperty, checkCategory, updateCustomCategories,
+    setProperty, setProducts, setCustomers, checkCategory, updateCustomCategories,
     viewInputs, viewOutputs
 } from '../actions'
 import Menu from './Menu'
@@ -74,6 +74,8 @@ class App extends Component {
     this.handleDeleteDoc = this.handleDeleteDoc.bind(this)
 
     this.handleSetProperty = this.handleSetProperty.bind(this)
+    this.handleSetProducts = this.handleSetProducts.bind(this)
+    this.handleSetCustomers = this.handleSetCustomers.bind(this)
     this.handleUpdateCustomCategories = this.handleUpdateCustomCategories.bind(this)
     this.handleCheckCategory = this.handleCheckCategory.bind(this)
     this.handleSetPage = this.handleSetPage.bind(this)
@@ -174,6 +176,9 @@ class App extends Component {
       <div className="container whole">
         <BusinessModelCanvas
             data={this.props.doc.data}
+            onSetProperty={this.handleSetProperty}
+            onSetProducts={this.handleSetProducts}
+            onSetCustomers={this.handleSetCustomers}
             onSetProperty={this.handleSetProperty}
             onCheckCategory={this.handleCheckCategory}
             onUpdateCustomCategories={this.handleUpdateCustomCategories}
@@ -389,6 +394,24 @@ class App extends Component {
   handleSetProperty (path, value) {
     debug('setProperty', path, value)
     this.props.dispatch(setProperty(path, value))
+  }
+
+  /**
+   * Replace the products in the document
+   * @param {Array.<TextItem>} products
+   */
+  handleSetProducts (products) {
+    debug('setProducts', products)
+    this.props.dispatch(setProducts(products))
+  }
+
+  /**
+   * Replace the customers in the document
+   * @param {Array.<TextItem>} customers
+   */
+  handleSetCustomers(customers) {
+    debug('setCustomers', customers)
+    this.props.dispatch(setCustomers(customers))
   }
 
   /**

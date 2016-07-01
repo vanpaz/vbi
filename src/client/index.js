@@ -10,6 +10,7 @@ import { hash } from './utils/hash'
 import './utils/polyfills'
 import App from './components/App'
 import reducers from './reducers'
+import { sanitizeDoc } from './reducers/docUtils'
 
 import * as demoScenarioJSON from './data/demoScenario.json'
 
@@ -33,9 +34,9 @@ let initialState = Immutable({
   
   user: {},
 
-  changed: false,  // true when the current document contains unsaved changes
-  doc: demoScenarioJSON,   // The current doc
-  docs: [] // list with all docs of the user
+  changed: false,         // true when the current document contains unsaved changes
+  doc: sanitizeDoc(demoScenarioJSON),  // The current doc
+  docs: []                // list with all docs of the user
 })
 
 let store = createStore(reducers, initialState)

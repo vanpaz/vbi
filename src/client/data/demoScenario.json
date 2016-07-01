@@ -344,10 +344,10 @@
         }
       },
       {
-        "id": "16",
+        "id": "e195e2e1-cfe0-4a30-b1b0-fffbcaabc353",
         "section": "revenues",
         "group": "all",
-        "label": "Cookies",
+        "label": "cookies for wealthy people",
         "price": {
           "type": "constant",
           "value": "200",
@@ -359,13 +359,16 @@
           "2018": "400",
           "2019": "800",
           "2020": "1600"
-        }
+        },
+        "bmcGroup": "revenues",
+        "bmcId": "b7e669ad-c695-4125-a59b-4b0f81f0c370:8a3efa6f-e3cd-4592-8c0b-4df5336d89f3",
+        "bmcChecked": true
       },
       {
-        "id": "2f3ee91f-04ad-c9ee-93a5-07ca99243370",
+        "id": "99a409d8-a540-4a57-9e32-26bb164a6a7d",
         "section": "revenues",
         "group": "all",
-        "label": "Cake",
+        "label": "cakes for wealthy people",
         "price": {
           "type": "constant",
           "value": "150",
@@ -377,7 +380,10 @@
           "2018": "100",
           "2019": "400",
           "2020": "1600"
-        }
+        },
+        "bmcGroup": "revenues",
+        "bmcId": "76bfec0d-044a-4bbb-bce3-1913aec1ea15:8a3efa6f-e3cd-4592-8c0b-4df5336d89f3",
+        "bmcChecked": true
       }
     ],
     "financing": {

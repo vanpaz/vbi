@@ -257,7 +257,12 @@ A saved scenario has the following structure:
         "quantities": {
            "<YEAR>": "<AMOUNT>",
            ...
-        }
+        },
+        "deleted": ?boolean,
+        "custom": boolean,
+        "bmcGroup": ?string,
+        "bmcId": ?string,
+        "bmcChecked": ?boolean
       },
       ...
     ],

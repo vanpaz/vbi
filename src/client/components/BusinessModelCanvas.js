@@ -44,7 +44,10 @@ export default class BusinessModelCanvas extends Component {
   }
 
   render () {
-    const { data, onSetProperty, onCheckCategory, onUpdateCustomCategories } = this.props
+    const {
+        data, onSetProperty, onCheckCategory,
+        onSetProducts, onSetCustomers, onUpdateCustomCategories
+    } = this.props
 
     const checkedCategories = {}
     data.categories.forEach(category => {
@@ -55,12 +58,6 @@ export default class BusinessModelCanvas extends Component {
 
     const onChangeType = (event, index, value) => {
       onSetProperty(['description', 'type'], value)
-    }
-    const onChangeProducts = value => {
-      onSetProperty(['description', 'products'], value)
-    }
-    const onChangeCustomers = value => {
-      onSetProperty(['description', 'customers'], value)
     }
     const onChangeUniqueSellingPoint = event => {
       onSetProperty(['description', 'uniqueSellingPoint'], event.target.value)
@@ -88,11 +85,11 @@ export default class BusinessModelCanvas extends Component {
                 <td colSpan="10">
                   <div className="outer">
                     <div className="inner main">
-                      We are a <SelectField style={{fontSize: 14}} value={data.description && data.description.type} onChange={onChangeType}>
-                        <MenuItem index={-1} value="" primaryText=""/>
+                      We are a <SelectField style={{fontSize: 14}} value={data.description && data.description.type || ''} onChange={onChangeType}>
+                        <MenuItem index={0} value="" primaryText="&nbsp;"/>
                         {
                           bmcCategories.types.map((c, index) => (
-                              <MenuItem key={c.id} index={index} value={c.id} primaryText={c.label} />
+                              <MenuItem key={c.id} index={index + 1} value={c.id} primaryText={c.label} />
                           ))
                         }
                       </SelectField> company
@@ -140,7 +137,7 @@ export default class BusinessModelCanvas extends Component {
                         <TextItemList
                             placeholder="product"
                             items={data.description && data.description.products}
-                            onChange={onChangeProducts} />
+                            onChange={onSetProducts} />
 
                         <p>
                           for:
@@ -148,7 +145,7 @@ export default class BusinessModelCanvas extends Component {
                         <TextItemList
                             placeholder="customers"
                             items={data.description && data.description.customers}
-                            onChange={onChangeCustomers} />
+                            onChange={onSetCustomers} />
 
                         <p>
                           and they like us because of:
@@ -185,7 +182,7 @@ export default class BusinessModelCanvas extends Component {
                       <div className="contents">
                         <TextItemList
                             items={data.description && data.description.customers}
-                            onChange={onChangeCustomers} />
+                            onChange={onSetCustomers} />
                       </div>
                     </div>
                   </div>
@@ -360,26 +357,6 @@ function renderCategories (bmcGroup, checkedCategories, onCheckCategory) {
         return <div key={bmcCategory.bmcId} style={{marginRight: -10}}>
           <CheckBox {...props} />
         </div>
-  })
-}
-
-/**
- * Create a category for every combination of product and customer
- * @param {Array.<{id: string, value: string}>} products
- * @param {Array.<{id: string, value: string}>} customers
- * @return {Array.<{id: string, value: string}>}
- *   Array with entries having a compound key as id, which is a concatenation
- *   of the id's of the product and customer.
- */
-// TODO: reuse or remove generateRevenueCategories
-function generateRevenueCategories (products = [], customers = []) {
-  return Immutable(products).flatMap(product => {
-    return customers.map(customer => {
-      return {
-        id: product.id + ':' + customer.id,
-        value: product.value + ' for ' + customer.value
-      }
-    })
   })
 }
 
