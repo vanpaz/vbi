@@ -13,6 +13,7 @@ import PriceTypeRevenue from './PriceTypeRevenue'
 import PriceTypeSalary from './PriceTypeSalary'
 
 import { types } from '../../formulas'
+import bindMethods from '../../utils/bindMethods'
 
 const debug = debugFactory('vbi:Price')
 
@@ -50,6 +51,8 @@ export default class Price extends Component {
       showPopover: false,
       anchorEl: null
     }
+    
+    bindMethods(this)
   }
 
   render () {
@@ -59,7 +62,7 @@ export default class Price extends Component {
     return <div className="price">
       <button
           className={this.state.showPopover ? 'price expanded' : 'price'}
-          onTouchTap={this.showPopover.bind(this)} >
+          onTouchTap={this.showPopover} >
         {PriceType && this.props.price && PriceType.format(this.props.price)}
         {' \u25BE'}
       </button>
@@ -70,7 +73,7 @@ export default class Price extends Component {
           anchorEl={this.state.anchorEl}
           anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
           targetOrigin={{horizontal: 'left', vertical: 'top'}}
-          onRequestClose={this.hidePopover.bind(this)} >
+          onRequestClose={this.hidePopover} >
         <div className="price-popover">
           {
             this.renderTypeSelection()
@@ -81,7 +84,7 @@ export default class Price extends Component {
                       price={this.props.price || Immutable({})}
                       categories={this.props.categories}
                       years={this.props.years}
-                      onChange={this.handleChangePrice.bind(this)} />
+                      onChange={this.handleChangePrice} />
                 : <p>(Select a price type first...)</p>
           }
         </div>
@@ -107,7 +110,7 @@ export default class Price extends Component {
 
     return <SelectField
         value={this.props.price && this.props.price.type}
-        onChange={this.handleChangeType.bind(this)} >
+        onChange={this.handleChangeType} >
       {priceTypes}
     </SelectField>
 

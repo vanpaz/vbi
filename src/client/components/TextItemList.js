@@ -4,6 +4,7 @@ import Immutable from 'seamless-immutable'
 import RemoveIcon from 'material-ui/lib/svg-icons/content/remove-circle'
 import AddIcon from 'material-ui/lib/svg-icons/content/add-circle'
 
+import bindMethods from '../utils/bindMethods'
 import { uuid } from '../utils/uuid'
 
 const styles = {
@@ -35,13 +36,21 @@ const styles = {
  *
  */
 export default class TextItemList extends Component {
+  constructor (props) {
+    super(props)
+
+    bindMethods(this)
+  }
+
   render () {
     const items = this.getItems()
 
     return <div className="list">
-      { items.map(this.renderItem.bind(this))}
+      { 
+        items.map(this.renderItem)
+      }
       <div className="add-item">
-        <button onTouchTap={this.addItem.bind(this)}>
+        <button onTouchTap={this.addItem}>
           <AddIcon color={styles.button.color} />
         </button>
       </div>
@@ -61,7 +70,7 @@ export default class TextItemList extends Component {
                onChange={event => this.changeItem({id: entry.id, value: event.target.value})} />
       </div>
       <div className="remove-item">
-        <button onTouchTap={this.removeItem.bind(this, entry.id)} >
+        <button onTouchTap={() => this.removeItem(entry.id)} >
           <RemoveIcon color={styles.button.color} />
         </button>
       </div>
@@ -100,7 +109,7 @@ export default class TextItemList extends Component {
 
     this.props.onChange(updatedItems)
 
-    setTimeout(this.focus.bind(this, id), 0)
+    setTimeout(() => this.focus(id), 0)
   }
 
   removeItem (entryId) {

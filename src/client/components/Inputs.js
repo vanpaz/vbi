@@ -17,7 +17,7 @@ import {
 import { types, findQuantity, getYears, filterActiveCategories } from '../formulas'
 import Price from './prices/Price'
 import Parameters from './Parameters'
-import { bindMethods } from '../utils/bindMethods'
+import bindMethods from '../utils/bindMethods'
 
 import ActionMenu from './ActionMenu'
 

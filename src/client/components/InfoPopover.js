@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 
 import Popover from 'material-ui/lib/popover/popover'
 
+import bindMethods from '../utils/bindMethods'
+
 const styles = {
   popover: {
     backgroundColor: '#4d4d4d',
@@ -31,8 +33,8 @@ export default class InfoPopover extends Component {
 
     this.opening = false
 
-    // bind the event handlers to this instance
-    this.handleClosePopover = this.handleClosePopover.bind(this)
+    // bind the methds to this instance
+    bindMethods(this)
   }
 
   render () {

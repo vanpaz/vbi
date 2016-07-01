@@ -32,7 +32,7 @@ import * as constants from '../constants'
 import { request } from '../rest/request'
 import { list, open, save, del } from '../rest/docs'
 import { hash } from '../utils/hash'
-import { bindMethods } from '../utils/bindMethods'
+import bindMethods from '../utils/bindMethods'
 
 import * as newScenarioJSON from '../data/newScenario.json'
 import * as demoScenarioJSON from '../data/demoScenario.json'

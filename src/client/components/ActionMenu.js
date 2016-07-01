@@ -11,6 +11,7 @@ import SettingsIcon from 'material-ui/lib/svg-icons/action/settings'
 import theme from '../theme'
 
 import shouldComponentUpdate from '../utils/shouldComponentUpdate'
+import bindMethods from '../utils/bindMethods'
 
 const styles = {
   actionButton: {
@@ -42,8 +43,7 @@ export default class ActionMenu extends React.Component {
     }
 
     // bind event handlers to this instance
-    this.handleTouchTap = this.handleTouchTap.bind(this)
-    this.handleRequestClose = this.handleRequestClose.bind(this)
+    bindMethods(this)
 
     // update only when props or state are changed
     this.shouldComponentUpdate = shouldComponentUpdate

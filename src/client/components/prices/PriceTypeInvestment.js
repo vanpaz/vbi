@@ -2,7 +2,15 @@ import React, { Component } from 'react'
 
 import TextField from 'material-ui/lib/text-field'
 
+import bindMethods from '../../utils/bindMethods'
+
 export default class PriceTypeInvestment extends Component {
+  constructor (props) {
+    super(props)
+
+    bindMethods(this)
+  }
+
   render () {
     return <div className="price-type">
       <p className="description">
@@ -12,13 +20,13 @@ export default class PriceTypeInvestment extends Component {
           value={this.props.price.value}
           hintText="1000"
           floatingLabelText="Cost"
-          onChange={this.handleChangePrice.bind(this)} />
+          onChange={this.handleChangePrice} />
       <br />
       <TextField
           value={this.props.price.depreciationPeriod}
           hintText="5"
           floatingLabelText="Depreciation period (years)"
-          onChange={this.handleChangeDepreciation.bind(this)}  />
+          onChange={this.handleChangeDepreciation}  />
     </div>
   }
 
