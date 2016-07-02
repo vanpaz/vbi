@@ -825,13 +825,13 @@ export let types = {
      *                                   and prices as value
      */
     calculatePxQ: function (category, years) {
-      let initialPrice = parseValue(category.price.value)
-      let change = 1 + parseValue(category.price.change)
+      let initialPrice = parseValue(category.price && category.price.value)
+      let change = 1 + parseValue(category.price && category.price.change)
 
       return years.reduce((prices, year, yearIndex) => {
         let quantity = parseQuantity(category, year)
 
-        if (category.price.value != undefined && category.price.change != undefined) {
+        if (category.price && category.price.value != undefined && category.price.change != undefined) {
           prices[year] = initialPrice * quantity * Math.pow(change, yearIndex)
         }
         else {
@@ -860,7 +860,7 @@ export let types = {
     calculatePxQ: function (category, years) {
       return years.reduce((prices, year) => {
         let quantity = parseQuantity(category, year)
-        let value = parseValue(category.price.values && category.price.values[year] || '0')
+        let value = parseValue(category.price && category.price.values && category.price.values[year] || '0')
 
         prices[year] = quantity * value
 
@@ -891,7 +891,7 @@ export let types = {
         return {}
       }
 
-      let percentage = parseValue(category.price.percentage)
+      let percentage = parseValue(category.price && category.price.percentage)
 
       return years.reduce((prices, year) => {
         prices[year] = percentage * (revenues[year] || 0)
@@ -921,9 +921,9 @@ export let types = {
       // we ignore years for which we don't have a quantity,
       // and also ignore quantities not inside the provided series of years
       years.forEach(year => {
-        const price = parseValue(category.price.value)
+        const price = parseValue(category.price && category.price.value)
         const quantity = parseQuantity(category, year)
-        const depreciationPeriod = parseValue(category.price.depreciationPeriod)
+        const depreciationPeriod = parseValue(category.price && category.price.depreciationPeriod)
         const costPerYear = price * quantity / depreciationPeriod
 
         let y = year
@@ -953,9 +953,9 @@ export let types = {
       // we ignore years for which we don't have a quantity,
       // and also ignore quantities not inside the provided series of years
       years.forEach(year => {
-        const price = parseValue(category.price.value)
+        const price = parseValue(category.price && category.price.value)
         const quantity = parseQuantity(category, year)
-        const depreciationPeriod = parseValue(category.price.depreciationPeriod)
+        const depreciationPeriod = parseValue(category.price && category.price.depreciationPeriod)
         const costPerYear = price * quantity / depreciationPeriod
 
         let y = year
@@ -985,7 +985,7 @@ export let types = {
       // we ignore years for which we don't have a quantity,
       // and also ignore quantities not inside the provided series of years
       years.forEach(year => {
-        const price = parseValue(category.price.value)
+        const price = parseValue(category.price && category.price.value)
         const quantity = parseQuantity(category, year)
         prices[year] = price * quantity
       })
