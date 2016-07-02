@@ -38,5 +38,125 @@
     {"bmcId": "leaseholdImprovements", "bmcChecked": true},
     {"bmcId": "machinery", "bmcChecked": true},
     {"bmcId": "vehicles", "bmcChecked": true}
+  ],
+  "software": [
+    {"bmcId": "housing", "bmcChecked": true},
+    {"bmcId": "transportation", "bmcChecked": false},
+    {"bmcId": "communication", "bmcChecked": true},
+    {"bmcId": "employeeBenefits", "bmcChecked": true},
+    {"bmcId": "outsourcing", "bmcChecked": true},
+    {"bmcId": "materials", "bmcChecked": false},
+    {"bmcId": "production", "bmcChecked": true},
+    {"bmcId": "goods", "bmcChecked": false},
+
+    {"bmcId": "travel", "bmcChecked": false},
+    {"bmcId": "office", "bmcChecked": true},
+    {"bmcId": "personnel", "bmcChecked": true},
+    {"bmcId": "labor", "bmcChecked": true},
+
+    {"bmcId": "marketing", "bmcChecked": true},
+    {"bmcId": "customer", "bmcChecked": false},
+    {"bmcId": "retention", "bmcChecked": true},
+    {"bmcId": "maintenance", "bmcChecked": true},
+
+    {"bmcId": "sales", "bmcChecked": true},
+    {"bmcId": "commissions", "bmcChecked": true},
+    {"bmcId": "franchise", "bmcChecked": false},
+    {"bmcId": "shops", "bmcChecked": false},
+    {"bmcId": "webshops", "bmcChecked": true},
+
+    {"bmcId": "licenses", "bmcChecked": true},
+    {"bmcId": "bundling", "bmcChecked": true},
+
+    {"bmcId": "buildings", "bmcChecked": false},
+    {"bmcId": "computers", "bmcChecked": true},
+    {"bmcId": "software", "bmcChecked": true},
+    {"bmcId": "furniture", "bmcChecked": true},
+    {"bmcId": "intangibleAssets", "bmcChecked": true},
+    {"bmcId": "intellectualProperty", "bmcChecked": true},
+    {"bmcId": "land", "bmcChecked": false},
+    {"bmcId": "leaseholdImprovements", "bmcChecked": true},
+    {"bmcId": "machinery", "bmcChecked": false},
+    {"bmcId": "vehicles", "bmcChecked": false}
+  ],
+  "logistics": [
+    {"bmcId": "housing", "bmcChecked": true},
+    {"bmcId": "transportation", "bmcChecked": true},
+    {"bmcId": "communication", "bmcChecked": true},
+    {"bmcId": "employeeBenefits", "bmcChecked": true},
+    {"bmcId": "outsourcing", "bmcChecked": true},
+    {"bmcId": "materials", "bmcChecked": false},
+    {"bmcId": "production", "bmcChecked": true},
+    {"bmcId": "goods", "bmcChecked": false},
+
+    {"bmcId": "travel", "bmcChecked": false},
+    {"bmcId": "office", "bmcChecked": true},
+    {"bmcId": "personnel", "bmcChecked": true},
+    {"bmcId": "labor", "bmcChecked": true},
+
+    {"bmcId": "marketing", "bmcChecked": true},
+    {"bmcId": "customer", "bmcChecked": true},
+    {"bmcId": "retention", "bmcChecked": true},
+    {"bmcId": "maintenance", "bmcChecked": false},
+
+    {"bmcId": "sales", "bmcChecked": true},
+    {"bmcId": "commissions", "bmcChecked": false},
+    {"bmcId": "franchise", "bmcChecked": false},
+    {"bmcId": "shops", "bmcChecked": false},
+    {"bmcId": "webshops", "bmcChecked": true},
+
+    {"bmcId": "licenses", "bmcChecked": false},
+    {"bmcId": "bundling", "bmcChecked": true},
+
+    {"bmcId": "buildings", "bmcChecked": true},
+    {"bmcId": "computers", "bmcChecked": true},
+    {"bmcId": "software", "bmcChecked": true},
+    {"bmcId": "furniture", "bmcChecked": true},
+    {"bmcId": "intangibleAssets", "bmcChecked": true},
+    {"bmcId": "intellectualProperty", "bmcChecked": false},
+    {"bmcId": "land", "bmcChecked": true},
+    {"bmcId": "leaseholdImprovements", "bmcChecked": true},
+    {"bmcId": "machinery", "bmcChecked": true},
+    {"bmcId": "vehicles", "bmcChecked": true}
+  ],
+  "services": [
+    {"bmcId": "housing", "bmcChecked": true},
+    {"bmcId": "transportation", "bmcChecked": true},
+    {"bmcId": "communication", "bmcChecked": true},
+    {"bmcId": "employeeBenefits", "bmcChecked": true},
+    {"bmcId": "outsourcing", "bmcChecked": true},
+    {"bmcId": "materials", "bmcChecked": false},
+    {"bmcId": "production", "bmcChecked": true},
+    {"bmcId": "goods", "bmcChecked": false},
+
+    {"bmcId": "travel", "bmcChecked": true},
+    {"bmcId": "office", "bmcChecked": true},
+    {"bmcId": "personnel", "bmcChecked": true},
+    {"bmcId": "labor", "bmcChecked": true},
+
+    {"bmcId": "marketing", "bmcChecked": true},
+    {"bmcId": "customer", "bmcChecked": true},
+    {"bmcId": "retention", "bmcChecked": false},
+    {"bmcId": "maintenance", "bmcChecked": false},
+
+    {"bmcId": "sales", "bmcChecked": true},
+    {"bmcId": "commissions", "bmcChecked": true},
+    {"bmcId": "franchise", "bmcChecked": false},
+    {"bmcId": "shops", "bmcChecked": false},
+    {"bmcId": "webshops", "bmcChecked": false},
+
+    {"bmcId": "licenses", "bmcChecked": true},
+    {"bmcId": "bundling", "bmcChecked": false},
+
+    {"bmcId": "buildings", "bmcChecked": true},
+    {"bmcId": "computers", "bmcChecked": true},
+    {"bmcId": "software", "bmcChecked": true},
+    {"bmcId": "furniture", "bmcChecked": true},
+    {"bmcId": "intangibleAssets", "bmcChecked": true},
+    {"bmcId": "intellectualProperty", "bmcChecked": true},
+    {"bmcId": "land", "bmcChecked": false},
+    {"bmcId": "leaseholdImprovements", "bmcChecked": false},
+    {"bmcId": "machinery", "bmcChecked": false},
+    {"bmcId": "vehicles", "bmcChecked": false}
   ]
 }
