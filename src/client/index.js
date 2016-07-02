@@ -12,7 +12,7 @@ import App from './components/App'
 import reducers from './reducers'
 import { sanitizeDoc } from './reducers/docUtils'
 
-import * as demoScenarioJSON from './data/demoScenario.json'
+import * as newScenarioJSON from './data/newScenario.json'
 
 import '!style!css!less!./style.less'
 
@@ -35,7 +35,7 @@ let initialState = Immutable({
   user: {},
 
   changed: false,         // true when the current document contains unsaved changes
-  doc: sanitizeDoc(demoScenarioJSON),  // The current doc
+  doc: sanitizeDoc(newScenarioJSON),  // The current doc
   docs: []                // list with all docs of the user
 })
 
