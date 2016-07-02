@@ -1,63 +1,42 @@
 {
-  "productionAndRetail": {
-    "valuePropositions": {
-      "values": {}
-    },
-    "expenses": {
-      "values": {
-        "housing":          { "value": true, "isDefault": true },
-        "transportation":   { "value": true, "isDefault": true },
-        "communication":    { "value": true, "isDefault": true },
-        "employeeBenefits": { "value": false, "isDefault": true },
-        "outsourcing":      { "value": true, "isDefault": true },
-        "materials":        { "value": true, "isDefault": true },
-        "production":       { "value": true, "isDefault": true },
-        "goods":            { "value": true, "isDefault": true }
-      }
-    },
-    "activities": {
-      "values": {
-        "travel":    { "value": false, "isDefault": true },
-        "office":    { "value": true, "isDefault": true },
-        "personnel": { "value": true, "isDefault": true },
-        "labor":     { "value": true, "isDefault": true }
-      }
-    },
-    "contacts": {
-      "values": {
-        "marketing":   { "value": true, "isDefault": true },
-        "customer":    { "value": false, "isDefault": true },
-        "retention":   { "value": false, "isDefault": true },
-        "maintenance": { "value": false, "isDefault": true }
-      }
-    },
-    "channels": {
-      "values": {
-        "sales":        { "value": true, "isDefault": true },
-        "commissions":  { "value": true, "isDefault": true },
-        "franchise":    { "value": true, "isDefault": true },
-        "shops":        { "value": true, "isDefault": true },
-        "webshops":     { "value": false, "isDefault": true }
-      }
-    },
-    "partnerships": {
-      "values": {
-        "licenses": { "value": false, "isDefault": true },
-        "bundling": { "value": false, "isDefault": true }
-      }
-    },
-    "investments": {
-      "values": {
-        "buildings":              { "value": true, "isDefault": true },
-        "computers":              { "value": true, "isDefault": true },
-        "software":               { "value": true, "isDefault": true },
-        "furniture":              { "value": true, "isDefault": true },
-        "intangibleAssets":       { "value": false, "isDefault": true },
-        "land":                   { "value": false, "isDefault": true },
-        "leaseholdImprovements":  { "value": true, "isDefault": true },
-        "machinery":              { "value": true, "isDefault": true },
-        "vehicles":               { "value": true, "isDefault": true }
-      }
-    }
-  }
+  "productionAndRetail": [
+    {"bmcId": "housing", "bmcChecked": true},
+    {"bmcId": "transportation", "bmcChecked": true},
+    {"bmcId": "communication", "bmcChecked": true},
+    {"bmcId": "employeeBenefits", "bmcChecked": false},
+    {"bmcId": "outsourcing", "bmcChecked": true},
+    {"bmcId": "materials", "bmcChecked": true},
+    {"bmcId": "production", "bmcChecked": true},
+    {"bmcId": "goods", "bmcChecked": true},
+
+    {"bmcId": "travel", "bmcChecked": false},
+    {"bmcId": "office", "bmcChecked": true},
+    {"bmcId": "personnel", "bmcChecked": true},
+    {"bmcId": "labor", "bmcChecked": true},
+
+    {"bmcId": "marketing", "bmcChecked": true},
+    {"bmcId": "customer", "bmcChecked": false},
+    {"bmcId": "retention", "bmcChecked": false},
+    {"bmcId": "maintenance", "bmcChecked": false},
+
+    {"bmcId": "sales", "bmcChecked": true},
+    {"bmcId": "commissions", "bmcChecked": true},
+    {"bmcId": "franchise", "bmcChecked": true},
+    {"bmcId": "shops", "bmcChecked": true},
+    {"bmcId": "webshops", "bmcChecked": false},
+
+    {"bmcId": "licenses", "bmcChecked": false},
+    {"bmcId": "bundling", "bmcChecked": false},
+
+    {"bmcId": "buildings", "bmcChecked": true},
+    {"bmcId": "computers", "bmcChecked": true},
+    {"bmcId": "software", "bmcChecked": true},
+    {"bmcId": "furniture", "bmcChecked": true},
+    {"bmcId": "intangibleAssets", "bmcChecked": false},
+    {"bmcId": "intellectualProperty", "bmcChecked": false},
+    {"bmcId": "land", "bmcChecked": false},
+    {"bmcId": "leaseholdImprovements", "bmcChecked": true},
+    {"bmcId": "machinery", "bmcChecked": true},
+    {"bmcId": "vehicles", "bmcChecked": true}
+  ]
 }

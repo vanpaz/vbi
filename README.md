@@ -263,6 +263,7 @@ A saved scenario has the following structure:
         "bmcGroup": ?string,
         "bmcId": ?string,
         "bmcChecked": ?boolean
+        "bmcCheckedManually": ?boolean
       },
       ...
     ],

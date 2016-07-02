@@ -4,6 +4,8 @@ import { merge } from 'lodash'
 import { uuid } from '../utils/uuid'
 import { types } from '../formulas'
 import * as newScenarioJSON from '../data/newScenario.json'
+import * as bmcDefaults  from'../data/bmcDefaults.json'
+import * as bmcCategories from '../data/bmcCategories.json'
 
 const newScenario = Immutable(newScenarioJSON)
 
@@ -16,10 +18,80 @@ const newScenario = Immutable(newScenarioJSON)
 export function sanitizeDoc (doc) {
   const _doc = Immutable(merge({}, newScenario, doc))
 
-  return _doc.setIn(['data', 'categories'], updateRevenueCategories(
+  let updatedCategories = updateRevenueCategories(
       _doc.data.categories,
       _doc.data.description.products,
-      _doc.data.description.customers))
+      _doc.data.description.customers)
+
+  updatedCategories = checkBMCCategories(updatedCategories,
+      _doc.data.description.type)
+
+  return _doc.setIn(['data', 'categories'], updatedCategories)
+}
+
+/**
+ * Depending on the selected company type, check/uncheck the BMC categories
+ * based on the defaults for the company type
+ * @param {Array.<Category>} categories
+ * @param {string} companyType
+ * @return {Array.<Category>} Returns the updated categories
+ */
+export function checkBMCCategories (categories, companyType) {
+  // uncheck all existing categories which are not marked as bmcDefault===true
+  const uncheckedCategories = categories.map(category => {
+    if (!category.bmcCheckedManually) {
+      return category.set('bmcChecked', false)
+    }
+    else {
+      return category
+    }
+  })
+
+  // loop over all default categories for this companyType,
+  // apply default bmcChecked values
+  const defaultCategories = bmcDefaults[companyType]
+  if (defaultCategories) {
+    const defaults = {}
+    defaultCategories.forEach(c => defaults[c.bmcId] = c.bmcChecked)
+
+    const existing = {}
+    uncheckedCategories.forEach(c => existing[c.bmcId] = true)
+
+    // update existing categories
+    const checkedCategories = uncheckedCategories.map(category => {
+      if (category.bmcId in defaults && !category.bmcCheckedManually) {
+        return category.set('bmcChecked', defaults[category.bmcId])
+      }
+      else {
+        return category
+      }
+    })
+
+    // add new categories
+    const newCategories = defaultCategories
+        .filter(category => !existing[category.bmcId])
+        .map(defaultCategory => {
+          const bmcId = defaultCategory.bmcId
+          const { bmcGroup, label } = bmcCategories.categories.find(c => c.bmcId === bmcId)
+          const { section, group } = bmcCategories.groups[bmcGroup]
+
+          return {
+            id: uuid(),
+            label,
+            section,
+            group,
+            bmcGroup: bmcGroup,
+            bmcId,
+            bmcChecked: defaults[bmcId],
+            custom: false
+          }
+        })
+
+    return checkedCategories.concat(newCategories)
+  }
+  else {
+    return uncheckedCategories
+  }
 }
 
 /**
@@ -73,6 +145,7 @@ export function generateRevenueCategories (products = [], customers = []) {
         quantities: {},
         bmcGroup: 'revenues',
         bmcChecked: true,
+        bmcCheckedManually: true,
         bmcId: product.id + ':' + customer.id
       }
     })

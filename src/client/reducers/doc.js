@@ -4,31 +4,11 @@ import debugFactory from 'debug/browser'
 import { uuid } from '../utils/uuid'
 import { removeItem, swapItems, replaceItem } from '../utils/immutable'
 import { isCustomCategory } from '../formulas'
-import { sanitizeDoc, updateRevenueCategories } from './docUtils'
+import { sanitizeDoc, updateRevenueCategories, checkBMCCategories } from './docUtils'
 
 const debug = debugFactory('vbi:reducers')
 
 import * as bmcCategories from '../data/bmcCategories.json'
-import * as newScenarioJSON from '../data/newScenario.json'
-import * as bmcDefaults  from'../data/bmcDefaults.json'
-
-const newScenario = Immutable(newScenarioJSON)
-//
-// /**
-//  * Ensure that all required fields are available in the document.
-//  * Missing fields will be added
-//  * @param {Object} doc
-//  * @return {Object}
-//  */
-// function sanitizeDoc (doc) {
-//   const _doc = Immutable(merge({}, newScenario, doc))
-//
-//   return _doc.setIn(['data', 'categories'], updateRevenueCategories(
-//       _doc.data.categories,
-//       _doc.data.description.products,
-//       _doc.data.description.customers))
-// }
-
 
 const doc = (state = Immutable({}), action) => {
   let index, filteredIndex, filteredCategories, category
@@ -47,6 +27,15 @@ const doc = (state = Immutable({}), action) => {
 
     case 'DOC_SET_PARAMETER':
       return state.setIn(['data', 'parameters', action.parameter], action.value)
+
+    case 'DOC_SET_COMPANY_TYPE':
+      return state
+          .setIn(['data', 'description', 'type'], action.companyType)
+          .setIn(['data', 'categories'], checkBMCCategories(state.data.categories, action.companyType))
+
+    case 'DOC_SET_UNIQUE_SELLING_POINT':
+      return state.setIn(['data', 'description', 'uniqueSellingPoint'],
+          action.uniqueSellingPoint)
 
     case 'DOC_SET_PRODUCTS':
       return state
@@ -75,14 +64,6 @@ const doc = (state = Immutable({}), action) => {
       return state.setIn(['data', 'categories'], state.data.categories.concat([category]))
     }
 
-    case 'DOC_SET_COMPANY_TYPE':
-      return state.setIn(['data', 'description', 'type'],
-          action.companyType)
-
-    case 'DOC_SET_UNIQUE_SELLING_POINT':
-      return state.setIn(['data', 'description', 'uniqueSellingPoint'],
-          action.uniqueSellingPoint)
-
     case 'DOC_UPDATE_CUSTOM_CATEGORIES':
       const oldCategories = state.data.categories.filter(category => isCustomCategory(category, action.bmcGroup))
       const newCategories = action.categories.map(category => {
@@ -92,22 +73,27 @@ const doc = (state = Immutable({}), action) => {
 
         if (oldCategory) {
           // update existing custom category
-          return oldCategory
-              .set('bmcChecked', true)  // keep custom category always checked
-              .merge(category)          // merge id and value
+          return oldCategory.merge({
+            id: category.id,
+            label: category.label,
+            bmcChecked: true, // keep custom category always checked
+            bmcCheckedManually: true
+          })
         }
         else {
           // it's a new custom category
           const bmcGroupObj = bmcCategories.groups[action.bmcGroup]
 
           return Immutable({
-                section: bmcGroupObj && bmcGroupObj.section,
-                group: bmcGroupObj && bmcGroupObj.group,
-                bmcGroup: action.bmcGroup,
-                bmcChecked: true,
-                custom: true
-              })
-              .merge(category) // merge id and value
+            id: category.id,
+            label: category.label,
+            section: bmcGroupObj && bmcGroupObj.section,
+            group: bmcGroupObj && bmcGroupObj.group,
+            bmcGroup: action.bmcGroup,
+            bmcChecked: true,
+            bmcCheckedManually: true,
+            custom: true
+          })
         }
       })
 
@@ -125,7 +111,10 @@ const doc = (state = Immutable({}), action) => {
         debug('check existing category', action)
 
         const category = state.data.categories[index]
-        const updatedCategory = category.set('bmcChecked', action.bmcChecked)
+        const updatedCategory = category.merge({
+          bmcChecked: action.bmcChecked,
+          bmcCheckedManually: true
+        })
 
         return state.setIn(['data', 'categories', index], updatedCategory)
       }
@@ -147,6 +136,7 @@ const doc = (state = Immutable({}), action) => {
           bmcGroup: bmcCategory.bmcGroup,
           bmcId: bmcCategory.bmcId,
           bmcChecked: action.bmcChecked,
+          bmcCheckedManually: true,
           custom: false
         }
 

@@ -61,6 +61,7 @@
  *   bmcGroup: ?string,
  *   bmcId: ?string,
  *   bmcChecked: ?boolean
+ *   bmcCheckedManually: ?boolean   
  * }} Category
  *
  * @typedef {{value: boolean, isDefault: boolean}} Option

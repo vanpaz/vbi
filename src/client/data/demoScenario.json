@@ -55,6 +55,7 @@
         "bmcGroup": "activities",
         "bmcId": "travel",
         "bmcChecked": true,
+        "bmcCheckedManually": true,
         "price": {},
         "quantities": {}
       },
@@ -66,6 +67,7 @@
         "bmcGroup": "activities",
         "bmcId": "office",
         "bmcChecked": true,
+        "bmcCheckedManually": true,
         "price": {},
         "quantities": {}
       },
@@ -362,7 +364,8 @@
         },
         "bmcGroup": "revenues",
         "bmcId": "b7e669ad-c695-4125-a59b-4b0f81f0c370:8a3efa6f-e3cd-4592-8c0b-4df5336d89f3",
-        "bmcChecked": true
+        "bmcChecked": true,
+        "bmcCheckedManually": true
       },
       {
         "id": "99a409d8-a540-4a57-9e32-26bb164a6a7d",
@@ -383,7 +386,8 @@
         },
         "bmcGroup": "revenues",
         "bmcId": "76bfec0d-044a-4bbb-bce3-1913aec1ea15:8a3efa6f-e3cd-4592-8c0b-4df5336d89f3",
-        "bmcChecked": true
+        "bmcChecked": true,
+        "bmcCheckedManually": true
       }
     ],
     "financing": {
