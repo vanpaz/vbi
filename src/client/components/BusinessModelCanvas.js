@@ -45,7 +45,7 @@ export default class BusinessModelCanvas extends Component {
 
   render () {
     const {
-        data, onSetProperty, onCheckCategory,
+        data, onSetCompanyType, onSetUniqueSellingPoint, onCheckCategory,
         onSetProducts, onSetCustomers, onUpdateCustomCategories
     } = this.props
 
@@ -56,11 +56,12 @@ export default class BusinessModelCanvas extends Component {
       }
     })
 
-    const onChangeType = (event, index, value) => {
-      onSetProperty(['description', 'type'], value)
+    const onChangeCompanyType = (event, index, value) => {
+      onSetCompanyType(value)
     }
+
     const onChangeUniqueSellingPoint = event => {
-      onSetProperty(['description', 'uniqueSellingPoint'], event.target.value)
+      onSetUniqueSellingPoint(event.target.value)
     }
 
     return <div style={styles.container} >
@@ -85,7 +86,7 @@ export default class BusinessModelCanvas extends Component {
                 <td colSpan="10">
                   <div className="outer">
                     <div className="inner main">
-                      We are a <SelectField style={{fontSize: 14}} value={data.description && data.description.type || ''} onChange={onChangeType}>
+                      We are a <SelectField style={{fontSize: 14}} value={data.description && data.description.type || ''} onChange={onChangeCompanyType}>
                         <MenuItem index={0} value="" primaryText="&nbsp;"/>
                         {
                           bmcCategories.types.map((c, index) => (
@@ -154,7 +155,7 @@ export default class BusinessModelCanvas extends Component {
                             type="text"
                             placeholder="unique selling point"
                             value={data.description && data.description.uniqueSellingPoint}
-                            onChange={onChangeUniqueSellingPoint }
+                            onChange={onChangeUniqueSellingPoint}
                         />
                       </div>
                     </div>
@@ -215,7 +216,7 @@ export default class BusinessModelCanvas extends Component {
                       </div>
                       <div className="contents">
                         { renderCategories('channels', checkedCategories, onCheckCategory) }
-                        { renderOther(data, 'channels', onSetProperty) }
+                        { renderOther(data, 'channels', onUpdateCustomCategories) }
                       </div>
                     </div>
                   </div>
@@ -327,12 +328,7 @@ export default class BusinessModelCanvas extends Component {
 
         const groupId = parent.getAttribute('data-group-id')
         const categoryId = element.getAttribute('data-category-id')
-        const categoryIndex = this.props.data.categories
-            .findIndex(category => category.id === categoryId)
-
-        if (categoryIndex !== -1) {
-          this.props.onSetProperty(['categories', categoryIndex, 'group'], groupId)
-        }
+        this.props.onMoveCategory(categoryId, groupId)
       }
     })
   }

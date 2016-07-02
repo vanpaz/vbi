@@ -61,6 +61,14 @@ export function updateCustomCategories (bmcGroup, categories) {
   return { type: 'DOC_UPDATE_CUSTOM_CATEGORIES', bmcGroup, categories }
 }
 
+export function setCompanyType (companyType) {
+  return { type: 'DOC_SET_COMPANY_TYPE', companyType }
+}
+
+export function setUniqueSellingPoint (uniqueSellingPoint) {
+  return { type: 'DOC_SET_UNIQUE_SELLING_POINT', uniqueSellingPoint }
+}
+
 /**
  * Check or uncheck a BMC category
  * @param {String} bmcId
@@ -70,20 +78,30 @@ export function checkCategory (bmcId, bmcChecked) {
   return { type: 'DOC_CHECK_CATEGORY', bmcId, bmcChecked }
 }
 
-export function renameCategory (section, group, categoryId, label) {
-  return { type: 'DOC_RENAME_CATEGORY', section, group, categoryId, label }
+export function renameCategory (categoryId, label) {
+  return { type: 'DOC_RENAME_CATEGORY', categoryId, label }
 }
 
-export function moveCategoryUp (section, group, categoryId) {
-  return { type: 'DOC_MOVE_CATEGORY_UP', section, group, categoryId }
+export function moveCategoryUp (categoryId) {
+  return { type: 'DOC_MOVE_CATEGORY_UP', categoryId }
 }
 
-export function moveCategoryDown (section, group, categoryId) {
-  return { type: 'DOC_MOVE_CATEGORY_DOWN', section, group, categoryId }
+export function moveCategoryDown (categoryId) {
+  return { type: 'DOC_MOVE_CATEGORY_DOWN', categoryId }
 }
 
-export function deleteCategory (section, group, categoryId) {
-  return { type: 'DOC_DELETE_CATEGORY', section, group, categoryId }
+/**
+ * Move a category to another group
+ * @param {string} categoryId
+ * @param {string} groupId
+ * @return {{type: string, categoryId: string, groupId: string}}
+ */
+export function moveCategory (categoryId, groupId) {
+  return { type: 'DOC_MOVE_CATEGORY', categoryId, groupId }
+}
+
+export function deleteCategory (categoryId) {
+  return { type: 'DOC_DELETE_CATEGORY', categoryId }
 }
 
 export function setParameter (parameter, value) {
@@ -94,12 +112,12 @@ export function setProperty (path, value) {
   return { type: 'DOC_SET_PROPERTY', path, value }
 }
 
-export function setPrice (section, group, categoryId, price) {
-  return { type: 'DOC_SET_PRICE', section, group, categoryId, price }
+export function setPrice (categoryId, price) {
+  return { type: 'DOC_SET_PRICE', categoryId, price }
 }
 
-export function setQuantity (section, group, categoryId, year, quantity) {
-  return { type: 'DOC_SET_QUANTITY', section, group, categoryId, year, quantity }
+export function setQuantity (categoryId, year, quantity) {
+  return { type: 'DOC_SET_QUANTITY', categoryId, year, quantity }
 }
 
 /**

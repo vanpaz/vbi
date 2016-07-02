@@ -134,8 +134,6 @@ class Inputs extends Component {
           categories.map((category, index) => <tr key={category.id}>
             <td>
               <ActionMenu
-                  section={section}
-                  group={group}
                   categoryId={category.id}
                   index={index} // provide index to enforce a re-render when moving up/down
                   label={category.label}
@@ -146,7 +144,7 @@ class Inputs extends Component {
             </td>
             {
               (!category.price || category.price.type !== 'revenue')
-                    ? this.renderQuantities(section, group, category, years)
+                    ? this.renderQuantities(category, years)
                     : <td className="info"
                           colSpan={years.length}
                           title="Quantities are coupled with revenue">(coupled with revenue)</td>
@@ -157,7 +155,7 @@ class Inputs extends Component {
                      years={years}
                      priceTypes={priceTypes}
                      onChange={(price) => {
-                       this.props.dispatch(setPrice (section, group, category.id, price))
+                       this.props.dispatch(setPrice (category.id, price))
                      }} />
             </td>
           </tr>)
@@ -176,14 +174,14 @@ class Inputs extends Component {
     </table>
   }
 
-  renderQuantities (section, group, category, years) {
+  renderQuantities (category, years) {
     return years.map(year => (<td key={year} className="quantity">
       <input className="quantity"
              value={findQuantity(category, year, '')}
              onChange={(event) => {
                          event.stopPropagation()
                          const quantity = event.target.value
-                         this.props.dispatch(setQuantity(section, group, category.id, year, quantity))
+                         this.props.dispatch(setQuantity(category.id, year, quantity))
                        }}
              onFocus={(event) => event.target.select()} />
     </td>))
@@ -210,8 +208,8 @@ class Inputs extends Component {
     })
   }
 
-  handleRenameCategory (section, group, categoryId) {
-    const category = this.findCategory(section, group, categoryId)
+  handleRenameCategory (categoryId) {
+    const category = this.findCategory(categoryId)
 
     if (category.bmcId) {
       // this is a built-in category which can't be renamed
@@ -230,22 +228,22 @@ class Inputs extends Component {
 
       this.refs.prompt.show(options).then(newLabel => {
         if (newLabel !== null) {
-          this.props.dispatch(renameCategory(section, group, categoryId, newLabel))
+          this.props.dispatch(renameCategory(categoryId, newLabel))
         }
       })
     }
   }
 
-  handleMoveCategoryUp (section, group, categoryId) {
-    this.props.dispatch(moveCategoryUp(section, group, categoryId))
+  handleMoveCategoryUp (categoryId) {
+    this.props.dispatch(moveCategoryUp(categoryId))
   }
 
-  handleMoveCategoryDown (section, group, categoryId) {
-    this.props.dispatch(moveCategoryDown(section, group, categoryId))
+  handleMoveCategoryDown (categoryId) {
+    this.props.dispatch(moveCategoryDown(categoryId))
   }
 
-  handleDeleteCategory (section, group, categoryId) {
-    const category = this.findCategory(section, group, categoryId)
+  handleDeleteCategory (categoryId) {
+    const category = this.findCategory(categoryId)
 
     const options = {
       title: 'Delete category',
@@ -254,14 +252,13 @@ class Inputs extends Component {
 
     this.refs.confirm.show(options).then(ok => {
       if (ok) {
-        this.props.dispatch(deleteCategory(section, group, categoryId))
+        this.props.dispatch(deleteCategory(categoryId))
       }
     })
   }
 
-  findCategory (section, group, categoryId) {
-    return this.props.data.categories
-        .find(category => category.section === section && category.group === group && category.id === categoryId)
+  findCategory (categoryId) {
+    return this.props.data.categories.find(category => category.id === categoryId)
   }
 
 }

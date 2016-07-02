@@ -30,7 +30,7 @@ const newScenario = Immutable(newScenarioJSON)
 
 
 const doc = (state = Immutable({}), action) => {
-  let index, filteredIndex, categories
+  let index, filteredIndex, filteredCategories, category
 
   debug(action.type, action)
 
@@ -73,6 +73,14 @@ const doc = (state = Immutable({}), action) => {
 
       return state.setIn(['data', 'categories'], state.data.categories.concat([category]))
     }
+
+    case 'DOC_SET_COMPANY_TYPE':
+      return state.setIn(['data', 'description', 'type'],
+          action.companyType)
+
+    case 'DOC_SET_UNIQUE_SELLING_POINT':
+      return state.setIn(['data', 'description', 'uniqueSellingPoint'],
+          action.uniqueSellingPoint)
 
     case 'DOC_UPDATE_CUSTOM_CATEGORIES':
       const oldCategories = state.data.categories.filter(category => isCustomCategory(category, action.bmcGroup))
@@ -147,43 +155,62 @@ const doc = (state = Immutable({}), action) => {
       }
 
     case 'DOC_RENAME_CATEGORY':
-      index = findCategoryIndex(state.data, action.section, action.group, action.categoryId)
+      index = state.data.categories.findIndex(category => category.id === action.categoryId)
 
       return state.setIn(['data', 'categories', index, 'label'], action.label)
 
     case 'DOC_MOVE_CATEGORY_UP':
-      categories = filterCategories(state.data, action.section, action.group)
+    {
+      const {section, group} = state.data.categories.find(category => category.id === action.categoryId)
 
-      filteredIndex = categories.findIndex(category => category.id === action.categoryId)
+      filteredCategories = filterCategories(state.data, section, group)
+
+      filteredIndex = filteredCategories.findIndex(category => category.id === action.categoryId)
       if (filteredIndex > 0) {
-        const prevCategory = categories[filteredIndex - 1]
-        const index     = findCategoryIndex(state.data, action.section, action.group, action.categoryId)
-        const prevIndex = findCategoryIndex(state.data, action.section, action.group, prevCategory.id)
+        const prevCategory = filteredCategories[filteredIndex - 1]
+        const index = findCategoryIndex(state.data, action.categoryId)
+        const prevIndex = findCategoryIndex(state.data, prevCategory.id)
 
         return state.setIn(['data', 'categories'], swapItems(state.data.categories, index, prevIndex))
       }
       else {
         return state
       }
+    }
 
     case 'DOC_MOVE_CATEGORY_DOWN':
-      categories = filterCategories(state.data, action.section, action.group)
+    {
+      const {section, group} = state.data.categories.find(category => category.id === action.categoryId)
 
-      filteredIndex = categories.findIndex(category => category.id === action.categoryId)
-      if (filteredIndex < categories.length - 1) {
-        const nextCategory = categories[filteredIndex + 1]
-        const index     = findCategoryIndex(state.data, action.section, action.group, action.categoryId)
-        const nextIndex = findCategoryIndex(state.data, action.section, action.group, nextCategory.id)
+      filteredCategories = filterCategories(state.data, section, group)
+
+      filteredIndex = filteredCategories.findIndex(category => category.id === action.categoryId)
+      if (filteredIndex < filteredCategories.length - 1) {
+        const nextCategory = filteredCategories[filteredIndex + 1]
+        const index = findCategoryIndex(state.data, action.categoryId)
+        const nextIndex = findCategoryIndex(state.data, nextCategory.id)
 
         return state.setIn(['data', 'categories'], swapItems(state.data.categories, index, nextIndex))
       }
       else {
         return state
       }
+    }
 
+    case 'DOC_MOVE_CATEGORY':
+      index = state.data.categories.findIndex(category => category.id === action.categoryId)
+
+      if (index !== -1) {
+        return state.setIn(['data', 'categories', index, 'group'], action.groupId)
+      }
+      else {
+        return state
+      }
+      
     case 'DOC_DELETE_CATEGORY':
       {
-        index = findCategoryIndex(state.data, action.section, action.group, action.categoryId)
+        index = state.data.categories.findIndex(category => category.id === action.categoryId)
+
         const category = state.data.categories[index]
         if (category.bmcGroup) {
           // this is a built-in BMC category, mark it as deleted but keep it in the doc
@@ -197,11 +224,11 @@ const doc = (state = Immutable({}), action) => {
       }
 
     case 'DOC_SET_PRICE':
-      index = findCategoryIndex(state.data, action.section, action.group, action.categoryId)
+      index = findCategoryIndex(state.data, action.categoryId)
       return state.setIn(['data', 'categories', index, 'price'], action.price)
 
     case 'DOC_SET_QUANTITY':
-      index = findCategoryIndex(state.data, action.section, action.group, action.categoryId)
+      index = findCategoryIndex(state.data, action.categoryId)
       return state.setIn(['data', 'categories', index, 'quantities', action.year], action.quantity)
 
     default:
@@ -212,14 +239,11 @@ const doc = (state = Immutable({}), action) => {
 /**
  * Find the index of a category
  * @param data
- * @param section
- * @param group
  * @param categoryId
  * @return {number|*}
  */
-function findCategoryIndex (data, section, group, categoryId) {
-  const categoryIndex = data.categories
-      .findIndex(c => c.section === section && c.group === group && c.id === categoryId)
+function findCategoryIndex (data, categoryId) {
+  const categoryIndex = data.categories.findIndex(category => category.id === categoryId)
 
   if (categoryIndex === -1) {
     throw new Error('Category not found')

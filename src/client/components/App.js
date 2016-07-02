@@ -20,8 +20,10 @@ import ThemeManager from 'material-ui/lib/styles/theme-manager'
 import theme from '../theme'
 import Notification from './dialogs/Notification'
 import {
-    setUser, listDocs, renameDoc, setDoc, viewPage, 
-    setProperty, setProducts, setCustomers, checkCategory, updateCustomCategories,
+    setUser, listDocs, renameDoc, setDoc, viewPage,
+    setCompanyType, setUniqueSellingPoint, setProducts, setCustomers,
+    checkCategory, moveCategory,
+    updateCustomCategories,
     viewInputs, viewOutputs
 } from '../actions'
 import Menu from './Menu'
@@ -162,11 +164,12 @@ class App extends Component {
       <div className="container whole">
         <BusinessModelCanvas
             data={this.props.doc.data}
-            onSetProperty={this.handleSetProperty}
+            onSetCompanyType={this.handleSetCompanyType}
+            onSetUniqueSellingPoint={this.handleSetUniqueSellingPoint}
             onSetProducts={this.handleSetProducts}
             onSetCustomers={this.handleSetCustomers}
-            onSetProperty={this.handleSetProperty}
             onCheckCategory={this.handleCheckCategory}
+            onMoveCategory={this.handleMoveCategory}
             onUpdateCustomCategories={this.handleUpdateCustomCategories}
         />
       </div>
@@ -370,13 +373,21 @@ class App extends Component {
   }
 
   /**
-   * Set a property in the document
-   * @param {Array} path
-   * @param {*} value
+   * Set a company type
+   * @param {string} companyType
    */
-  handleSetProperty (path, value) {
-    debug('setProperty', path, value)
-    this.props.dispatch(setProperty(path, value))
+  handleSetCompanyType (companyType) {
+    debug('setCompanyType', companyType)
+    this.props.dispatch(setCompanyType(companyType))
+  }
+
+  /**
+   * Set a unique selling point
+   * @param {string} uniqueSellingPoint
+   */
+  handleSetUniqueSellingPoint (uniqueSellingPoint) {
+    debug('setUniqueSellingPoint', uniqueSellingPoint)
+    this.props.dispatch(setUniqueSellingPoint(uniqueSellingPoint))
   }
 
   /**
@@ -405,6 +416,16 @@ class App extends Component {
   handleCheckCategory (bmcId, bmcChecked) {
     debug('checkCategory', bmcId, bmcChecked)
     this.props.dispatch(checkCategory(bmcId, bmcChecked))
+  }
+
+  /**
+   * Move a category to another group
+   * @param {String} categoryId
+   * @param {String} groupId
+   */
+  handleMoveCategory (categoryId, groupId) {
+    debug('moveCategory', categoryId, groupId)
+    this.props.dispatch(moveCategory(categoryId, groupId))
   }
 
   /**

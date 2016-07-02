@@ -78,7 +78,7 @@ export default class ActionMenu extends React.Component {
                   title="Rename category"
                   onTouchTap={ (event) => {
                     this.handleRequestClose()
-                    this.props.onRename(this.props.section, this.props.group, this.props.categoryId)
+                    this.props.onRename(this.props.categoryId)
                   }}
                   style={styles.actionButton}>
                 <EditIcon color="white" hoverColor={theme.palette.accent1Color} />
@@ -88,7 +88,7 @@ export default class ActionMenu extends React.Component {
               <IconButton
                   key="up"
                   title="Move category up"
-                  onTouchTap={(event) => this.props.onMoveUp(this.props.section, this.props.group, this.props.categoryId)}
+                  onTouchTap={(event) => this.props.onMoveUp(this.props.categoryId)}
                   style={styles.actionButton}>
                 <UpIcon color="white" hoverColor={theme.palette.accent1Color} />
               </IconButton>
@@ -97,7 +97,7 @@ export default class ActionMenu extends React.Component {
               <IconButton
                   key="down"
                   title="Move category down"
-                  onTouchTap={ (event) => this.props.onMoveDown(this.props.section, this.props.group, this.props.categoryId) }
+                  onTouchTap={ (event) => this.props.onMoveDown(this.props.categoryId) }
                   style={styles.actionButton}>
                 <DownIcon color="white" hoverColor={theme.palette.accent1Color} />
               </IconButton>
@@ -108,7 +108,7 @@ export default class ActionMenu extends React.Component {
                   title="Delete category"
                   onTouchTap={(event) => {
                     this.handleRequestClose()
-                    this.props.onDelete(this.props.section, this.props.group, this.props.categoryId)
+                    this.props.onDelete(this.props.categoryId)
                   }}
                   style={styles.actionButton}>
                 <ClearIcon color="white" hoverColor={theme.palette.accent1Color} />
