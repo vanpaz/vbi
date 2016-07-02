@@ -10,6 +10,7 @@ const debug = debugFactory('vbi:reducers')
 
 import * as bmcCategories from '../data/bmcCategories.json'
 import * as newScenarioJSON from '../data/newScenario.json'
+import * as bmcDefaults  from'../data/bmcDefaults.json'
 
 const newScenario = Immutable(newScenarioJSON)
 //

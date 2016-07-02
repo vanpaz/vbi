@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import Immutable from 'seamless-immutable'
 import Dragula from 'react-dragula'
 
 import Card from 'material-ui/lib/card/card'
@@ -12,7 +11,6 @@ import TextItemList from './TextItemList'
 
 import { filterActiveCategories, isCustomCategory } from '../formulas'
 import * as bmcCategories from '../data/bmcCategories.json'
-import * as bmcDefaults  from'../data/bmcDefaults.json' // TODO: re-implement using bmcDefaults
 
 import shouldComponentUpdate from '../utils/shouldComponentUpdate'
 
@@ -230,7 +228,7 @@ export default class BusinessModelCanvas extends Component {
                         Cost structure
                       </div>
                       <div className="contents">
-                        { this.renderCostStructure(data) }
+                        { renderCostStructure(data) }
                       </div>
                     </div>
                   </div>
@@ -242,7 +240,7 @@ export default class BusinessModelCanvas extends Component {
                         Revenue streams
                       </div>
                       <div className="contents">
-                        { this.renderRevenueStreams(data) }
+                        { renderRevenueStreams(data) }
                       </div>
                     </div>
                   </div>
@@ -253,59 +251,6 @@ export default class BusinessModelCanvas extends Component {
         </CardText>
       </Card>
     </div>
-  }
-
-  renderCostStructure (data) {
-    // filter categories marked as deleted
-    const activeCategories = filterActiveCategories(data)
-
-    const direct      = activeCategories.filter(category => category.section === 'costs' && category.group === 'direct')
-    const investments = activeCategories.filter(category => category.section === 'investments')
-    const indirect    = activeCategories.filter(category => category.section === 'costs' && category.group !== 'direct' && category.group !== 'personnel')
-
-    const renderCategory = category => {
-      return <div className="cost-group-item" key={category.id} >
-        {category.label}
-      </div>
-    }
-
-    const renderDraggableCategory = category => {
-      return <div className="cost-group-item" key={category.id} data-category-id={category.id}>
-        <span className="ellipsis">{'\u22ee'}</span>&nbsp;{category.label}
-      </div>
-    }
-
-    return <table className="cost-structure">
-      <tbody>
-        <tr>
-          <th>Direct</th>
-          <th>Indirect</th>
-          <th>Investments</th>
-        </tr>
-        <tr>
-          <td className="cost-group draggable" ref="groupDirect" data-group-id="direct">
-            { direct.map(renderDraggableCategory) }
-          </td>
-          <td className="cost-group draggable" ref="groupIndirect" data-group-id="indirect">
-            { indirect.map(renderDraggableCategory) }
-          </td>
-          <td className="cost-group">
-            { investments.map(renderCategory) }
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  }
-
-  renderRevenueStreams (data) {
-    return filterActiveCategories(data)
-        .filter(category => category.deleted !== true) // filter deleted categories
-        .filter(category => category.section === 'revenues')
-        .map(category => {
-          return <div key={category.id} className="revenue-stream">
-            {category.label}
-          </div>
-        })
   }
 
   componentDidMount () {
@@ -338,6 +283,59 @@ export default class BusinessModelCanvas extends Component {
   }
 }
 
+function renderCostStructure (data) {
+  // filter categories marked as deleted
+  const activeCategories = filterActiveCategories(data)
+
+  const direct      = activeCategories.filter(category => category.section === 'costs' && category.group === 'direct')
+  const investments = activeCategories.filter(category => category.section === 'investments')
+  const indirect    = activeCategories.filter(category => category.section === 'costs' && category.group !== 'direct' && category.group !== 'personnel')
+
+  const renderCategory = category => {
+    return <div className="cost-group-item" key={category.id} >
+      {category.label}
+    </div>
+  }
+
+  const renderDraggableCategory = category => {
+    return <div className="cost-group-item" key={category.id} data-category-id={category.id}>
+      <span className="ellipsis">{'\u22ee'}</span>&nbsp;{category.label}
+    </div>
+  }
+
+  return <table className="cost-structure">
+    <tbody>
+    <tr>
+      <th>Direct</th>
+      <th>Indirect</th>
+      <th>Investments</th>
+    </tr>
+    <tr>
+      <td className="cost-group draggable" ref="groupDirect" data-group-id="direct">
+        { direct.map(renderDraggableCategory) }
+      </td>
+      <td className="cost-group draggable" ref="groupIndirect" data-group-id="indirect">
+        { indirect.map(renderDraggableCategory) }
+      </td>
+      <td className="cost-group">
+        { investments.map(renderCategory) }
+      </td>
+    </tr>
+    </tbody>
+  </table>
+}
+
+function renderRevenueStreams (data) {
+  return filterActiveCategories(data)
+      .filter(category => category.deleted !== true) // filter deleted categories
+      .filter(category => category.section === 'revenues')
+      .map(category => {
+        return <div key={category.id} className="revenue-stream">
+          {category.label}
+        </div>
+      })
+}
+
 function renderCategories (bmcGroup, checkedCategories, onCheckCategory) {
   return bmcCategories.categories
       .filter(bmcCategory => bmcCategory.bmcGroup === bmcGroup)
@@ -349,7 +347,7 @@ function renderCategories (bmcGroup, checkedCategories, onCheckCategory) {
             onCheckCategory(bmcCategory.bmcId, event.target.checked)
           }
         }
-    
+
         return <div key={bmcCategory.bmcId} style={{marginRight: -10}}>
           <CheckBox {...props} />
         </div>
