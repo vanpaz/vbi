@@ -3,7 +3,7 @@ import debugFactory from 'debug/browser'
 
 import { uuid } from '../utils/uuid'
 import { removeItem, swapItems, replaceItem } from '../utils/immutable'
-import { isCustomCategory } from '../formulas'
+import { isCustomCategory, types } from '../formulas'
 import { sanitizeDoc, updateRevenueCategories, checkBMCCategories } from './docUtils'
 
 const debug = debugFactory('vbi:reducers')
@@ -83,12 +83,20 @@ const doc = (state = Immutable({}), action) => {
         else {
           // it's a new custom category
           const bmcGroupObj = bmcCategories.groups[action.bmcGroup]
+          const section = bmcGroupObj && bmcGroupObj.section
+          const group = bmcGroupObj && bmcGroupObj.group
+
+          const price = (section === 'investments')
+              ? types.investment.defaultPrice   // investments
+              : types.constant.defaultPrice     // costs
 
           return Immutable({
             id: category.id,
             label: category.label,
-            section: bmcGroupObj && bmcGroupObj.section,
-            group: bmcGroupObj && bmcGroupObj.group,
+            section,
+            group,
+            price,
+            quantities: {},
             bmcGroup: action.bmcGroup,
             bmcChecked: true,
             bmcCheckedManually: true,
@@ -127,12 +135,20 @@ const doc = (state = Immutable({}), action) => {
         }
 
         const bmcGroupObj = bmcCategories.groups[bmcCategory.bmcGroup]
+        const section = bmcGroupObj && bmcGroupObj.section
+        const group = bmcGroupObj && bmcGroupObj.group
+
+        const price = (section === 'investments')
+            ? types.investment.defaultPrice   // investments
+            : types.constant.defaultPrice     // costs
 
         const newCategory = {
           id: uuid(),
           label: bmcCategory.label,
-          section: bmcGroupObj && bmcGroupObj.section,
-          group: bmcGroupObj && bmcGroupObj.group,
+          section,
+          group,
+          price,
+          quantities: {},
           bmcGroup: bmcCategory.bmcGroup,
           bmcId: bmcCategory.bmcId,
           bmcChecked: action.bmcChecked,
