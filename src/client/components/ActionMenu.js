@@ -76,10 +76,7 @@ export default class ActionMenu extends React.Component {
               <IconButton
                   key="rename"
                   title="Rename category"
-                  onTouchTap={ (event) => {
-                    this.handleRequestClose()
-                    this.props.onRename(this.props.categoryId)
-                  }}
+                  onTouchTap={this.handleRename}
                   style={styles.actionButton}>
                 <EditIcon color="white" hoverColor={theme.palette.accent1Color} />
               </IconButton>
@@ -88,7 +85,7 @@ export default class ActionMenu extends React.Component {
               <IconButton
                   key="up"
                   title="Move category up"
-                  onTouchTap={(event) => this.props.onMoveUp(this.props.categoryId)}
+                  onTouchTap={this.handleMoveUp}
                   style={styles.actionButton}>
                 <UpIcon color="white" hoverColor={theme.palette.accent1Color} />
               </IconButton>
@@ -97,7 +94,7 @@ export default class ActionMenu extends React.Component {
               <IconButton
                   key="down"
                   title="Move category down"
-                  onTouchTap={ (event) => this.props.onMoveDown(this.props.categoryId) }
+                  onTouchTap={this.handleMoveDown}
                   style={styles.actionButton}>
                 <DownIcon color="white" hoverColor={theme.palette.accent1Color} />
               </IconButton>
@@ -106,10 +103,7 @@ export default class ActionMenu extends React.Component {
               <IconButton
                   key="delete"
                   title="Delete category"
-                  onTouchTap={(event) => {
-                    this.handleRequestClose()
-                    this.props.onDelete(this.props.categoryId)
-                  }}
+                  onTouchTap={this.handleDelete}
                   style={styles.actionButton}>
                 <ClearIcon color="white" hoverColor={theme.palette.accent1Color} />
               </IconButton>
@@ -119,6 +113,24 @@ export default class ActionMenu extends React.Component {
         </table>
       </Popover>
     </div>
+  }
+
+  handleRename (event) {
+    this.handleRequestClose()
+    this.props.onRename(this.props.categoryId)
+  }
+
+  handleMoveUp(event) {
+    this.props.onMoveUp(this.props.categoryId)
+  }
+
+  handleMoveDown(event) {
+    this.props.onMoveDown(this.props.categoryId)
+  }
+
+  handleDelete(event) {
+    this.handleRequestClose()
+    this.props.onDelete(this.props.categoryId)
   }
 
   handleTouchTap (event) {
