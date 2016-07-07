@@ -7,6 +7,7 @@ import IconButton from 'material-ui/lib/icon-button'
 import LeftNav from 'material-ui/lib/left-nav'
 import NavigationMenuIcon from 'material-ui/lib/svg-icons/navigation/menu'
 import List from 'material-ui/lib/lists/list'
+import Divider from 'material-ui/lib/divider'
 import ListItem from 'material-ui/lib/lists/list-item'
 import EditIcon from 'material-ui/lib/svg-icons/image/edit'
 import OpenIcon from 'material-ui/lib/svg-icons/file/folder-open'
@@ -14,6 +15,8 @@ import SaveIcon from 'material-ui/lib/svg-icons/content/save'
 import CreateIcon from 'material-ui/lib/svg-icons/content/add'
 import ClearIcon from 'material-ui/lib/svg-icons/content/clear'
 import ToggleStarIcon from 'material-ui/lib/svg-icons/toggle/star'
+import UploadIcon from 'material-ui/lib/svg-icons/file/file-upload'
+import DownloadIcon from 'material-ui/lib/svg-icons/file/file-download'
 
 import SignInDialog from './dialogs/SignInDialog'
 import DeleteDialog from './dialogs/DeleteDialog'
@@ -132,6 +135,7 @@ export default class Menu extends React.Component {
                 this.hide()
                 this.demoDoc()
               }} />
+          <Divider />
           <ListItem
               primaryText="Rename"
               leftIcon={<EditIcon />}
@@ -158,6 +162,21 @@ export default class Menu extends React.Component {
               onTouchTap={(event) => {
                 this.hide()
                 this.saveDocAs()
+              }} />
+          <Divider />
+          <ListItem
+              primaryText="Open from disk"
+              leftIcon={<UploadIcon />}
+              onTouchTap={(event) => {
+                this.hide()
+                this.uploadDoc()
+              }} />
+          <ListItem
+              primaryText="Save to disk"
+              leftIcon={<DownloadIcon />}
+              onTouchTap={(event) => {
+                this.hide()
+                this.downloadDoc()
               }} />
         </List>
 
@@ -292,6 +311,20 @@ export default class Menu extends React.Component {
         this.props.onSaveDocAs(newTitle)
       }
     })
+  }
+
+  uploadDoc () {
+    debug('uploadDoc')
+
+    
+    
+    this.props.onUploadDoc()
+  }
+
+  downloadDoc () {
+    debug('downloadDoc')
+
+    this.props.onDownloadDoc()
   }
 
   /**

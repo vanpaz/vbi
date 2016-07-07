@@ -19,6 +19,7 @@ import ThemeManager from 'material-ui/lib/styles/theme-manager'
 
 import theme from '../theme'
 import Notification from './dialogs/Notification'
+import Alert from './dialogs/Alert'
 import {
     setUser, listDocs, renameDoc, setDoc, viewPage,
     setCompanyType, setUniqueSellingPoint, setProducts, setCustomers,
@@ -35,6 +36,10 @@ import { request } from '../rest/request'
 import { list, open, save, del } from '../rest/docs'
 import { hash } from '../utils/hash'
 import bindMethods from '../utils/bindMethods'
+
+// for uploading/downloading files
+import '../assets/filereader.js/filereader'
+import { saveAs } from 'file-saver/FileSaver'
 
 import * as newScenarioJSON from '../data/newScenario.json'
 import * as demoScenarioJSON from '../data/demoScenario.json'
@@ -91,9 +96,12 @@ class App extends Component {
             onRenameDoc={this.handleRenameDoc}
             onSaveDoc={this.handleSaveDoc}
             onSaveDocAs={this.handleSaveDocAs}
+            onUploadDoc={this.handleUploadDoc}
+            onDownloadDoc={this.handleDownloadDoc}
             onDeleteDoc={this.handleDeleteDoc}
         />
 
+        <Alert ref="alert" />
         <Notification ref="notification" />
 
         {
@@ -349,6 +357,74 @@ class App extends Component {
           this.fetchDocs()
         })
         .catch((err) => this.handleError(err))
+  }
+
+  handleUploadDoc () {
+    debug('handleUploadDoc')
+
+    const fileReaderId = 'loadDocument'
+
+    this.refs.alert.show({
+      title: 'Open from disk',
+      actionText: 'Cancel',
+      description: <div>
+        <p>
+          Select a file to open from disk:
+        </p>
+        <p>
+          <input type="file" id={fileReaderId} />
+        </p>
+        </div>
+    })
+
+    // on next tick, the alert is rendered and we can attach the FileReader
+    setTimeout(() => {
+      try {
+        const onLoad = (event, file) => {
+          this.refs.alert.hide()
+
+          debug('upoaded file', event.target.result)
+
+          try {
+            const uploadedDoc = JSON.parse(event.target.result)
+            this.props.dispatch(setDoc(uploadedDoc))
+          }
+          catch (err) {
+            this.handleError(err)
+          }
+        }
+
+        FileReaderJS.setupInput(document.getElementById(fileReaderId), {
+          readAsDefault: 'Text',
+          on: {
+            load: onLoad
+          }
+        });
+      }
+      catch (err) {
+        this.handleError(err)
+      }
+    }, 0)
+  }
+
+  handleDownloadDoc () {
+    debug('handleDownloadDoc')
+
+    try {
+      const fileName = (this.props.doc.title || 'My Scenario') + '.json'
+      const json = {
+        // only save the properties title and data, not the fields _id, _rev, auth, updated
+        title: this.props.doc.title,
+        data: this.props.doc.data
+      }
+      const stringified = JSON.stringify(json, null, 2)
+
+      const blob = new Blob([stringified], {type: 'application/json;charset=utf-8'})
+      saveAs(blob, fileName)
+    }
+    catch (err) {
+      this.handleError(err)
+    }
   }
 
   /**

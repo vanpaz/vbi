@@ -10,6 +10,7 @@ import FlatButton from 'material-ui/lib/flat-button'
  *
  *     this.refs.alertDialog.show({
  *       title: 'Rename category',
+ *       actionText: 'Ok',
  *       description: <div>
  *         <p>
  *           Built-in categories cannot be renamed.
@@ -30,6 +31,7 @@ export default class Alert extends React.Component {
     this.state = {
       open: false,
       title: null,
+      actionText: null,
       description: null,
       handler: function () {}
     }
@@ -38,7 +40,7 @@ export default class Alert extends React.Component {
   render () {
     const actions = [
       <FlatButton
-          label="Ok"
+          label={this.state.actionText || 'Ok'}
           primary={true}
           keyboardFocused={true}
           onTouchTap={event => this.hide() }
@@ -55,11 +57,12 @@ export default class Alert extends React.Component {
     </Dialog>
   }
 
-  show ({ title, description }) {
+  show ({ title, description, actionText }) {
     return new Promise((resolve, reject) => {
       this.setState({
         open: true,
         title: title || 'Title',
+        actionText,
         description: description || 'Description',
         handler: resolve
       })
