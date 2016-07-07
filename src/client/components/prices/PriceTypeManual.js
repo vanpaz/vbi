@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import TextField from 'material-ui/lib/text-field'
+
+import DebouncedTextField from '../controls/DebouncedTextField'
 
 const styles = {
   textField: {width: 128}
@@ -35,11 +36,11 @@ export default class PriceTypeManual extends Component {
   }
 
   renderValue (year, value) {
-    return <TextField
+    return <DebouncedTextField
         value={value}
         hintText="23k"
         style={styles.textField}
-        onChange={(event) => this.handleChangeEntry(year, event.target.value)} />
+        onChange={(value) => this.handleChangeEntry(year, value)} />
   }
 
   handleChangeEntry (year, value) {

@@ -5,6 +5,7 @@ import debugFactory from 'debug/browser'
 import InfoIcon from 'material-ui/lib/svg-icons/action/help'
 
 import InfoPopover from './InfoPopover'
+import DebouncedInput from './controls/DebouncedInput'
 
 import { setProperty } from '../actions'
 import { getProp } from '../utils/object'
@@ -92,16 +93,15 @@ class BalanceSheet extends Component {
         : rawValue
 
     return <td key="initial" className="input-field">
-      <input
+      <DebouncedInput
           value={value}
           className={ validValue ? '' : ' invalid' }
-          onChange={(event) => {
-            event.stopPropagation()
-            const value = numberRegExp.test(event.target.value)  // test whether a valid number
-              ? normalize(event.target.value, magnitude)
-              : event.target.value
+          onChange={(value) => {
+            const normalizedValue = numberRegExp.test(value)  // test whether a valid number
+              ? normalize(value, magnitude)
+              : value
 
-              this.props.dispatch(setProperty(path, value))
+              this.props.dispatch(setProperty(path, normalizedValue))
            }}
       />
     </td>

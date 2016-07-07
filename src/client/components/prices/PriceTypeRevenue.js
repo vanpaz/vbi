@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import TextField from 'material-ui/lib/text-field'
+
+import DebouncedTextField from '../controls/DebouncedTextField'
 
 export default class PriceTypeRevenue extends Component {
   render () {
@@ -8,11 +9,11 @@ export default class PriceTypeRevenue extends Component {
         Enter a percentage of the revenue.
       </p>
 
-      <TextField
+      <DebouncedTextField
           value={this.props.price.percentage}
           hintText="5%"
           floatingLabelText="Percentage of revenue"
-          onChange={event => this.handleChange('percentage', event.target.value)} />
+          onChange={value => this.handleChange('percentage', value)} />
     </div>
   }
 

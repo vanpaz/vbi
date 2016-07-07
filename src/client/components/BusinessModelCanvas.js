@@ -7,7 +7,8 @@ import CheckBox from 'material-ui/lib/checkbox'
 import SelectField from 'material-ui/lib/select-field'
 import MenuItem from 'material-ui/lib/menus/menu-item'
 
-import TextItemList from './TextItemList'
+import TextItemList from './controls/TextItemList'
+import DebouncedInput from './controls/DebouncedInput'
 
 import { filterActiveCategories, isCustomCategory } from '../formulas'
 import * as bmcCategories from '../data/bmcCategories.json'
@@ -56,10 +57,6 @@ export default class BusinessModelCanvas extends Component {
 
     const onChangeCompanyType = (event, index, value) => {
       onSetCompanyType(value)
-    }
-
-    const onChangeUniqueSellingPoint = event => {
-      onSetUniqueSellingPoint(event.target.value)
     }
 
     return <div style={styles.container} >
@@ -149,11 +146,11 @@ export default class BusinessModelCanvas extends Component {
                         <p>
                           and they like us because of:
                         </p>
-                        <input
+                        <DebouncedInput
                             type="text"
                             placeholder="unique selling point"
                             value={data.description && data.description.uniqueSellingPoint}
-                            onChange={onChangeUniqueSellingPoint}
+                            onChange={onSetUniqueSellingPoint}
                         />
                       </div>
                     </div>

@@ -7,6 +7,7 @@ import CardText from 'material-ui/lib/card/card-text'
 import Tabs from 'material-ui/lib/tabs/tabs'
 import Tab from 'material-ui/lib/tabs/tab'
 
+import DebouncedInput from './controls/DebouncedInput'
 import Alert from './dialogs/Alert'
 import Prompt from './dialogs/Prompt'
 import Confirm from './dialogs/Confirm'
@@ -176,14 +177,13 @@ class Inputs extends Component {
 
   renderQuantities (category, years) {
     return years.map(year => (<td key={year} className="quantity">
-      <input className="quantity"
-             value={findQuantity(category, year, '')}
-             onChange={(event) => {
-                         event.stopPropagation()
-                         const quantity = event.target.value
-                         this.props.dispatch(setQuantity(category.id, year, quantity))
-                       }}
-             onFocus={(event) => event.target.select()} />
+      <DebouncedInput
+          className="quantity"
+           value={findQuantity(category, year, '')}
+           onChange={(quantity) => {
+             this.props.dispatch(setQuantity(category.id, year, quantity))
+           }}
+           onFocus={(event) => event.target.select()} />
     </td>))
   }
 

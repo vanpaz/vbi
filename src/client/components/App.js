@@ -91,7 +91,9 @@ class App extends Component {
 
     return (
       <div>
-        { this.renderAppBar() }
+        {
+          this.renderAppBar()
+        }
 
         <Menu
             ref="menu"

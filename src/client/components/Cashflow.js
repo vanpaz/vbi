@@ -4,6 +4,7 @@ import debugFactory from 'debug/browser'
 
 import RaisedButton from 'material-ui/lib/raised-button';
 
+import DebouncedInput from './controls/DebouncedInput'
 import { setProperty } from '../actions'
 import { getProp } from '../utils/object'
 import { format, parseValue, numberRegExp } from '../utils/number'
@@ -97,15 +98,14 @@ class Cashflow extends Component {
               : values[year]
 
           return <td key={year} className="input-field" >
-            <input value={value}
+            <DebouncedInput value={value}
                    className={ validValue ? '' : ' invalid' }
-                   onChange={(event) => {
-                     event.stopPropagation()
-                     const value = numberRegExp.test(event.target.value)  // test whether a valid number
-                       ? parseValue(event.target.value) * magnitude
-                       : event.target.value
+                   onChange={(value) => {
+                     const normalizedValue = numberRegExp.test(value)  // test whether a valid number
+                       ? parseValue(value) * magnitude
+                       : value
 
-                     this.props.dispatch(setProperty(entry.path.concat(year), value))
+                     this.props.dispatch(setProperty(entry.path.concat(year), normalizedValue))
                    }}
                    onFocus={(event) => event.target.select()} />
           </td>

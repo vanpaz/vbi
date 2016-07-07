@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import TextField from 'material-ui/lib/text-field'
+import DebouncedTextField from '../controls/DebouncedTextField'
 
 import bindMethods from '../../utils/bindMethods'
 
@@ -16,13 +16,13 @@ export default class PriceTypeInvestment extends Component {
       <p className="description">
         Enter the value and depreciation of the investment.
       </p>
-      <TextField
+      <DebouncedTextField
           value={this.props.price.value}
           hintText="1000"
           floatingLabelText="Cost"
           onChange={this.handleChangePrice} />
       <br />
-      <TextField
+      <DebouncedTextField
           value={this.props.price.depreciationPeriod}
           hintText="5"
           floatingLabelText="Depreciation period (years)"
@@ -30,18 +30,18 @@ export default class PriceTypeInvestment extends Component {
     </div>
   }
 
-  handleChangePrice (event) {
+  handleChangePrice (value) {
     const price = this.props.price
         .set('type', 'investment')
-        .set('value', event.target.value)
+        .set('value', value)
 
     this.props.onChange(price)
   }
 
-  handleChangeDepreciation (event) {
+  handleChangeDepreciation (value) {
     const price = this.props.price
         .set('type', 'investment')
-        .set('depreciationPeriod', event.target.value)
+        .set('depreciationPeriod', value)
 
     this.props.onChange(price)
   }

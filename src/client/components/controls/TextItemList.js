@@ -4,8 +4,9 @@ import Immutable from 'seamless-immutable'
 import RemoveIcon from 'material-ui/lib/svg-icons/content/remove-circle'
 import AddIcon from 'material-ui/lib/svg-icons/content/add-circle'
 
-import bindMethods from '../utils/bindMethods'
-import { uuid } from '../utils/uuid'
+import DebouncedInput from './DebouncedInput'
+import bindMethods from '../../utils/bindMethods'
+import { uuid } from '../../utils/uuid'
 
 const styles = {
   button: {
@@ -64,10 +65,11 @@ export default class TextItemList extends Component {
 
     return <div className="list-item" key={entry.id} >
       <div className="item-value" >
-        <input ref={this.getItemRef(entry.id)}
-               placeholder={this.props.placeholder}
-               value={entry.value}
-               onChange={event => this.changeItem({id: entry.id, value: event.target.value})} />
+        <DebouncedInput
+            ref={this.getItemRef(entry.id)}
+            placeholder={this.props.placeholder}
+            value={entry.value}
+            onChange={value => this.changeItem({id: entry.id, value})} />
       </div>
       <div className="remove-item">
         <button onTouchTap={() => this.removeItem(entry.id)} >

@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 
-import TextField from 'material-ui/lib/text-field'
 import List from 'material-ui/lib/lists/list'
 import ListItem from 'material-ui/lib/lists/list-item'
 
+import DebouncedTextField from './controls/DebouncedTextField'
 import shouldComponentUpdate from '../utils/shouldComponentUpdate'
 
 const styles = {
@@ -111,11 +111,9 @@ class Parameters extends Component {
   }
 
   renderParameter ({parameter, text, hint}) {
-    const onChange = (event) => {
-      this.props.onChange(parameter, event.target.value)
-    }
+    const onChange = (value) => this.props.onChange(parameter, value)
 
-    return <TextField
+    return <DebouncedTextField
         key={parameter}
         value={this.props.parameters[parameter]}
         floatingLabelText={text}
