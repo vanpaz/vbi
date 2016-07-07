@@ -11,7 +11,7 @@ import bindMethods from '../utils/bindMethods'
 
 const styles = {
   cardText: {
-    padding: '16px 48px 48px 48px'
+    padding: '16px 48px 48px 120px'
   },
   centered: {
     textAlign: 'center'
@@ -29,7 +29,11 @@ export default class GettingStarted extends Component {
     return <div className="getting-started">
       <Card className="card">
         <CardText style={styles.cardText}>
-          <h1>Introduction</h1>
+          <div className="logo" >
+            <a href="http://vanpaz.com" target="_blank"><img src="images/vanpaz_logo_vertical.png" width="79" height="250" /></a>
+          </div>
+
+          <h1>Introduction  </h1>
           <p>
             VBI is a business intelligence tool aimed at startups and small companies who want to get a grip on their business model and financials.
           </p>
@@ -67,10 +71,6 @@ export default class GettingStarted extends Component {
           <h1>Questions?</h1>
           <p>
             If you have any questions or need advice, please don't hesitate to contact VanPaz. We're happy to help you! Just send an email to <a href="email:info@vanpaz.com">info@vanpaz.com</a> or fill out the contact form on the <a href="http://vanpaz.com" target="_blank">website</a>.
-          </p>
-
-          <p style={styles.centered}>
-            <a href="http://vanpaz.com" target="_blank"><img src="images/vanpaz_logo_transparent.png" width="250" height="78.5" /></a>
           </p>
 
         </CardText>
