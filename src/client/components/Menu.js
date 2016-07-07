@@ -135,7 +135,6 @@ export default class Menu extends React.Component {
                 this.hide()
                 this.demoDoc()
               }} />
-          <Divider />
           <ListItem
               primaryText="Rename"
               leftIcon={<EditIcon />}
@@ -163,7 +162,9 @@ export default class Menu extends React.Component {
                 this.hide()
                 this.saveDocAs()
               }} />
-          <Divider />
+        </List>
+
+        <List subheader="Import and export">
           <ListItem
               primaryText="Open from disk"
               leftIcon={<UploadIcon />}
