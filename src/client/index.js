@@ -25,7 +25,7 @@ injectTapEventPlugin()
 
 let initialState = Immutable({
   view: {
-    // visible page: 'model', 'finance'
+    // visible page: 'gettingStarted', 'model', 'finance'
     page: hash.get('page') || constants.defaultPage,
 
     // visible tab: 'parameters', 'costs', 'investments', 'revenues'

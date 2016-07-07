@@ -2,7 +2,7 @@ const DEFAULT_QUANTITIES = {}
 
 /**
  * Set active page
- * @param {'model' | 'finance'} page
+ * @param {'gettingStarted' | 'model' | 'finance'} page
  * @return {{type: string, page: string}}
  */
 export function viewPage (page) {

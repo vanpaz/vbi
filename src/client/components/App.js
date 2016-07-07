@@ -15,6 +15,7 @@ import IconButton from 'material-ui/lib/icon-button'
 import DashboardIcon from 'material-ui/lib/svg-icons/action/dashboard'
 import TimelineIcon from 'material-ui/lib/svg-icons/action/timeline'
 import NavigationMenuIcon from 'material-ui/lib/svg-icons/navigation/menu'
+import InfoIcon from 'material-ui/lib/svg-icons/action/info'
 import ThemeManager from 'material-ui/lib/styles/theme-manager'
 
 import theme from '../theme'
@@ -29,6 +30,7 @@ import {
 } from '../actions'
 import Menu from './Menu'
 import BusinessModelCanvas from './BusinessModelCanvas'
+import GettingStarted from './GettingStarted'
 import Inputs from './Inputs'
 import Outputs from './Outputs'
 import * as constants from '../constants'
@@ -74,11 +76,19 @@ class App extends Component {
     // bind all methods to current instance so we don't have to create wrapper functions to use them
     bindMethods(this)
 
+    this.renderPage = {
+      model: this.renderModel,
+      finance: this.renderFinance,
+      gettingStarted: this.renderGettingStarted
+    }
+
     // debounce auto saving
     this.handleAutoSave = debounce(this.handleSaveDoc, AUTO_SAVE_DELAY)
   }
 
   render() {
+    const renderPage = this.renderPage[this.props.view.page] || this.renderPage['gettingStarted']
+
     return (
       <div>
         { this.renderAppBar() }
@@ -105,13 +115,11 @@ class App extends Component {
         <Notification ref="notification" />
 
         {
-          this.props.view.page === 'model'
-              ? this.renderModel()
-              : this.renderFinance()
+          renderPage()
         }
 
         <div className="footer">
-          Copyright &copy; 2016 <a href="http://vanpaz.com">VanPaz</a>
+          Copyright &copy; 2016 <a href="http://vanpaz.com" target="_blank">VanPaz</a>
         </div>
       </div>
     )
@@ -155,6 +163,11 @@ class App extends Component {
   renderAppbarMenu () {
     return <div className="appbar-menu">
       <FlatButton
+          label="Getting started"
+          icon={<InfoIcon />}
+          className={this.props.view.page === 'gettingStarted' ? 'selected' : ''}
+          onTouchTap={(event) => this.handleSetPage('gettingStarted')} />
+      <FlatButton
           label="Model"
           icon={<DashboardIcon />}
           className={this.props.view.page === 'model' ? 'selected' : ''}
@@ -164,6 +177,14 @@ class App extends Component {
           icon={<TimelineIcon />}
           className={this.props.view.page === 'finance' ? 'selected' : ''}
           onTouchTap={(event) => this.handleSetPage('finance')} />
+    </div>
+  }
+
+  renderGettingStarted () {
+    return <div>
+      <div className="container half-center">
+        <GettingStarted onSetPage={this.handleSetPage}/>
+      </div>
     </div>
   }
 
