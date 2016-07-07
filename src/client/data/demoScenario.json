@@ -4,32 +4,38 @@
     "description": {
       "type": "productionAndRetail",
       "products": [
-        {"id": "b7e669ad-c695-4125-a59b-4b0f81f0c370", "value": "cookies"},
-        {"id": "76bfec0d-044a-4bbb-bce3-1913aec1ea15", "value": "cakes"}
+        {
+          "id": "b7e669ad-c695-4125-a59b-4b0f81f0c370",
+          "value": "cookies"
+        },
+        {
+          "id": "76bfec0d-044a-4bbb-bce3-1913aec1ea15",
+          "value": "cakes"
+        }
       ],
       "customers": [
-        {"id": "8a3efa6f-e3cd-4592-8c0b-4df5336d89f3", "value": "wealthy people"}
+        {
+          "id": "8a3efa6f-e3cd-4592-8c0b-4df5336d89f3",
+          "value": "wealthy people"
+        }
       ],
       "uniqueSellingPoint": "the quality"
     },
     "parameters": {
       "startingYear": "2016",
       "numberOfYears": "5",
-      "currency": "\u20ac",
+      "currency": "€",
       "currencyMagnitude": "1000",
       "numberOfDecimals": "0",
       "startingCapital": "10k",
-
       "VATRate": "21%",
       "corporateTaxRate": "25%",
       "incomeTax": "35%",
       "SSCEmployer": "18%",
       "SSCEmployee": "17%",
-
       "interestPayableOnOverdraft": "8%",
       "interestPayableOnLoans": "5%",
       "interestReceivableOnCredit": "1%",
-
       "daysInStockOfInventory": "10",
       "daysAccountsReceivablesOutstanding": "30",
       "daysPrepaymentOfExpenditure": "5",
@@ -37,12 +43,10 @@
       "daysAccountsPayableOutstanding": "30",
       "daysAccrualOfCost": "15",
       "daysDeferredIncome": "15",
-
       "monthsVATPaidAfter": "3",
       "monthsCorporateTaxPaidAfter": "12",
       "monthsIncomeTaxPaidAfter": "1",
       "monthsSSCPaidAfter": "1",
-
       "holidayProvision": "8.333%",
       "monthOfHolidayPayment": "5"
     },
@@ -57,7 +61,8 @@
         "bmcChecked": true,
         "bmcCheckedManually": true,
         "price": {},
-        "quantities": {}
+        "quantities": {},
+        "deleted": true
       },
       {
         "id": "6ff6bfd2-8d2f-49d8-a0f5-1222366870a0",
@@ -69,7 +74,8 @@
         "bmcChecked": true,
         "bmcCheckedManually": true,
         "price": {},
-        "quantities": {}
+        "quantities": {},
+        "deleted": true
       },
       {
         "id": "fcf8d479-1393-d675-931e-69301c866284",
@@ -87,7 +93,8 @@
           "2018": "400",
           "2019": "800",
           "2020": "1600"
-        }
+        },
+        "bmcChecked": false
       },
       {
         "id": "014bdb19-dae2-0484-01d4-e6467c62b89a",
@@ -101,7 +108,8 @@
         },
         "quantities": {
           "2016": "100"
-        }
+        },
+        "bmcChecked": false
       },
       {
         "id": "1",
@@ -120,7 +128,8 @@
           "2018": "1",
           "2019": "1",
           "2020": "1"
-        }
+        },
+        "bmcChecked": false
       },
       {
         "id": "5b921362-3350-8293-f1e2-50780eaf40ff",
@@ -138,7 +147,8 @@
           "2018": "0",
           "2019": "0",
           "2020": "0"
-        }
+        },
+        "bmcChecked": false
       },
       {
         "id": "03e65480-5ee1-1c4d-0bbf-8e413388ec04",
@@ -172,7 +182,8 @@
           "2018": "500",
           "2019": "500",
           "2020": "500"
-        }
+        },
+        "bmcChecked": false
       },
       {
         "id": "250de3b9-3473-f07a-1f57-26d5c3ee4098",
@@ -191,7 +202,8 @@
           "2018": "400",
           "2019": "400",
           "2020": "400"
-        }
+        },
+        "bmcChecked": false
       },
       {
         "id": "210eb73f-b387-7de7-3cf8-b4a38ea95e6e",
@@ -210,7 +222,8 @@
           "2018": "300",
           "2019": "300",
           "2020": "300"
-        }
+        },
+        "bmcChecked": false
       },
       {
         "id": "8b89c951-91d8-8ce2-e17f-220216d69c11",
@@ -229,7 +242,8 @@
           "2018": "200",
           "2019": "200",
           "2020": "200"
-        }
+        },
+        "bmcChecked": false
       },
       {
         "id": "ebcf8bfc-552b-6a65-09be-f496cdfb60f1",
@@ -248,7 +262,8 @@
           "2018": "100",
           "2019": "100",
           "2020": "100"
-        }
+        },
+        "bmcChecked": false
       },
       {
         "id": "e769a557-f076-9ba8-7ab6-5655486a7322",
@@ -267,7 +282,8 @@
           "2018": "90",
           "2019": "90",
           "2020": "90"
-        }
+        },
+        "bmcChecked": false
       },
       {
         "id": "db8a5f69-ffd5-ff3b-e720-ed0c7cf02c55",
@@ -286,7 +302,8 @@
           "2018": "80",
           "2019": "80",
           "2020": "80"
-        }
+        },
+        "bmcChecked": false
       },
       {
         "id": "f2da23a0-1bc0-2a33-e00b-3f328bb94f34",
@@ -305,7 +322,8 @@
           "2018": "70",
           "2019": "70",
           "2020": "70"
-        }
+        },
+        "bmcChecked": false
       },
       {
         "id": "f206a2c4-2a1a-ad9f-21f8-ac4fefb23010",
@@ -324,7 +342,8 @@
           "2018": "60",
           "2019": "60",
           "2020": "60"
-        }
+        },
+        "bmcChecked": false
       },
       {
         "id": "af7280d4-7050-594d-3af4-5605100792bf",
@@ -343,7 +362,8 @@
           "2018": "50",
           "2019": "50",
           "2020": "50"
-        }
+        },
+        "bmcChecked": false
       },
       {
         "id": "e195e2e1-cfe0-4a30-b1b0-fffbcaabc353",
@@ -388,6 +408,326 @@
         "bmcId": "76bfec0d-044a-4bbb-bce3-1913aec1ea15:8a3efa6f-e3cd-4592-8c0b-4df5336d89f3",
         "bmcChecked": true,
         "bmcCheckedManually": true
+      },
+      {
+        "id": "82721580-ecb4-939f-2eb2-bf71571f861f",
+        "label": "Housing",
+        "section": "costs",
+        "group": "indirect",
+        "bmcGroup": "expenses",
+        "bmcId": "housing",
+        "bmcChecked": true,
+        "custom": false,
+        "deleted": true
+      },
+      {
+        "id": "f37b2bce-d466-3cda-c088-f298d035675e",
+        "label": "Cars, transportation",
+        "section": "costs",
+        "group": "indirect",
+        "bmcGroup": "expenses",
+        "bmcId": "transportation",
+        "bmcChecked": true,
+        "custom": false,
+        "deleted": true
+      },
+      {
+        "id": "7fb88f32-3831-40b9-75f8-935a8ac33d5a",
+        "label": "Communication and network",
+        "section": "costs",
+        "group": "indirect",
+        "bmcGroup": "expenses",
+        "bmcId": "communication",
+        "bmcChecked": true,
+        "custom": false,
+        "deleted": true
+      },
+      {
+        "id": "72bfe85d-6aec-f1f5-c97a-f17b51456bd5",
+        "label": "Other employee benefits",
+        "section": "costs",
+        "group": "indirect",
+        "bmcGroup": "expenses",
+        "bmcId": "employeeBenefits",
+        "bmcChecked": false,
+        "custom": false
+      },
+      {
+        "id": "0719dd04-018d-0f6c-592c-11cb1a425567",
+        "label": "Outsourced services",
+        "section": "costs",
+        "group": "indirect",
+        "bmcGroup": "expenses",
+        "bmcId": "outsourcing",
+        "bmcChecked": true,
+        "custom": false,
+        "deleted": true
+      },
+      {
+        "id": "1cf18f99-cd2e-0b05-c211-92d12d41c785",
+        "label": "Materials",
+        "section": "costs",
+        "group": "indirect",
+        "bmcGroup": "expenses",
+        "bmcId": "materials",
+        "bmcChecked": true,
+        "custom": false,
+        "deleted": true
+      },
+      {
+        "id": "f8469144-bc79-1054-287a-8d8c96935b4a",
+        "label": "Other production resources",
+        "section": "costs",
+        "group": "indirect",
+        "bmcGroup": "expenses",
+        "bmcId": "production",
+        "bmcChecked": true,
+        "custom": false,
+        "deleted": true
+      },
+      {
+        "id": "4f23d7d5-8cb7-c710-77e5-e3691e43b8d2",
+        "label": "Purchased goods",
+        "section": "costs",
+        "group": "indirect",
+        "bmcGroup": "expenses",
+        "bmcId": "goods",
+        "bmcChecked": true,
+        "custom": false,
+        "deleted": true
+      },
+      {
+        "id": "525fe1b5-75df-6df9-bfb6-5b3c660bc97c",
+        "label": "Personnel (fixed)",
+        "section": "costs",
+        "group": "indirect",
+        "bmcGroup": "activities",
+        "bmcId": "personnel",
+        "bmcChecked": true,
+        "custom": false,
+        "deleted": true
+      },
+      {
+        "id": "e551aa50-5a5e-6e64-eb80-0eab5530d119",
+        "label": "Labor (personnel variable)",
+        "section": "costs",
+        "group": "indirect",
+        "bmcGroup": "activities",
+        "bmcId": "labor",
+        "bmcChecked": true,
+        "custom": false,
+        "deleted": true
+      },
+      {
+        "id": "12e3af51-4fd5-9134-5eb1-d0444864d6cb",
+        "label": "Customer care",
+        "section": "costs",
+        "group": "indirect",
+        "bmcGroup": "contacts",
+        "bmcId": "customer",
+        "bmcChecked": false,
+        "custom": false
+      },
+      {
+        "id": "8fc16f13-88f6-6f74-5a73-9a0e036c3310",
+        "label": "Retention",
+        "section": "costs",
+        "group": "indirect",
+        "bmcGroup": "contacts",
+        "bmcId": "retention",
+        "bmcChecked": false,
+        "custom": false
+      },
+      {
+        "id": "26539f26-9436-7df8-4207-d03a5fc822ad",
+        "label": "Maintenance",
+        "section": "costs",
+        "group": "indirect",
+        "bmcGroup": "contacts",
+        "bmcId": "maintenance",
+        "bmcChecked": false,
+        "custom": false
+      },
+      {
+        "id": "bfa0bba7-34d9-15fe-ad34-34437543a4e1",
+        "label": "Account management and sales",
+        "section": "costs",
+        "group": "indirect",
+        "bmcGroup": "channels",
+        "bmcId": "sales",
+        "bmcChecked": true,
+        "custom": false,
+        "deleted": true
+      },
+      {
+        "id": "73e34d44-4558-8c5f-099a-9920a33daed5",
+        "label": "Commissions",
+        "section": "costs",
+        "group": "indirect",
+        "bmcGroup": "channels",
+        "bmcId": "commissions",
+        "bmcChecked": true,
+        "custom": false,
+        "deleted": true
+      },
+      {
+        "id": "a2e57bef-2bec-f9bf-ddc6-630392a8face",
+        "label": "Franchise",
+        "section": "costs",
+        "group": "indirect",
+        "bmcGroup": "channels",
+        "bmcId": "franchise",
+        "bmcChecked": true,
+        "custom": false,
+        "deleted": true
+      },
+      {
+        "id": "21a15933-3f05-7e37-ac0f-7f472dd40e1c",
+        "label": "Shops",
+        "section": "costs",
+        "group": "indirect",
+        "bmcGroup": "channels",
+        "bmcId": "shops",
+        "bmcChecked": true,
+        "custom": false,
+        "deleted": true
+      },
+      {
+        "id": "8c0678b7-dabb-75e3-9f6e-71b1d69d8ad4",
+        "label": "Webshops and 3rd party platforms",
+        "section": "costs",
+        "group": "indirect",
+        "bmcGroup": "channels",
+        "bmcId": "webshops",
+        "bmcChecked": false,
+        "custom": false
+      },
+      {
+        "id": "0c52f611-3228-3973-eaea-4bf6fe7e5c5f",
+        "label": "Licenses",
+        "section": "costs",
+        "group": "indirect",
+        "bmcGroup": "partnerships",
+        "bmcId": "licenses",
+        "bmcChecked": false,
+        "custom": false
+      },
+      {
+        "id": "0cb8a4c0-b7ed-0a71-39d7-c89c44a078f3",
+        "label": "Bundling",
+        "section": "costs",
+        "group": "indirect",
+        "bmcGroup": "partnerships",
+        "bmcId": "bundling",
+        "bmcChecked": false,
+        "custom": false
+      },
+      {
+        "id": "81709c80-9842-a6ca-2aee-a4356797b8ab",
+        "label": "Buildings",
+        "section": "investments",
+        "group": "tangible",
+        "bmcGroup": "investments",
+        "bmcId": "buildings",
+        "bmcChecked": true,
+        "custom": false,
+        "deleted": true
+      },
+      {
+        "id": "937ba7e3-d8bb-10e9-8ab2-c9078657b94f",
+        "label": "Computer equipment",
+        "section": "investments",
+        "group": "tangible",
+        "bmcGroup": "investments",
+        "bmcId": "computers",
+        "bmcChecked": true,
+        "custom": false,
+        "deleted": true
+      },
+      {
+        "id": "94e3c851-4907-111d-dcb5-d4c6782a514b",
+        "label": "Computer software",
+        "section": "investments",
+        "group": "tangible",
+        "bmcGroup": "investments",
+        "bmcId": "software",
+        "bmcChecked": true,
+        "custom": false,
+        "deleted": true
+      },
+      {
+        "id": "c4c9ff0f-bb3b-197a-b4dd-ccdeae44ab6e",
+        "label": "Furniture and fixtures",
+        "section": "investments",
+        "group": "tangible",
+        "bmcGroup": "investments",
+        "bmcId": "furniture",
+        "bmcChecked": true,
+        "custom": false,
+        "deleted": true
+      },
+      {
+        "id": "23905b06-b692-5092-52e8-2742a71a3553",
+        "label": "Intangible assets",
+        "section": "investments",
+        "group": "tangible",
+        "bmcGroup": "investments",
+        "bmcId": "intangibleAssets",
+        "bmcChecked": false,
+        "custom": false
+      },
+      {
+        "id": "7e4e1a3e-c3d8-a758-5364-c3998c9b9192",
+        "label": "Intellectual property",
+        "section": "investments",
+        "group": "tangible",
+        "bmcGroup": "investments",
+        "bmcId": "intellectualProperty",
+        "bmcChecked": false,
+        "custom": false
+      },
+      {
+        "id": "995e6cbc-92a2-ad76-d3d1-cf659e3563cb",
+        "label": "Land",
+        "section": "investments",
+        "group": "tangible",
+        "bmcGroup": "investments",
+        "bmcId": "land",
+        "bmcChecked": false,
+        "custom": false
+      },
+      {
+        "id": "d274cf30-3d46-d799-a9dd-dc76e7599aa1",
+        "label": "Leasehold improvements",
+        "section": "investments",
+        "group": "tangible",
+        "bmcGroup": "investments",
+        "bmcId": "leaseholdImprovements",
+        "bmcChecked": true,
+        "custom": false,
+        "deleted": true
+      },
+      {
+        "id": "2ec8a543-0f4e-1358-e8e9-d33182181e78",
+        "label": "Machinery",
+        "section": "investments",
+        "group": "tangible",
+        "bmcGroup": "investments",
+        "bmcId": "machinery",
+        "bmcChecked": true,
+        "custom": false,
+        "deleted": true
+      },
+      {
+        "id": "d31e3dc1-0268-0a1b-0ad7-b47e114c9ba3",
+        "label": "Vehicles",
+        "section": "investments",
+        "group": "tangible",
+        "bmcGroup": "investments",
+        "bmcId": "vehicles",
+        "bmcChecked": true,
+        "custom": false,
+        "deleted": true
       }
     ],
     "financing": {
@@ -410,20 +750,16 @@
       "tangiblesAndIntangibles": "",
       "financialFixedAssets": "",
       "deferredTaxAssets": "",
-
       "goodsInStock": "",
       "tradeReceivables": "",
       "prepayments": "",
       "accruedIncome": "",
       "receivableVAT": "",
-
       "agio": "",
       "reserves": "",
       "profitAndLoss": "",
-
       "bankLoans": "",
       "otherLongTermInterestBearingDebt": "",
-
       "tradeCreditors": "",
       "accruals": "",
       "deferredIncome": "",
