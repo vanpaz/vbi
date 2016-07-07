@@ -84,7 +84,7 @@ class Cashflow extends Component {
   }
 
   renderEditableEntry (years, entry, currency, magnitude) {
-    const values = getProp(this.props.data, entry.path)
+    const values = getProp(this.props.data, entry.propertyPath)
 
     return <tr key={entry.label} className={entry.className}>
       <td className="label">{entry.label}</td>
@@ -105,7 +105,7 @@ class Cashflow extends Component {
                        ? parseValue(value) * magnitude
                        : value
 
-                     this.props.dispatch(setProperty(entry.path.concat(year), normalizedValue))
+                     this.props.dispatch(setProperty(entry.propertyPath.concat(year), normalizedValue))
                    }}
                    onFocus={(event) => event.target.select()} />
           </td>

@@ -439,17 +439,17 @@ export function calculateBalanceSheet (data) {
     {
       label: 'Tangibles & intangibles',
       values: partials.tangiblesAndIntangibles,
-      initialValuePath: ['initialBalance', 'tangiblesAndIntangibles']
+      propertyPath: ['initialBalance', 'tangiblesAndIntangibles']
     },
     {
       label: 'Financial fixed assets',
       values: partials.financialFixedAssets,
-      initialValuePath:  ['initialBalance', 'financialFixedAssets']
+      propertyPath:  ['initialBalance', 'financialFixedAssets']
     },
     {
       label: 'Deferred tax assets',
       values: partials.deferredTaxAssets,
-      initialValuePath: ['initialBalance', 'deferredTaxAssets']
+      propertyPath: ['initialBalance', 'deferredTaxAssets']
     },
 
     {
@@ -461,31 +461,31 @@ export function calculateBalanceSheet (data) {
     {
       label: 'Goods in stock',
       values: partials.goodsInStock,
-      initialValuePath: ['initialBalance', 'goodsInStock'],
+      propertyPath: ['initialBalance', 'goodsInStock'],
       info: 'Goods in stock: A somewhat special category of working capital is the inventory. This is relevant in retail models, not so much in others. Cost and revenue tied to stuff you buy and sell are tied to the moment of the sale. But obviously, for working capital you have to buy and pay this stuff before you do that. The game is of course to shorten the period in stock as much as you can. A lot of large retailer (like AH) put the risk with having large inventories with their suppliers.'
     },
     {
       label: 'Trade receivables',
       values: partials.tradeReceivables,
-      initialValuePath: ['initialBalance', 'tradeReceivables'],
+      propertyPath: ['initialBalance', 'tradeReceivables'],
       info: 'Accounts receivable: this is by far the largest (but you want to keep this one as small as possible obviously: you have already booked the revenue (so you did the work/delivered the goods), sent the invoice, but are waiting for the money.'
     },
     {
       label: 'Prepayments',
       values: partials.prepayments,
-      initialValuePath: ['initialBalance', 'prepayments'],
+      propertyPath: ['initialBalance', 'prepayments'],
       info: 'Prepayments: you have already received the invoice and paid it, but you still have to receive the goods/services - so you still have to book the costs/ investments.'
     },
     {
       label: 'Accrued income',
       values: partials.accruedIncome,
-      initialValuePath: ['initialBalance', 'accruedIncome'],
+      propertyPath: ['initialBalance', 'accruedIncome'],
       info: 'Accrued income: you have already booked the revenue (so you did the work/delivered the goods), but you still have to send the invoice'
     },
     {
       label: 'Receivable VAT',
       values: partials.receivableVAT,
-      initialValuePath: ['initialBalance', 'receivableVAT'],
+      propertyPath: ['initialBalance', 'receivableVAT'],
       info: 'VAT receivable: this is simply a special category of the accounts receivable, but it runs differently in the model as it simply takes the VAT amount of the incoming invoices (cost and investments) and calculates the VAT that you can reclaim, based on the intervals that you do the VAT declaration (3 months for an SME mostly in NL, for example)'
     },
 
@@ -508,10 +508,10 @@ export function calculateBalanceSheet (data) {
       className: 'main top',
       info: 'Equity: This is the initial paid-in capital (which does not change), possible later contributed amounts (agio), or amounts taken out (dividends) and the accumulated net profits and losses over the years.'
     },
-    {label: 'Paid-in capital', values: partials.paidInCapital, initialValuePath: ['parameters', 'startingCapital'] },
-    {label: 'Agio', values: partials.agio, initialValuePath: ['initialBalance', 'agio'] },
-    {label: 'Reserves', values: partials.reserves, initialValuePath: ['initialBalance', 'reserves'] },
-    {label: 'Profit/loss for the year', values: partials.profitAndLoss, initialValuePath: ['initialBalance', 'profitAndLoss'] },
+    {label: 'Paid-in capital', values: partials.paidInCapital, propertyPath: ['parameters', 'startingCapital'] },
+    {label: 'Agio', values: partials.agio, propertyPath: ['initialBalance', 'agio'] },
+    {label: 'Reserves', values: partials.reserves, propertyPath: ['initialBalance', 'reserves'] },
+    {label: 'Profit/loss for the year', values: partials.profitAndLoss, propertyPath: ['initialBalance', 'profitAndLoss'] },
 
     {
       label: 'Long-term debt',
@@ -522,12 +522,12 @@ export function calculateBalanceSheet (data) {
     {
       label: 'Bank loans',
       values: partials.bankLoans,
-      initialValuePath: ['initialBalance', 'bankLoans']
+      propertyPath: ['initialBalance', 'bankLoans']
     },
     {
       label: 'Other long-term interest bearing debt',
       values: partials.otherLongTermInterestBearingDebt,
-      initialValuePath: ['initialBalance', 'otherLongTermInterestBearingDebt']
+      propertyPath: ['initialBalance', 'otherLongTermInterestBearingDebt']
     },
 
     {
@@ -539,49 +539,49 @@ export function calculateBalanceSheet (data) {
     {
       label: 'Trade creditors',
       values: partials.tradeCreditors,
-      initialValuePath: ['initialBalance', 'tradeCreditors'],
+      propertyPath: ['initialBalance', 'tradeCreditors'],
       info: 'Suppliers who are owed payment for raw materials or a product\'s component parts by the manufacturer.'
     },
     {
       label: 'Accruals',
       values: partials.accruals,
-      initialValuePath: ['initialBalance', 'accruals'],
+      propertyPath: ['initialBalance', 'accruals'],
       info: 'Accruals: you have booked the costs/investments, but have still to receive the invoice.'
     },
     {
       label: 'Deferred Income',
       values: partials.deferredIncome,
-      initialValuePath: ['initialBalance', 'deferredIncome'],
+      propertyPath: ['initialBalance', 'deferredIncome'],
       info: 'Deferred income: you have received the money, but still have to deliver the goods/ services and book the revenues accordingly.'
     },
     {
       label: 'Payable VAT',
       values: partials.payableVAT,
-      initialValuePath: ['initialBalance', 'payableVAT'],
+      propertyPath: ['initialBalance', 'payableVAT'],
       info: taxInfo
     },
     {
       label: 'Payable Corporate tax',
       values: partials.payableCorporateTax,
-      initialValuePath: ['initialBalance', 'payableCorporateTax'],
+      propertyPath: ['initialBalance', 'payableCorporateTax'],
       info: taxInfo
     },
     {
       label: 'Payable income tax',
       values: partials.payableIncomeTax,
-      initialValuePath: ['initialBalance', 'payableIncomeTax'],
+      propertyPath: ['initialBalance', 'payableIncomeTax'],
       info: taxInfo
     },
     {
       label: 'Payable Social security contributions',
       values: partials.payableSSC,
-      initialValuePath: ['initialBalance', 'payableSSC'],
+      propertyPath: ['initialBalance', 'payableSSC'],
       info: taxInfo
     },
     {
       label: 'Provision holiday pay',
       values: partials.provisionHolidayPayment,
-      initialValuePath: ['initialBalance', 'provisionHolidayPayment'],
+      propertyPath: ['initialBalance', 'provisionHolidayPayment'],
       info: 'Provision holiday pay: the only provision that you would be able to plan, which concerns the accumulated holiday pay that you have to pay to your employees. In the Netherlands, where you have the payment in May, you will have 7 months (June-December) build-up on balance sheet date 31/12, which is usually 1 extra month, so 7/12 of the salary costs of 1 month will be on the balance sheet as payable one time or another on 31/12.'
     },
 
@@ -767,13 +767,13 @@ export function calulateCashflow (data) {
     {label: 'Cashflow from operations', values: partials.cashflowFromOperations, className: 'header middle' },
 
     {label: 'Investments in fixed assets', values: partials.investmentsInFixedAssets },
-    {label: 'Investments in participations', editable: true, path: ['financing', 'investmentsInParticipations']},
+    {label: 'Investments in participations', editable: true, propertyPath: ['financing', 'investmentsInParticipations']},
     {label: 'Cashflow from investments', values: partials.cashflowFromInvestments, className: 'header middle' },
 
-    {label: 'Equity contributions', editable: true, path: ['financing', 'equityContributions'] },
-    {label: 'Bank loans capital calls', editable: true, path: ['financing', 'bankLoansCapitalCalls'] },
-    {label: 'Bank loans redemption installments', editable: true, path: ['financing', 'bankLoansRedemptionInstallments']},
-    {label: 'Other sources of finance', editable: true, path: ['financing', 'otherSourcesOfFinance']},
+    {label: 'Equity contributions', editable: true, propertyPath: ['financing', 'equityContributions'] },
+    {label: 'Bank loans capital calls', editable: true, propertyPath: ['financing', 'bankLoansCapitalCalls'] },
+    {label: 'Bank loans redemption installments', editable: true, propertyPath: ['financing', 'bankLoansRedemptionInstallments']},
+    {label: 'Other sources of finance', editable: true, propertyPath: ['financing', 'otherSourcesOfFinance']},
     {label: 'Cashflow from financing', values: partials.cashflowFromFinancing, className: 'header middle' },
 
     {label: 'Total cash balance EoP', values: partials.totalCashBalanceEoP, className: 'header middle' }

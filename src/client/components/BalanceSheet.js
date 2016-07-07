@@ -70,8 +70,8 @@ class BalanceSheet extends Component {
           const value = total && format(total / magnitude, numberOfDecimals)
 
           if (index === 0) {
-            if (entry.initialValuePath) {
-              return this.renderEditableInitialValue(entry.initialValuePath, magnitude)
+            if (entry.propertyPath) {
+              return this.renderEditableInitialValue(entry.propertyPath, magnitude)
             }
             else {
               return <td key={year} >{ value }</td>
@@ -85,8 +85,8 @@ class BalanceSheet extends Component {
     </tr>
   }
 
-  renderEditableInitialValue (path, magnitude) {
-    const rawValue = getProp(this.props.data, path)
+  renderEditableInitialValue (propertyPath, magnitude) {
+    const rawValue = getProp(this.props.data, propertyPath)
     const validValue = !rawValue || numberRegExp.test(rawValue)
     const value = rawValue && validValue
         ? denormalize(rawValue, magnitude)
@@ -101,7 +101,7 @@ class BalanceSheet extends Component {
               ? normalize(value, magnitude)
               : value
 
-              this.props.dispatch(setProperty(path, normalizedValue))
+              this.props.dispatch(setProperty(propertyPath, normalizedValue))
            }}
       />
     </td>
