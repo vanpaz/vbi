@@ -12,6 +12,9 @@ import App from './components/App'
 import reducers from './reducers'
 import { sanitizeDoc } from './reducers/docUtils'
 
+// load es6 shim to support old browsers
+import 'es6-shim'
+
 import * as newScenarioJSON from './data/newScenario.json'
 
 import '!style!css!less!./style.less'
