@@ -1,12 +1,39 @@
 import React, { Component } from 'react'
 
+import bindMethods from '../../utils/bindMethods'
 import DebouncedTextField from '../controls/DebouncedTextField'
 
 const styles = {
-  textField: {width: 128}
+  textField: {width: 128},
+  priceColumn: {paddingLeft: 16}
 }
 
+class Entry extends Component {
+  constructor (props) {
+    super(props)
+    bindMethods(this)
+  }
+
+  render () {
+    return <DebouncedTextField
+        value={this.props.value}
+        hintText="23k"
+        style={styles.textField}
+        onChange={this.handleChangeEntry} />
+  }
+
+  handleChangeEntry(value) {
+    this.props.onChange(this.props.year, value)
+  }
+}
+
+
 export default class PriceTypeManual extends Component {
+  constructor (props) {
+    super(props)
+    bindMethods(this)
+  }
+
   render () {
     return <div className="price-type">
       <p className="description">
@@ -25,22 +52,14 @@ export default class PriceTypeManual extends Component {
             <td>
               {year}
             </td>
-            <td>
-              {this.renderValue(year, value)}
+            <td style={styles.priceColumn}>
+              <Entry year={year} value={value} onChange={this.handleChangeEntry}/>
             </td>
           </tr>
         })}
         </tbody>
       </table>
     </div>
-  }
-
-  renderValue (year, value) {
-    return <DebouncedTextField
-        value={value}
-        hintText="23k"
-        style={styles.textField}
-        onChange={(value) => this.handleChangeEntry(year, value)} />
   }
 
   handleChangeEntry (year, value) {

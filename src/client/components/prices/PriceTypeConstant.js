@@ -1,8 +1,15 @@
 import React, { Component } from 'react'
 
+import bindMethods from '../../utils/bindMethods'
 import DebouncedTextField from '../controls/DebouncedTextField'
 
 export default class PriceTypeConstant extends Component {
+  constructor (props) {
+    super(props)
+
+    bindMethods (this)
+  }
+
   render () {
     return <div className="price-type">
       <p className="description">
@@ -12,20 +19,28 @@ export default class PriceTypeConstant extends Component {
           value={this.props.price.value}
           hintText="23k"
           floatingLabelText="Initial price"
-          onChange={value => this.handleChange('value', value)} />
+          onChange={this.handleChangePrice} />
       <br />
       <DebouncedTextField
           value={this.props.price.change}
           hintText="+3%"
           floatingLabelText="Percentage of change per year"
-          onChange={value => this.handleChange('change', value)}  />
+          onChange={this.handleChangeChange}  />
     </div>
   }
 
-  handleChange(property, value) {
+  handleChangePrice(value) {
     const price = this.props.price
         .set('type', 'constant')
-        .set(property, value)
+        .set('value', value)
+
+    this.props.onChange(price)
+  }
+
+  handleChangeChange(value) {
+    const price = this.props.price
+        .set('type', 'constant')
+        .set('change', value)
 
     this.props.onChange(price)
   }

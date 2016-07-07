@@ -1,8 +1,14 @@
 import React, { Component } from 'react'
 
+import bindMethods from '../../utils/bindMethods'
 import DebouncedTextField from '../controls/DebouncedTextField'
 
 export default class PriceTypeRevenue extends Component {
+  constructor (props) {
+    super(props)
+    bindMethods(this)
+  }
+
   render () {
     return <div className="price-type">
       <p className="description">
@@ -13,14 +19,14 @@ export default class PriceTypeRevenue extends Component {
           value={this.props.price.percentage}
           hintText="5%"
           floatingLabelText="Percentage of revenue"
-          onChange={value => this.handleChange('percentage', value)} />
+          onChange={this.handleChangePercentage} />
     </div>
   }
 
-  handleChange(property, value) {
+  handleChangePercentage(value) {
     const price = this.props.price
         .set('type', 'revenue')
-        .set(property, value)
+        .set('percentage', value)
 
     this.props.onChange(price)
   }
