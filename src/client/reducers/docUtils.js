@@ -75,11 +75,17 @@ export function checkBMCCategories (categories, companyType) {
           const { bmcGroup, label } = bmcCategories.categories.find(c => c.bmcId === bmcId)
           const { section, group } = bmcCategories.groups[bmcGroup]
 
+          const price = (section === 'investments')
+              ? types.investment.defaultPrice   // investments
+              : types.constant.defaultPrice     // costs
+
           return {
             id: uuid(),
             label,
             section,
             group,
+            price,
+            quantities: {},
             bmcGroup: bmcGroup,
             bmcId,
             bmcChecked: defaults[bmcId],

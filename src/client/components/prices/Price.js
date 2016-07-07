@@ -110,7 +110,8 @@ export default class Price extends Component {
 
     return <SelectField
         value={this.props.price && this.props.price.type}
-        onChange={this.handleChangeType} >
+        onChange={this.handleChangeType}
+        hintText="Select a price type">
       {priceTypes}
     </SelectField>
 
