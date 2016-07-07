@@ -3,6 +3,8 @@ import debugFactory from 'debug/browser'
 
 import Snackbar from 'material-ui/lib/snackbar'
 
+import bindMethods from '../../utils/bindMethods'
+
 const debug = debugFactory('vbi:notification')
 
 /**
@@ -21,6 +23,7 @@ const debug = debugFactory('vbi:notification')
 export default class Notification extends React.Component {
   constructor (props) {
     super(props)
+    bindMethods(this)
 
     this.state = {
       open: false,
@@ -44,7 +47,7 @@ export default class Notification extends React.Component {
         autoHideDuration={this.state.duration}
         onRequestClose={onRequestClose}
         action={isError ? 'Close' : null}
-        onActionTouchTap={ event => this.hide() }
+        onActionTouchTap={this.hide}
     />
   }
 

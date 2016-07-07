@@ -3,6 +3,8 @@ import React from 'react'
 import Dialog from 'material-ui/lib/dialog'
 import FlatButton from 'material-ui/lib/flat-button'
 
+import bindMethods from '../../utils/bindMethods'
+
 /**
  * Usage:
  *
@@ -19,6 +21,7 @@ import FlatButton from 'material-ui/lib/flat-button'
 export default class Prompt extends React.Component {
   constructor (props) {
     super(props)
+    bindMethods(this)
 
     this.state = {
       open: false,
@@ -31,32 +34,17 @@ export default class Prompt extends React.Component {
   }
 
   render () {
-    const handleCancel = (event) => {
-      this._handle(null)
-    }
-
-    const handleOk = (event) => {
-      event.stopPropagation()
-      event.preventDefault()
-
-      this._handle(this.state.value)
-    }
-
-    const handleChange = (event) => {
-      this.setState({value: event.target.value})
-    }
-
     const actions = [
       <FlatButton
           label="Cancel"
           secondary={true}
-          onTouchTap={handleCancel}
+          onTouchTap={this.handleCancel}
       />,
       <FlatButton
           label="Ok"
           primary={true}
           keyboardFocused={true}
-          onTouchTap={handleOk}
+          onTouchTap={this.handleOk}
       />
     ]
 
@@ -65,19 +53,36 @@ export default class Prompt extends React.Component {
         actions={actions}
         modal={false}
         open={this.state.open}
-        onRequestClose={handleCancel}>
+        onRequestClose={this.handleCancel}>
       <p>
         {this.state.description}
       </p>
-      <form onSubmit={handleOk}>
+      <form onSubmit={this.handleOk}>
         <input
             className="title"
             ref="title"
             value={this.state.value}
             placeholder={this.state.hintText}
-            onChange={handleChange}/>
+            onChange={this.handleChange}/>
       </form>
     </Dialog>
+  }
+
+  handleCancel (event) {
+    this._handle(null)
+  }
+
+  handleOk (event) {
+    event.stopPropagation()
+    event.preventDefault()
+
+    this._handle(this.state.value)
+  }
+
+  handleChange (event) {
+    this.setState({
+      value: event.target.value
+    })
   }
 
   _handle (value) {

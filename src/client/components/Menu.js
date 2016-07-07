@@ -23,6 +23,7 @@ import DeleteDialog from './dialogs/DeleteDialog'
 import Confirm from './dialogs/Confirm'
 import Prompt from './dialogs/Prompt'
 
+import bindMethods from '../utils/bindMethods'
 import shouldComponentUpdate from '../utils/shouldComponentUpdate'
 
 
@@ -53,6 +54,7 @@ const styles = {
 export default class Menu extends React.Component {
   constructor (props) {
     super (props)
+    bindMethods(this)
 
     this.state = {
       open: false,
@@ -107,11 +109,11 @@ export default class Menu extends React.Component {
     return <div>
       <LeftNav docked={false}
              open={this.state.open}
-             onRequestChange={open => this.setState({open}) } >
+             onRequestChange={this.handleOpenMenu} >
         <AppBar title="Menu"
                 style={{background: styles.appBar.background}}
                 iconElementLeft={
-                    <IconButton onTouchTap={(event) => this.hide() }>
+                    <IconButton onTouchTap={this.hide}>
                       <NavigationMenuIcon />
                     </IconButton>
                   } />
@@ -124,24 +126,15 @@ export default class Menu extends React.Component {
           <ListItem
               primaryText="New"
               leftIcon={<CreateIcon />}
-              onTouchTap={event => {
-                this.hide()
-                this.newDoc()
-              }} />
+              onTouchTap={this.newDoc} />
           <ListItem
               primaryText="Demo"
               leftIcon={<ToggleStarIcon />}
-              onTouchTap={event => {
-                this.hide()
-                this.demoDoc()
-              }} />
+              onTouchTap={this.demoDoc} />
           <ListItem
               primaryText="Rename"
               leftIcon={<EditIcon />}
-              onTouchTap={(event) => {
-                this.hide()
-                this.renameDoc()
-              }} />
+              onTouchTap={this.renameDoc} />
           <ListItem
               primaryText="Open"
               leftIcon={<OpenIcon />}
@@ -151,34 +144,22 @@ export default class Menu extends React.Component {
           <ListItem
               primaryText="Save"
               leftIcon={<SaveIcon />}
-              onTouchTap={(event) => {
-                this.hide()
-                this.saveDoc()
-              }} />
+              onTouchTap={this.saveDoc} />
           <ListItem
               primaryText="Save as..."
               leftIcon={<SaveIcon />}
-              onTouchTap={(event) => {
-                this.hide()
-                this.saveDocAs()
-              }} />
+              onTouchTap={this.saveDocAs} />
         </List>
 
         <List subheader="Import and export">
           <ListItem
               primaryText="Open from disk"
               leftIcon={<UploadIcon />}
-              onTouchTap={(event) => {
-                this.hide()
-                this.uploadDoc()
-              }} />
+              onTouchTap={this.uploadDoc} />
           <ListItem
               primaryText="Save to disk"
               leftIcon={<DownloadIcon />}
-              onTouchTap={(event) => {
-                this.hide()
-                this.downloadDoc()
-              }} />
+              onTouchTap={this.downloadDoc} />
         </List>
 
       </LeftNav>
@@ -197,7 +178,7 @@ export default class Menu extends React.Component {
         <Avatar src={this.props.user.photo} style={styles.avatar} />
         { ' ' + (this.props.user.displayName || this.props.user.email) + ' '}
         <div style={{display: 'inline-block'}}>
-          [<button className="sign-out" onTouchTap={(event) => this.signOut()}>sign out</button>]
+          [<button className="sign-out" onTouchTap={this.signOut}>sign out</button>]
         </div>
       </div>
     }
@@ -206,7 +187,7 @@ export default class Menu extends React.Component {
         <RaisedButton
             label="Sign in"
             style={styles.signInButton}
-            onTouchTap={(event) => this.signIn()} />
+            onTouchTap={this.signIn} />
       </div>
     }
   }
@@ -223,20 +204,28 @@ export default class Menu extends React.Component {
     this.setState({ open: false })
   }
 
+  handleOpenMenu (open) {
+    this.setState({open})
+  }
+
   newDoc () {
     debug('newDoc')
-    
+
+    this.hide()
     this.props.onNewDoc()
   }
 
   demoDoc () {
     debug('demoDoc')
-    
+
+    this.hide()
     this.props.onDemoDoc()
   }
 
   renameDoc () {
     debug('renameDoc')
+
+    this.hide()
 
     const options = {
       title: 'Rename',
@@ -270,6 +259,8 @@ export default class Menu extends React.Component {
       return this.askToSignIn()
     }
 
+    this.hide()
+
     if (!this.props.id) {
       // new document, open a prompt to ask for a title
       const options = {
@@ -299,6 +290,8 @@ export default class Menu extends React.Component {
       return this.askToSignIn()
     }
 
+    this.hide()
+
     const options = {
       title: 'Save as...',
       description: 'Enter a title for the scenario:',
@@ -317,14 +310,14 @@ export default class Menu extends React.Component {
   uploadDoc () {
     debug('uploadDoc')
 
-    
-    
+    this.hide()
     this.props.onUploadDoc()
   }
 
   downloadDoc () {
     debug('downloadDoc')
 
+    this.hide()
     this.props.onDownloadDoc()
   }
 
@@ -373,11 +366,11 @@ export default class Menu extends React.Component {
     })
   }
 
-  signIn () {
+  signIn (event) {
     this.refs.signInDialog.show()
   }
 
-  signOut () {
+  signOut (event) {
     SignInDialog.signOut()
   }
 

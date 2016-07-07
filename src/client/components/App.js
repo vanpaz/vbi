@@ -129,24 +129,15 @@ class App extends Component {
 
   renderAppBar () {
     let docTitle = this.props.doc
-        ? <span className="title" onTouchTap={(event) => {
-            event.stopPropagation()
-            event.preventDefault()
-
-            // open dialog where the user can enter a new name
-            this.refs.menu.renameDoc()
-          }}>[{this.props.doc.title}]</span>
+        ? <span className="title" onTouchTap={this.showRenameDocDialog}>
+            [{this.props.doc.title}]
+          </span>
         : ''
-
-    let handleSaveDoc = (event) => {
-      event.preventDefault()
-      this.handleSaveDoc()
-    }
 
     let changed = this.saveNeeded()
         ? <span>
             <span className="changed">changed (</span>
-            <a className="changed" href="#" onClick={handleSaveDoc}>save now</a>
+            <a className="changed" href="#" onClick={this.handleSaveDocNow}>save now</a>
             <span className="changed">)</span>
           </span>
         : null
@@ -156,7 +147,7 @@ class App extends Component {
         style={APP_BAR_STYLE}
         title={title}
         iconElementLeft={
-              <IconButton onTouchTap={(event) => this.refs.menu.show() }>
+              <IconButton onTouchTap={this.showMenu}>
                 <NavigationMenuIcon />
               </IconButton> }
         iconElementRight={ this.renderAppbarMenu() } />
@@ -168,17 +159,17 @@ class App extends Component {
           label="Getting started"
           icon={<InfoIcon />}
           className={this.props.view.page === 'gettingStarted' ? 'selected' : ''}
-          onTouchTap={(event) => this.handleSetPage('gettingStarted')} />
+          onTouchTap={this.showGettingStarted} />
       <FlatButton
           label="Model"
           icon={<DashboardIcon />}
           className={this.props.view.page === 'model' ? 'selected' : ''}
-          onTouchTap={(event) => this.handleSetPage('model')} />
+          onTouchTap={this.showModel} />
       <FlatButton
           label="Finance"
           icon={<TimelineIcon />}
           className={this.props.view.page === 'finance' ? 'selected' : ''}
-          onTouchTap={(event) => this.handleSetPage('finance')} />
+          onTouchTap={this.showFinance} />
     </div>
   }
 
@@ -273,6 +264,30 @@ class App extends Component {
     }
   }
 
+  showMenu () {
+    this.refs.menu.show()
+  }
+
+  showRenameDocDialog (event) {
+    event.stopPropagation()
+    event.preventDefault()
+
+    // open dialog where the user can enter a new name
+    this.refs.menu.renameDoc()
+  }
+
+  showGettingStarted () {
+    this.handleSetPage('gettingStarted')
+  }
+
+  showModel () {
+    this.handleSetPage('model')
+  }
+
+  showFinance () {
+    this.handleSetPage('finance')
+  }
+
   handleSetPage (page) {
     this.props.dispatch(viewPage(page))
     hash.set('page', page)
@@ -336,6 +351,11 @@ class App extends Component {
           hash.set('id', doc._id)
         })
         .catch((err) => this.handleError(err))
+  }
+
+  handleSaveDocNow (event) {
+    event.preventDefault()
+    this.handleSaveDoc()
   }
 
   handleSaveDoc () {

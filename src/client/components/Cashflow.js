@@ -5,6 +5,7 @@ import debugFactory from 'debug/browser'
 import RaisedButton from 'material-ui/lib/raised-button';
 
 import DebouncedInput from './controls/DebouncedInput'
+import bindMethods from '../utils/bindMethods'
 import { setProperty } from '../actions'
 import { getProp } from '../utils/object'
 import { format, parseValue, numberRegExp } from '../utils/number'
@@ -15,6 +16,7 @@ const debug = debugFactory('vbi:profit-loss')
 class Cashflow extends Component {
   constructor (props) {
     super(props)
+    bindMethods(this)
 
     this.state = {
       showInfo: false
@@ -36,7 +38,7 @@ class Cashflow extends Component {
 
           <RaisedButton
               label={this.state.showInfo ? 'Hide info' : 'Show info'}
-              onTouchTap={event => this.setState({ showInfo: !this.state.showInfo })} />
+              onTouchTap={this.toggleInfo} />
         </div>
 
         <table className="output" >
@@ -133,6 +135,10 @@ class Cashflow extends Component {
         You will find the correction to be simply the position begin of the year -/- position end of the year, or the other way around.
       </p>
     </div>
+  }
+
+  toggleInfo () {
+    this.setState({ showInfo: !this.state.showInfo })
   }
 }
 

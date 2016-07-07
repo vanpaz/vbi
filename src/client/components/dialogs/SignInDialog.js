@@ -3,6 +3,8 @@ import React from 'react'
 import Dialog from 'material-ui/lib/dialog'
 import FlatButton from 'material-ui/lib/flat-button'
 
+import bindMethods from '../../utils/bindMethods'
+
 /**
  * Usage:
  *
@@ -16,6 +18,7 @@ import FlatButton from 'material-ui/lib/flat-button'
 export default class SignInDialog extends React.Component {
   constructor (props) {
     super(props)
+    bindMethods(this)
 
     this.state = {
       open: false
@@ -26,7 +29,7 @@ export default class SignInDialog extends React.Component {
     const signInActions = [
       <FlatButton
           label="Cancel"
-          onTouchTap={ event => this.hide() }
+          onTouchTap={this.hide}
       />
     ]
 
@@ -35,7 +38,7 @@ export default class SignInDialog extends React.Component {
         actions={signInActions}
         modal={false}
         open={this.state.open}
-        onRequestClose={ event => this.hide() }
+        onRequestClose={this.hide}
         contentStyle={{maxWidth: 500}}>
       <p>
         Sign in with your Google or Facebook account:

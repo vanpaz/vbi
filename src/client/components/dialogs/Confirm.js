@@ -3,6 +3,8 @@ import React from 'react'
 import Dialog from 'material-ui/lib/dialog'
 import FlatButton from 'material-ui/lib/flat-button'
 
+import bindMethods from '../../utils/bindMethods'
+
 /**
  * Usage:
  *
@@ -29,6 +31,7 @@ import FlatButton from 'material-ui/lib/flat-button'
 export default class Confirm extends React.Component {
   constructor (props) {
     super (props)
+    bindMethods(this)
 
     this.state = {
       open: false,
@@ -43,13 +46,13 @@ export default class Confirm extends React.Component {
       <FlatButton
           label="No"
           secondary={true}
-          onTouchTap={event => this.hide() }
+          onTouchTap={this.hide}
       />,
       <FlatButton
           label="Yes"
           primary={true}
           keyboardFocused={true}
-          onTouchTap={event => this._handle(true) }
+          onTouchTap={this._handleOk}
       />
     ]
 
@@ -58,7 +61,7 @@ export default class Confirm extends React.Component {
         actions={actions}
         modal={false}
         open={this.state.open}
-        onRequestClose={event => this.hide() } >
+        onRequestClose={this.hide} >
       {this.state.description}
     </Dialog>
   }
@@ -78,6 +81,10 @@ export default class Confirm extends React.Component {
     this._handle(false)
   }
 
+  _handleOk () {
+    this._handle(true)
+  }
+  
   _handle (ok) {
     this.state.handler(ok)
     this.setState({

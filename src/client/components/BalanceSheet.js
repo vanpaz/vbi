@@ -8,6 +8,7 @@ import InfoPopover from './InfoPopover'
 import DebouncedInput from './controls/DebouncedInput'
 
 import { setProperty } from '../actions'
+import bindMethods from '../utils/bindMethods'
 import { getProp } from '../utils/object'
 import { format, normalize, denormalize, parseValue, numberRegExp } from '../utils/number'
 import { calculateBalanceSheet, getYearsWithInitial } from '../formulas'
@@ -21,7 +22,15 @@ const styles = {
   }
 }
 
+/**
+ * <BalanceSheet data={Object} />
+ */
 class BalanceSheet extends Component {
+  constructor (props) {
+    super(props)
+    bindMethods(this)
+  }
+
   render () {
     try {
       const currency = this.props.data.parameters.currency || 'x'
@@ -49,7 +58,7 @@ class BalanceSheet extends Component {
         
         { balanceIsZero ? null : <div className="error">Warning: the balance is not zero!</div> }
 
-        <InfoPopover ref="infoPopover" onChanged={() => this.forceUpdate() }  />
+        <InfoPopover ref="infoPopover" onChanged={ this.updatePopover }  />
       </div>
     }
     catch (err) {
@@ -61,7 +70,7 @@ class BalanceSheet extends Component {
   renderEntry (years, entry, currency, magnitude, numberOfDecimals) {
     return <tr key={entry.label} className={entry.className}>
       <td className="name">
-        { this.renderCategoryName(entry) }
+        <CategoryName entry={entry} showPopover={this.showPopover} />
       </td>
       <td className="magnitude">{`${currency}${magnitude !== 1 ? magnitude : ''}`}</td>
       {
@@ -71,7 +80,13 @@ class BalanceSheet extends Component {
 
           if (index === 0) {
             if (entry.propertyPath) {
-              return this.renderEditableInitialValue(entry.propertyPath, magnitude)
+              return <td key="initial" className="input-field">
+                  <EditableValue
+                      dispatch={this.props.dispatch}
+                      data={this.props.data}
+                      propertyPath={entry.propertyPath}
+                      magnitude={magnitude} />
+              </td>
             }
             else {
               return <td key={year} >{ value }</td>
@@ -85,44 +100,83 @@ class BalanceSheet extends Component {
     </tr>
   }
 
-  renderEditableInitialValue (propertyPath, magnitude) {
-    const rawValue = getProp(this.props.data, propertyPath)
-    const validValue = !rawValue || numberRegExp.test(rawValue)
-    const value = rawValue && validValue
-        ? denormalize(rawValue, magnitude)
-        : rawValue
-
-    return <td key="initial" className="input-field">
-      <DebouncedInput
-          value={value}
-          className={ validValue ? '' : ' invalid' }
-          onChange={(value) => {
-            const normalizedValue = numberRegExp.test(value)  // test whether a valid number
-              ? normalize(value, magnitude)
-              : value
-
-              this.props.dispatch(setProperty(propertyPath, normalizedValue))
-           }}
-      />
-    </td>
+  showPopover (target, info) {
+    this.refs.infoPopover.show(target, info)
   }
 
-  renderCategoryName (entry) {
-    if (entry.info) {
+  updatePopover () {
+    this.forceUpdate()
+  }
+}
+
+/**
+ * <EditableValue
+ *     data={Object}
+ *     dispatch={function}
+ *     propertyPath={Array.<string>}
+ *     magnitude={number}
+ * />
+ */
+class EditableValue extends React.Component {
+  constructor (props) {
+    super(props)
+    bindMethods(this)
+  }
+
+  render () {
+    const rawValue = getProp(this.props.data, this.props.propertyPath)
+    const validValue = !rawValue || numberRegExp.test(rawValue)
+    const value = rawValue && validValue
+        ? denormalize(rawValue, this.props.magnitude)
+        : rawValue
+
+
+    return <DebouncedInput
+        value={value}
+        className={ validValue ? '' : ' invalid' }
+        onChange={this.handleChange}
+    />
+  }
+
+  handleChange (value) {
+    const normalizedValue = numberRegExp.test(value)  // test whether a valid number
+        ? normalize(value, this.props.magnitude)
+        : value
+
+    this.props.dispatch(setProperty(this.props.propertyPath, normalizedValue))
+  }
+}
+
+/**
+ * <CategoryName
+ *     entry={Object}
+ *     showPopover={function(target, info)}
+ * />
+ */
+class CategoryName extends React.Component {
+  constructor (props) {
+    super(props)
+    bindMethods(this)
+  }
+
+  render () {
+    if (this.props.entry.info) {
       const isSelected = this.refs.infoPopover && this.refs.infoPopover.isDisplaying(entry.info)
 
       return <span
           className={'category' + (isSelected ? ' selected' : '')}
-          onTouchTap={event => {
-            this.refs.infoPopover.show(event.currentTarget, entry.info)
-          }} >
-        {entry.label + ' '}
+          onTouchTap={this.showPopover} >
+        {this.props.entry.label + ' '}
         <InfoIcon className="info-icon" style={styles.infoIcon} />
       </span>
     }
     else {
-      return entry.label
+      return <span>{this.props.entry.label}</span>
     }
+  }
+  
+  showPopover (event) {
+    this.props.showPopover(event.currentTarget, this.props.entry.info)
   }
 }
 

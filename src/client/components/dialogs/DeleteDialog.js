@@ -3,6 +3,8 @@ import React from 'react'
 import Dialog from 'material-ui/lib/dialog'
 import FlatButton from 'material-ui/lib/flat-button'
 
+import bindMethods from '../../utils/bindMethods'
+
 /**
  * Usage:
  *
@@ -22,6 +24,7 @@ import FlatButton from 'material-ui/lib/flat-button'
 export default class DeleteDialog extends React.Component {
   constructor (props) {
     super(props)
+    bindMethods(this)
 
     this.state = {
       open: false,
@@ -36,13 +39,13 @@ export default class DeleteDialog extends React.Component {
       <FlatButton
           label="Cancel"
           secondary={true}
-          onTouchTap={event => this.hide() }
+          onTouchTap={this.hide}
       />,
       <FlatButton
           label="Delete"
           primary={true}
           keyboardFocused={true}
-          onTouchTap={event => this._handleDelete(true) }
+          onTouchTap={this._handleDeleteOk}
       />
     ]
 
@@ -51,7 +54,7 @@ export default class DeleteDialog extends React.Component {
         actions={actions}
         modal={false}
         open={this.state.open}
-        onRequestClose={ event => this.hide() } >
+        onRequestClose={this.hide} >
       <p>
         {this.state.description}
       </p>
@@ -71,6 +74,10 @@ export default class DeleteDialog extends React.Component {
 
   hide () {
     this._handleDelete(false)
+  }
+
+  _handleDeleteOk () {
+    this._handleDelete(true)
   }
 
   _handleDelete (doDelete) {

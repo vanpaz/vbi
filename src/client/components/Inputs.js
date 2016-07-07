@@ -58,11 +58,7 @@ class Inputs extends Component {
         <CardText style={styles.cardText}>
           <Tabs
               value={this.props.tab}
-              onChange={tab => {
-                if (typeof tab === 'string') { // filter events triggered by input fields in the tabs
-                  this.props.onChangeTab(tab)
-                }
-              }}
+              onChange={this.handleChangeTab}
               inkBarStyle={styles.inkBar}
               contentContainerStyle={styles.tabContents} >
             <Tab value="parameters" label="Parameters">
@@ -185,6 +181,12 @@ class Inputs extends Component {
            }}
            onFocus={(event) => event.target.select()} />
     </td>))
+  }
+
+  handleChangeTab (tab) {
+    if (typeof tab === 'string') { // filter events triggered by input fields in the tabs
+      this.props.onChangeTab(tab)
+    }
   }
 
   handleSetParameter (parameter, value) {

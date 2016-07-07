@@ -40,7 +40,7 @@ export default class ProfitAndLoss extends Component {
           </tbody>
         </table>
 
-        <InfoPopover ref="infoPopover" onChanged={() => this.forceUpdate() } />
+        <InfoPopover ref="infoPopover" onChanged={this.handlePopoverChanged } />
       </div>
     }
     catch (err) {
@@ -85,4 +85,9 @@ export default class ProfitAndLoss extends Component {
       return entry.label
     }
   }
+
+  handlePopoverChanged () {
+    this.forceUpdate()
+  }
+
 }
