@@ -1,6 +1,6 @@
 {
   "name": "vbi",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "An interactive business intelligence tool",
   "scripts": {
     "start": "node server.js",

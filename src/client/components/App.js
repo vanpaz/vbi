@@ -121,7 +121,7 @@ class App extends Component {
         }
 
         <div className="footer">
-          Copyright &copy; 2016 <a href="http://vanpaz.com" target="_blank">VanPaz</a>
+          Version 1.0 | Copyright &copy; 2016 <a href="http://vanpaz.com" target="_blank">VanPaz</a>
         </div>
       </div>
     )
