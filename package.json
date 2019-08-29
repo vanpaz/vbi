@@ -53,7 +53,6 @@
     "react-tap-event-plugin": "0.2.2",
     "redux": "3.5.2",
     "redux-seamless-immutable": "0.2.0",
-    "request": "2.70.0",
     "seamless-immutable": "6.1.0",
     "style-loader": "0.13.1",
     "webpack": "1.12.14",
@@ -69,7 +68,8 @@
     "nano": "6.2.0",
     "passport": "0.3.2",
     "passport-facebook": "2.1.0",
-    "passport-google-oauth": "1.0.0"
+    "passport-google-oauth": "1.0.0",
+    "request": "2.70.0"
   },
   "ava": {
     "require": [
