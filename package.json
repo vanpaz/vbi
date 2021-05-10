@@ -42,7 +42,7 @@
     "json-loader": "0.5.4",
     "less": "2.7.1",
     "less-loader": "2.2.3",
-    "lodash": "4.17.19",
+    "lodash": "4.17.21",
     "material-ui": "0.14.4",
     "query-params": "0.0.1",
     "react": "0.14.8",
